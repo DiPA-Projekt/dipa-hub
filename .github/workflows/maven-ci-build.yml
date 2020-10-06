@@ -19,4 +19,4 @@ jobs:
         java-version: '11.0.2'
         architecture: x64
     - name: Build with Maven
-      run: mvn -DskipTests -B clean install
+      run: mvn -DskipTests -B clean install --file pom.xml
