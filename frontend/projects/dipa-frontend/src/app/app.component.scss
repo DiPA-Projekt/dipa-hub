@@ -1,0 +1,19 @@
+.menu-spacer {
+    width: 2em;
+  }
+  
+  .full-width-spacer {
+    flex: 1 1 auto;
+  }
+  
+  .logo {
+    height: 2em;
+  }
+  
+  .content-pane {
+    padding-top: 1em;
+    padding-left: 1em;
+    padding-right: 1em;
+    height: calc(100vh - 64px);
+  }
+  

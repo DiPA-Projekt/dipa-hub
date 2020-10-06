@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="ecamp-frontend" />
+        <module name="dipa-open-api" />
+        <module name="dipa-server" />
+        <module name="dipa-frontend" />
+        <module name="ecamp-server" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="dipa-frontend" target="11" />
+      <module name="dipa-hub" target="11" />
+      <module name="dipa-open-api" target="11" />
+      <module name="dipa-server" target="11" />
+      <module name="ecamp-frontend" target="11" />
+      <module name="ecamp-parent" target="11" />
+      <module name="ecamp-server" target="11" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="dipa-frontend" options="-parameters" />
+      <module name="dipa-open-api" options="-parameters" />
+      <module name="dipa-server" options="-parameters" />
+      <module name="ecamp-frontend" options="-parameters" />
+      <module name="ecamp-server" options="-parameters" />
+    </option>
+  </component>
+</project>

@@ -1,0 +1,12 @@
+get:
+  tags:
+    - Status
+  summary: Webservice-Status
+  description: Liefert die aktuellen Status des Webservices zurück.
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "../models/status.yml#/Status"
