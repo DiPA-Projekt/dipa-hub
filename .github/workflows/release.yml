@@ -30,6 +30,10 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
+    - name: Configure Git user
+      run: |
+        git config user.email "actions@dipa.online"
+        git config user.name "DiPA GitHub Actions"
     - name: Release with Maven
       run: mvn -B gitflow:release --file pom.xml
       env:
