@@ -1,29 +1,20 @@
-# DiPA
-Full Stack repository of the DiPA Hub (the core module)
+# DiPA Hub
+
+Dies ist das Full Stack Repository für den DiPA Hub (the core module)
+
+Mehr Informationen über die Ziele des Projekts finden sich unter https://www.dipa.online/.
 
 ## Code of Conduct
 
-## Lokale Entwicklungsinfrastruktur
+Die Zusammenarbeit in diesem Projekt wird durch den 
+[Verhaltenscodex](https://github.com/DiPA-Projekt/contribution/blob/master/CODE_OF_CONDUCT.md) geregelt. Von 
+allen Mitarbeitenden wird dessen Einhaltung erwartet. Bitte melden Sie inakzeptables Verhalten an [MAIL-ADRESSE einfügen].
 
-TODO:Docker Compose Stacke...
+## Entwicklung und Architektur
 
+Nähere Informationen zur Architektur, der Entwicklungsumgebung, den Projekt-Konventionen und zur Mitarbeit können 
+auf unsere, [Development Guide](DEVELOPMENT.md) nachgelesen werden.  
 
-## Build
+## Lizenz
 
-Das Projekt verwendet den [Maven Wrapper](https://github.com/takari/maven-wrapper).
-Dies bedeutet, dass keine lokale Installation notwendig ist. Es muss lediglich Java 
-verfügbar und eingerichtet sein. 
-
-Der Build wird mit folgenden Befehl gestartet. Für die Testfälle die dabei ausgeführt 
-werden, muss die Entwicklungsinfrastruktur laufen.
-
-```bash
-mvnw clean install
-```
-
-## GIT Guidelines
-
-TODO!
-
-Semantic Commits à la http://karma-runner.github.io/0.10/dev/git-commit-msg.html 
-https://www.conventionalcommits.org/en/v1.0.0/
+DiPA wird unter der Version 2.0 der [Apache License](https://www.apache.org/licenses/LICENSE-2.0) entwickelt.

@@ -41,18 +41,6 @@
 							<output>${project.basedir}/projects/dipa-api-client/src</output>
 
 							<configOptions>
-							<!--
-								<apiPackage>online.dipa.hub.api.rest</apiPackage>
-								<modelPackage>online.dipa.hub.api.model</modelPackage>
-								<interfaceOnly>true</interfaceOnly>
-								<generateSupportingFiles>false</generateSupportingFiles>
-								<generateModelTests>false</generateModelTests>
-								<generateModelDocumentation>false</generateModelDocumentation>
-								<generateApiDocumentation>false</generateApiDocumentation>
-								<generateApiTests>false</generateApiTests>
-								<serializableModel>true</serializableModel>
-								<snapshotVersion>true</snapshotVersion>
-								-->
                             </configOptions>
 
                         </configuration>
