@@ -4,7 +4,7 @@
 name: Java CI with Maven
 
 on:
-  [push, pull_request ]
+  [pull_request ]
 
 jobs:
   build:
@@ -18,5 +18,19 @@ jobs:
       with:
         java-version: '11.0.2'
         architecture: x64
+    - name: Cache local Maven repository
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+    - name: Cache Frontend Build Node Modules
+      uses: actions/cache@v2
+      with:
+        path: frontend/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
     - name: Build with Maven
       run: mvn -DskipTests -B clean install --file pom.xml
