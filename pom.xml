@@ -14,8 +14,22 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>DiPA :: Parent</name>
 	<description>DiPA Hub</description>
-	
+
+	<scm>
+		<connection>scm:git:https://github.com/DiPA-Projekt/dipa-hub.git</connection>
+		<developerConnection>scm:git:https://github.com/DiPA-Projekt/dipa-hub.git</developerConnection>
+	</scm>
+
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub</name>
+			<url>https://maven.pkg.github.com/DiPA-Projekt/dipa-hub</url>
+		</repository>
+	</distributionManagement>
+
 	<properties>
+		<project.scm.id>github</project.scm.id>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>11</java.version>
@@ -50,6 +64,21 @@
 					<groupId>com.github.eirslett</groupId>
 					<artifactId>frontend-maven-plugin</artifactId>
 					<version>${frontend-maven-plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>com.amashchenko.maven.plugin</groupId>
+					<artifactId>gitflow-maven-plugin</artifactId>
+					<version>1.14.0</version>
+					<configuration>
+						<argLine>-DskipTests</argLine>
+						<gitFlowConfig>
+							<productionBranch>main</productionBranch>
+						</gitFlowConfig>
+						<installProject>true</installProject>
+						<skipTestProject>true</skipTestProject>
+						<useSnapshotInHotfix>true</useSnapshotInHotfix>
+						<postReleaseGoals>deploy</postReleaseGoals>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
