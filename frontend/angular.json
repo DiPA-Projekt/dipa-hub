@@ -1,0 +1,171 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "dipa-api-client": {
+      "projectType": "library",
+      "root": "projects/dipa-api-client",
+      "sourceRoot": "projects/dipa-api-client/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "projects/dipa-api-client/tsconfig.lib.json",
+            "project": "projects/dipa-api-client/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/dipa-api-client/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/dipa-api-client/src/test.ts",
+            "tsConfig": "projects/dipa-api-client/tsconfig.spec.json",
+            "karmaConfig": "projects/dipa-api-client/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/dipa-api-client/tsconfig.lib.json",
+              "projects/dipa-api-client/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "dipa-frontend": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/dipa-frontend",
+      "sourceRoot": "projects/dipa-frontend/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/dipa-frontend",
+            "index": "projects/dipa-frontend/src/index.html",
+            "main": "projects/dipa-frontend/src/main.ts",
+            "polyfills": "projects/dipa-frontend/src/polyfills.ts",
+            "tsConfig": "projects/dipa-frontend/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "projects/dipa-frontend/src/favicon.ico",
+              "projects/dipa-frontend/src/assets"
+            ],
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "projects/dipa-frontend/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/dipa-frontend/src/environments/environment.ts",
+                  "with": "projects/dipa-frontend/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "dipa-frontend:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "dipa-frontend:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "dipa-frontend:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/dipa-frontend/src/test.ts",
+            "polyfills": "projects/dipa-frontend/src/polyfills.ts",
+            "tsConfig": "projects/dipa-frontend/tsconfig.spec.json",
+            "karmaConfig": "projects/dipa-frontend/karma.conf.js",
+            "assets": [
+              "projects/dipa-frontend/src/favicon.ico",
+              "projects/dipa-frontend/src/assets"
+            ],
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "projects/dipa-frontend/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/dipa-frontend/tsconfig.app.json",
+              "projects/dipa-frontend/tsconfig.spec.json",
+              "projects/dipa-frontend/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/dipa-frontend/e2e/protractor.conf.js",
+            "devServerTarget": "dipa-frontend:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "dipa-frontend:serve:production"
+            }
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "dipa-frontend"
+}

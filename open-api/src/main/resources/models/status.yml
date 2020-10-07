@@ -1,0 +1,10 @@
+Status:
+  type: object
+  description: Status
+  properties:
+    name:
+      type: string
+      default: dipa-hub
+    version:
+      type: string
+      example: 1.0.0

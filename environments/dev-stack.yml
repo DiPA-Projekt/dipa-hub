@@ -1,0 +1,19 @@
+version: '3.1'
+
+services:
+
+  db:
+    environment:
+       POSTGRES_USER: 'dipa'
+       POSTGRES_PASSWORD: 'secret-pwd'
+       POSTGRES_DB: 'dipa-core'
+    image: postgres:13.0
+    ports:
+        - "5432:5432"
+#  tomcat:
+#    image: docker.4soft.de/4soft/4time/tomcat:9-jre10
+#    ports:
+#        - "8080:8080"
+#        - "8009:8009"
+#    links:
+#        - db:database
