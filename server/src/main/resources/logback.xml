@@ -1,0 +1,83 @@
+<!--
+  ||
+  || 4Soft logback configuration
+  ||
+  || This is how logback tries to configure itself:
+  || 1. Logback tries to find a file called logback.groovy in the classpath.
+  || 2. If no such file is found, logback tries to find a file called logback-test.xml in the classpath.
+  || 3. If no such file is found, it checks for the file logback.xml in the classpath..
+  || 4. If neither file is found, logback configures itself automatically using the BasicConfigurator which will cause logging output to be directed to the console.
+  ||
+  || You may specify the location of the default configuration file with a system property named "logback.configurationFile".
+  || The value of this property can be a URL, a resource on the class path or a path to a file external to the application.
+  ||
+  || If warnings or errors occur during the parsing of the configuration file, logback will automatically print its internal status data on the console.
+  || You can instruct the configuration file to dump status data, even in the absence of errors.
+  || To achieve this, you need to set the debug attribute of the configuration element, i.e. the top-most element in the configuration file, to true.
+  || Please note that this debug attribute relates only to the status data. It does not affect logback's configuration otherwise, in particular with respect to logger levels.
+  || (If you are asking, no, the root logger will not be set to DEBUG.)
+  || Setting the debug attribute within the <configuration> element will output status information, assuming that:
+  || 1. the configuration file is found
+  || 2. the configuration file is well-formed XML.
+  || If any of these two conditions is not fulfilled, logback cannot interpret the debug attribute since the configuration file cannot be read.
+  || If the configuration file is found but is malformed, then logback will detect the error condition and automatically print its internal status on the console.
+  || However, if the configuration file cannot be found, logback will not automatically print its status data, since this is not necessarily an error condition.
+  ||
+  || In order to instruct logback-classic to scan for changes in its configuration file and to automatically re-configure itself
+  || set the scan attribute of the <configuration> element to true.
+  || By default, the configuration file will be scanned for changes once every minute.
+  || You can specify a different scanning period by setting the scanPeriod attribute of the <configuration> element.
+  || Values can be specified in units of milliseconds, seconds, minutes or hours.
+  ||
+  || See the logback manual for more detailed information: http://logback.qos.ch/manual/
+  ||
+  -->
+<configuration debug="false" scan="true" scanPeriod="60 minutes"> <!-- debug should be true in production environments and false in test environments -->
+	<property name="logfile-base" value="${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/dipa-server"/>
+	<property name="server-log" value="${logfile-base}"/>
+
+	<appender name="CONSOLE"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%date %-5level %logger{36} - %msg%n
+			</pattern>
+		</encoder>
+		<immediateFlush>true</immediateFlush>
+	</appender>
+
+	<appender name="STDOUT" class="ch.qos.logback.classic.AsyncAppender">
+		<appender-ref ref="CONSOLE"/>
+		<queueSize>1000</queueSize>
+	</appender>
+
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${server-log}.log</file>
+		<append>true</append>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${server-log}-%d{yyyy-w}.gz
+			</fileNamePattern>
+			<maxHistory>50</maxHistory>
+			<totalSizeCap>500MB</totalSizeCap>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%date [%thread] %-5level %logger{35} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+	
+	<logger name="online.dipa" level="info" />
+
+	<logger
+		name="org.hibernate.engine.internal.StatisticalLoggingSessionEventListener"
+		level="warn" />
+
+	<root level="warn">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="STDOUT"/>
+	</root>
+</configuration>
+
+
+

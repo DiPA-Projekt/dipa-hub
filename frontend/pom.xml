@@ -1,0 +1,106 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>online.dipa.hub</groupId>
+		<artifactId>dipa-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>dipa-frontend</artifactId>
+	<packaging>jar</packaging>
+	<name>DiPA :: Frontend</name>
+	<description>Weit e.V. DiPA Frontend</description>
+
+	<build>
+		<defaultGoal>install</defaultGoal>
+		<resources>
+			<resource>
+				<directory>dist/dipa-frontend</directory>
+				<filtering>false</filtering>
+				<targetPath>META-INF/resources</targetPath>				
+			</resource>			
+		</resources>
+		<plugins>
+			 <plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                    	<?m2e execute onConfiguration?>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <!-- specify the OpenAPI spec -->
+                            <inputSpec>dipa-hub.yaml</inputSpec>
+
+                            <generatorName>typescript-angular</generatorName>
+							
+							<output>${project.basedir}/projects/dipa-api-client/src</output>
+
+							<configOptions>
+                            </configOptions>
+
+                        </configuration>
+	
+                    </execution>
+                </executions>
+				<dependencies>
+					<dependency>
+						<groupId>${project.groupId}</groupId>
+						<artifactId>dipa-open-api</artifactId>
+						<version>${project.version}</version>
+					</dependency>
+				</dependencies>
+            </plugin>
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>projects/dipa-api-client/src</directory>
+							<includes>
+								<include>**/*.*</include>
+							</includes>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.github.eirslett</groupId>
+				<artifactId>frontend-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>install node and npm</id>
+						<goals>
+							<goal>install-node-and-npm</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>npm install</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<arguments>install</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>npm build</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<arguments>run-script build</arguments>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<nodeVersion>v12.18.3</nodeVersion>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

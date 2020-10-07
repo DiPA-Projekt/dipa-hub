@@ -1,0 +1,15 @@
+<div *ngIf="adressen$ | async as adressen" class="container">
+    <div class="row">
+        <div class="col">
+            <h3>If you can see this, backend is working...</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6" *ngFor="let addresse of adressen">
+            <mat-card>
+                {{ addresse.strasse }} {{ addresse.hausnummer }} <br>
+                {{ addresse.plz }} - {{ addresse.ort }} <br>
+            </mat-card>
+        </div>
+    </div>
+</div>
