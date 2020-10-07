@@ -1,7 +1,7 @@
 name: Release Version
 
 on:
-  workflow_dispath:
+  workflow_dispatch:
 
 jobs:
   build:
