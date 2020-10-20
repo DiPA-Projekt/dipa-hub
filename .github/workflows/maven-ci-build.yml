@@ -46,5 +46,10 @@ jobs:
         DOCKER_REGISTRY_USERNAME: dipa
         DOCKER_REGISTRY_TOKEN: ${{ secrets.DOCKER_REGISTRY_TOKEN }}
     - name: Deployment
-      run:  ssh -i ~/.ssh/key_dipa_deployment dipa-deployment@dipa.rz-housing.tu-clausthal.de docker-compose --version
+      run: |
+        mkdir -p ~/.ssh
+        echo -e "${{ secrets.DEPLOYMENT_SSH_KEY}}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -t rsa dipa.rz-housing.tu-clausthal.de >> ~/.ssh/known_hosts
+        ssh -i ~/.ssh/key_dipa_deployment dipa-deployment@dipa.rz-housing.tu-clausthal.de docker-compose --version
 
