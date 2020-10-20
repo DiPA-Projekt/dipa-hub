@@ -48,8 +48,8 @@ jobs:
     - name: Deployment
       run: |
         mkdir -p ~/.ssh
-        echo -e "${{ secrets.DEPLOYMENT_SSH_KEY}}" > ~/.ssh/id_rsa
+        echo -e "${{ secrets.DEPLOYMENT_SSH_KEY }}" > ~/.ssh/id_rsa
+        echo -e "${{ secrets.DEPLOYMENT_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
         chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -t rsa dipa.rz-housing.tu-clausthal.de >> ~/.ssh/known_hosts
-        ssh -i ~/.ssh/key_dipa_deployment dipa-deployment@dipa.rz-housing.tu-clausthal.de docker-compose --version
+        ssh dipa-deployment@dipa.rz-housing.tu-clausthal.de docker-compose --version
 
