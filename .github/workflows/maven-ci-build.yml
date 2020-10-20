@@ -51,6 +51,6 @@ jobs:
         echo -e "${{ secrets.DEPLOYMENT_SSH_KEY }}" > ~/.ssh/id_rsa
         echo -e "${{ secrets.DEPLOYMENT_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
         chmod 600 ~/.ssh/id_rsa
-        ssh dipa-deployment@dipa.rz-housing.tu-clausthal.de mkdir ~/deployment
+        ssh dipa-deployment@dipa.rz-housing.tu-clausthal.de mkdir deployment
         scp server/target/deployment/*.yaml dipa-deployment@dipa.rz-housing.tu-clausthal.de:deployment
-        ssh dipa-deployment@dipa.rz-housing.tu-clausthal.de kubectl apply -k ~/deployment
+        ssh dipa-deployment@dipa.rz-housing.tu-clausthal.de kubectl apply -k deployment
