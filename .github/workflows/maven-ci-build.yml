@@ -8,6 +8,8 @@ on:
     branches:
       - develop
   pull_request:
+    branches:
+      - develop
 
 jobs:
   build:
@@ -21,6 +23,9 @@ jobs:
       with:
         java-version: '11.0.2'
         architecture: x64
+        server-id: mvp.dipa.online
+        server-username: DOCKER_REGISTRY_USERNAME
+        server-password: DOCKER_REGISTRY_TOKEN
     - name: Cache local Maven repository
       uses: actions/cache@v2
       with:
@@ -36,4 +41,8 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
     - name: Build with Maven
-      run: mvn -DskipTests -B clean install --file pom.xml
+      run: mvn -Dk8s.image.version=${GITHUB_RUN_NUMBER} -DskipTests -B clean install dockerfile:push --file pom.xml
+      env:
+        DOCKER_REGISTRY_USERNAME: dipa
+        DOCKER_REGISTRY_TOKEN: ${{ secrets.DOCKER_REGISTRY_TOKEN }}
+
