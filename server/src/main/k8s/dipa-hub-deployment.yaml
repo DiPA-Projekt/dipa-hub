@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dipa-hub
+  labels:
+    app: dipa-hub
+spec:
+  ports:
+    - name: dipa-hub
+      port: 9080
+      targetPort: 9080
+      nodePort: 30000
+  selector:
+    app: dipa-hub
+    tier: server
+  type: NodePort
+---
+#apiVersion: v1
+#kind: PersistentVolumeClaim
+#metadata:
+#  name: wp-pv-claim
+#  labels:
+#    app: wordpress
+#spec:
+#  accessModes:
+#    - ReadWriteOnce
+#  resources:
+#   requests:
+#      storage: 20Gi
+---
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: dipa-hub
+  labels:
+    app: dipa-hub
+spec:
+  selector:
+    matchLabels:
+      app: dipa-hub
+      tier: server
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: dipa-hub
+        tier: server
+    spec:
+      containers:
+        - image: mvp.dipa.online/dipa-projekt/dipa-hub:22
+          name: dipa-hub
+#          env:
+#            - name: WORDPRESS_DB_HOST
+#              value: wordpress-mysql
+#            - name: WORDPRESS_DB_PASSWORD
+#              valueFrom:
+#                secretKeyRef:
+#                  name: mysql-pass
+#                  key: password
+          ports:
+            - containerPort: 9080
+              name: dipa-hub
+#          volumeMounts:
+#            - name: wordpress-persistent-storage
+#              mountPath: /var/www/html
+#      volumes:
+#        - name: wordpress-persistent-storage
+#          persistentVolumeClaim:
+#            claimName: wp-pv-claim
