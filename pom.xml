@@ -148,7 +148,7 @@
 					<artifactId>gitflow-maven-plugin</artifactId>
 					<version>1.14.0</version>
 					<configuration>
-						<argLine>-DskipTests -P production-ci -s .mvn/release.settings.xml </argLine>
+						<argLine>-s .mvn/release.settings.xml -DskipTests -P production-ci</argLine>
 						<gitFlowConfig>
 							<productionBranch>main</productionBranch>
 						</gitFlowConfig>

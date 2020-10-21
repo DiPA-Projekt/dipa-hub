@@ -41,7 +41,7 @@ jobs:
         git config user.email "actions@dipa.online"
         git config user.name "DiPA GitHub Actions"
     - name: Release with Maven
-      run: mvn -B -DreleaseVersion=${{ github.event.inputs.release_version }} gitflow:release --file pom.xml
+      run: mvn -s .mvn/release.settings.xml -B -DreleaseVersion=${{ github.event.inputs.release_version }} gitflow:release --file pom.xml
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         DOCKER_REGISTRY_USERNAME: dipa

@@ -10,7 +10,7 @@
         <server>
             <id>mvp.dipa.online</id>
             <username>${env.DOCKER_REGISTRY_USERNAME}</username>
-            <password>${env.DOCKER_REGISTRY_TOKEN}}</password>
+            <password>${env.DOCKER_REGISTRY_TOKEN}</password>
         </server>
     </servers>
 </settings>
