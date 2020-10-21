@@ -56,3 +56,7 @@ jobs:
         mvn -s .mvn/release.settings.xml -P production-ci -B -DskipTests clean install --file pom.xml
         scp server/target/deployment/*.yaml dipa-deployment@dipa.rz-housing.tu-clausthal.de:deployment/main
         ssh dipa-deployment@dipa.rz-housing.tu-clausthal.de kubectl apply -k deployment/main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        DOCKER_REGISTRY_USERNAME: dipa
+        DOCKER_REGISTRY_TOKEN: ${{ secrets.DOCKER_REGISTRY_TOKEN }}
