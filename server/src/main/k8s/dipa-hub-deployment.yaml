@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: dipa-hub
+  name: dipa-hub-@k8s.release.track@
   labels:
     app: dipa-hub
     track: @k8s.release.track@
@@ -33,7 +33,7 @@ spec:
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
-  name: dipa-hub
+  name: dipa-hub-@k8s.release.track@
   labels:
     app: dipa-hub
     track: @k8s.release.track@
