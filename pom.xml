@@ -148,7 +148,7 @@
 					<artifactId>gitflow-maven-plugin</artifactId>
 					<version>1.14.0</version>
 					<configuration>
-						<argLine>-DskipTests</argLine>
+						<argLine>-DskipTests -P production </argLine>
 						<gitFlowConfig>
 							<productionBranch>main</productionBranch>
 						</gitFlowConfig>
@@ -174,18 +174,12 @@
 		</profile>
 		<profile>
 			<id>develop-ci</id>
-			<activation>
-				<property>
-					<name>env.CI</name>
-					<value>true</value>
-				</property>
-			</activation>
 			<properties>
 				<profile.properties.file>config-develop-ci.properties</profile.properties.file>
 			</properties>
 		</profile>
 		<profile>
-			<id>production</id>
+			<id>production-ci</id>
 			<properties>
 				<profile.properties.file>config-production.properties</profile.properties.file>
 			</properties>
