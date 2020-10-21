@@ -103,6 +103,10 @@
 	<build>
 		<resources>
 			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
 				<directory>src/main/k8s</directory>
 				<filtering>true</filtering>
 				<targetPath>${build.directory}/deployment</targetPath>
