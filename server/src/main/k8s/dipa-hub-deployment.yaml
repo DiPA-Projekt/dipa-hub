@@ -1,0 +1,77 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dipa-hub-@k8s.release.track@
+  labels:
+    app: dipa-hub
+    track: @k8s.release.track@
+spec:
+  ports:
+    - name: dipa-hub
+      port: 9080
+      targetPort: 9080
+      nodePort: @k8s.server.service.port@
+  selector:
+    app: dipa-hub
+    tier: server
+    track: @k8s.release.track@
+  type: NodePort
+---
+#apiVersion: v1
+#kind: PersistentVolumeClaim
+#metadata:
+#  name: wp-pv-claim
+#  labels:
+#    app: wordpress
+#spec:
+#  accessModes:
+#    - ReadWriteOnce
+#  resources:
+#   requests:
+#      storage: 20Gi
+---
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: dipa-hub-@k8s.release.track@
+  labels:
+    app: dipa-hub
+    track: @k8s.release.track@
+spec:
+  selector:
+    matchLabels:
+      app: dipa-hub
+      tier: server
+      track: @k8s.release.track@
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: dipa-hub
+        tier: server
+        track: @k8s.release.track@
+    spec:
+      containers:
+        - image: mvp.dipa.online/dipa-projekt/dipa-hub:@k8s.image.version@
+          name: dipa-hub
+#          env:
+#            - name: WORDPRESS_DB_HOST
+#              value: wordpress-mysql
+#            - name: WORDPRESS_DB_PASSWORD
+#              valueFrom:
+#                secretKeyRef:
+#                  name: mysql-pass
+#                  key: password
+          ports:
+            - containerPort: 9080
+              name: dipa-hub
+#          volumeMounts:
+#            - name: wordpress-persistent-storage
+#              mountPath: /var/www/html
+      imagePullSecrets:
+        - name: regcred
+#      volumes:
+#        - name: wordpress-persistent-storage
+#          persistentVolumeClaim:
+#            claimName: wp-pv-claim

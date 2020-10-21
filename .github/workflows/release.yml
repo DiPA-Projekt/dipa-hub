@@ -2,6 +2,11 @@ name: Release Version
 
 on:
   workflow_dispatch:
+    inputs:
+      release_version:
+        description: 'The Version of the Release (e.g. 0.1.0)'
+        required: false
+        default: ''
 
 jobs:
   build:
@@ -17,7 +22,6 @@ jobs:
       with:
         java-version: '11.0.2'
         architecture: x64
-        server-id: github
     - name: Cache local Maven repository
       uses: actions/cache@v2
       with:
@@ -37,6 +41,18 @@ jobs:
         git config user.email "actions@dipa.online"
         git config user.name "DiPA GitHub Actions"
     - name: Release with Maven
-      run: mvn -B gitflow:release --file pom.xml
+      run: mvn -s .mvn/release.settings.xml -B -DreleaseVersion=${{ github.event.inputs.release_version }} gitflow:release --file pom.xml
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        DOCKER_REGISTRY_USERNAME: dipa
+        DOCKER_REGISTRY_TOKEN: ${{ secrets.DOCKER_REGISTRY_TOKEN }}
+    - name: Deployment to Kubernetes
+      run: |
+        git checkout -f main
+        mkdir -p ~/.ssh
+        echo -e "${{ secrets.DEPLOYMENT_SSH_KEY }}" > ~/.ssh/id_rsa
+        echo -e "${{ secrets.DEPLOYMENT_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+        chmod 600 ~/.ssh/id_rsa
+        mvn -P production-ci -B -DskipTests clean install --file pom.xml
+        scp server/target/deployment/*.yaml dipa-deployment@dipa.rz-housing.tu-clausthal.de:deployment/main
+        ssh dipa-deployment@dipa.rz-housing.tu-clausthal.de kubectl apply -k deployment/main
