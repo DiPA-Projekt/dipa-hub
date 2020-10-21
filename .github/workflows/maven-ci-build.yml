@@ -46,7 +46,7 @@ jobs:
         DOCKER_REGISTRY_USERNAME: dipa
         DOCKER_REGISTRY_TOKEN: ${{ secrets.DOCKER_REGISTRY_TOKEN }}
     - name: Deployment to Kubernetes
-      if: {{ github.ref == 'ref/head/develop' }}
+      if: github.ref == 'ref/head/develop'
       run: |
         mkdir -p ~/.ssh
         echo -e "${{ secrets.DEPLOYMENT_SSH_KEY }}" > ~/.ssh/id_rsa
