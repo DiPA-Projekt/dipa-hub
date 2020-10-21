@@ -109,7 +109,7 @@
 			<resource>
 				<directory>src/main/k8s</directory>
 				<filtering>true</filtering>
-				<targetPath>${build.directory}/deployment</targetPath>
+				<targetPath>${project.build.directory}/deployment</targetPath>
 			</resource>
 		</resources>
 		<plugins>
