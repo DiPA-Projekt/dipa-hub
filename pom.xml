@@ -48,17 +48,84 @@
 
 		<!-- build profile defaults -->
 		<dockerfile.skip>true</dockerfile.skip>
-		<k8s.image.version>${project.version}</k8s.image.version>
-
 	</properties>
 
     <modules>
 		<module>open-api</module>
 		<module>frontend</module>
         <module>server</module>
-		
     </modules>
 	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.2.0</version>
+				<executions>
+					<execution>
+						<id>parse-version</id>
+						<goals>
+							<goal>parse-version</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<doCheck>false</doCheck>
+					<doUpdate>false</doUpdate>
+					<shortRevisionLength>7</shortRevisionLength>
+					<timestampFormat>{0,date,yyyyMMdd}</timestampFormat>
+					<revisionOnScmFailure>ci-build</revisionOnScmFailure>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.commonjava.maven.plugins</groupId>
+				<artifactId>directory-maven-plugin</artifactId>
+				<version>0.3.1</version>
+				<executions>
+					<execution>
+						<?m2e execute onConfiguration,onIncremental?>
+						<phase>initialize</phase>
+						<goals>
+							<goal>highest-basedir</goal>
+						</goals>
+						<configuration>
+							<property>root.basedir</property>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<executions>
+					<execution>
+						<phase>initialize</phase>
+						<goals>
+							<goal>read-project-properties</goal>
+						</goals>
+						<configuration>
+							<files>
+								<file>${root.basedir}/config/${profile.properties.file}</file>
+							</files>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -94,6 +161,37 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>local</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<profile.properties.file>config-local.properties</profile.properties.file>
+			</properties>
+		</profile>
+		<profile>
+			<id>develop-ci</id>
+			<activation>
+				<property>
+					<name>env.CI</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<properties>
+				<profile.properties.file>config-develop-ci.properties</profile.properties.file>
+			</properties>
+		</profile>
+		<profile>
+			<id>production</id>
+			<properties>
+				<profile.properties.file>config-production.properties</profile.properties.file>
+			</properties>
+		</profile>
+
+	</profiles>
 	
 	<dependencyManagement>
 		<dependencies>		
