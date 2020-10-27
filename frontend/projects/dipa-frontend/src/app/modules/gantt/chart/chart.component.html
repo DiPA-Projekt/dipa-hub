@@ -1,0 +1,32 @@
+<div id="gantt" #gantt>
+
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <mat-button-toggle-group name="chartMetric" aria-label="Chart Metric">
+          <mat-button-toggle class="md-button" value="MONTHS">Monate</mat-button-toggle>
+          <mat-button-toggle class="md-button" value="WEEKS">Wochen</mat-button-toggle>
+          <mat-button-toggle class="md-button" value="DAYS">Tage</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+      <div class="col text-right">
+        <mat-form-field appearance="fill">
+          <mat-label>Enter a date range</mat-label>
+          <mat-date-range-input [rangePicker]="picker">
+            <input matStartDate placeholder="Start date"
+                   (dateChange)="changeStartDate('change', $event)"
+                   value="periodStartDate">
+            <input matEndDate placeholder="End date"
+                   (dateChange)="changeEndDate('change', $event)"
+                   value="periodEndDate">
+          </mat-date-range-input>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+
+  <figure id="chart"></figure>
+
+</div>

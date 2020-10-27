@@ -1,0 +1,110 @@
+:host {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.tooltip {
+  background-color: rgba(0, 0, 0, 0.54);
+}
+
+.container {
+  min-width: 350px;
+  width: 60vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  background-color: transparent;
+  .title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 2rem;
+    font-family: 'Roboto';
+    height: 2rem;
+    width: 100%;
+    margin: 0 auto 1rem auto;
+
+    .left {
+      height: 3rem;
+      font-size: 3rem;
+      cursor: pointer;
+    }
+    .span {
+      height: 3rem;
+      line-height: 3rem;
+    }
+    .right {
+      height: 3rem;
+      font-size: 3rem;
+      cursor: pointer;
+      margin-right: 20px;
+    }
+  }
+
+  #gantt {
+    height: 70vh;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    position: relative;
+
+    mat-select {
+      position: absolute;
+      top: 0;
+      right: 0px;
+      width: 20%;
+      padding: 5px;
+      font-size: 1rem;
+      font-family: 'Roboto';
+      z-index: 100;
+    }
+
+    figure {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+    }
+    .half {
+      height: 50%;
+    }
+  }
+}
+
+
+mat-option ::ng-deep .city {
+  font-size: 1rem;
+  font-family: 'Roboto';
+}
+
+@media screen and (max-width: 767px) {
+  .container {
+    .title {
+      font-size: 1.5rem;
+      color: red;
+    }
+    text.milestoneLabel {
+      fill: none !important;
+    }
+  }
+}
+
+@media screen and (max-width: 414px) {
+  .container {
+    .title {
+      font-size: 1rem;
+    }
+  }
+}
+
+span.mat-button-toggle-label-content{
+  line-height: 36px !important;
+}
+
+
