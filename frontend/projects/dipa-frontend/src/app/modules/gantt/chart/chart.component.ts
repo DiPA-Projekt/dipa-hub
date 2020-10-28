@@ -366,9 +366,6 @@ export class ChartComponent implements OnInit, OnChanges {
 
   private drawVerticalGridLines(): void {
 
-    const ticksOffsetBefore = this.xAxis(new Date(this.xAxis.ticks()[0]));
-    const tickWidth = this.calculateTickWidth();
-
     const xGroup = this.svg.select('g.x-group');
 
     // vertical grid lines
@@ -378,8 +375,8 @@ export class ChartComponent implements OnInit, OnChanges {
       .enter()
       .append('line')
       .attr('class', 'xGridLines')
-      .attr('x1', (d, i) => tickWidth * i + ticksOffsetBefore)
-      .attr('x2', (d, i) => tickWidth * i + ticksOffsetBefore)
+      .attr('x1', d => this.xAxis(d))
+      .attr('x2', d => this.xAxis(d))
       .attr('y1', 0)
       .attr('y2', this.viewBoxHeight)  // TODO
       .style('stroke', '#eee');
@@ -405,9 +402,6 @@ export class ChartComponent implements OnInit, OnChanges {
       .attr('rx', 3)
       .attr('opacity', 0.8);
 
-    const ticksOffsetBefore = this.xAxis(new Date(this.xAxis.ticks()[0]));
-    const tickWidth = this.calculateTickWidth();
-
     // x-axis labels
     xGroup.selectAll('text.xAxisLabel').remove();
     xGroup.selectAll('text')
@@ -416,7 +410,7 @@ export class ChartComponent implements OnInit, OnChanges {
       .append('text')
       .attr('class', 'xAxisLabel')
       .text(d => this.formatDate(new Date(d)))
-      .attr('x', (d, i) => tickWidth * i + ticksOffsetBefore + 4)
+      .attr('x', d => this.xAxis(d) + 4)
       .attr('y', 18)
       .attr('font-size', 12)
       .style('fill', '#fff');
@@ -603,19 +597,6 @@ export class ChartComponent implements OnInit, OnChanges {
       .attr('font-size', 12)
       .attr('text-height', this.barHeight)
       .style('fill', '#fff');
-  }
-
-
-  // CAUTION: for monthly scale there will be a small inaccuracy because obviously not all
-  // month have the same number of days
-  private calculateTickWidth(): number {
-    // the original d3 scale does not begin with the first tick at 0 so we have to
-    // take the offsets into account
-    const ticksOffsetBefore = this.xAxis(new Date(this.xAxis.ticks()[0]));
-    const ticksOffsetAfter = this.xAxis.range()[1] - this.xAxis(new Date(this.xAxis.ticks()[this.xAxis.ticks().length - 1]));
-    const xAxisTicksCount = this.xAxis.ticks().length - 1;
-
-    return (this.xAxis.range()[1] - ticksOffsetBefore - ticksOffsetAfter) / xAxisTicksCount;
   }
 
   private calculateBarWidth(task: any): number {
