@@ -18,8 +18,8 @@ export class GanttComponent implements OnInit, AfterContentInit {
   milestoneData = [];
   taskData = [];
 
-  periodStartDate;
-  periodEndDate;
+  periodStartDate = new Date(2020, 0, 1);
+  periodEndDate = new Date(2020, 11, 31);
 
   constructor(public ganttControlsService: GanttControlsService) { }
 
@@ -32,7 +32,16 @@ export class GanttComponent implements OnInit, AfterContentInit {
     this.milestoneData = [
       {
         id: 1,
-        name: 'Milestone 1',
+        name: 'Projektstart',
+        group: 'Projekt B',
+        start: new Date(2020, 1, 1),
+        parentId: -1,
+        type: 'MILESTONE',
+        complete: false
+      },
+      {
+        id: 2,
+        name: 'Kick Off',
         group: 'Projekt B',
         start: new Date(2020, 2, 1),
         parentId: -1,
@@ -40,37 +49,91 @@ export class GanttComponent implements OnInit, AfterContentInit {
         complete: false
       },
       {
-        id: 2,
-        name: 'Milestone 2',
-        group: 'Projekt B',
-        start: new Date(2020, 4, 6),
-        parentId: -1,
-        type: 'MILESTONE',
-        complete: false
-      },
-      {
         id: 3,
-        name: 'Milestone 3',
+        name: 'Zuschlagserteilung',
         group: 'Projekt B',
-        start: new Date(2020, 6, 8),
+        start: new Date(2020, 8, 1),
         parentId: -1,
         type: 'MILESTONE',
         complete: false
       },
       {
         id: 4,
-        name: 'Milestone 4',
+        name: 'Rolloutdrehbuch',
         group: 'Projekt B',
-        start: new Date(2020, 9, 15),
+        start: new Date(2020, 11, 1),
         parentId: -1,
         type: 'MILESTONE',
         complete: false
       },
       {
         id: 5,
-        name: 'Milestone 5',
+        name: 'Beginn Rollout Phase 1',
         group: 'Projekt B',
-        start: new Date(2020, 11, 23),
+        start: new Date(2021, 1, 1),
+        parentId: -1,
+        type: 'MILESTONE',
+        complete: false
+      },
+      {
+        id: 6,
+        name: 'Beginn Rollout Phase 2',
+        group: 'Projekt B',
+        start: new Date(2021, 4, 1),
+        parentId: -1,
+        type: 'MILESTONE',
+        complete: false
+      },
+      {
+        id: 7,
+        name: 'Ende Phase 1',
+        group: 'Projekt B',
+        start: new Date(2021, 5, 1),
+        parentId: -1,
+        type: 'MILESTONE',
+        complete: false
+      },
+      {
+        id: 8,
+        name: 'Beginn Rollout Phase 3',
+        group: 'Projekt B',
+        start: new Date(2021, 6, 1),
+        parentId: -1,
+        type: 'MILESTONE',
+        complete: false
+      },
+      {
+        id: 9,
+        name: 'Ende Phase 2',
+        group: 'Projekt B',
+        start: new Date(2021, 8, 1),
+        parentId: -1,
+        type: 'MILESTONE',
+        complete: false
+      },
+      {
+        id: 10,
+        name: 'Ende Phase 3',
+        group: 'Projekt B',
+        start: new Date(2021, 11, 1),
+        parentId: -1,
+        type: 'MILESTONE',
+        complete: false
+      },
+      {
+        id: 11,
+        name: 'Projektabschlussbericht',
+        group: 'Projekt B',
+        start: new Date(2022, 2, 1),
+        parentId: -1,
+        type: 'MILESTONE',
+        complete: false
+      },
+      {
+        id: 12,
+        name: 'Projektende',
+        group: 'Projekt B',
+        start: new Date(2022, 5, 1),
         parentId: -1,
         type: 'MILESTONE',
         complete: false
@@ -80,7 +143,7 @@ export class GanttComponent implements OnInit, AfterContentInit {
     this.taskData = [
       {
         id: 1,
-        name: 'Task 12',
+        name: 'Task 1',
         group: 'Projekt A',
         start: new Date(2020, 1, 1),
         end: new Date(2020, 4, 4),
@@ -123,7 +186,7 @@ export class GanttComponent implements OnInit, AfterContentInit {
         name: 'Task 5',
         group: 'Projekt C',
         start: new Date(2020, 10, 23),
-        end: new Date(2021, 0, 28),
+        end: new Date(2020, 11, 31),
         parentId: -1,
         type: 'MILESTONE',
         progress: 80
@@ -142,16 +205,12 @@ export class GanttComponent implements OnInit, AfterContentInit {
   changeStartDate(change: string, $event: any): void {
     if ($event.value) {
       this.periodStartDate = $event.value;
-      console.log($event);
-      // this.drawChart();
     }
   }
 
   changeEndDate(change: string, $event: any): void {
     if ($event.value) {
       this.periodEndDate = $event.value;
-      console.log($event);
-      // this.drawChart();
     }
   }
 

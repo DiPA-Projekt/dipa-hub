@@ -27,8 +27,12 @@
     </div>
   </div>
 
-  <figure id="chart"></figure>
+  <app-chart #ganttChart
+             [milestoneData]="milestoneData"
+             [taskData]="taskData"
+             [periodStartDate]="periodStartDate"
+             [periodEndDate]="periodEndDate"
+  ></app-chart>
 
 </div>
 
-<router-outlet></router-outlet>

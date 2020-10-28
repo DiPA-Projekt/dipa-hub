@@ -13,169 +13,13 @@ export class ChartComponent implements OnInit, OnChanges {
 
   constructor() { }
 
-  @Input() milestoneData = [
-    {
-      id: 1,
-      name: 'Projektstart',
-      group: 'Projekt B',
-      start: new Date(2020, 1, 1),
-      parentId: -1,
-      type: 'MILESTONE',
-      complete: false
-    },
-    {
-      id: 2,
-      name: 'Kick Off',
-      group: 'Projekt B',
-      start: new Date(2020, 2, 1),
-      parentId: -1,
-      type: 'MILESTONE',
-      complete: false
-    },
-    {
-      id: 3,
-      name: 'Zuschlagserteilung',
-      group: 'Projekt B',
-      start: new Date(2020, 8, 1),
-      parentId: -1,
-      type: 'MILESTONE',
-      complete: false
-    },
-    {
-      id: 4,
-      name: 'Rolloutdrehbuch',
-      group: 'Projekt B',
-      start: new Date(2020, 11, 1),
-      parentId: -1,
-      type: 'MILESTONE',
-      complete: false
-    },
-    {
-      id: 5,
-      name: 'Beginn Rollout Phase 1',
-      group: 'Projekt B',
-      start: new Date(2021, 1, 1),
-      parentId: -1,
-      type: 'MILESTONE',
-      complete: false
-    },
-    {
-      id: 6,
-      name: 'Beginn Rollout Phase 2',
-      group: 'Projekt B',
-      start: new Date(2021, 4, 1),
-      parentId: -1,
-      type: 'MILESTONE',
-      complete: false
-    },
-    {
-      id: 7,
-      name: 'Ende Phase 1',
-      group: 'Projekt B',
-      start: new Date(2021, 5, 1),
-      parentId: -1,
-      type: 'MILESTONE',
-      complete: false
-    },
-    {
-      id: 8,
-      name: 'Beginn Rollout Phase 3',
-      group: 'Projekt B',
-      start: new Date(2021, 6, 1),
-      parentId: -1,
-      type: 'MILESTONE',
-      complete: false
-    },
-    {
-      id: 9,
-      name: 'Ende Phase 2',
-      group: 'Projekt B',
-      start: new Date(2021, 8, 1),
-      parentId: -1,
-      type: 'MILESTONE',
-      complete: false
-    },
-    {
-      id: 10,
-      name: 'Ende Phase 3',
-      group: 'Projekt B',
-      start: new Date(2021, 11, 1),
-      parentId: -1,
-      type: 'MILESTONE',
-      complete: false
-    },
-    {
-      id: 11,
-      name: 'Projektabschlussbericht',
-      group: 'Projekt B',
-      start: new Date(2022, 2, 1),
-      parentId: -1,
-      type: 'MILESTONE',
-      complete: false
-    },
-    {
-      id: 12,
-      name: 'Projektende',
-      group: 'Projekt B',
-      start: new Date(2022, 5, 1),
-      parentId: -1,
-      type: 'MILESTONE',
-      complete: false
-    }
-  ];
+  @Input() milestoneData = [];
 
-  @Input() taskData = [
-    {
-      id: 1,
-      name: 'Task 1',
-      group: 'Projekt A',
-      start: new Date(2020, 1, 1),
-      end: new Date(2020, 4, 4),
-      parentId: -1,
-      type: 'MILESTONE',
-      progress: 5
-    },
-    {
-      id: 2,
-      name: 'Task 2',
-      group: 'Projekt A',
-      start: new Date(2020, 5, 1),
-      end: new Date(2020, 5, 30),
-      parentId: -1,
-      type: 'MILESTONE',
-      progress: 20
-    },
-    {
-      id: 3,
-      name: 'Task 3',
-      group: 'Projekt B',
-      start: new Date(2020, 6, 8),
-      end: new Date(2020, 10, 15),
-      parentId: -1,
-      type: 'MILESTONE',
-      progress: 100
-    },
-    {
-      id: 4,
-      name: 'Task 4',
-      group: 'Projekt B',
-      start: new Date(2020, 9, 15),
-      end: new Date(2020, 11, 23),
-      parentId: -1,
-      type: 'MILESTONE',
-      progress: 50
-    },
-    {
-      id: 5,
-      name: 'Task 5',
-      group: 'Projekt C',
-      start: new Date(2020, 10, 23),
-      end: new Date(2020, 11, 31),
-      parentId: -1,
-      type: 'MILESTONE',
-      progress: 80
-    }
-  ];
+  @Input() taskData = [];
+
+  @Input() periodStartDate = new Date(2020, 0, 1);
+
+  @Input() periodEndDate = new Date(2020, 11, 31);
 
   // element for chart
   private svg;
@@ -193,8 +37,6 @@ export class ChartComponent implements OnInit, OnChanges {
 
   private padding = { top: 25, left: 75};
 
-  private periodStartDate = new Date(2020, 0, 1);
-  private periodEndDate = new Date(2020, 11, 31);
 
   private groupColors;
   private groups;
@@ -228,7 +70,7 @@ export class ChartComponent implements OnInit, OnChanges {
       : d3.timeMinute(date) < date ? d3.timeFormat(':%S')
         : d3.timeHour(date) < date ? d3.timeFormat('%H:%M')
           : d3.timeDay(date) < date ? d3.timeFormat('%H:%M')
-            : d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? d3.timeFormat('%d. %a') : d3.timeFormat('%d. %b'))
+            : d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? d3.timeFormat('%a, %d.') : d3.timeFormat('%d. %b'))
               : d3.timeYear(date) < date ? d3.timeFormat('%b')
                 : d3.timeFormat('%Y')
     )
@@ -261,7 +103,7 @@ export class ChartComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.data) {
+    if (changes.periodStartDate || changes.periodEndDate) {
       this.drawChart();
     }
   }
@@ -310,8 +152,7 @@ export class ChartComponent implements OnInit, OnChanges {
     this.svg = d3.select('figure#chart')
       .append('svg')
       .attr('width', '100%')
-      // .attr('min-height', '600px')
-      .attr('height', '100%')
+      .attr('height', '100vh')
       .attr('viewBox', '0 0 ' + this.viewBoxWidth + ' ' + this.viewBoxHeight);
   }
 
@@ -330,10 +171,6 @@ export class ChartComponent implements OnInit, OnChanges {
 
     const dataGroup = this.svg.append('g').attr('class', 'data-group');
     dataGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + this.barMargin) + ')');
-
-    //// for testing the xAxis
-    // const xAxisBottom = this.svg.append('g').attr('class', 'x-axis-bottom');
-    // xAxisBottom.attr('transform', 'translate(' + this.padding.left + ',250)');
   }
 
   private initializeAxes(): void {
@@ -341,22 +178,6 @@ export class ChartComponent implements OnInit, OnChanges {
     this.xAxis = d3.scaleTime()
       .range([0, this.viewBoxWidth - this.padding.left]);
     this.xAxis.domain([this.periodStartDate, this.periodEndDate]);
-
-    //// for testing
-    /*const xAxisBottom = this.svg.select('g.x-axis-bottom');
-    xAxisBottom.selectAll('line.xGridLines').remove();
-
-    xAxisBottom
-      // .attr('transform', 'translate(' + this.padding.left + ',250)')
-      .attr('stroke-width', 0.5)
-      .call(d3.axisBottom(this.xAxis)); // .tickFormat(this.formatDate));
-
-    xAxisBottom
-      // .attr('transform', 'translate(' + this.padding.left + ',250)')
-      .style('font-size', '6')
-      .style('stroke-dasharray', ('1,1'))
-      .attr('stroke-width', 0.1)
-      .call(d3.axisBottom(this.xAxis).ticks(10));*/
 
     // Set Y axis
     this.yAxis = d3.scaleBand()
