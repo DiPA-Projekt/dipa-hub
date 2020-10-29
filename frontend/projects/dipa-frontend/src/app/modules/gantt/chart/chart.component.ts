@@ -17,9 +17,9 @@ export class ChartComponent implements OnInit, OnChanges {
 
   @Input() taskData = [];
 
-  @Input() periodStartDate = new Date(2020, 0, 1);
+  @Input() periodStartDate;
 
-  @Input() periodEndDate = new Date(2020, 11, 31);
+  @Input() periodEndDate;
 
   // element for chart
   private svg;
@@ -110,6 +110,11 @@ export class ChartComponent implements OnInit, OnChanges {
 
   private drawChart(): void {
 
+    // TODO
+    if (this.groups == null) {
+      return;
+    }
+
     if (!this.svg) {
       this.createSvg();
       this.initializeSvgGraphElements();
@@ -143,8 +148,12 @@ export class ChartComponent implements OnInit, OnChanges {
     this.drawHeaderY();
     this.drawGroups();
 
-    this.drawTasks();
-    this.drawMilestones();
+    // draw only tasks which are visible
+    const tasksToShow = this.taskData.filter((e): any => !(e.start >= this.periodEndDate || e.end <= this.periodStartDate));
+    this.drawTasks(tasksToShow);
+    // draw only milestones which are visible
+    const milestonesToShow = this.milestoneData.filter((e): any => e.start >= this.periodStartDate && e.start <= this.periodEndDate);
+    this.drawMilestones(milestonesToShow);
   }
 
   private createSvg(): void {
@@ -154,6 +163,17 @@ export class ChartComponent implements OnInit, OnChanges {
       .attr('width', '100%')
       .attr('height', '100vh')
       .attr('viewBox', '0 0 ' + this.viewBoxWidth + ' ' + this.viewBoxHeight);
+
+    this.svg
+      .append('defs')
+      .append('mask')
+      .attr('id', 'dataMask')
+      .append('rect')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', (this.viewBoxWidth - this.padding.left))
+      .attr('height', (this.viewBoxHeight - this.padding.top))
+      .attr('fill', '#fff');
   }
 
   private createGroupColors(): void {
@@ -171,6 +191,9 @@ export class ChartComponent implements OnInit, OnChanges {
 
     const dataGroup = this.svg.append('g').attr('class', 'data-group');
     dataGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + this.barMargin) + ')');
+
+    dataGroup
+      .attr('mask', 'url(#dataMask)');
   }
 
   private initializeAxes(): void {
@@ -237,14 +260,14 @@ export class ChartComponent implements OnInit, OnChanges {
       .style('fill', '#fff');
 
     // current date indicator
-    xGroup.selectAll('line.yTicks').remove();
-    xGroup.selectAll('line.yTicks')
+    xGroup.selectAll('line.currentDate').remove();
+    xGroup.selectAll('line.currentDate')
       .data(this.xAxis.ticks())
       .enter()
       .append('line')
-      .attr('class', 'yTicks')  // TODO: ??
+      .attr('class', 'currentDate')
       .attr('x1', 0)
-      .attr('x2', this.xAxis(new Date()))
+      .attr('x2', Math.min(this.xAxis(new Date()), this.xAxis.range()[1]))
       .attr('y1', this.barHeight + this.barMargin)
       .attr('y2', this.barHeight + this.barMargin)
       .attr('stroke-width', 6)
@@ -308,14 +331,14 @@ export class ChartComponent implements OnInit, OnChanges {
       .attr('opacity', 0.2);
   }
 
-  private drawMilestones(): void {
+  private drawMilestones(milestonesToShow): void {
 
     const dataGroup = this.svg.select('g.data-group');
 
     // milestones
     dataGroup.selectAll('path.milestone').remove();
     dataGroup.selectAll('dot.milestone')
-      .data(this.milestoneData)
+      .data(milestonesToShow)
       .enter()
       .append('path')
       .attr('class', 'milestone')
@@ -349,7 +372,7 @@ export class ChartComponent implements OnInit, OnChanges {
     // milestone labels
     dataGroup.selectAll('text.milestoneLabel').remove();
     dataGroup.selectAll('text.milestoneLabel')
-      .data(this.milestoneData)
+      .data(milestonesToShow)
       .enter()
       .append('text')
       .text(d => d.name)
@@ -360,14 +383,14 @@ export class ChartComponent implements OnInit, OnChanges {
       .style('fill', d => d3.rgb(this.groupColors(d.group)).darker());
   }
 
-  private drawTasks(): void {
+  private drawTasks(tasksToShow): void {
 
     const dataGroup = this.svg.select('g.data-group');
 
     // tasks
     dataGroup.selectAll('rect.bar').remove();
     dataGroup.selectAll('rect.bar')
-      .data(this.taskData)
+      .data(tasksToShow)
       .enter()
       .append('rect')
       .attr('class', 'bar')
@@ -402,16 +425,12 @@ export class ChartComponent implements OnInit, OnChanges {
     // task labels
     dataGroup.selectAll('text.taskLabel').remove();
     dataGroup.selectAll('text.taskLabel')
-      .data(this.taskData)
+      .data(tasksToShow)
       .enter()
       .append('text')
       .text(d => d.name)
       .attr('class', 'taskLabel')
-      .attr('x', d =>
-        (this.xAxis(new Date(d.end))
-          - this.xAxis(new Date(d.start))) / 2
-        + this.xAxis(new Date(d.start)))
-
+      .attr('x', d => this.calculateTaskLabelPosition(d))
       .attr('y', (d, i) => (this.barHeightWithMargin) * i
         + (this.barHeight + this.barMargin) / 2)
       .attr('text-anchor', 'middle')
@@ -441,4 +460,15 @@ export class ChartComponent implements OnInit, OnChanges {
     }
   }
 
+  // get label position of a task depending on chart range so it is displayed centered on the visible part of the bar
+  private calculateTaskLabelPosition(d: any): number {
+
+    const xAxisStart = this.xAxis(d.start);
+    const xAxisEnd = this.xAxis(d.end);
+
+    const startPosition = Math.max(xAxisStart, this.xAxis.range()[0]);
+    const endPosition = Math.min(xAxisEnd, this.xAxis.range()[1]);
+
+    return (endPosition - startPosition) / 2 + startPosition;
+  }
 }
