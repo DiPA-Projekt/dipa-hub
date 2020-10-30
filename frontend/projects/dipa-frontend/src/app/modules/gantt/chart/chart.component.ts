@@ -6,7 +6,7 @@ import * as d3 from 'd3';
   selector: 'app-chart',
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.scss'],
-  encapsulation: ViewEncapsulation.Emulated
+  encapsulation: ViewEncapsulation.None
 })
 
 export class ChartComponent implements OnInit, OnChanges {
@@ -92,14 +92,7 @@ export class ChartComponent implements OnInit, OnChanges {
 
     this.tooltip = d3.select('figure#chart')
       .append('div')
-      .attr('class', 'tooltip')
-      .style('display', 'none')
-      .style('position', 'absolute')
-      .style('color', '#fff')
-      .style('background-color', 'rgba(0, 0, 0, 0.78)')
-      .style('padding', '0.5rem')
-      .style('border-radius', '0.25rem')
-      .style('opacity', 0);
+      .attr('class', 'tooltip');
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -118,10 +111,6 @@ export class ChartComponent implements OnInit, OnChanges {
     if (!this.svg) {
       this.createSvg();
       this.initializeSvgGraphElements();
-
-      this.svg.append('div')
-        .attr('class', 'tooltip')
-        .style('opacity', 0);
 
       d3.timeFormatDefaultLocale({
         // @ts-ignore
@@ -172,8 +161,7 @@ export class ChartComponent implements OnInit, OnChanges {
       .attr('x', 0)
       .attr('y', 0)
       .attr('width', (this.viewBoxWidth - this.padding.left))
-      .attr('height', (this.viewBoxHeight - this.padding.top))
-      .attr('fill', '#fff');
+      .attr('height', (this.viewBoxHeight - this.padding.top));
   }
 
   private createGroupColors(): void {
@@ -231,20 +219,14 @@ export class ChartComponent implements OnInit, OnChanges {
     const xGroup = this.svg.select('g.x-group');
 
     // x-axis header background
-    xGroup.selectAll('line.headerX').remove();
-    xGroup.selectAll('rect.headerX')
-      .data(this.taskData)
-      .enter()
+    xGroup.select('rect.headerX').remove();
+    xGroup
       .append('rect')
       .attr('class', 'headerX')
       .attr('x', 0)
       .attr('y', 0)
       .attr('width', (this.viewBoxWidth - this.padding.left))
-      .attr('height', (this.barHeight + this.barMargin))
-      .attr('stroke', 'none')
-      .attr('fill', '#444')
-      .attr('rx', 3)
-      .attr('opacity', 0.8);
+      .attr('height', (this.barHeight + this.barMargin));
 
     // x-axis labels
     xGroup.selectAll('text.xAxisLabel').remove();
@@ -253,25 +235,19 @@ export class ChartComponent implements OnInit, OnChanges {
       .enter()
       .append('text')
       .attr('class', 'xAxisLabel')
-      .text(d => this.formatDate(new Date(d)))
+      .text(d => this.formatDate(d))
       .attr('x', d => this.xAxis(d) + 4)
-      .attr('y', 18)
-      .attr('font-size', 12)
-      .style('fill', '#fff');
+      .attr('y', 18);
 
     // current date indicator
-    xGroup.selectAll('line.currentDate').remove();
-    xGroup.selectAll('line.currentDate')
-      .data(this.xAxis.ticks())
-      .enter()
+    xGroup.select('line.currentDate').remove();
+    xGroup
       .append('line')
       .attr('class', 'currentDate')
       .attr('x1', 0)
       .attr('x2', Math.min(this.xAxis(new Date()), this.xAxis.range()[1]))
       .attr('y1', this.barHeight + this.barMargin)
-      .attr('y2', this.barHeight + this.barMargin)
-      .attr('stroke-width', 6)
-      .style('stroke', '#f00');
+      .attr('y2', this.barHeight + this.barMargin);
   }
 
   private drawHeaderY(): void {
@@ -301,7 +277,6 @@ export class ChartComponent implements OnInit, OnChanges {
         return d[1] * (this.barHeightWithMargin) / 2;
       }
     })
-    .attr('text-anchor', 'start')
     .attr('fill', d => {
       for (const item of this.groups) {
         if (d[0] === item){
@@ -316,19 +291,17 @@ export class ChartComponent implements OnInit, OnChanges {
     const yGroup = this.svg.select('g.y-group');
 
     // task group background color
-    yGroup.selectAll('rect.group').remove();
-    yGroup.selectAll('rect.group')
+    yGroup.selectAll('rect.groupBackground').remove();
+    yGroup.selectAll('rect.groupBackground')
       .data(this.taskData)
       .enter()
       .append('rect')
-      .attr('class', 'group')
+      .attr('class', 'groupBackground')
       .attr('x', 0)
       .attr('y', (d, i) => (this.barHeightWithMargin) * i - this.barMargin)
       .attr('width', this.width)
       .attr('height', (this.barHeightWithMargin))
-      .attr('stroke', 'none')
-      .attr('fill', d => this.groupColors(d.group))
-      .attr('opacity', 0.2);
+      .attr('fill', d => this.groupColors(d.group));
   }
 
   private drawMilestones(milestonesToShow): void {
@@ -342,10 +315,9 @@ export class ChartComponent implements OnInit, OnChanges {
       .enter()
       .append('path')
       .attr('class', 'milestone')
-      .attr('transform', (d) => 'translate(' + this.xAxis(new Date(d.start)) + ','
+      .attr('transform', (d) => 'translate(' + this.xAxis(d.start) + ','
         + (this.yAxis(d.group) + 50) + ') scale(1.5 1)')
       .attr('d', d3.symbol().type(d3.symbolDiamond))
-      .attr('width', '50')
       .style('fill', d => this.groupColors(d.group))
       .style('stroke', d => d3.rgb(this.groupColors(d.group)).darker())
       .on('mouseover', (event, d) => {
@@ -362,12 +334,12 @@ export class ChartComponent implements OnInit, OnChanges {
         .duration(500)
         .style('opacity', 1);
     })
-      .on('mouseout', () => {
-        this.tooltip
-          .transition()
-          .duration(500)
-          .style('opacity', 0);
-      });
+    .on('mouseout', () => {
+      this.tooltip
+        .transition()
+        .duration(500)
+        .style('opacity', 0);
+    });
 
     // milestone labels
     dataGroup.selectAll('text.milestoneLabel').remove();
@@ -377,9 +349,8 @@ export class ChartComponent implements OnInit, OnChanges {
       .append('text')
       .text(d => d.name)
       .attr('class', 'milestoneLabel')
-      .attr('x', d => this.xAxis(new Date(d.start)) + 10)
+      .attr('x', d => this.xAxis(d.start) + 10)
       .attr('y', d => this.yAxis(d.group) + 55)
-      .attr('font-size', 12)
       .style('fill', d => d3.rgb(this.groupColors(d.group)).darker());
   }
 
@@ -388,29 +359,33 @@ export class ChartComponent implements OnInit, OnChanges {
     const dataGroup = this.svg.select('g.data-group');
 
     // tasks
-    dataGroup.selectAll('rect.bar').remove();
-    dataGroup.selectAll('rect.bar')
+    dataGroup.selectAll('rect.task').remove();
+    const taskGroup = dataGroup.selectAll('rect.task')
       .data(tasksToShow)
       .enter()
+      .append('g');
+
+    taskGroup
       .append('rect')
-      .attr('class', 'bar')
+      .attr('class', 'task')
       .style('fill', d => this.groupColors(d.group))
       .style('stroke', d => d3.rgb(this.groupColors(d.group)).darker())
-      .attr('rx', 3)
-      .attr('x', d => this.xAxis(new Date(d.start)))
+      .attr('x', d => this.xAxis(d.start))
       .attr('width', d => this.calculateBarWidth(d))
       .attr('y', (d, i) => (this.barHeightWithMargin) * i)
-      .attr('height', this.barHeight)
+      .attr('height', this.barHeight);
+
+    taskGroup
       .on('mouseover', (event, d) => {
         this.tooltip
           .style('top', (event.layerY + 15) + 'px')
           .style('left', (event.layerX) + 'px')
           .style('display', 'block')
           .html(`${d.name}<br>`
-                + `Projekt: ${d.group}<br>`
-                + `${new Date(d.start).toLocaleDateString('de-DE', this.dateOptions)}`
-                + ` - ${new Date(d.end).toLocaleDateString('de-DE', this.dateOptions)}<br>`
-                + `Fortschritt: ${d.progress}<br>`)
+            + `Projekt: ${d.group}<br>`
+            + `${new Date(d.start).toLocaleDateString('de-DE', this.dateOptions)}`
+            + ` - ${new Date(d.end).toLocaleDateString('de-DE', this.dateOptions)}<br>`
+            + `Fortschritt: ${d.progress}<br>`)
           .transition()
           .duration(500)
           .style('opacity', 1);
@@ -433,14 +408,11 @@ export class ChartComponent implements OnInit, OnChanges {
       .attr('x', d => this.calculateTaskLabelPosition(d))
       .attr('y', (d, i) => (this.barHeightWithMargin) * i
         + (this.barHeight + this.barMargin) / 2)
-      .attr('text-anchor', 'middle')
-      .attr('font-size', 12)
-      .attr('text-height', this.barHeight)
-      .style('fill', '#fff');
+      .attr('text-height', this.barHeight);
   }
 
   private calculateBarWidth(task: any): number {
-    return this.xAxis(new Date(task.end)) - this.xAxis(new Date(task.start));
+    return this.xAxis(task.end) - this.xAxis(task.start);
   }
 
 

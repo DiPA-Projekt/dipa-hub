@@ -148,7 +148,7 @@ export class GanttComponent implements OnInit, AfterContentInit {
         start: new Date(2020, 1, 1),
         end: new Date(2020, 4, 4),
         parentId: -1,
-        type: 'MILESTONE',
+        type: 'TASK',
         progress: 5
       },
       {
@@ -158,7 +158,7 @@ export class GanttComponent implements OnInit, AfterContentInit {
         start: new Date(2020, 5, 1),
         end: new Date(2020, 5, 30),
         parentId: -1,
-        type: 'MILESTONE',
+        type: 'TASK',
         progress: 20
       },
       {
@@ -168,7 +168,7 @@ export class GanttComponent implements OnInit, AfterContentInit {
         start: new Date(2020, 6, 8),
         end: new Date(2020, 10, 15),
         parentId: -1,
-        type: 'MILESTONE',
+        type: 'TASK',
         progress: 100
       },
       {
@@ -178,7 +178,7 @@ export class GanttComponent implements OnInit, AfterContentInit {
         start: new Date(2020, 9, 15),
         end: new Date(2020, 11, 23),
         parentId: -1,
-        type: 'MILESTONE',
+        type: 'TASK',
         progress: 50
       },
       {
@@ -188,7 +188,7 @@ export class GanttComponent implements OnInit, AfterContentInit {
         start: new Date(2020, 10, 23),
         end: new Date(2020, 11, 31),
         parentId: -1,
-        type: 'MILESTONE',
+        type: 'TASK',
         progress: 80
       }
     ];
