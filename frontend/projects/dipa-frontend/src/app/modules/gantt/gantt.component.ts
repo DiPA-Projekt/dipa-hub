@@ -23,8 +23,9 @@ export class GanttComponent implements OnInit, AfterContentInit {
   periodEndDate = new Date(2020, 11, 31);
 
   constructor(public ganttControlsService: GanttControlsService,
-              private timelineService: TimelineService) {
+              private timelineService: TimelineService) {  }
 
+  ngOnInit(): void {
     this.timelineService.getTaskData()
     .subscribe((data) => {
       this.taskData = data;
@@ -34,9 +35,7 @@ export class GanttComponent implements OnInit, AfterContentInit {
     .subscribe((data) => {
       this.milestoneData = data;
     });
-  }
-
-  ngOnInit(): void {
+    
     this.dateChange.emit();
   }
 
