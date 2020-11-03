@@ -22,8 +22,12 @@ export class GanttComponent implements OnInit, AfterContentInit {
   periodStartDate = new Date(2020, 0, 1);
   periodEndDate = new Date(2020, 11, 31);
 
+  periodStartDateArray = [];
+  periodEndDateArray = [];
+  
   constructor(public ganttControlsService: GanttControlsService,
               private timelineService: TimelineService) {  }
+
 
   ngOnInit(): void {
     this.timelineService.getTaskData()
@@ -35,7 +39,22 @@ export class GanttComponent implements OnInit, AfterContentInit {
     .subscribe((data) => {
       this.milestoneData = data;
     });
-    
+
+    for(let i=0; i<this.milestoneData.length; i++) {
+      this.periodStartDateArray.push(this.milestoneData[i].start);
+    }
+    for(let i=0; i<this.taskData.length; i++) {
+      this.periodStartDateArray.push(this.taskData[i].start);
+      this.periodEndDateArray.push(this.taskData[i].end);
+    }
+
+    var earliest = new Date(Math.min.apply(null,this.periodStartDateArray));
+    var last = new Date(Math.max.apply(null,this.periodEndDateArray));
+
+    this.periodStartDate = earliest; 
+    this.periodEndDate = last; 
+
+        
     this.dateChange.emit();
   }
 
