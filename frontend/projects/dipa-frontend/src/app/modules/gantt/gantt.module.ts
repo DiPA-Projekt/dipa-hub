@@ -12,7 +12,7 @@ import {ChartComponent} from './chart/chart.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
-
+import {MatInputModule} from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -29,7 +29,8 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
     MatTableModule,
     MatFormFieldModule,
     MatDatepickerModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatInputModule
   ]
 })
 export class GanttModule { }

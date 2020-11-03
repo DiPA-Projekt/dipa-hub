@@ -1,71 +1,80 @@
-.tooltip {
-  background-color: rgba(0, 0, 0, 0.54);
-}
+#gantt {
 
-.container {
+  .tooltip {
+    background-color: rgba(0, 0, 0, 0.78);
+    color: #fff;
+    display: none;
+    position: absolute;
+    opacity: 0;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+  }
 
-  #gantt {
-    height: 70vh;
-    min-height: 400px;
+  figure {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    height: 100%;
     width: 100%;
-    position: relative;
 
-    mat-select {
-      position: absolute;
-      top: 0;
-      right: 0px;
-      width: 20%;
-      padding: 5px;
-      font-size: 1rem;
-      font-family: 'Roboto';
-      z-index: 100;
-    }
+    svg {
+      defs {
+        mask#dataMask {
+          rect {
+            fill: #fff;
+          }
+        }
+      }
 
-    figure {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100%;
-      width: 100%;
-    }
-    .half {
-      height: 50%;
+      g.x-group {
+        rect.headerX {
+          fill: #444;
+          opacity: 0.8;
+          rx: 3;
+        }
+
+        text.xAxisLabel {
+          font-size: 12px;
+          fill: #fff;
+        }
+
+        line.currentDate {
+          stroke: #f00;
+          stroke-width: 6;
+        }
+      }
+
+      g.y-group {
+        text.groupTitle {
+          text-anchor: start;
+        }
+
+        rect.groupBackground {
+          opacity: 0.2;
+        }
+      }
+
+      g.data-group {
+        dot.milestone {
+          width: 50px;
+        }
+
+        text.milestoneLabel {
+          font-size: 12px;
+        }
+
+        rect.task {
+          rx: 3;
+        }
+
+        text.taskLabel {
+          text-anchor: middle;
+          font-size: 12px;
+          fill: #fff;
+          pointer-events: none;
+        }
+      }
     }
   }
+
 }
-
-
-mat-option ::ng-deep .city {
-  font-size: 1rem;
-  font-family: 'Roboto';
-}
-
-@media screen and (max-width: 767px) {
-  .container {
-    .title {
-      font-size: 1.5rem;
-      color: red;
-    }
-    text.milestoneLabel {
-      fill: none !important;
-    }
-  }
-}
-
-@media screen and (max-width: 414px) {
-  .container {
-    .title {
-      font-size: 1rem;
-    }
-  }
-}
-
-span.mat-button-toggle-label-content{
-  line-height: 36px !important;
-}
-
-
