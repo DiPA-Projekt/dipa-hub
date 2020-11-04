@@ -64,6 +64,22 @@ export class ChartComponent implements OnInit, OnChanges {
     return ChartComponent.getCounts(arr)[word] || 0;
   }
 
+  // get label position of a task depending on chart range so it is displayed centered on the visible part of the bar
+  private static calculateTaskLabelPosition(d: any, xAxis): number {
+
+    const xAxisStart = xAxis(d.start);
+    const xAxisEnd = xAxis(d.end);
+
+    const startPosition = Math.max(xAxisStart, xAxis.range()[0]);
+    const endPosition = Math.min(xAxisEnd, xAxis.range()[1]);
+
+    return (endPosition - startPosition) / 2;
+  }
+
+  private static calculateBarWidth(task: any, xAxis): number {
+    return xAxis(task.end) - xAxis(task.start);
+  }
+
   // Define filter conditions
   formatDate(date): any {
     return (d3.timeSecond(date) < date ? d3.timeFormat('.%L')
@@ -129,20 +145,23 @@ export class ChartComponent implements OnInit, OnChanges {
       });
     }
 
-    this.initializeAxes();
+    const xAxis = this.initializeXAxis();
+    const yAxis = this.initializeYAxis();
+    // this.initializeTestScale();
 
-    this.drawHeaderX();
-    this.drawVerticalGridLines();
+    this.drawHeaderX(xAxis);
+    this.drawVerticalGridLines(xAxis);
 
     this.drawHeaderY();
     this.drawGroups();
 
     // draw only tasks which are visible
-    const tasksToShow = this.taskData.filter((e): any => !(e.start >= this.periodEndDate || e.end <= this.periodStartDate));
-    this.drawTasks(tasksToShow);
+    // TODO: but keep the distance between
+    const tasksToShow = this.taskData; // .filter((e): any => !(e.start >= this.periodEndDate || e.end <= this.periodStartDate));
+    this.drawTasks(tasksToShow, xAxis);
     // draw only milestones which are visible
-    const milestonesToShow = this.milestoneData.filter((e): any => e.start >= this.periodStartDate && e.start <= this.periodEndDate);
-    this.drawMilestones(milestonesToShow);
+    const milestonesToShow = this.milestoneData; // .filter((e): any => e.start >= this.periodStartDate && e.start <= this.periodEndDate);
+    this.drawMilestones(milestonesToShow, xAxis, yAxis);
   }
 
   private createSvg(): void {
@@ -177,44 +196,111 @@ export class ChartComponent implements OnInit, OnChanges {
     const yGroup = this.svg.append('g').attr('class', 'y-group');
     yGroup.attr('transform', 'translate(0,' + (this.padding.top + this.barMargin) + ')');
 
+    const zoom = d3.zoom()
+      .scaleExtent([0.1, 30])
+      .on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
+
+        const xAxisRescaled = event.transform.rescaleX(this.xAxis);
+
+        // for testing the xAxis
+        /*
+        const xAxisB = this.svg.select('g.x-axis-bottom');
+        xAxisB.call(d3.axisBottom(xAxisRescaled));
+        */
+
+        this.periodStartDate = xAxisRescaled.invert(xAxisRescaled.range()[0]);
+        this.periodEndDate = xAxisRescaled.invert(xAxisRescaled.range()[1]);
+
+        this.updateChart(event);
+      });
+
+    this.svg.append('rect')
+      .attr('width', this.viewBoxWidth)
+      .attr('height', this.viewBoxHeight)
+      .style('fill', 'none')
+      .style('pointer-events', 'all')
+      .attr('transform', 'translate(' + this.padding.left + ',' + this.padding.top + ')')
+      .call(zoom);
+
     const dataGroup = this.svg.append('g').attr('class', 'data-group');
     dataGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + this.barMargin) + ')');
 
+
     dataGroup
       .attr('mask', 'url(#dataMask)');
+
+    // for testing the xAxis
+    /*
+    const xAxisBottom = this.svg.append('g').attr('class', 'x-axis-bottom');
+    xAxisBottom.attr('transform', 'translate(' + this.padding.left + ',250)');
+    */
   }
 
-  private initializeAxes(): void {
-    // Set X axis
-    this.xAxis = d3.scaleTime()
-      .range([0, this.viewBoxWidth - this.padding.left]);
-    this.xAxis.domain([this.periodStartDate, this.periodEndDate]);
+  updateChart(event): void {
 
-    // Set Y axis
-    this.yAxis = d3.scaleBand()
+    const newScaleX = event.transform.rescaleX(this.xAxis);
+
+    this.drawHeaderX(newScaleX);
+    this.drawVerticalGridLines(newScaleX);
+
+    const tasksToShow = this.taskData; // .filter((e): any => !(e.start >= this.periodEndDate || e.end <= this.periodStartDate));
+    this.drawTasks(tasksToShow, newScaleX);
+
+    const milestonesToShow = this.milestoneData; // .filter((e): any => e.start >= this.periodStartDate && e.start <= this.periodEndDate);
+    this.drawMilestones(milestonesToShow, newScaleX, this.yAxis);
+  }
+
+  // Set X axis
+  private initializeXAxis(): any {
+    return this.xAxis = d3.scaleTime()
+      .domain([this.periodStartDate, this.periodEndDate])
+      .range([0, this.viewBoxWidth - this.padding.left]);
+  }
+
+  // Set Y axis
+  private initializeYAxis(): any {
+    return this.yAxis = d3.scaleBand()
       .domain(this.taskData.map(d => d.group))
       .range([0, this.viewBoxHeight]);
   }
 
-  private drawVerticalGridLines(): void {
+  /*
+  private initializeTestScale(): void {
+    // for testing
+    const xAxisBottom = this.svg.select('g.x-axis-bottom');
+    xAxisBottom.selectAll('line.xGridLines').remove();
+    xAxisBottom
+      // .attr('transform', 'translate(' + this.padding.left + ',250)')
+      .attr('stroke-width', 0.5)
+      .call(d3.axisBottom(this.xAxis)); // .tickFormat(this.formatDate));
+    xAxisBottom
+      // .attr('transform', 'translate(' + this.padding.left + ',250)')
+      .style('font-size', '6')
+      .style('stroke-dasharray', ('1,1'))
+      .attr('stroke-width', 0.1)
+      .call(d3.axisBottom(this.xAxis).ticks(10));
+  }
+  */
+
+  private drawVerticalGridLines(xAxis): void {
 
     const xGroup = this.svg.select('g.x-group');
 
     // vertical grid lines
     xGroup.selectAll('line.xGridLines').remove();
     xGroup.selectAll('line.xGridLines')
-      .data(this.xAxis.ticks())
+      .data(xAxis.ticks())
       .enter()
       .append('line')
       .attr('class', 'xGridLines')
-      .attr('x1', d => this.xAxis(d))
-      .attr('x2', d => this.xAxis(d))
+      .attr('x1', d => xAxis(d))
+      .attr('x2', d => xAxis(d))
       .attr('y1', 0)
       .attr('y2', this.viewBoxHeight)  // TODO
       .style('stroke', '#eee');
   }
 
-  private drawHeaderX(): void {
+  private drawHeaderX(xAxis): void {
 
     const xGroup = this.svg.select('g.x-group');
 
@@ -231,12 +317,12 @@ export class ChartComponent implements OnInit, OnChanges {
     // x-axis labels
     xGroup.selectAll('text.xAxisLabel').remove();
     xGroup.selectAll('text')
-      .data(this.xAxis.ticks())
+      .data(xAxis.ticks())
       .enter()
       .append('text')
       .attr('class', 'xAxisLabel')
       .text(d => this.formatDate(d))
-      .attr('x', d => this.xAxis(d) + 4)
+      .attr('x', d => xAxis(d) + 4)
       .attr('y', 18);
 
     // current date indicator
@@ -245,7 +331,7 @@ export class ChartComponent implements OnInit, OnChanges {
       .append('line')
       .attr('class', 'currentDate')
       .attr('x1', 0)
-      .attr('x2', Math.min(this.xAxis(new Date()), this.xAxis.range()[1]))
+      .attr('x2', Math.min(Math.max(xAxis(new Date()), 0), xAxis.range()[1]))
       .attr('y1', this.barHeight + this.barMargin)
       .attr('y2', this.barHeight + this.barMargin);
   }
@@ -304,22 +390,52 @@ export class ChartComponent implements OnInit, OnChanges {
       .attr('fill', d => this.groupColors(d.group));
   }
 
-  private drawMilestones(milestonesToShow): void {
+  private drawMilestones(milestonesToShow, xAxis, yAxis): void {
 
     const dataGroup = this.svg.select('g.data-group');
 
+    const drag = d3.drag()
+    .on('drag', (event: d3.D3DragEvent<any, any, any>) => {
+
+      console.log(event);
+
+      // milestones
+      const eventMilestone = dataGroup.select('#milestoneEntry_' + event.subject.id);
+
+      // const oldTranslate = d3.transform(eventMilestone.attr('transform')).translate;
+
+      // TODO: get the y-value in other way
+      const xValue = eventMilestone.attr('transform').split('(')[1].split(',')[0];
+      const yValue = eventMilestone.attr('transform').split('(')[1].split(',')[1].split(')')[0];
+
+      const xValueNew = (+xValue + event.dx);
+
+      eventMilestone.attr('transform', 'translate(' + xValueNew + ',' + yValue + ')');
+
+      // TODO: auslagern
+      event.subject.start = xAxis.invert(xValueNew);
+    });
+
     // milestones
-    dataGroup.selectAll('path.milestone').remove();
-    dataGroup.selectAll('dot.milestone')
+    dataGroup.selectAll('g.milestoneEntry').remove();
+    const milestone = dataGroup.selectAll('g.milestoneEntry')
       .data(milestonesToShow)
       .enter()
+      .append('g')
+      .attr('class', 'milestoneEntry')
+      .attr('id', (d) => 'milestoneEntry_' + d.id)
+      .attr('transform', (d) => 'translate(' + xAxis(d.start) + ',' + (yAxis(d.group) + 50) + ')')
+      .call(drag);
+
+    milestone
       .append('path')
       .attr('class', 'milestone')
-      .attr('transform', (d) => 'translate(' + this.xAxis(d.start) + ','
-        + (this.yAxis(d.group) + 50) + ') scale(1.5 1)')
+      .attr('transform', 'scale(1.5 1)')
       .attr('d', d3.symbol().type(d3.symbolDiamond))
       .style('fill', d => this.groupColors(d.group))
-      .style('stroke', d => d3.rgb(this.groupColors(d.group)).darker())
+      .style('stroke', d => d3.rgb(this.groupColors(d.group)).darker());
+
+    milestone
       .on('mouseover', (event, d) => {
         this.tooltip
         .style('top', (event.layerY + 15) + 'px')
@@ -342,41 +458,182 @@ export class ChartComponent implements OnInit, OnChanges {
     });
 
     // milestone labels
-    dataGroup.selectAll('text.milestoneLabel').remove();
+    /*dataGroup.selectAll('text.milestoneLabel').remove();
     dataGroup.selectAll('text.milestoneLabel')
       .data(milestonesToShow)
-      .enter()
+      .enter()*/
+    milestone
       .append('text')
       .text(d => d.name)
       .attr('class', 'milestoneLabel')
-      .attr('x', d => this.xAxis(d.start) + 10)
-      .attr('y', d => this.yAxis(d.group) + 55)
+      .attr('x', 10)
+      .attr('y', 5)
       .style('fill', d => d3.rgb(this.groupColors(d.group)).darker());
   }
 
-  private drawTasks(tasksToShow): void {
+  private drawTasks(tasksToShow, xAxis): void {
 
     const dataGroup = this.svg.select('g.data-group');
 
+    const drag = d3.drag()
+    .on('drag', (event: d3.D3DragEvent<any, any, any>) => {
+
+      console.log(event);
+
+      // tasks
+      const eventTask = dataGroup.select('#taskEntry_' + event.subject.id);
+
+      // const oldTranslate = d3.transform(eventTask.attr('transform')).translate;
+
+      // TODO: get the y-value in other way
+      const xValue = eventTask.attr('transform').split('(')[1].split(',')[0];
+      const yValue = eventTask.attr('transform').split('(')[1].split(',')[1].split(')')[0];
+
+      const xValueStartNew = (+xValue + event.dx);
+      const xValueEndNew = xValueStartNew + ChartComponent.calculateBarWidth(event.subject, xAxis);
+
+      eventTask.attr('transform', () => 'translate(' + xValueStartNew + ',' + yValue + ')');
+
+      // TODO: auslagern
+      event.subject.start = xAxis.invert(xValueStartNew);
+      event.subject.end = xAxis.invert(xValueEndNew);
+    });
+
+    const dragRight = d3.drag()
+    .on('drag', (event: d3.D3DragEvent<any, any, any>) => {
+
+      // task
+      const eventTask = dataGroup.select('#taskEntry_' + event.subject.id);
+
+      // const oldTranslate = d3.transform(eventTask.attr('transform')).translate;
+
+      // TODO: get the y-value in other way
+
+      const width = eventTask.select('rect.task').attr('width');
+
+      const xValue = eventTask.attr('transform').split('(')[1].split(',')[0];
+      /* const yValue = eventTask.attr('transform').split('(')[1].split(',')[1].split(')')[0];*/
+
+      // TODO: keine negativen Werte erlauben
+      const widthNew = (+width + event.dx);
+
+      eventTask.select('rect.task').attr('width', widthNew);
+
+      // eventTask.attr('transform', 'translate(' + xValueNew + ',' + yValue + ')');
+
+      // TODO: auslagern
+      event.subject.end = xAxis.invert(+xValue + widthNew);
+
+      ////////
+
+      const xValueDragBarRight = eventTask.select('rect.dragBarRight').attr('x');
+      const xValueDragBarRightNew = (+xValueDragBarRight + event.dx);
+      eventTask.select('rect.dragBarRight').attr('x', xValueDragBarRightNew);
+    });
+
+    const dragLeft = d3.drag()
+    .on('drag', (event: d3.D3DragEvent<any, any, any>) => {
+
+      // task
+      const eventTask = dataGroup.select('#taskEntry_' + event.subject.id);
+
+      // const oldTranslate = d3.transform(eventTask.attr('transform')).translate;
+
+      // TODO: get the y-value in other way
+
+      const oldX = eventTask.select('rect.task').attr('x');
+
+      const width = eventTask.select('rect.task').attr('width');
+
+      const xValue = eventTask.attr('transform').split('(')[1].split(',')[0];
+      // const yValue = eventTask.attr('transform').split('(')[1].split(',')[1].split(')')[0];
+
+      // TODO: keine negativen Werte erlauben
+      const widthNew = (+width - event.dx);
+
+      const xValueNew = (parseFloat(xValue) + event.dx);
+
+      // console.log('old xValue: ' + xValue + ', width: ' + width + ', sum: ' + (parseFloat(xValue) + parseFloat(width)));
+      // console.log('new xValue: ' + xValueNew + ', width: ' + widthNew + ', sum: ' + (xValueNew + widthNew));
+
+      console.log(event.dx);
+
+      // eventTask.attr('transform', 'translate(' + xValueNew + ',' + yValue + ')');
+
+      eventTask.attr('x', oldX + event.dx);
+
+      // TODO: auslagern
+      event.subject.start = xAxis.invert(xValueNew);
+
+      eventTask.select('rect.task').attr('width', widthNew);
+
+      ////////
+
+      const xValueDragBarRight = eventTask.select('rect.dragBarRight').attr('x');
+      const xValueDragBarRightNew = (+xValueDragBarRight - event.dx);
+      eventTask.select('rect.dragBarRight').attr('x', xValueDragBarRightNew);
+
+    });
+
+    const dragBarWidth = 5;
+
     // tasks
-    dataGroup.selectAll('rect.task').remove();
-    const taskGroup = dataGroup.selectAll('rect.task')
+    dataGroup.selectAll('g.taskEntry').remove();
+    const taskGroup = dataGroup.selectAll('g.taskEntry')
       .data(tasksToShow)
       .enter()
-      .append('g');
+      .append('g')
+      .attr('class', 'taskEntry')
+      .attr('id', (d) => 'taskEntry_' + d.id)
+      .attr('transform', (d, i) => 'translate(' + xAxis(d.start) + ',' + (this.barHeightWithMargin * i) + ')')
+      .call(drag);
 
     taskGroup
       .append('rect')
       .attr('class', 'task')
       .style('fill', d => this.groupColors(d.group))
       .style('stroke', d => d3.rgb(this.groupColors(d.group)).darker())
-      .attr('x', d => this.xAxis(d.start))
-      .attr('width', d => this.calculateBarWidth(d))
-      .attr('y', (d, i) => (this.barHeightWithMargin) * i)
+      .attr('x', 0)
+      .attr('width', d => ChartComponent.calculateBarWidth(d, xAxis))
+      .attr('y', 0)
       .attr('height', this.barHeight);
 
     taskGroup
+      .append('rect')
+      .attr('x', - (dragBarWidth / 2) - 7)
+      .attr('y', 0)
+      .attr('height', this.barHeight)
+      .attr('class', 'dragBarLeft')
+      .attr('width', dragBarWidth)
+      .attr('fill', d => this.groupColors(d.group))
+      .attr('stroke', d => d3.rgb(this.groupColors(d.group)).darker())
+      .call(dragLeft);
+
+    taskGroup
+      .append('rect')
+      .attr('x', d => ChartComponent.calculateBarWidth(d, xAxis) + 5)
+      .attr('y', 0)
+      .attr('class', 'dragBarRight')
+      .attr('height', this.barHeight)
+      .attr('width', dragBarWidth)
+      .attr('fill', d => this.groupColors(d.group))
+      .attr('stroke', d => d3.rgb(this.groupColors(d.group)).darker())
+      .call(dragRight);
+
+    taskGroup
       .on('mouseover', (event, d) => {
+
+        const eventTask = dataGroup.select('#taskEntry_' + d.id);
+        eventTask.select('rect.dragBarLeft')
+          .transition()
+          .duration(500)
+          .style('opacity', 1);
+
+        eventTask.select('rect.dragBarRight')
+          .transition()
+          .duration(500)
+          .style('opacity', 1);
+
         this.tooltip
           .style('top', (event.layerY + 15) + 'px')
           .style('left', (event.layerX) + 'px')
@@ -390,7 +647,19 @@ export class ChartComponent implements OnInit, OnChanges {
           .duration(500)
           .style('opacity', 1);
       })
-      .on('mouseout', () => {
+      .on('mouseout', (event, d) => {
+
+        const eventTask = dataGroup.select('#taskEntry_' + d.id);
+        eventTask.select('rect.dragBarLeft')
+          .transition()
+          .duration(500)
+          .style('opacity', 0);
+
+        eventTask.select('rect.dragBarRight')
+          .transition()
+          .duration(500)
+          .style('opacity', 0);
+
         this.tooltip
           .transition()
           .duration(500)
@@ -398,21 +667,13 @@ export class ChartComponent implements OnInit, OnChanges {
       });
 
     // task labels
-    dataGroup.selectAll('text.taskLabel').remove();
-    dataGroup.selectAll('text.taskLabel')
-      .data(tasksToShow)
-      .enter()
+    taskGroup
       .append('text')
       .text(d => d.name)
       .attr('class', 'taskLabel')
-      .attr('x', d => this.calculateTaskLabelPosition(d))
-      .attr('y', (d, i) => (this.barHeightWithMargin) * i
-        + (this.barHeight + this.barMargin) / 2)
+      .attr('x', d => ChartComponent.calculateTaskLabelPosition(d, xAxis))
+      .attr('y', (this.barHeight + this.barMargin) / 2)
       .attr('text-height', this.barHeight);
-  }
-
-  private calculateBarWidth(task: any): number {
-    return this.xAxis(task.end) - this.xAxis(task.start);
   }
 
 
@@ -430,17 +691,5 @@ export class ChartComponent implements OnInit, OnChanges {
       console.log($event);
       this.drawChart();
     }
-  }
-
-  // get label position of a task depending on chart range so it is displayed centered on the visible part of the bar
-  private calculateTaskLabelPosition(d: any): number {
-
-    const xAxisStart = this.xAxis(d.start);
-    const xAxisEnd = this.xAxis(d.end);
-
-    const startPosition = Math.max(xAxisStart, this.xAxis.range()[0]);
-    const endPosition = Math.min(xAxisEnd, this.xAxis.range()[1]);
-
-    return (endPosition - startPosition) / 2 + startPosition;
   }
 }

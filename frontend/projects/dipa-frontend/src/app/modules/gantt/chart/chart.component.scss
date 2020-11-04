@@ -55,16 +55,25 @@
       }
 
       g.data-group {
-        dot.milestone {
+        path.milestone {
+          cursor: move;
           width: 50px;
         }
 
         text.milestoneLabel {
           font-size: 12px;
+          pointer-events: none;
         }
 
         rect.task {
+          cursor: move;
           rx: 3;
+        }
+
+        rect.dragBarLeft, rect.dragBarRight {
+          rx: 1;
+          cursor: ew-resize;
+          opacity: 0;
         }
 
         text.taskLabel {
