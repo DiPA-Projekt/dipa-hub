@@ -1,16 +1,15 @@
-import {AfterContentInit, Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {GanttControlsService} from './gantt-controls.service';
 import {ChartComponent} from './chart/chart.component';
 import {TimelineService} from './services/timeline.service';
-import { forkJoin, pipe } from 'rxjs';
-import { switchMap,map } from 'rxjs/operators'; 
+import {forkJoin} from 'rxjs';
 
 @Component({
   selector: 'app-gantt',
   templateUrl: './gantt.component.html',
   styleUrls: ['./gantt.component.scss']
 })
-export class GanttComponent implements OnInit, AfterContentInit {
+export class GanttComponent implements OnInit {
 
   @Output() dateChange: EventEmitter<any> = new EventEmitter();
 
@@ -24,62 +23,38 @@ export class GanttComponent implements OnInit, AfterContentInit {
   periodStartDate = new Date(2020, 0, 1);
   periodEndDate = new Date(2020, 11, 31);
 
-  periodStartDateArray = [];
-  periodEndDateArray = [];
-  
   constructor(public ganttControlsService: GanttControlsService,
               private timelineService: TimelineService) {  }
 
+  static getMinimumDate(data: Date[]): Date {
+    return data.reduce((acc, curr) => {
+      return acc < curr ? acc : curr;
+    });
+  }
+
+  static getMaximumDate(data: Date[]): Date {
+    return data.reduce((acc, curr) => {
+      return acc > curr ? acc : curr;
+    });
+  }
 
   ngOnInit(): void {
-    
-    pipe(
-      switchMap(() => forkJoin([this.timelineService.getTaskData(),this.timelineService.getMilestoneTaskData()])),
-        map(([tasks,milestones]) => {
-          this.periodStartDate  = Math.min.apply(null,[getMinimumStartDate(tasks), getMinimumStartDate(milestones)]);
-          this.periodEndDate    = Math.max.apply(null,[getMaximumEndDate(tasks), getMaximumEndDate(milestones)]);
-        }
-      )
-    )
 
-    function getMinimumStartDate(data): Date {
-      const min = data.reduce((accumulator,currentValue) => {
-          return (accumulator < currentValue.start ? accumulator : currentValue.start);
-        }
-      )
-      return min;
-    }
+    forkJoin([this.timelineService.getTaskData(), this.timelineService.getMilestoneTaskData()])
+    .subscribe((data) => {
 
-    function getMaximumEndDate(data): Date {
-      const max = data.reduce((accumulator,currentValue) => {
-          if(currentValue.end) {
-            return (accumulator > currentValue.end ? accumulator : currentValue.end);
-          } else {
-            return (accumulator > currentValue.start ? accumulator : currentValue.start);
-          }
-        }
-      )
-      return max;
-    }
+      this.taskData = data[0];
+      this.milestoneData = data[1];
 
+      const milestoneDates = this.milestoneData.map(x => x.start);
+      const taskStartDates = this.taskData.map(x => x.start);
+      const taskEndDates = this.taskData.map(x => x.end);
 
-    // var earliest = new Date(Math.min.apply(null,this.periodStartDateArray));
-    // var last = new Date(Math.max.apply(null,this.periodEndDateArray));
+      const datesArray: Date[] = [...milestoneDates, ...taskStartDates, ...taskEndDates];
 
-    // this.periodStartDate = earliest; 
-    // this.periodEndDate = last; 
-
-        
-    this.dateChange.emit();
-  }
-
-  initialize(): void {
-    this.chart.milestoneData = [...this.milestoneData];
-    this.chart.taskData = [...this.taskData];
-  }
-
-  ngAfterContentInit(): void {
-    this.initialize();
+      this.periodStartDate = GanttComponent.getMinimumDate(datesArray);
+      this.periodEndDate = GanttComponent.getMaximumDate(datesArray);
+    });
   }
 
   changeStartDate(change: string, $event: any): void {
