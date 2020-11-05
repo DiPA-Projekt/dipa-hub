@@ -11,28 +11,31 @@
       </div>
       <div class="col text-right">
         <mat-form-field appearance="fill">
-          <mat-label>Enter a date range</mat-label>
-          <mat-date-range-input [rangePicker]="picker">
-            <input matStartDate placeholder="Start date"
-                   (dateChange)="changeStartDate('change', $event)"
-                   value="periodStartDate">
-            <input matEndDate placeholder="End date"
-                   (dateChange)="changeEndDate('change', $event)"
-                   value="periodEndDate">
-          </mat-date-range-input>
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-date-range-picker #picker></mat-date-range-picker>
+          <mat-label>Anfang Zeitachse</mat-label>
+          <input matInput [matDatepicker]="picker1" [value]="periodStartDate"
+          (dateChange)="changeStartDate('change', $event)">
+          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Ende Zeitachse</mat-label>
+          <input matInput [matDatepicker]="picker2" [value]="periodEndDate"
+          (dateChange)="changeEndDate('change', $event)">
+          <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
         </mat-form-field>
       </div>
     </div>
   </div>
 
-  <app-chart #ganttChart
-             [milestoneData]="milestoneData"
-             [taskData]="taskData"
-             [periodStartDate]="periodStartDate"
-             [periodEndDate]="periodEndDate"
-  ></app-chart>
-
+  <ng-container *ngIf="vm$ | async as vm">
+    <app-chart #ganttChart
+               [milestoneData]="vm.milestoneData"
+               [taskData]="vm.taskData"
+               [periodStartDate]="periodStartDate"
+               [periodEndDate]="periodEndDate"
+    ></app-chart>
+  </ng-container>
 </div>
 
