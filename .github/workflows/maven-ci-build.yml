@@ -23,7 +23,7 @@ jobs:
       with:
         java-version: '11.0.2'
         architecture: x64
-        server-id: mvp.dipa.online
+        server-id: docker.dipa.online
         server-username: DOCKER_REGISTRY_USERNAME
         server-password: DOCKER_REGISTRY_TOKEN
     - name: Cache local Maven repository
