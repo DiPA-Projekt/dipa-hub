@@ -11,7 +11,7 @@
       </div>
       <div class="col text-right">
         <mat-form-field appearance="fill">
-          <mat-label>Enter a start date</mat-label>
+          <mat-label>Anfang Zeitachse</mat-label>
           <input matInput [matDatepicker]="picker1" [value]="periodStartDate"
           (dateChange)="changeStartDate('change', $event)">
           <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
@@ -19,7 +19,7 @@
         </mat-form-field>
 
         <mat-form-field appearance="fill">
-          <mat-label>Enter an end date</mat-label>
+          <mat-label>Ende Zeitachse</mat-label>
           <input matInput [matDatepicker]="picker2" [value]="periodEndDate"
           (dateChange)="changeEndDate('change', $event)">
           <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
