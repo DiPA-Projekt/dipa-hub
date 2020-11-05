@@ -53,7 +53,7 @@ spec:
         track: @k8s.release.track@
     spec:
       containers:
-        - image: mvp.dipa.online/dipa-projekt/dipa-hub:@k8s.image.version@
+        - image: docker.dipa.online/dipa-projekt/dipa-hub:@k8s.image.version@
           name: dipa-hub
 #          env:
 #            - name: WORDPRESS_DB_HOST

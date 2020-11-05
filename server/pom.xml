@@ -187,7 +187,7 @@
 						</executions>
 						<configuration>
 							<skip>false</skip>
-							<repository>mvp.dipa.online/dipa-projekt/dipa-hub</repository>
+							<repository>docker.dipa.online/dipa-projekt/dipa-hub</repository>
 							<tag>${k8s.image.version}</tag>
 							<buildArgs>
 								<JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
