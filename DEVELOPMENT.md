@@ -122,8 +122,25 @@ bereitgestellt werden wie das Backend.
 
 Der DiPA-Server ist eine Java Spring Boot Anwendung und implementiert u.a. die API, Validierung und Businesslogik 
 der Backend-Seite. Im vollständig gebauten Zustand ist ein einzelnes Spring-Boot "Uber-Jar", welches alle von DiPA 
-benötigten Resourcen enthält und direkt gestartet werden kann (exkl. Datenbank).  
+benötigten Resourcen enthält und direkt gestartet werden kann (exkl. Datenbank).
 
+## Continous Deployment to Kubernetes (K8S)
+
+An dieser Stelle wird nur eine kurze Übersicht über das Continous Deployment (CD) von DiPA gegeben. Die Details finden 
+sich in der [Beschreibung](server/README.md#continous-deployment) der `dipa-server`-Komponente.
+Der Ablauf ist dabei wie folgt (vollautomatisiert):
+1. Die Anwendung wird regulär als Spring Boot Jar gebaut.
+2. Für den Server wird ein Docker Image gebaut
+3. Das Docker Image wird in eine private Docker Registry auf der DiPA VM gepushed. 
+4. Während des Builds werden passende Kubernetes Deployment Descriptoren erstellt.
+5. Nach erfolgreichem Build werden die Deployment Descriptoren auf die VM gepushed 
+   und dort ein Update des Deployments durchgeführt. 
+   
+Aus dem CI Build heraus entstehen 2 automatische Deployments jeweils für den `HEAD` 
+des `develop` branches (aktuellster Stand der Entwicklung) und den `main` (letztes Release).
+Beim lokalen Build auf der Entwickler-Maschine kann ein drittes Deployment erzeugt werden um bspw. 
+bestimmte Sacherverhalte vorab testen zu können (siehe Detail Beschreibung).
+ 
 ## Lokale Entwicklungs-Infrastruktur
 
 Um einen möglichst einfachen und leichtgewichten Einstieg in DiPA zu ermöglichen wird die gesamte zusätzlich 

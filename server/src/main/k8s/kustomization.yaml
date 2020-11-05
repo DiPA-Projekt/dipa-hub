@@ -1,0 +1,6 @@
+secretGenerator:
+  - name: database-password
+    literals:
+      - password=dipasecret
+resources:
+  - dipa-hub-deployment.yaml
