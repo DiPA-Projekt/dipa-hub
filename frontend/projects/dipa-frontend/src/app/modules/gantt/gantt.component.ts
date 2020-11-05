@@ -41,10 +41,10 @@ export class GanttComponent implements OnInit {
   ngOnInit(): void {
 
     forkJoin([this.timelineService.getTaskData(), this.timelineService.getMilestoneTaskData()])
-    .subscribe((data) => {
+    .subscribe(([taskData, milestoneData]) => {
 
-      this.taskData = data[0];
-      this.milestoneData = data[1];
+      this.taskData = taskData;
+      this.milestoneData = milestoneData;
 
       const milestoneDates = this.milestoneData.map(x => x.start);
       const taskStartDates = this.taskData.map(x => x.start);
