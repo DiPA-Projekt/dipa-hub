@@ -2,6 +2,8 @@ import {AfterContentInit, Component, EventEmitter, OnInit, Output, ViewChild} fr
 import {GanttControlsService} from './gantt-controls.service';
 import {ChartComponent} from './chart/chart.component';
 import {TimelineService} from './services/timeline.service';
+import { forkJoin, pipe } from 'rxjs';
+import { switchMap,map } from 'rxjs/operators'; 
 
 @Component({
   selector: 'app-gantt',
@@ -30,29 +32,42 @@ export class GanttComponent implements OnInit, AfterContentInit {
 
 
   ngOnInit(): void {
-    this.timelineService.getTaskData()
-    .subscribe((data) => {
-      this.taskData = data;
-    });
+    
+    pipe(
+      switchMap(() => forkJoin([this.timelineService.getTaskData(),this.timelineService.getMilestoneTaskData()])),
+        map(([tasks,milestones]) => {
+          this.periodStartDate  = Math.min.apply(null,[getMinimumStartDate(tasks), getMinimumStartDate(milestones)]);
+          this.periodEndDate    = Math.max.apply(null,[getMaximumEndDate(tasks), getMaximumEndDate(milestones)]);
+        }
+      )
+    )
 
-    this.timelineService.getMilestoneTaskData()
-    .subscribe((data) => {
-      this.milestoneData = data;
-    });
-
-    for(let i=0; i<this.milestoneData.length; i++) {
-      this.periodStartDateArray.push(this.milestoneData[i].start);
+    function getMinimumStartDate(data): Date {
+      const min = data.reduce((accumulator,currentValue) => {
+          return (accumulator < currentValue.start ? accumulator : currentValue.start);
+        }
+      )
+      return min;
     }
-    for(let i=0; i<this.taskData.length; i++) {
-      this.periodStartDateArray.push(this.taskData[i].start);
-      this.periodEndDateArray.push(this.taskData[i].end);
+
+    function getMaximumEndDate(data): Date {
+      const max = data.reduce((accumulator,currentValue) => {
+          if(currentValue.end) {
+            return (accumulator > currentValue.end ? accumulator : currentValue.end);
+          } else {
+            return (accumulator > currentValue.start ? accumulator : currentValue.start);
+          }
+        }
+      )
+      return max;
     }
 
-    var earliest = new Date(Math.min.apply(null,this.periodStartDateArray));
-    var last = new Date(Math.max.apply(null,this.periodEndDateArray));
 
-    this.periodStartDate = earliest; 
-    this.periodEndDate = last; 
+    // var earliest = new Date(Math.min.apply(null,this.periodStartDateArray));
+    // var last = new Date(Math.max.apply(null,this.periodEndDateArray));
+
+    // this.periodStartDate = earliest; 
+    // this.periodEndDate = last; 
 
         
     this.dateChange.emit();
