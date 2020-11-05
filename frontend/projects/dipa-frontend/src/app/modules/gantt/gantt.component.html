@@ -29,12 +29,13 @@
     </div>
   </div>
 
-  <app-chart #ganttChart
-             [milestoneData]="milestoneData"
-             [taskData]="taskData"
-             [periodStartDate]="periodStartDate"
-             [periodEndDate]="periodEndDate"
-  ></app-chart>
-
+  <ng-container *ngIf="vm$ | async as vm">
+    <app-chart #ganttChart
+               [milestoneData]="vm.milestoneData"
+               [taskData]="vm.taskData"
+               [periodStartDate]="periodStartDate"
+               [periodEndDate]="periodEndDate"
+    ></app-chart>
+  </ng-container>
 </div>
 

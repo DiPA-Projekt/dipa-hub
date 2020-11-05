@@ -2,7 +2,8 @@ import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core'
 import {GanttControlsService} from './gantt-controls.service';
 import {ChartComponent} from './chart/chart.component';
 import {TimelineService} from './services/timeline.service';
-import {forkJoin} from 'rxjs';
+import {forkJoin, Observable} from 'rxjs';
+import {map, tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-gantt',
@@ -15,13 +16,10 @@ export class GanttComponent implements OnInit {
 
   @ViewChild('ganttChart', { static: true }) chart: ChartComponent;
 
-  chartData = [];
-
-  milestoneData = [];
-  taskData = [];
-
   periodStartDate = new Date(2020, 0, 1);
   periodEndDate = new Date(2020, 11, 31);
+
+  vm$: Observable<any>;
 
   constructor(public ganttControlsService: GanttControlsService,
               private timelineService: TimelineService) {  }
@@ -40,21 +38,30 @@ export class GanttComponent implements OnInit {
 
   ngOnInit(): void {
 
-    forkJoin([this.timelineService.getTaskData(), this.timelineService.getMilestoneTaskData()])
-    .subscribe(([taskData, milestoneData]) => {
+    this.vm$ = forkJoin([this.timelineService.getTaskData(), this.timelineService.getMilestoneTaskData()])
+      .pipe(
+        map(([taskData, milestoneData]) => {
+          const milestoneDates = milestoneData.map(x => x.start);
+          const taskStartDates = taskData.map(x => x.start);
+          const taskEndDates = taskData.map(x => x.end);
 
-      this.taskData = taskData;
-      this.milestoneData = milestoneData;
+          const datesArray: Date[] = [...milestoneDates, ...taskStartDates, ...taskEndDates];
 
-      const milestoneDates = this.milestoneData.map(x => x.start);
-      const taskStartDates = this.taskData.map(x => x.start);
-      const taskEndDates = this.taskData.map(x => x.end);
+          const periodStartDate = GanttComponent.getMinimumDate(datesArray);
+          const periodEndDate = GanttComponent.getMaximumDate(datesArray);
 
-      const datesArray: Date[] = [...milestoneDates, ...taskStartDates, ...taskEndDates];
-
-      this.periodStartDate = GanttComponent.getMinimumDate(datesArray);
-      this.periodEndDate = GanttComponent.getMaximumDate(datesArray);
-    });
+          return {
+            milestoneData,
+            taskData,
+            periodStartDate,
+            periodEndDate
+          };
+        }),
+        tap( data => {
+          this.periodEndDate = data.periodEndDate;
+          this.periodStartDate = data.periodStartDate;
+        })
+      );
   }
 
   changeStartDate(change: string, $event: any): void {
