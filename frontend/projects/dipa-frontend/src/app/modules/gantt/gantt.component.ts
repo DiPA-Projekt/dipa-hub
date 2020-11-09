@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {GanttControlsService} from './gantt-controls.service';
 import {ChartComponent} from './chart/chart.component';
 import {TimelineService} from './services/timeline.service';
@@ -10,7 +10,7 @@ import {map, tap} from 'rxjs/operators';
   templateUrl: './gantt.component.html',
   styleUrls: ['./gantt.component.scss']
 })
-export class GanttComponent implements OnInit {
+export class GanttComponent implements OnInit, OnDestroy {
 
   @Output() dateChange: EventEmitter<any> = new EventEmitter();
 
@@ -18,6 +18,9 @@ export class GanttComponent implements OnInit {
 
   periodStartDate = new Date(2020, 0, 1);
   periodEndDate = new Date(2020, 11, 31);
+
+  periodStartDateSubscription;
+  periodEndDateSubscription;
 
   vm$: Observable<any>;
 
@@ -37,6 +40,20 @@ export class GanttComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.periodStartDateSubscription = this.ganttControlsService.getPeriodStartDate()
+    .subscribe((data) => {
+      if (this.periodStartDate !== data) {
+        this.periodStartDate = data;
+      }
+    });
+
+    this.periodEndDateSubscription = this.ganttControlsService.getPeriodEndDate()
+    .subscribe((data) => {
+      if (this.periodEndDate !== data) {
+        this.periodEndDate = data;
+      }
+    });
 
     this.vm$ = forkJoin([this.timelineService.getTaskData(), this.timelineService.getMilestoneTaskData()])
       .pipe(
@@ -58,21 +75,31 @@ export class GanttComponent implements OnInit {
           };
         }),
         tap( data => {
-          this.periodEndDate = data.periodEndDate;
-          this.periodStartDate = data.periodStartDate;
+          // this.periodEndDate = data.periodEndDate;
+          // this.periodStartDate = data.periodStartDate;
+
+          this.ganttControlsService.setPeriodStartDate(data.periodStartDate);
+          this.ganttControlsService.setPeriodEndDate(data.periodEndDate);
         })
       );
   }
 
+  ngOnDestroy(): void {
+    this.periodStartDateSubscription.unsubscribe();
+    this.periodEndDateSubscription.unsubscribe();
+  }
+
   changeStartDate(change: string, $event: any): void {
     if ($event.value) {
-      this.periodStartDate = $event.value;
+      // this.periodStartDate = $event.value;
+      this.ganttControlsService.setPeriodStartDate($event.value);
     }
   }
 
   changeEndDate(change: string, $event: any): void {
     if ($event.value) {
-      this.periodEndDate = $event.value;
+      // this.periodEndDate = $event.value;
+      this.ganttControlsService.setPeriodEndDate($event.value);
     }
   }
 
