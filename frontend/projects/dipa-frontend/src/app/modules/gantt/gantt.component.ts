@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {GanttControlsService} from './gantt-controls.service';
 import {ChartComponent} from './chart/chart.component';
 import {TimelineService} from './services/timeline.service';
@@ -12,7 +12,7 @@ import {map, tap} from 'rxjs/operators';
 })
 export class GanttComponent implements OnInit, OnDestroy {
 
-  @Output() dateChange: EventEmitter<any> = new EventEmitter();
+  // @Output() dateChange: EventEmitter<any> = new EventEmitter();
 
   @ViewChild('ganttChart', { static: true }) chart: ChartComponent;
 

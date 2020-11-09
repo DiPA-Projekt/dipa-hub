@@ -164,6 +164,13 @@ export class ChartComponent implements OnInit, OnDestroy {
         months: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
         shortMonths: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez']
       });
+
+      // zoom out a little to show all data at start
+      this.svg
+        .transition()
+        .duration(1000)
+        .call(this.zoom.scaleBy, 0.9)
+        .on('end', () => this.refreshXAxis(this.xAxis));
     }
 
     const xAxis = this.initializeXAxis();
@@ -235,7 +242,7 @@ export class ChartComponent implements OnInit, OnDestroy {
         this.ganttControlsService.setPeriodStartDate(this.periodStartDate);
         this.ganttControlsService.setPeriodEndDate(this.periodEndDate);
 
-        this.updateChart(event);
+        this.updateChart(xAxisRescaled);
       });
 
     this.setZoomScaleExtent();
@@ -270,21 +277,20 @@ export class ChartComponent implements OnInit, OnDestroy {
     const minScaleFactor = widthMs / maxTimeMs;
     const maxScaleFactor = widthMs / minTimeMs;
 
-    this.zoom.scaleExtent([minScaleFactor, maxScaleFactor]);
+    this.zoom
+      .scaleExtent([minScaleFactor, maxScaleFactor]);
   }
 
-  updateChart(event): void {
+  updateChart(xAxis): void {
 
-    const newScaleX = event.transform.rescaleX(this.xAxis);
-
-    this.drawHeaderX(newScaleX);
-    this.drawVerticalGridLines(newScaleX);
+    this.drawHeaderX(xAxis);
+    this.drawVerticalGridLines(xAxis);
 
     const tasksToShow = this.taskData; // .filter((e): any => !(e.start >= this.periodEndDate || e.end <= this.periodStartDate));
-    this.drawTasks(tasksToShow, newScaleX);
+    this.drawTasks(tasksToShow, xAxis);
 
     const milestonesToShow = this.milestoneData; // .filter((e): any => e.start >= this.periodStartDate && e.start <= this.periodEndDate);
-    this.drawMilestones(milestonesToShow, newScaleX);
+    this.drawMilestones(milestonesToShow, xAxis);
   }
 
   // Set X axis
@@ -292,6 +298,10 @@ export class ChartComponent implements OnInit, OnDestroy {
     return this.xAxis = d3.scaleTime()
       .domain([this.periodStartDate, this.periodEndDate])
       .range([0, this.viewBoxWidth - this.padding.left]);
+  }
+
+  private refreshXAxis(xAxis): any {
+    xAxis.domain([this.periodStartDate, this.periodEndDate]);
   }
 
   // Set Y axis
