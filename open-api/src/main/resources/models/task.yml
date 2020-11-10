@@ -20,3 +20,8 @@ Task:
       type: string
       format: date
       example: "2020-11-30"
+    timelineId:
+      description: Identifier to which this milestone belongs
+      type: integer
+      format: int64
+      example: 2

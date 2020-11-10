@@ -27,15 +27,40 @@
         </mat-form-field>
       </div>
     </div>
+
+    <div *ngIf="allTimelines" class="col text-right">
+      <mat-form-field appearance="fill">
+        <mat-select [(value)]="selected">
+          <mat-option *ngFor="let timeline of allTimelines" [(value)]="timeline.id">
+            {{ timeline.id }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
   </div>
 
   <ng-container *ngIf="vm$ | async as vm">
-    <app-chart #ganttChart
+    <ng-container *ngFor="let timeline of allTimelines">
+    <app-chart #ganttChart *ngIf="timeline.id === selected"
                [milestoneData]="vm.milestoneData"
                [taskData]="vm.taskData"
                [periodStartDate]="periodStartDate"
                [periodEndDate]="periodEndDate"
     ></app-chart>
+  </ng-container>
+  </ng-container>
+
+
+  <ng-container *ngIf="vm_2$ | async as vm">
+    <ng-container *ngFor="let timeline of allTimelines">
+    <app-chart #ganttChart *ngIf="timeline.id === selected"
+               [milestoneData]="vm.milestoneData"
+               [taskData]="vm.taskData"
+               [periodStartDate]="periodStartDate"
+               [periodEndDate]="periodEndDate"
+    ></app-chart>
+  </ng-container>
   </ng-container>
 </div>
 

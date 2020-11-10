@@ -13,6 +13,8 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+
 
 
 @NgModule({
@@ -31,7 +33,8 @@ import {MatInputModule} from '@angular/material/input';
     MatFormFieldModule,
     MatDatepickerModule,
     MatButtonToggleModule,
-    MatInputModule
+    MatInputModule,
+    MatSelectModule
   ]
 })
 export class GanttModule { }

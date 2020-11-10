@@ -29,7 +29,7 @@ public class TimelineController implements TimelinesApi {
 				.name("epic_1")
 				.defaultTimeline(true),
 			new Timeline()
-				.id(1L)
+				.id(2L)
 				.name("epic_2")
 				.defaultTimeline(false)
 			)
@@ -39,90 +39,117 @@ public class TimelineController implements TimelinesApi {
 
     @Override
 	public ResponseEntity<List<Milestone>> getMilestonesForTimeline(Integer timelineId) {
+		if (timelineId <= 1) {
 		return ResponseEntity.ok(List.of(
 			new Milestone()
 				.id(1L)
 				.name("Projektstart")
-				.date(LocalDate.parse("2020-01-01")),
+				.date(LocalDate.parse("2020-01-01"))
+				.timelineId(1L),
 			new Milestone()
 				.id(2L)
 				.name("Kick Off")
-				.date(LocalDate.parse("2020-02-01")),
+				.date(LocalDate.parse("2020-02-01"))
+				.timelineId(1L),
 			new Milestone()
 				.id(3L)
 				.name("Zuschlagserteilung")
-				.date(LocalDate.parse("2020-08-01")),
+				.date(LocalDate.parse("2020-08-01"))
+				.timelineId(1L),
 			new Milestone()
 				.id(4L)
 				.name("Rolloutdrehbuch")
-				.date(LocalDate.parse("2020-11-01")),
+				.date(LocalDate.parse("2020-11-01"))
+				.timelineId(1L),
 			new Milestone()
 				.id(5L)
 				.name("Beginn Rollout Phase 1")
-				.date(LocalDate.parse("2021-11-01")),
+				.date(LocalDate.parse("2021-11-01"))
+				.timelineId(1L),
 			new Milestone()
 				.id(6L)
 				.name("Beginn Rollout Phase 2")
-				.date(LocalDate.parse("2021-04-01")),
+				.date(LocalDate.parse("2021-04-01"))
+				.timelineId(1L)
+			));
+		}
+		else {
+		return ResponseEntity.ok(List.of(
 			new Milestone()
 				.id(7L)
 				.name("Ende Phase 1")
-				.date(LocalDate.parse("2021-05-01")),
+				.date(LocalDate.parse("2021-05-01"))
+				.timelineId(2L),
 			new Milestone()
 				.id(8L)
 				.name("Beginn Rollout Phase 3")
-				.date(LocalDate.parse("2020-06-01")),
+				.date(LocalDate.parse("2020-06-01"))
+				.timelineId(2L),
 			new Milestone()
 				.id(9L)
 				.name("Ende Phase 2")
-				.date(LocalDate.parse("2020-08-01")),
+				.date(LocalDate.parse("2020-08-01"))
+				.timelineId(2L),
 			new Milestone()
 				.id(10L)
 				.name("Ende Phase 3")
-				.date(LocalDate.parse("2020-11-01")),
+				.date(LocalDate.parse("2020-11-01"))
+				.timelineId(2L),
 			new Milestone()
 				.id(11L)
 				.name("Projektabschlussbericht")
-				.date(LocalDate.parse("2022-02-01")),
+				.date(LocalDate.parse("2022-02-01"))
+				.timelineId(2L),
 			new Milestone()
 				.id(12L)
 				.name("Projektende")
 				.date(LocalDate.parse("2022-05-01"))
-			)
-		);
+				.timelineId(2L)
+			));
+		}
 	};
 
 
 	@Override
 	public ResponseEntity<List<Task>> getTasksForTimeline(Integer timelineId) {
+		if (timelineId <= 1) {
 		return ResponseEntity.ok(List.of(
 			new Task()
 				.id(1L)
 				.name("Task 1")
 				.start(LocalDate.parse("2020-01-01"))
-				.end(LocalDate.parse("2020-04-04")), 
+				.end(LocalDate.parse("2020-04-04"))
+				.timelineId(1L),
 			new Task()
 				.id(2L)
 				.name("Task 2")
 				.start(LocalDate.parse("2020-05-01"))
-                .end(LocalDate.parse("2020-05-30")), 
+                .end(LocalDate.parse("2020-05-30"))
+				.timelineId(1L),
 			new Task()
 				.id(3L)
 				.name("Task 3")
 				.start(LocalDate.parse("2020-06-08"))
-				.end(LocalDate.parse("2020-10-15")), 
+				.end(LocalDate.parse("2020-10-15"))
+				.timelineId(1L)
+			));
+		}
+		else {
+		return ResponseEntity.ok(List.of(
 			new Task()
 				.id(4L)
 				.name("Task 4")
 				.start(LocalDate.parse("2020-09-15"))
-				.end(LocalDate.parse("2020-11-23")), 
+				.end(LocalDate.parse("2020-11-23"))
+				.timelineId(2L),
 			new Task()
 				.id(5L)
 				.name("Task 5")
 				.start(LocalDate.parse("2020-10-23"))
 				.end(LocalDate.parse("2020-11-30"))
-			)
-		);
+				.timelineId(2L)
+			));
+		}
 	}
 
 
