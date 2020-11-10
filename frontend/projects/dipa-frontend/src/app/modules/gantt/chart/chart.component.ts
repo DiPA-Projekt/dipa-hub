@@ -16,7 +16,6 @@ export class ChartComponent implements OnInit, OnDestroy {
   constructor(public ganttControlsService: GanttControlsService) { }
 
   @Input() milestoneData = [];
-
   @Input() taskData = [];
 
   periodStartDate: Date;
@@ -27,6 +26,7 @@ export class ChartComponent implements OnInit, OnDestroy {
 
   // element for chart
   private svg;
+  private zoomElement;
 
   private viewBoxHeight = 400;
   private viewBoxWidth = 750;
@@ -72,21 +72,6 @@ export class ChartComponent implements OnInit, OnDestroy {
     return ChartComponent.getCounts(arr)[word] || 0;
   }
 
-  // get label position of a task depending on chart range so it is displayed centered on the visible part of the bar
-  private static calculateTaskLabelPosition(d: any, xAxis): number {
-    const xAxisStart = xAxis(d.start);
-    const xAxisEnd = xAxis(d.end);
-
-    const startPosition = Math.max(xAxisStart, xAxis.range()[0]);
-    const endPosition = Math.min(xAxisEnd, xAxis.range()[1]);
-
-    return (endPosition - startPosition) / 2;
-  }
-
-  private static calculateBarWidth(task: any, xAxis): number {
-    return xAxis(task.end) - xAxis(task.start);
-  }
-
   // Define filter conditions
   formatDate(date): any {
     return (d3.timeSecond(date) < date ? d3.timeFormat('.%L')
@@ -105,7 +90,11 @@ export class ChartComponent implements OnInit, OnDestroy {
     .subscribe((data) => {
       if (this.periodStartDate !== data) {
         this.periodStartDate = data;
-        this.drawChart();
+
+        if (this.xAxis) {
+          this.refreshXAxis();
+          this.updateChart();
+        }
       }
     });
 
@@ -113,7 +102,11 @@ export class ChartComponent implements OnInit, OnDestroy {
     .subscribe((data) => {
       if (this.periodEndDate !== data) {
         this.periodEndDate = data;
-        this.drawChart();
+
+        if (this.xAxis) {
+          this.refreshXAxis();
+          this.updateChart();
+        }
       }
     });
 
@@ -165,32 +158,29 @@ export class ChartComponent implements OnInit, OnDestroy {
         shortMonths: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez']
       });
 
-      // zoom out a little to show all data at start
+      // zoom out a bit to show all data at start
       this.svg
         .transition()
-        .duration(1000)
+        .duration(0)
         .call(this.zoom.scaleBy, 0.9)
-        .on('end', () => this.refreshXAxis(this.xAxis));
+        .on('end', () => this.refreshXAxis());
     }
 
-    const xAxis = this.initializeXAxis();
-    const yAxis = this.initializeYAxis();
-    // this.initializeTestScale();
+    this.initializeXAxis();
+    this.initializeYAxis();
 
-    this.setZoomScaleExtent();
-
-    this.drawHeaderX(xAxis);
-    this.drawVerticalGridLines(xAxis);
+    this.drawHeaderX();
+    this.drawVerticalGridLines();
 
     this.drawHeaderY();
     this.drawGroups();
 
     // TODO: draw only tasks which are visible but keep the distance between the rows
     const tasksToShow = this.taskData; // .filter((e): any => !(e.start >= this.periodEndDate || e.end <= this.periodStartDate));
-    this.drawTasks(tasksToShow, xAxis);
+    this.drawTasks(tasksToShow);
     // draw only milestones which are visible
     const milestonesToShow = this.milestoneData; // .filter((e): any => e.start >= this.periodStartDate && e.start <= this.periodEndDate);
-    this.drawMilestones(milestonesToShow, xAxis);
+    this.drawMilestones(milestonesToShow);
   }
 
   private createSvg(): void {
@@ -226,30 +216,13 @@ export class ChartComponent implements OnInit, OnDestroy {
     yGroup.attr('transform', 'translate(0,' + (this.padding.top + this.barMargin) + ')');
 
     this.zoom = d3.zoom()
-      .on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
+      .on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event); });
 
-        const xAxisRescaled = event.transform.rescaleX(this.xAxis);
-
-        // for testing the xAxis
-        /*
-        const xAxisB = this.svg.select('g.x-axis-bottom');
-        xAxisB.call(d3.axisBottom(xAxisRescaled));
-        */
-
-        this.periodStartDate = xAxisRescaled.invert(xAxisRescaled.range()[0]);
-        this.periodEndDate = xAxisRescaled.invert(xAxisRescaled.range()[1]);
-
-        this.ganttControlsService.setPeriodStartDate(this.periodStartDate);
-        this.ganttControlsService.setPeriodEndDate(this.periodEndDate);
-
-        this.updateChart(xAxisRescaled);
-      });
-
-    this.setZoomScaleExtent();
-
-    this.svg.append('rect')
-      .attr('width', this.viewBoxWidth)
-      .attr('height', this.viewBoxHeight)
+    this.zoomElement = this.svg
+      .append('rect')
+      .attr('class', 'zoomAreaX')
+      .attr('width', this.viewBoxWidth - this.padding.left)
+      .attr('height', this.viewBoxHeight - this.padding.top)
       .style('fill', 'none')
       .style('pointer-events', 'all')
       .attr('transform', 'translate(' + this.padding.left + ',' + this.padding.top + ')')
@@ -260,14 +233,58 @@ export class ChartComponent implements OnInit, OnDestroy {
 
     dataGroup
       .attr('mask', 'url(#dataMask)');
-
-    // for testing the xAxis
-    /*
-    const xAxisBottom = this.svg.append('g').attr('class', 'x-axis-bottom');
-    xAxisBottom.attr('transform', 'translate(' + this.padding.left + ',250)');
-    */
   }
 
+  onZoom(event: d3.D3ZoomEvent<any, any>): void {
+
+    const eventTransform: d3.ZoomTransform = event.transform;
+
+    if (eventTransform.k === 1 && eventTransform.x === 0 && eventTransform.y === 0) {
+      return;
+    }
+
+    // this check is needed to prevent additional zooming on the minimum/maximum zoom level
+    // because zoom.transform is reset and the zoom levels are reinitiated every time
+    if (event.sourceEvent) {
+      const deltaY = event.sourceEvent.deltaY;
+      if (deltaY < 0 && eventTransform.y > 0 || deltaY > 0 && eventTransform.y < 0) {
+        return;
+      }
+    }
+
+    const xAxisRescaled = eventTransform.rescaleX<any>(this.xAxis);
+
+    const start = xAxisRescaled.domain()[0];
+    const end = xAxisRescaled.domain()[1];
+
+    this.zoomTo(start, end);
+
+    // reset the transform so the scale can be changed from other elements like dropdown menu
+    this.zoomElement.call(this.zoom.transform, d3.zoomIdentity);
+
+    this.periodStartDate = xAxisRescaled.invert(xAxisRescaled.range()[0]);
+    this.periodEndDate = xAxisRescaled.invert(xAxisRescaled.range()[1]);
+
+    this.ganttControlsService.setPeriodStartDate(this.periodStartDate);
+    this.ganttControlsService.setPeriodEndDate(this.periodEndDate);
+  }
+
+  zoomTo(start: Date, end: Date): void {
+    this.xAxis.domain([start, end]);
+    this.setZoomScaleExtent();
+
+    this.updateChart();
+  }
+
+  updateChart(): void {
+    this.redrawHeaderX();
+    this.redrawVerticalGridLines();
+
+    this.redrawTasks();
+    this.redrawMilestones();
+  }
+
+  // set minimum and maximum zoom levels
   setZoomScaleExtent(): void {
     const minTimeMs = 1.2096e+9; // 14 days to show 1 day ticks
     const maxTimeMs = 3.1536e+11; // ~ 10 years
@@ -281,78 +298,55 @@ export class ChartComponent implements OnInit, OnDestroy {
       .scaleExtent([minScaleFactor, maxScaleFactor]);
   }
 
-  updateChart(xAxis): void {
-
-    this.drawHeaderX(xAxis);
-    this.drawVerticalGridLines(xAxis);
-
-    const tasksToShow = this.taskData; // .filter((e): any => !(e.start >= this.periodEndDate || e.end <= this.periodStartDate));
-    this.drawTasks(tasksToShow, xAxis);
-
-    const milestonesToShow = this.milestoneData; // .filter((e): any => e.start >= this.periodStartDate && e.start <= this.periodEndDate);
-    this.drawMilestones(milestonesToShow, xAxis);
-  }
-
   // Set X axis
-  private initializeXAxis(): any {
-    return this.xAxis = d3.scaleTime()
+  private initializeXAxis(): void {
+    this.xAxis = d3.scaleTime()
       .domain([this.periodStartDate, this.periodEndDate])
       .range([0, this.viewBoxWidth - this.padding.left]);
+    this.setZoomScaleExtent();
   }
 
-  private refreshXAxis(xAxis): any {
-    xAxis.domain([this.periodStartDate, this.periodEndDate]);
+  private refreshXAxis(): void {
+    this.xAxis.domain([this.periodStartDate, this.periodEndDate]);
+    this.setZoomScaleExtent();
   }
 
   // Set Y axis
-  private initializeYAxis(): any {
-    return this.yAxis = d3.scaleBand()
+  private initializeYAxis(): void {
+    this.yAxis = d3.scaleBand()
       .domain(this.taskData.map(d => d.group))
       .range([0, this.viewBoxHeight]);
   }
 
-  /*
-  private initializeTestScale(): void {
-    // for testing
-    const xAxisBottom = this.svg.select('g.x-axis-bottom');
-    xAxisBottom.selectAll('line.xGridLines').remove();
-    xAxisBottom
-      // .attr('transform', 'translate(' + this.padding.left + ',250)')
-      .attr('stroke-width', 0.5)
-      .call(d3.axisBottom(this.xAxis)); // .tickFormat(this.formatDate));
-    xAxisBottom
-      // .attr('transform', 'translate(' + this.padding.left + ',250)')
-      .style('font-size', '6')
-      .style('stroke-dasharray', ('1,1'))
-      .attr('stroke-width', 0.1)
-      .call(d3.axisBottom(this.xAxis).ticks(10));
-  }
-  */
-
-  private drawVerticalGridLines(xAxis): void {
-
+  private drawVerticalGridLines(): void {
     const xGroup = this.svg.select('g.x-group');
 
     // vertical grid lines
-    xGroup.selectAll('line.xGridLines').remove();
     xGroup.selectAll('line.xGridLines')
-      .data(xAxis.ticks())
+      .data(this.xAxis.ticks())
       .enter()
       .append('line')
       .attr('class', 'xGridLines')
-      .attr('x1', d => xAxis(d))
-      .attr('x2', d => xAxis(d))
+      .attr('x1', d => this.xAxis(d))
+      .attr('x2', d => this.xAxis(d))
       .attr('y1', 0)
       .attr('y2', this.viewBoxHeight)  // TODO
       .style('stroke', '#eee');
   }
 
-  private drawHeaderX(xAxis): void {
+  redrawVerticalGridLines(): void {
+    const xGroup = this.svg.select('g.x-group');
 
+    // TODO: change instead of removing
+    // vertical grid lines
+    xGroup.selectAll('line.xGridLines').remove();
+    this.drawVerticalGridLines();
+  }
+
+  private drawHeaderX(): void {
     const xGroup = this.svg.select('g.x-group');
 
     // x-axis header background
-    xGroup.select('rect.headerX').remove();
     xGroup
       .append('rect')
       .attr('class', 'headerX')
@@ -362,25 +356,43 @@ export class ChartComponent implements OnInit, OnDestroy {
       .attr('height', (this.barHeight + this.barMargin));
 
     // x-axis labels
-    xGroup.selectAll('text.xAxisLabel').remove();
     xGroup.selectAll('text')
-      .data(xAxis.ticks())
+      .data(this.xAxis.ticks())
       .enter()
       .append('text')
       .attr('class', 'xAxisLabel')
       .text(d => this.formatDate(d))
-      .attr('x', d => xAxis(d) + 4)
+      .attr('x', d => this.xAxis(d) + 4)
       .attr('y', 18);
 
     // current date indicator
-    xGroup.select('line.currentDate').remove();
     xGroup
       .append('line')
       .attr('class', 'currentDate')
       .attr('x1', 0)
-      .attr('x2', Math.min(Math.max(xAxis(new Date()), 0), xAxis.range()[1]))
+      .attr('x2', Math.min(Math.max(this.xAxis(new Date()), 0), this.xAxis.range()[1]))
       .attr('y1', this.barHeight + this.barMargin)
       .attr('y2', this.barHeight + this.barMargin);
+  }
+
+  private redrawHeaderX(): void {
+    const xGroup = this.svg.select('g.x-group');
+
+    // TODO: change instead of removing
+    // x-axis labels
+    xGroup.selectAll('text.xAxisLabel').remove();
+    xGroup.selectAll('text')
+      .data(this.xAxis.ticks())
+      .enter()
+      .append('text')
+      .attr('class', 'xAxisLabel')
+      .text(d => this.formatDate(d))
+      .attr('x', d => this.xAxis(d) + 4)
+      .attr('y', 18);
+
+    // current date indicator
+    xGroup.select('line.currentDate')
+      .attr('x2', Math.min(Math.max(this.xAxis(new Date()), 0), this.xAxis.range()[1]));
   }
 
   private drawHeaderY(): void {
@@ -393,38 +405,35 @@ export class ChartComponent implements OnInit, OnDestroy {
 
     const yGroup = this.svg.select('g.y-group');
     // group titles as y-axis labels
-    yGroup.selectAll('text.groupTitle').remove();
     yGroup.selectAll('text.groupTitle')
-    .data(occurrences)
-    .enter()
-    .append('text')
-    .attr('class', 'groupTitle')
-    .text(d => d[0])
-    .attr('x', 5)
-    .attr('y', (d, i) => {
-      if (i > 0) {
-        sumOccurrences += occurrences[i - 1][1];
-        return sumOccurrences * (this.barHeightWithMargin)
-          + d[1] * (this.barHeightWithMargin) / 2;
-      } else {
-        return d[1] * (this.barHeightWithMargin) / 2;
-      }
-    })
-    .attr('fill', d => {
-      for (const item of this.groups) {
-        if (d[0] === item){
-          return d3.rgb(this.groupColors(item)).darker();
+      .data(occurrences)
+      .enter()
+      .append('text')
+      .attr('class', 'groupTitle')
+      .text(d => d[0])
+      .attr('x', 5)
+      .attr('y', (d, i) => {
+        if (i > 0) {
+          sumOccurrences += occurrences[i - 1][1];
+          return sumOccurrences * (this.barHeightWithMargin)
+            + d[1] * (this.barHeightWithMargin) / 2;
+        } else {
+          return d[1] * (this.barHeightWithMargin) / 2;
         }
-      }
-    });
+      })
+      .attr('fill', d => {
+        for (const item of this.groups) {
+          if (d[0] === item){
+            return d3.rgb(this.groupColors(item)).darker();
+          }
+        }
+      });
   }
 
   private drawGroups(): void {
-
     const yGroup = this.svg.select('g.y-group');
 
     // task group background color
-    yGroup.selectAll('rect.groupBackground').remove();
     yGroup.selectAll('rect.groupBackground')
       .data(this.taskData)
       .enter()
@@ -437,9 +446,7 @@ export class ChartComponent implements OnInit, OnDestroy {
       .attr('fill', d => this.groupColors(d.group));
   }
 
-  private drawMilestones(milestonesToShow, xAxis): void {
-
-    const dataGroup = this.svg.select('g.data-group');
+  private drawMilestones(milestonesToShow): void {
 
     const drag = d3.drag()
     .on('drag', (event: d3.D3DragEvent<any, any, any>) => {
@@ -455,7 +462,7 @@ export class ChartComponent implements OnInit, OnDestroy {
       eventMilestone.attr('transform', 'translate(' + xValueNew + ',' + yTransformValue + ')');
 
       // TODO: Wert persistent speichern
-      event.subject.start = xAxis.invert(xValueNew);
+      event.subject.start = this.xAxis.invert(xValueNew);
 
       this.showMilestoneTooltip(event.subject, event.sourceEvent.layerX, event.sourceEvent.layerY);
     });
@@ -464,14 +471,16 @@ export class ChartComponent implements OnInit, OnDestroy {
     const startMilestonesHeight = 200;
 
     // milestones
-    dataGroup.selectAll('g.milestoneEntry').remove();
+    const dataGroup = this.svg.select('g.data-group');
     const milestone = dataGroup.selectAll('g.milestoneEntry')
       .data(milestonesToShow)
       .enter()
       .append('g')
       .attr('class', 'milestoneEntry')
       .attr('id', (d) => 'milestoneEntry_' + d.id)
-      .attr('transform', (d, i) => 'translate(' + xAxis(d.start) + ',' + ((this.barHeightWithMargin * (i % 3)) + startMilestonesHeight) + ')')
+      .attr('transform', (d, i) =>
+        'translate(' + this.xAxis(d.start) + ','
+        + ((this.barHeightWithMargin * (i % 3)) + startMilestonesHeight) + ')')
       // .attr('transform', (d, i) => 'translate(' + xAxis(d.start) + ',' + (yAxis(d.group) + 50) + ')')
       .call(drag);
 
@@ -509,6 +518,18 @@ export class ChartComponent implements OnInit, OnDestroy {
       .call(this.wrapLabel, maxLabelWidth);
   }
 
+  redrawMilestones(): void {
+    // TODO: dynamic start milestone height / integrate milestones and tasks in groups together
+    const startMilestonesHeight = 200;
+
+    // milestones
+    const dataGroup = this.svg.select('g.data-group');
+
+    dataGroup.selectAll('g.milestoneEntry')
+      .attr('transform', (d, i) => 'translate(' + this.xAxis(d.start) + ','
+        + ((this.barHeightWithMargin * (i % 3)) + startMilestonesHeight) + ')');
+  }
+
   showMilestoneTooltip(d, x, y): void {
     this.tooltip
       .style('top', (y + 15) + 'px')
@@ -524,9 +545,7 @@ export class ChartComponent implements OnInit, OnDestroy {
       .style('opacity', 1);
   }
 
-  private drawTasks(tasksToShow, xAxis): void {
-
-    const dataGroup = this.svg.select('g.data-group');
+  private drawTasks(tasksToShow): void {
 
     const drag = d3.drag()
     .on('drag', (event: d3.D3DragEvent<any, any, any>) => {
@@ -538,15 +557,15 @@ export class ChartComponent implements OnInit, OnDestroy {
       const yTransformValue = parseSvg(eventTask.attr('transform')).translateY;
 
       const xValueStartNew = (xTransformValue + event.dx);
-      const xValueEndNew = xValueStartNew + ChartComponent.calculateBarWidth(event.subject, xAxis);
+      const xValueEndNew = xValueStartNew + this.calculateBarWidth(event.subject);
 
       eventTask.attr('transform', () => 'translate(' + xValueStartNew + ',' + yTransformValue + ')');
 
       // TODO: Werte persistent speichern
-      event.subject.start = xAxis.invert(xValueStartNew);
-      event.subject.end = xAxis.invert(xValueEndNew);
+      event.subject.start = this.xAxis.invert(xValueStartNew);
+      event.subject.end = this.xAxis.invert(xValueEndNew);
 
-      this.refreshLabelPosition(eventTask, xAxis);
+      this.refreshLabelPosition(eventTask);
 
       this.showTaskTooltip(event.subject, event.sourceEvent.layerX, event.sourceEvent.layerY);
     });
@@ -581,14 +600,14 @@ export class ChartComponent implements OnInit, OnDestroy {
       eventTask.select('rect.task').attr('width', widthNew);
 
       // TODO: Wert persistent speichern
-      event.subject.end = xAxis.invert(xTransformValue + widthNew);
+      event.subject.end = this.xAxis.invert(xTransformValue + widthNew);
 
       // update right drag bar handle position
       const xValueDragBarRight = eventTask.select('rect.dragBarRight').attr('x');
       const xValueDragBarRightNew = (+xValueDragBarRight + dragDx);
       eventTask.select('rect.dragBarRight').attr('x', xValueDragBarRightNew);
 
-      this.refreshLabelPosition(eventTask, xAxis);
+      this.refreshLabelPosition(eventTask);
 
       this.showTaskTooltip(event.subject, event.sourceEvent.layerX, event.sourceEvent.layerY);
     })
@@ -635,7 +654,7 @@ export class ChartComponent implements OnInit, OnDestroy {
       eventTask.select('rect.task').attr('x', +oldX + dragDx);
 
       // TODO: Wert persistent speichern
-      event.subject.start = xAxis.invert(xValueNew + oldX);
+      event.subject.start = this.xAxis.invert(xValueNew + oldX);
 
       eventTask.select('rect.task').attr('width', widthNew);
 
@@ -646,7 +665,7 @@ export class ChartComponent implements OnInit, OnDestroy {
       const xValueDragBarLeftNew = (+xValueDragBarLeft + dragDx);
       eventTask.select('rect.dragBarLeft').attr('x', xValueDragBarLeftNew);
 
-      this.refreshLabelPosition(eventTask, xAxis);
+      this.refreshLabelPosition(eventTask);
 
       this.showTaskTooltip(event.subject, event.sourceEvent.layerX, event.sourceEvent.layerY);
     })
@@ -677,20 +696,20 @@ export class ChartComponent implements OnInit, OnDestroy {
       const xValueDragBarRightNew = (+taskWidth + 5);
       eventTask.select('rect.dragBarRight').attr('x', xValueDragBarRightNew);
 
-      this.refreshLabelPosition(eventTask, xAxis);
+      this.refreshLabelPosition(eventTask);
     });
 
     const dragBarWidth = 5;
 
     // tasks
-    dataGroup.selectAll('g.taskEntry').remove();
+    const dataGroup = this.svg.select('g.data-group');
     const taskGroup = dataGroup.selectAll('g.taskEntry')
       .data(tasksToShow)
       .enter()
       .append('g')
       .attr('class', 'taskEntry')
       .attr('id', (d) => 'taskEntry_' + d.id)
-      .attr('transform', (d, i) => 'translate(' + xAxis(d.start) + ',' + (this.barHeightWithMargin * i) + ')')
+      .attr('transform', (d, i) => 'translate(' + this.xAxis(d.start) + ',' + (this.barHeightWithMargin * i) + ')')
       .call(drag);
 
     taskGroup
@@ -699,7 +718,7 @@ export class ChartComponent implements OnInit, OnDestroy {
       .style('fill', d => this.groupColors(d.group))
       .style('stroke', d => d3.rgb(this.groupColors(d.group)).darker())
       .attr('x', 0)
-      .attr('width', d => ChartComponent.calculateBarWidth(d, xAxis))
+      .attr('width', d => this.calculateBarWidth(d))
       .attr('y', 0)
       .attr('height', this.barHeight);
 
@@ -716,7 +735,7 @@ export class ChartComponent implements OnInit, OnDestroy {
 
     taskGroup
       .append('rect')
-      .attr('x', d => ChartComponent.calculateBarWidth(d, xAxis) + 5)
+      .attr('x', d => this.calculateBarWidth(d) + 5)
       .attr('y', 0)
       .attr('class', 'dragBarRight')
       .attr('height', this.barHeight)
@@ -774,13 +793,50 @@ export class ChartComponent implements OnInit, OnDestroy {
         const xValue = parseFloat(eventTask.select('rect.task').attr('x'));
         const xValueToAdd = Math.abs(Math.min(xTransformValue + xValue, 0)) + xValue;
 
-        return ChartComponent.calculateTaskLabelPosition(d, xAxis) + xValueToAdd;
+        return this.calculateTaskLabelPosition(d) + xValueToAdd;
       })
       .attr('y', (this.barHeight + this.barMargin) / 2)
       .attr('text-height', this.barHeight);
   }
 
-  refreshLabelPosition(eventTask, xAxis): void {
+  redrawTasks(): void {
+    // tasks
+    const dataGroup = this.svg.select('g.data-group');
+
+    const taskGroup = dataGroup.selectAll('g.taskEntry')
+      .attr('transform', (d, i) => 'translate(' + this.xAxis(d.start) + ',' + (this.barHeightWithMargin * i) + ')');
+
+    taskGroup.selectAll('rect.task')
+      .attr('width', d => this.calculateBarWidth(d));
+
+    taskGroup.selectAll('rect.dragBarRight')
+      .attr('x', d => this.calculateBarWidth(d) + 5);
+
+    // task labels
+    taskGroup.selectAll('text.taskLabel')
+      .attr('x', d => {
+
+        let xValueToAdd = 0;
+
+        if (this.isVisible(d)) {
+          const eventTask = dataGroup.select('#taskEntry_' + d.id);
+
+          const xTransformValue = parseSvg(eventTask.attr('transform')).translateX;
+          const xValue = parseFloat(eventTask.select('rect.task').attr('x'));
+
+          xValueToAdd = Math.abs(Math.min(xTransformValue + xValue, 0)) + xValue;
+        }
+
+        return this.calculateTaskLabelPosition(d) + xValueToAdd;
+      });
+  }
+
+  isVisible(d): boolean {
+    return !(this.xAxis(d.end) < this.xAxis.range()[0] ||
+      this.xAxis(d.start) > this.xAxis.range()[1]);
+  }
+
+  refreshLabelPosition(eventTask): void {
 
     const xTransformValue = parseSvg(eventTask.attr('transform')).translateX;
 
@@ -788,7 +844,7 @@ export class ChartComponent implements OnInit, OnDestroy {
     const xValueToAdd = Math.abs(Math.min(xTransformValue + xValue, 0)) + xValue;
 
     eventTask.select('text.taskLabel')
-      .attr('x', d => ChartComponent.calculateTaskLabelPosition(d, xAxis) + xValueToAdd)
+      .attr('x', d => this.calculateTaskLabelPosition(d) + xValueToAdd)
       .attr('y', (this.barHeight + this.barMargin) / 2);
   }
 
@@ -806,6 +862,21 @@ export class ChartComponent implements OnInit, OnDestroy {
       .style('display', 'block')
       .duration(500)
       .style('opacity', 1);
+  }
+
+  // get label position of a task depending on chart range so it is displayed centered on the visible part of the bar
+  private calculateTaskLabelPosition(d: any): number {
+    const xAxisStart = this.xAxis(d.start);
+    const xAxisEnd = this.xAxis(d.end);
+
+    const startPosition = Math.max(xAxisStart, this.xAxis.range()[0]);
+    const endPosition = Math.min(xAxisEnd, this.xAxis.range()[1]);
+
+    return (endPosition - startPosition) / 2;
+  }
+
+  private calculateBarWidth(task: any): number {
+    return this.xAxis(task.end) - this.xAxis(task.start);
   }
 
   wrapLabel(svgText, maxWidth): void {
@@ -846,5 +917,4 @@ export class ChartComponent implements OnInit, OnDestroy {
       }
     });
   }
-
 }
