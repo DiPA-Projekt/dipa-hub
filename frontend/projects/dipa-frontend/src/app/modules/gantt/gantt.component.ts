@@ -1,7 +1,7 @@
-import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {GanttControlsService} from './gantt-controls.service';
 import {ChartComponent} from './chart/chart.component';
-import {TimelineService} from './services/timeline.service';  // auf den "realistischeren" Service umschalten. 
+import {TimelineService} from './services/timeline.service';  // auf den "realistischeren" Service umschalten.
 import {forkJoin, Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 
@@ -16,14 +16,17 @@ import { TasksService } from 'dipa-api-client';
   templateUrl: './gantt.component.html',
   styleUrls: ['./gantt.component.scss']
 })
-export class GanttComponent implements OnInit {
+export class GanttComponent implements OnInit, OnDestroy {
 
-  @Output() dateChange: EventEmitter<any> = new EventEmitter();
+  // @Output() dateChange: EventEmitter<any> = new EventEmitter();
 
   @ViewChild('ganttChart', { static: true }) chart: ChartComponent;
 
   periodStartDate = new Date(2020, 0, 1);
   periodEndDate = new Date(2020, 11, 31);
+
+  periodStartDateSubscription;
+  periodEndDateSubscription;
 
   vm$: Observable<any>;
   vm_2$: Observable<any>;
@@ -37,7 +40,7 @@ export class GanttComponent implements OnInit {
 
   constructor(public ganttControlsService: GanttControlsService,
               private timelineService: TimelineService,
-              
+
               private timelinesService: TimelinesService,
               private milestonesService: MilestonesService,
               private tasksService: TasksService) {  }
@@ -70,6 +73,21 @@ export class GanttComponent implements OnInit {
 
 
 
+    this.periodStartDateSubscription = this.ganttControlsService.getPeriodStartDate()
+    .subscribe((data) => {
+      if (this.periodStartDate !== data) {
+        this.periodStartDate = data;
+      }
+    });
+
+    this.periodEndDateSubscription = this.ganttControlsService.getPeriodEndDate()
+    .subscribe((data) => {
+      if (this.periodEndDate !== data) {
+        this.periodEndDate = data;
+      }
+    });
+
+    this.vm$ = forkJoin([this.timelineService.getTaskData(), this.timelineService.getMilestoneTaskData()])
 
 
 
@@ -85,9 +103,9 @@ export class GanttComponent implements OnInit {
         const transformedTaskStartDates = [];
         const transformedTaskEndDates = [];
 
-        milestoneDates.forEach((x) => transformedMilestoneDates.push(new Date(x))); 
-        taskStartDates.forEach((x) => transformedTaskStartDates.push(new Date(x))); 
-        taskEndDates.forEach((x) =>   transformedTaskEndDates.push(new Date(x))); 
+        milestoneDates.forEach((x) => transformedMilestoneDates.push(new Date(x)));
+        taskStartDates.forEach((x) => transformedTaskStartDates.push(new Date(x)));
+        taskEndDates.forEach((x) =>   transformedTaskEndDates.push(new Date(x)));
 
         const datesArray: Date[] = [...transformedMilestoneDates, ...transformedTaskStartDates, ...transformedTaskEndDates];
 
@@ -148,21 +166,31 @@ export class GanttComponent implements OnInit {
           };
         }),
         tap( data => {
-          this.periodEndDate = data.periodEndDate;
-          this.periodStartDate = data.periodStartDate;
+          // this.periodEndDate = data.periodEndDate;
+          // this.periodStartDate = data.periodStartDate;
+
+          this.ganttControlsService.setPeriodStartDate(data.periodStartDate);
+          this.ganttControlsService.setPeriodEndDate(data.periodEndDate);
         })
       );
   }
 
+  ngOnDestroy(): void {
+    this.periodStartDateSubscription.unsubscribe();
+    this.periodEndDateSubscription.unsubscribe();
+  }
+
   changeStartDate(change: string, $event: any): void {
     if ($event.value) {
-      this.periodStartDate = $event.value;
+      // this.periodStartDate = $event.value;
+      this.ganttControlsService.setPeriodStartDate($event.value);
     }
   }
 
   changeEndDate(change: string, $event: any): void {
     if ($event.value) {
-      this.periodEndDate = $event.value;
+      // this.periodEndDate = $event.value;
+      this.ganttControlsService.setPeriodEndDate($event.value);
     }
   }
 

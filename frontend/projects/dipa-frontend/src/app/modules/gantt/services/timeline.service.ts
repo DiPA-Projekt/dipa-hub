@@ -10,7 +10,7 @@ export class TimelineService {
     {
       id: 1,
       name: 'Projektstart',
-      group: 'Projekt B',
+      group: 'Projekt D',
       start: new Date(2020, 1, 1),
       parentId: -1,
       type: 'MILESTONE',
@@ -19,7 +19,7 @@ export class TimelineService {
     {
       id: 2,
       name: 'Kick Off',
-      group: 'Projekt B',
+      group: 'Projekt D',
       start: new Date(2020, 2, 1),
       parentId: -1,
       type: 'MILESTONE',
@@ -28,7 +28,7 @@ export class TimelineService {
     {
       id: 3,
       name: 'Zuschlagserteilung',
-      group: 'Projekt B',
+      group: 'Projekt D',
       start: new Date(2020, 8, 1),
       parentId: -1,
       type: 'MILESTONE',
@@ -37,7 +37,7 @@ export class TimelineService {
     {
       id: 4,
       name: 'Rolloutdrehbuch',
-      group: 'Projekt B',
+      group: 'Projekt D',
       start: new Date(2020, 11, 1),
       parentId: -1,
       type: 'MILESTONE',
@@ -46,7 +46,7 @@ export class TimelineService {
     {
       id: 5,
       name: 'Beginn Rollout Phase 1',
-      group: 'Projekt B',
+      group: 'Projekt D',
       start: new Date(2021, 1, 1),
       parentId: -1,
       type: 'MILESTONE',
@@ -55,7 +55,7 @@ export class TimelineService {
     {
       id: 6,
       name: 'Beginn Rollout Phase 2',
-      group: 'Projekt B',
+      group: 'Projekt D',
       start: new Date(2021, 4, 1),
       parentId: -1,
       type: 'MILESTONE',
@@ -64,7 +64,7 @@ export class TimelineService {
     {
       id: 7,
       name: 'Ende Phase 1',
-      group: 'Projekt B',
+      group: 'Projekt D',
       start: new Date(2021, 5, 1),
       parentId: -1,
       type: 'MILESTONE',
@@ -73,7 +73,7 @@ export class TimelineService {
     {
       id: 8,
       name: 'Beginn Rollout Phase 3',
-      group: 'Projekt B',
+      group: 'Projekt D',
       start: new Date(2021, 6, 1),
       parentId: -1,
       type: 'MILESTONE',
@@ -82,7 +82,7 @@ export class TimelineService {
     {
       id: 9,
       name: 'Ende Phase 2',
-      group: 'Projekt B',
+      group: 'Projekt D',
       start: new Date(2021, 8, 1),
       parentId: -1,
       type: 'MILESTONE',
@@ -91,7 +91,7 @@ export class TimelineService {
     {
       id: 10,
       name: 'Ende Phase 3',
-      group: 'Projekt B',
+      group: 'Projekt D',
       start: new Date(2021, 11, 1),
       parentId: -1,
       type: 'MILESTONE',
@@ -100,7 +100,7 @@ export class TimelineService {
     {
       id: 11,
       name: 'Projektabschlussbericht',
-      group: 'Projekt B',
+      group: 'Projekt D',
       start: new Date(2022, 2, 1),
       parentId: -1,
       type: 'MILESTONE',
@@ -109,7 +109,7 @@ export class TimelineService {
     {
       id: 12,
       name: 'Projektende',
-      group: 'Projekt B',
+      group: 'Projekt D',
       start: new Date(2022, 5, 1),
       parentId: -1,
       type: 'MILESTONE',

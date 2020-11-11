@@ -8,7 +8,7 @@
             <password>${env.GITHUB_TOKEN}</password>
         </server>
         <server>
-            <id>mvp.dipa.online</id>
+            <id>docker.dipa.online</id>
             <username>${env.DOCKER_REGISTRY_USERNAME}</username>
             <password>${env.DOCKER_REGISTRY_TOKEN}</password>
         </server>

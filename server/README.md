@@ -29,7 +29,7 @@ Hier für müssen allerdings in der Maven Settings XML passende Credentials ange
 
 ```xml
 	<server>
-		<id>mvp.dipa.online</id>
+		<id>docker.dipa.online</id>
 		<username><your-user-name></username>
 		<password>your-password</password>
 	</server>

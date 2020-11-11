@@ -3,6 +3,8 @@ package online.dipa.hub.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.trace.http.HttpTraceRepository;
+import org.springframework.boot.actuate.trace.http.InMemoryHttpTraceRepository;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.embedded.tomcat.ConfigurableTomcatWebServerFactory;
 import org.springframework.boot.web.server.ErrorPage;
@@ -27,5 +29,4 @@ public class Application {
             container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/index.html"));
         };
     }
-
 }
