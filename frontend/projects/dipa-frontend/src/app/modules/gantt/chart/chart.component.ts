@@ -31,7 +31,6 @@ export class ChartComponent implements OnInit, OnDestroy {
   private viewBoxHeight = 400;
   private viewBoxWidth = 750;
 
-  // TODO: change to fixed height and variable length
   private width = '100%';
   // private height = '100%';
 
@@ -113,7 +112,7 @@ export class ChartComponent implements OnInit, OnDestroy {
     this.groups = [...new Set(this.taskData.map(item => item.group))];
 
     this.groupsUnfiltered = [];
-    for (const item of this.taskData) { // TODO: groups also for milestones
+    for (const item of this.taskData) {
       this.groupsUnfiltered.push(item.group);
     }
 
@@ -133,7 +132,6 @@ export class ChartComponent implements OnInit, OnDestroy {
 
   private drawChart(): void {
 
-    // TODO
     if (this.groups == null) {
       return;
     }
@@ -175,12 +173,8 @@ export class ChartComponent implements OnInit, OnDestroy {
     this.drawHeaderY();
     this.drawGroups();
 
-    // TODO: draw only tasks which are visible but keep the distance between the rows
-    const tasksToShow = this.taskData; // .filter((e): any => !(e.start >= this.periodEndDate || e.end <= this.periodStartDate));
-    this.drawTasks(tasksToShow);
-    // draw only milestones which are visible
-    const milestonesToShow = this.milestoneData; // .filter((e): any => e.start >= this.periodStartDate && e.start <= this.periodEndDate);
-    this.drawMilestones(milestonesToShow);
+    this.drawTasks(this.taskData);
+    this.drawMilestones(this.milestoneData);
   }
 
   private createSvg(): void {
@@ -330,14 +324,13 @@ export class ChartComponent implements OnInit, OnDestroy {
       .attr('x1', d => this.xAxis(d))
       .attr('x2', d => this.xAxis(d))
       .attr('y1', 0)
-      .attr('y2', this.viewBoxHeight)  // TODO
+      .attr('y2', this.viewBoxHeight)
       .style('stroke', '#eee');
   }
 
   redrawVerticalGridLines(): void {
     const xGroup = this.svg.select('g.x-group');
 
-    // TODO: change instead of removing
     // vertical grid lines
     xGroup.selectAll('line.xGridLines').remove();
     this.drawVerticalGridLines();
@@ -378,7 +371,6 @@ export class ChartComponent implements OnInit, OnDestroy {
   private redrawHeaderX(): void {
     const xGroup = this.svg.select('g.x-group');
 
-    // TODO: change instead of removing
     // x-axis labels
     xGroup.selectAll('text.xAxisLabel').remove();
     xGroup.selectAll('text')
@@ -461,13 +453,11 @@ export class ChartComponent implements OnInit, OnDestroy {
 
       eventMilestone.attr('transform', 'translate(' + xValueNew + ',' + yTransformValue + ')');
 
-      // TODO: Wert persistent speichern
       event.subject.start = this.xAxis.invert(xValueNew);
 
       this.showMilestoneTooltip(event.subject, event.sourceEvent.layerX, event.sourceEvent.layerY);
     });
 
-    // TODO: dynamic start milestone height / integrate milestones and tasks in groups together
     const startMilestonesHeight = 200;
 
     // milestones
@@ -503,7 +493,6 @@ export class ChartComponent implements OnInit, OnDestroy {
         .style('opacity', 0);
       });
 
-    // TODO: calculate optimal label width by collision detection
     const maxLabelWidth = 40;
 
     // milestone labels
@@ -519,7 +508,6 @@ export class ChartComponent implements OnInit, OnDestroy {
   }
 
   redrawMilestones(): void {
-    // TODO: dynamic start milestone height / integrate milestones and tasks in groups together
     const startMilestonesHeight = 200;
 
     // milestones
@@ -561,7 +549,6 @@ export class ChartComponent implements OnInit, OnDestroy {
 
       eventTask.attr('transform', () => 'translate(' + xValueStartNew + ',' + yTransformValue + ')');
 
-      // TODO: Werte persistent speichern
       event.subject.start = this.xAxis.invert(xValueStartNew);
       event.subject.end = this.xAxis.invert(xValueEndNew);
 
@@ -599,7 +586,6 @@ export class ChartComponent implements OnInit, OnDestroy {
 
       eventTask.select('rect.task').attr('width', widthNew);
 
-      // TODO: Wert persistent speichern
       event.subject.end = this.xAxis.invert(xTransformValue + widthNew);
 
       // update right drag bar handle position
@@ -653,7 +639,6 @@ export class ChartComponent implements OnInit, OnDestroy {
 
       eventTask.select('rect.task').attr('x', +oldX + dragDx);
 
-      // TODO: Wert persistent speichern
       event.subject.start = this.xAxis.invert(xValueNew + oldX);
 
       eventTask.select('rect.task').attr('width', widthNew);
