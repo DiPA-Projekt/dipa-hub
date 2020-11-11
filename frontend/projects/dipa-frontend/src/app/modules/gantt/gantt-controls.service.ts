@@ -20,7 +20,7 @@ export class GanttControlsService {
   }
 
 
-  getPeriodStartDate(): Observable<any> {
+  getPeriodStartDate(): Observable<Date> {
     return this.periodStartDate;
   }
 
@@ -29,7 +29,7 @@ export class GanttControlsService {
   }
 
 
-  getPeriodEndDate(): Observable<any> {
+  getPeriodEndDate(): Observable<Date> {
     return this.periodEndDate;
   }
 
