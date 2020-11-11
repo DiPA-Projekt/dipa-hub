@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,10 +10,31 @@ export class GanttControlsService {
   private isFullscreen = new BehaviorSubject<boolean>(false);
   isFullscreen$ = this.isFullscreen.asObservable();
 
+  private periodStartDate = new BehaviorSubject<Date>(new Date(2020, 0, 1));
+  private periodEndDate = new BehaviorSubject<Date>(new Date(2020, 11, 31));
+
   constructor() { }
 
   setIsFullscreen(isFullscreen: boolean): void {
     this.isFullscreen.next(isFullscreen);
+  }
+
+
+  getPeriodStartDate(): Observable<Date> {
+    return this.periodStartDate;
+  }
+
+  setPeriodStartDate(periodStartDate: Date): void {
+    this.periodStartDate.next(periodStartDate);
+  }
+
+
+  getPeriodEndDate(): Observable<Date> {
+    return this.periodEndDate;
+  }
+
+  setPeriodEndDate(periodEndDate: Date): void {
+    this.periodEndDate.next(periodEndDate);
   }
 
 }

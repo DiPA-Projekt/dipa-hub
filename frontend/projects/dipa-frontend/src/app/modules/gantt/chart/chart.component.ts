@@ -1,6 +1,8 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 
 import * as d3 from 'd3';
+import {parseSvg} from 'd3-interpolate/src/transform/parse';
+import {GanttControlsService} from '../gantt-controls.service';
 
 @Component({
   selector: 'app-chart',
@@ -9,25 +11,26 @@ import * as d3 from 'd3';
   encapsulation: ViewEncapsulation.None
 })
 
-export class ChartComponent implements OnInit, OnChanges {
+export class ChartComponent implements OnInit, OnDestroy {
 
-  constructor() { }
+  constructor(public ganttControlsService: GanttControlsService) { }
 
   @Input() milestoneData = [];
-
   @Input() taskData = [];
 
-  @Input() periodStartDate;
+  periodStartDate: Date;
+  periodEndDate: Date;
 
-  @Input() periodEndDate;
+  periodStartDateSubscription;
+  periodEndDateSubscription;
 
   // element for chart
   private svg;
+  private zoomElement;
 
   private viewBoxHeight = 400;
   private viewBoxWidth = 750;
 
-  // TODO: change to fixed height and variable length
   private width = '100%';
   // private height = '100%';
 
@@ -48,6 +51,10 @@ export class ChartComponent implements OnInit, OnChanges {
   private tooltip;
 
   private dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
+
+  private dragDxStack = 0;
+
+  private zoom;
 
   // See: http://stackoverflow.com/questions/14227981/count-how-many-strings-in-an-array-have-duplicates-in-the-same-array
   private static getCounts(arr): any {
@@ -78,6 +85,29 @@ export class ChartComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    this.periodStartDateSubscription = this.ganttControlsService.getPeriodStartDate()
+    .subscribe((data) => {
+      if (this.periodStartDate !== data) {
+        this.periodStartDate = data;
+
+        if (this.xAxis) {
+          this.refreshXAxis();
+          this.updateChart();
+        }
+      }
+    });
+
+    this.periodEndDateSubscription = this.ganttControlsService.getPeriodEndDate()
+    .subscribe((data) => {
+      if (this.periodEndDate !== data) {
+        this.periodEndDate = data;
+
+        if (this.xAxis) {
+          this.refreshXAxis();
+          this.updateChart();
+        }
+      }
+    });
 
     this.groups = [...new Set(this.taskData.map(item => item.group))];
 
@@ -95,15 +125,13 @@ export class ChartComponent implements OnInit, OnChanges {
       .attr('class', 'tooltip');
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.periodStartDate || changes.periodEndDate) {
-      this.drawChart();
-    }
+  ngOnDestroy(): void {
+    this.periodStartDateSubscription.unsubscribe();
+    this.periodEndDateSubscription.unsubscribe();
   }
 
   private drawChart(): void {
 
-    // TODO
     if (this.groups == null) {
       return;
     }
@@ -127,9 +155,17 @@ export class ChartComponent implements OnInit, OnChanges {
         months: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
         shortMonths: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez']
       });
+
+      // zoom out a bit to show all data at start
+      this.svg
+        .transition()
+        .duration(0)
+        .call(this.zoom.scaleBy, 0.9)
+        .on('end', () => this.refreshXAxis());
     }
 
-    this.initializeAxes();
+    this.initializeXAxis();
+    this.initializeYAxis();
 
     this.drawHeaderX();
     this.drawVerticalGridLines();
@@ -137,12 +173,8 @@ export class ChartComponent implements OnInit, OnChanges {
     this.drawHeaderY();
     this.drawGroups();
 
-    // draw only tasks which are visible
-    const tasksToShow = this.taskData.filter((e): any => !(e.start >= this.periodEndDate || e.end <= this.periodStartDate));
-    this.drawTasks(tasksToShow);
-    // draw only milestones which are visible
-    const milestonesToShow = this.milestoneData.filter((e): any => e.start >= this.periodStartDate && e.start <= this.periodEndDate);
-    this.drawMilestones(milestonesToShow);
+    this.drawTasks(this.taskData);
+    this.drawMilestones(this.milestoneData);
   }
 
   private createSvg(): void {
@@ -177,6 +209,19 @@ export class ChartComponent implements OnInit, OnChanges {
     const yGroup = this.svg.append('g').attr('class', 'y-group');
     yGroup.attr('transform', 'translate(0,' + (this.padding.top + this.barMargin) + ')');
 
+    this.zoom = d3.zoom()
+      .on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event); });
+
+    this.zoomElement = this.svg
+      .append('rect')
+      .attr('class', 'zoomAreaX')
+      .attr('width', this.viewBoxWidth - this.padding.left)
+      .attr('height', this.viewBoxHeight - this.padding.top)
+      .style('fill', 'none')
+      .style('pointer-events', 'all')
+      .attr('transform', 'translate(' + this.padding.left + ',' + this.padding.top + ')')
+      .call(this.zoom);
+
     const dataGroup = this.svg.append('g').attr('class', 'data-group');
     dataGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + this.barMargin) + ')');
 
@@ -184,24 +229,93 @@ export class ChartComponent implements OnInit, OnChanges {
       .attr('mask', 'url(#dataMask)');
   }
 
-  private initializeAxes(): void {
-    // Set X axis
-    this.xAxis = d3.scaleTime()
-      .range([0, this.viewBoxWidth - this.padding.left]);
-    this.xAxis.domain([this.periodStartDate, this.periodEndDate]);
+  onZoom(event: d3.D3ZoomEvent<any, any>): void {
 
-    // Set Y axis
+    const eventTransform: d3.ZoomTransform = event.transform;
+
+    if (eventTransform.k === 1 && eventTransform.x === 0 && eventTransform.y === 0) {
+      return;
+    }
+
+    // this check is needed to prevent additional zooming on the minimum/maximum zoom level
+    // because zoom.transform is reset and the zoom levels are reinitiated every time
+    if (event.sourceEvent) {
+      const deltaY = event.sourceEvent.deltaY;
+      if (deltaY < 0 && eventTransform.y > 0 || deltaY > 0 && eventTransform.y < 0) {
+        return;
+      }
+    }
+
+    const xAxisRescaled = eventTransform.rescaleX<any>(this.xAxis);
+
+    const start = xAxisRescaled.domain()[0];
+    const end = xAxisRescaled.domain()[1];
+
+    this.zoomTo(start, end);
+
+    // reset the transform so the scale can be changed from other elements like dropdown menu
+    this.zoomElement.call(this.zoom.transform, d3.zoomIdentity);
+
+    this.periodStartDate = xAxisRescaled.invert(xAxisRescaled.range()[0]);
+    this.periodEndDate = xAxisRescaled.invert(xAxisRescaled.range()[1]);
+
+    this.ganttControlsService.setPeriodStartDate(this.periodStartDate);
+    this.ganttControlsService.setPeriodEndDate(this.periodEndDate);
+  }
+
+  zoomTo(start: Date, end: Date): void {
+    this.xAxis.domain([start, end]);
+    this.setZoomScaleExtent();
+
+    this.updateChart();
+  }
+
+  updateChart(): void {
+    this.redrawHeaderX();
+    this.redrawVerticalGridLines();
+
+    this.redrawTasks();
+    this.redrawMilestones();
+  }
+
+  // set minimum and maximum zoom levels
+  setZoomScaleExtent(): void {
+    const minTimeMs = 1.2096e+9; // 14 days to show 1 day ticks
+    const maxTimeMs = 3.1536e+11; // ~ 10 years
+
+    const widthMs = this.periodEndDate.getTime() - this.periodStartDate.getTime();
+
+    const minScaleFactor = widthMs / maxTimeMs;
+    const maxScaleFactor = widthMs / minTimeMs;
+
+    this.zoom
+      .scaleExtent([minScaleFactor, maxScaleFactor]);
+  }
+
+  // Set X axis
+  private initializeXAxis(): void {
+    this.xAxis = d3.scaleTime()
+      .domain([this.periodStartDate, this.periodEndDate])
+      .range([0, this.viewBoxWidth - this.padding.left]);
+    this.setZoomScaleExtent();
+  }
+
+  private refreshXAxis(): void {
+    this.xAxis.domain([this.periodStartDate, this.periodEndDate]);
+    this.setZoomScaleExtent();
+  }
+
+  // Set Y axis
+  private initializeYAxis(): void {
     this.yAxis = d3.scaleBand()
       .domain(this.taskData.map(d => d.group))
       .range([0, this.viewBoxHeight]);
   }
 
   private drawVerticalGridLines(): void {
-
     const xGroup = this.svg.select('g.x-group');
 
     // vertical grid lines
-    xGroup.selectAll('line.xGridLines').remove();
     xGroup.selectAll('line.xGridLines')
       .data(this.xAxis.ticks())
       .enter()
@@ -210,16 +324,22 @@ export class ChartComponent implements OnInit, OnChanges {
       .attr('x1', d => this.xAxis(d))
       .attr('x2', d => this.xAxis(d))
       .attr('y1', 0)
-      .attr('y2', this.viewBoxHeight)  // TODO
+      .attr('y2', this.viewBoxHeight)
       .style('stroke', '#eee');
   }
 
-  private drawHeaderX(): void {
+  redrawVerticalGridLines(): void {
+    const xGroup = this.svg.select('g.x-group');
 
+    // vertical grid lines
+    xGroup.selectAll('line.xGridLines').remove();
+    this.drawVerticalGridLines();
+  }
+
+  private drawHeaderX(): void {
     const xGroup = this.svg.select('g.x-group');
 
     // x-axis header background
-    xGroup.select('rect.headerX').remove();
     xGroup
       .append('rect')
       .attr('class', 'headerX')
@@ -227,6 +347,29 @@ export class ChartComponent implements OnInit, OnChanges {
       .attr('y', 0)
       .attr('width', (this.viewBoxWidth - this.padding.left))
       .attr('height', (this.barHeight + this.barMargin));
+
+    // x-axis labels
+    xGroup.selectAll('text')
+      .data(this.xAxis.ticks())
+      .enter()
+      .append('text')
+      .attr('class', 'xAxisLabel')
+      .text(d => this.formatDate(d))
+      .attr('x', d => this.xAxis(d) + 4)
+      .attr('y', 18);
+
+    // current date indicator
+    xGroup
+      .append('line')
+      .attr('class', 'currentDate')
+      .attr('x1', 0)
+      .attr('x2', Math.min(Math.max(this.xAxis(new Date()), 0), this.xAxis.range()[1]))
+      .attr('y1', this.barHeight + this.barMargin)
+      .attr('y2', this.barHeight + this.barMargin);
+  }
+
+  private redrawHeaderX(): void {
+    const xGroup = this.svg.select('g.x-group');
 
     // x-axis labels
     xGroup.selectAll('text.xAxisLabel').remove();
@@ -240,14 +383,8 @@ export class ChartComponent implements OnInit, OnChanges {
       .attr('y', 18);
 
     // current date indicator
-    xGroup.select('line.currentDate').remove();
-    xGroup
-      .append('line')
-      .attr('class', 'currentDate')
-      .attr('x1', 0)
-      .attr('x2', Math.min(this.xAxis(new Date()), this.xAxis.range()[1]))
-      .attr('y1', this.barHeight + this.barMargin)
-      .attr('y2', this.barHeight + this.barMargin);
+    xGroup.select('line.currentDate')
+      .attr('x2', Math.min(Math.max(this.xAxis(new Date()), 0), this.xAxis.range()[1]));
   }
 
   private drawHeaderY(): void {
@@ -260,38 +397,35 @@ export class ChartComponent implements OnInit, OnChanges {
 
     const yGroup = this.svg.select('g.y-group');
     // group titles as y-axis labels
-    yGroup.selectAll('text.groupTitle').remove();
     yGroup.selectAll('text.groupTitle')
-    .data(occurrences)
-    .enter()
-    .append('text')
-    .attr('class', 'groupTitle')
-    .text(d => d[0])
-    .attr('x', 5)
-    .attr('y', (d, i) => {
-      if (i > 0) {
-        sumOccurrences += occurrences[i - 1][1];
-        return sumOccurrences * (this.barHeightWithMargin)
-          + d[1] * (this.barHeightWithMargin) / 2;
-      } else {
-        return d[1] * (this.barHeightWithMargin) / 2;
-      }
-    })
-    .attr('fill', d => {
-      for (const item of this.groups) {
-        if (d[0] === item){
-          return d3.rgb(this.groupColors(item)).darker();
+      .data(occurrences)
+      .enter()
+      .append('text')
+      .attr('class', 'groupTitle')
+      .text(d => d[0])
+      .attr('x', 5)
+      .attr('y', (d, i) => {
+        if (i > 0) {
+          sumOccurrences += occurrences[i - 1][1];
+          return sumOccurrences * (this.barHeightWithMargin)
+            + d[1] * (this.barHeightWithMargin) / 2;
+        } else {
+          return d[1] * (this.barHeightWithMargin) / 2;
         }
-      }
-    });
+      })
+      .attr('fill', d => {
+        for (const item of this.groups) {
+          if (d[0] === item){
+            return d3.rgb(this.groupColors(item)).darker();
+          }
+        }
+      });
   }
 
   private drawGroups(): void {
-
     const yGroup = this.svg.select('g.y-group');
 
     // task group background color
-    yGroup.selectAll('rect.groupBackground').remove();
     yGroup.selectAll('rect.groupBackground')
       .data(this.taskData)
       .enter()
@@ -306,141 +440,466 @@ export class ChartComponent implements OnInit, OnChanges {
 
   private drawMilestones(milestonesToShow): void {
 
-    const dataGroup = this.svg.select('g.data-group');
+    const drag = d3.drag()
+    .on('drag', (event: d3.D3DragEvent<any, any, any>) => {
+
+      // milestones
+      const eventMilestone = dataGroup.select('#milestoneEntry_' + event.subject.id);
+
+      const xTransformValue = parseSvg(eventMilestone.attr('transform')).translateX;
+      const yTransformValue = parseSvg(eventMilestone.attr('transform')).translateY;
+
+      const xValueNew = (xTransformValue + event.dx);
+
+      eventMilestone.attr('transform', 'translate(' + xValueNew + ',' + yTransformValue + ')');
+
+      event.subject.start = this.xAxis.invert(xValueNew);
+
+      this.showMilestoneTooltip(event.subject, event.sourceEvent.layerX, event.sourceEvent.layerY);
+    });
+
+    const startMilestonesHeight = 200;
 
     // milestones
-    dataGroup.selectAll('path.milestone').remove();
-    dataGroup.selectAll('dot.milestone')
+    const dataGroup = this.svg.select('g.data-group');
+    const milestone = dataGroup.selectAll('g.milestoneEntry')
       .data(milestonesToShow)
       .enter()
+      .append('g')
+      .attr('class', 'milestoneEntry')
+      .attr('id', (d) => 'milestoneEntry_' + d.id)
+      .attr('transform', (d, i) =>
+        'translate(' + this.xAxis(d.start) + ','
+        + ((this.barHeightWithMargin * (i % 3)) + startMilestonesHeight) + ')')
+      // .attr('transform', (d, i) => 'translate(' + xAxis(d.start) + ',' + (yAxis(d.group) + 50) + ')')
+      .call(drag);
+
+    milestone
       .append('path')
       .attr('class', 'milestone')
-      .attr('transform', (d) => 'translate(' + this.xAxis(d.start) + ','
-        + (this.yAxis(d.group) + 50) + ') scale(1.5 1)')
+      .attr('transform', 'scale(1.5 1)')
       .attr('d', d3.symbol().type(d3.symbolDiamond))
       .style('fill', d => this.groupColors(d.group))
-      .style('stroke', d => d3.rgb(this.groupColors(d.group)).darker())
+      .style('stroke', d => d3.rgb(this.groupColors(d.group)).darker());
+
+    milestone
       .on('mouseover', (event, d) => {
+        this.showMilestoneTooltip(d, event.layerX, event.layerY);
+      })
+      .on('mouseout', () => {
         this.tooltip
-        .style('top', (event.layerY + 15) + 'px')
-        .style('left', (event.layerX) + 'px')
-        .style('display', 'block')
-        .attr('font-size', 11)
-        .html(`${d.name}<br>`
-          + `Projekt: ${d.group}<br>`
-          + `Fällig: ${new Date(d.start).toLocaleDateString('de-DE', this.dateOptions)}<br>`
-          + `Abgeschlossen: ${d.complete}<br>`)
-        .transition()
-        .duration(500)
-        .style('opacity', 1);
-    })
-    .on('mouseout', () => {
-      this.tooltip
         .transition()
         .duration(500)
         .style('opacity', 0);
-    });
+      });
+
+    const maxLabelWidth = 40;
 
     // milestone labels
-    dataGroup.selectAll('text.milestoneLabel').remove();
-    dataGroup.selectAll('text.milestoneLabel')
-      .data(milestonesToShow)
-      .enter()
+    milestone
       .append('text')
       .text(d => d.name)
       .attr('class', 'milestoneLabel')
-      .attr('x', d => this.xAxis(d.start) + 10)
-      .attr('y', d => this.yAxis(d.group) + 55)
-      .style('fill', d => d3.rgb(this.groupColors(d.group)).darker());
+      .attr('x', 0)
+      .attr('y', 20)
+      .style('fill', d => d3.rgb(this.groupColors(d.group)).darker())
+      .attr('text-anchor', 'middle')
+      .call(this.wrapLabel, maxLabelWidth);
+  }
+
+  redrawMilestones(): void {
+    const startMilestonesHeight = 200;
+
+    // milestones
+    const dataGroup = this.svg.select('g.data-group');
+
+    dataGroup.selectAll('g.milestoneEntry')
+      .attr('transform', (d, i) => 'translate(' + this.xAxis(d.start) + ','
+        + ((this.barHeightWithMargin * (i % 3)) + startMilestonesHeight) + ')');
+  }
+
+  showMilestoneTooltip(d, x, y): void {
+    this.tooltip
+      .style('top', (y + 15) + 'px')
+      .style('left', (x) + 'px')
+      .style('display', 'block')
+      .attr('font-size', 11)
+      .html(`${d.name}<br>`
+        + `Projekt: ${d.group}<br>`
+        + `Fällig: ${new Date(d.start).toLocaleDateString('de-DE', this.dateOptions)}<br>`
+        + `Abgeschlossen: ${d.complete}<br>`)
+      .transition()
+      .duration(500)
+      .style('opacity', 1);
   }
 
   private drawTasks(tasksToShow): void {
 
-    const dataGroup = this.svg.select('g.data-group');
+    const drag = d3.drag()
+    .on('drag', (event: d3.D3DragEvent<any, any, any>) => {
+
+      // tasks
+      const eventTask = dataGroup.select('#taskEntry_' + event.subject.id);
+
+      const xTransformValue = parseSvg(eventTask.attr('transform')).translateX;
+      const yTransformValue = parseSvg(eventTask.attr('transform')).translateY;
+
+      const xValueStartNew = (xTransformValue + event.dx);
+      const xValueEndNew = xValueStartNew + this.calculateBarWidth(event.subject);
+
+      eventTask.attr('transform', () => 'translate(' + xValueStartNew + ',' + yTransformValue + ')');
+
+      event.subject.start = this.xAxis.invert(xValueStartNew);
+      event.subject.end = this.xAxis.invert(xValueEndNew);
+
+      this.refreshLabelPosition(eventTask);
+
+      this.showTaskTooltip(event.subject, event.sourceEvent.layerX, event.sourceEvent.layerY);
+    });
+
+    const dragRight = d3.drag()
+    .on('drag', (event: d3.D3DragEvent<any, any, any>) => {
+
+      let dragDx = event.dx;
+
+      // task
+      const eventTask = dataGroup.select('#taskEntry_' + event.subject.id);
+
+      const width = eventTask.select('rect.task').attr('width');
+      const xTransformValue = parseSvg(eventTask.attr('transform')).translateX;
+
+      // do not allow negative bar width and remember dx values on a stack
+      const widthNew = (+width + dragDx + this.dragDxStack);
+
+      if (widthNew <= 0) {
+        this.dragDxStack += dragDx;
+        return;
+      } else if (this.dragDxStack < 0) {
+        if (this.dragDxStack + dragDx > 0) {
+          dragDx += this.dragDxStack;
+          this.dragDxStack = 0;
+        } else {
+          this.dragDxStack += dragDx;
+          return;
+        }
+      }
+
+      eventTask.select('rect.task').attr('width', widthNew);
+
+      event.subject.end = this.xAxis.invert(xTransformValue + widthNew);
+
+      // update right drag bar handle position
+      const xValueDragBarRight = eventTask.select('rect.dragBarRight').attr('x');
+      const xValueDragBarRightNew = (+xValueDragBarRight + dragDx);
+      eventTask.select('rect.dragBarRight').attr('x', xValueDragBarRightNew);
+
+      this.refreshLabelPosition(eventTask);
+
+      this.showTaskTooltip(event.subject, event.sourceEvent.layerX, event.sourceEvent.layerY);
+    })
+    .on('end', (event: d3.D3DragEvent<any, any, any>) => {
+      this.dragDxStack = 0;
+    });
+
+    const dragLeft = d3.drag()
+    .on('drag', (event: d3.D3DragEvent<any, any, any>) => {
+
+      let dragDx = event.dx;
+
+      // task
+      const eventTask = dataGroup.select('#taskEntry_' + event.subject.id);
+
+      const oldX = parseFloat(eventTask.select('rect.task').attr('x'));
+
+      const width = eventTask.select('rect.task').attr('width');
+
+      const xTransformValue = parseSvg(eventTask.attr('transform')).translateX;
+
+      const xValueNew = (xTransformValue + event.dx);
+
+      // do not allow negative bar width and remember dx values on a stack
+      const widthNew = (+width - dragDx - this.dragDxStack);
+
+      if (widthNew <= 0) {
+        this.dragDxStack += dragDx;
+        return;
+      } else if (this.dragDxStack > 0) {
+        if (this.dragDxStack + dragDx < 0) {
+          dragDx += this.dragDxStack;
+          this.dragDxStack = 0;
+        } else {
+          this.dragDxStack += dragDx;
+          return;
+        }
+      }
+
+      if (widthNew <= 0) {
+        return;
+      }
+
+      eventTask.select('rect.task').attr('x', +oldX + dragDx);
+
+      event.subject.start = this.xAxis.invert(xValueNew + oldX);
+
+      eventTask.select('rect.task').attr('width', widthNew);
+
+      ////////
+
+      // update left drag bar handle position
+      const xValueDragBarLeft = eventTask.select('rect.dragBarLeft').attr('x');
+      const xValueDragBarLeftNew = (+xValueDragBarLeft + dragDx);
+      eventTask.select('rect.dragBarLeft').attr('x', xValueDragBarLeftNew);
+
+      this.refreshLabelPosition(eventTask);
+
+      this.showTaskTooltip(event.subject, event.sourceEvent.layerX, event.sourceEvent.layerY);
+    })
+    .on('end', (event: d3.D3DragEvent<any, any, any>) => {
+
+      this.dragDxStack = 0;
+
+      // task
+      const eventTask = dataGroup.select('#taskEntry_' + event.subject.id);
+
+      const oldX = parseFloat(eventTask.select('rect.task').attr('x'));
+
+      const xTransformValue = parseSvg(eventTask.attr('transform')).translateX;
+      const yTransformValue = parseSvg(eventTask.attr('transform')).translateY;
+
+      const xValueNew = (xTransformValue + oldX);
+
+      eventTask.attr('transform', 'translate(' + xValueNew + ',' + yTransformValue + ')');
+
+      eventTask.select('rect.task').attr('x', 0);
+
+      /////////
+      const xValueDragBarLeftNew = (- (dragBarWidth / 2) - 7);
+      eventTask.select('rect.dragBarLeft').attr('x', xValueDragBarLeftNew);
+
+      /////////
+      const taskWidth = eventTask.select('rect.task').attr('width');
+      const xValueDragBarRightNew = (+taskWidth + 5);
+      eventTask.select('rect.dragBarRight').attr('x', xValueDragBarRightNew);
+
+      this.refreshLabelPosition(eventTask);
+    });
+
+    const dragBarWidth = 5;
 
     // tasks
-    dataGroup.selectAll('rect.task').remove();
-    const taskGroup = dataGroup.selectAll('rect.task')
+    const dataGroup = this.svg.select('g.data-group');
+    const taskGroup = dataGroup.selectAll('g.taskEntry')
       .data(tasksToShow)
       .enter()
-      .append('g');
+      .append('g')
+      .attr('class', 'taskEntry')
+      .attr('id', (d) => 'taskEntry_' + d.id)
+      .attr('transform', (d, i) => 'translate(' + this.xAxis(d.start) + ',' + (this.barHeightWithMargin * i) + ')')
+      .call(drag);
 
     taskGroup
       .append('rect')
       .attr('class', 'task')
       .style('fill', d => this.groupColors(d.group))
       .style('stroke', d => d3.rgb(this.groupColors(d.group)).darker())
-      .attr('x', d => this.xAxis(d.start))
+      .attr('x', 0)
       .attr('width', d => this.calculateBarWidth(d))
-      .attr('y', (d, i) => (this.barHeightWithMargin) * i)
+      .attr('y', 0)
       .attr('height', this.barHeight);
 
     taskGroup
+      .append('rect')
+      .attr('x', - (dragBarWidth / 2) - 7)
+      .attr('y', 0)
+      .attr('height', this.barHeight)
+      .attr('class', 'dragBarLeft')
+      .attr('width', dragBarWidth)
+      .attr('fill', d => this.groupColors(d.group))
+      .attr('stroke', d => d3.rgb(this.groupColors(d.group)).darker())
+      .call(dragLeft);
+
+    taskGroup
+      .append('rect')
+      .attr('x', d => this.calculateBarWidth(d) + 5)
+      .attr('y', 0)
+      .attr('class', 'dragBarRight')
+      .attr('height', this.barHeight)
+      .attr('width', dragBarWidth)
+      .attr('fill', d => this.groupColors(d.group))
+      .attr('stroke', d => d3.rgb(this.groupColors(d.group)).darker())
+      .call(dragRight);
+
+    taskGroup
       .on('mouseover', (event, d) => {
-        this.tooltip
-          .style('top', (event.layerY + 15) + 'px')
-          .style('left', (event.layerX) + 'px')
-          .style('display', 'block')
-          .html(`${d.name}<br>`
-            + `Projekt: ${d.group}<br>`
-            + `${new Date(d.start).toLocaleDateString('de-DE', this.dateOptions)}`
-            + ` - ${new Date(d.end).toLocaleDateString('de-DE', this.dateOptions)}<br>`
-            + `Fortschritt: ${d.progress}<br>`)
+        const eventTask = dataGroup.select('#taskEntry_' + d.id);
+        eventTask.select('rect.dragBarLeft')
           .transition()
           .duration(500)
           .style('opacity', 1);
+
+        eventTask.select('rect.dragBarRight')
+          .transition()
+          .duration(500)
+          .style('opacity', 1);
+
+        this.showTaskTooltip(d, event.layerX, event.layerY);
       })
-      .on('mouseout', () => {
-        this.tooltip
+      .on('mouseout', (event, d) => {
+        const eventTask = dataGroup.select('#taskEntry_' + d.id);
+        eventTask.select('rect.dragBarLeft')
           .transition()
           .duration(500)
           .style('opacity', 0);
+
+        eventTask.select('rect.dragBarRight')
+          .transition()
+          .duration(500)
+          .style('opacity', 0);
+
+        this.tooltip
+          .transition()
+          .duration(500)
+          .style('opacity', 0)
+          .transition()
+          .delay(500)
+          .style('display', 'none');
       });
 
     // task labels
-    dataGroup.selectAll('text.taskLabel').remove();
-    dataGroup.selectAll('text.taskLabel')
-      .data(tasksToShow)
-      .enter()
+    taskGroup
       .append('text')
       .text(d => d.name)
       .attr('class', 'taskLabel')
-      .attr('x', d => this.calculateTaskLabelPosition(d))
-      .attr('y', (d, i) => (this.barHeightWithMargin) * i
-        + (this.barHeight + this.barMargin) / 2)
+      .attr('x', d => {
+        const eventTask = dataGroup.select('#taskEntry_' + d.id);
+
+        const xTransformValue = parseSvg(eventTask.attr('transform')).translateX;
+
+        const xValue = parseFloat(eventTask.select('rect.task').attr('x'));
+        const xValueToAdd = Math.abs(Math.min(xTransformValue + xValue, 0)) + xValue;
+
+        return this.calculateTaskLabelPosition(d) + xValueToAdd;
+      })
+      .attr('y', (this.barHeight + this.barMargin) / 2)
       .attr('text-height', this.barHeight);
   }
 
-  private calculateBarWidth(task: any): number {
-    return this.xAxis(task.end) - this.xAxis(task.start);
+  redrawTasks(): void {
+    // tasks
+    const dataGroup = this.svg.select('g.data-group');
+
+    const taskGroup = dataGroup.selectAll('g.taskEntry')
+      .attr('transform', (d, i) => 'translate(' + this.xAxis(d.start) + ',' + (this.barHeightWithMargin * i) + ')');
+
+    taskGroup.selectAll('rect.task')
+      .attr('width', d => this.calculateBarWidth(d));
+
+    taskGroup.selectAll('rect.dragBarRight')
+      .attr('x', d => this.calculateBarWidth(d) + 5);
+
+    // task labels
+    taskGroup.selectAll('text.taskLabel')
+      .attr('x', d => {
+
+        let xValueToAdd = 0;
+
+        if (this.isVisible(d)) {
+          const eventTask = dataGroup.select('#taskEntry_' + d.id);
+
+          const xTransformValue = parseSvg(eventTask.attr('transform')).translateX;
+          const xValue = parseFloat(eventTask.select('rect.task').attr('x'));
+
+          xValueToAdd = Math.abs(Math.min(xTransformValue + xValue, 0)) + xValue;
+        }
+
+        return this.calculateTaskLabelPosition(d) + xValueToAdd;
+      });
   }
 
-
-  changeStartDate(change: string, $event: any): void {
-    if ($event.value) {
-      this.periodStartDate = $event.value;
-      console.log($event);
-      this.drawChart();
-    }
+  isVisible(d): boolean {
+    return !(this.xAxis(d.end) < this.xAxis.range()[0] ||
+      this.xAxis(d.start) > this.xAxis.range()[1]);
   }
 
-  changeEndDate(change: string, $event: any): void {
-    if ($event.value) {
-      this.periodEndDate = $event.value;
-      console.log($event);
-      this.drawChart();
-    }
+  refreshLabelPosition(eventTask): void {
+
+    const xTransformValue = parseSvg(eventTask.attr('transform')).translateX;
+
+    const xValue = parseFloat(eventTask.select('rect.task').attr('x'));
+    const xValueToAdd = Math.abs(Math.min(xTransformValue + xValue, 0)) + xValue;
+
+    eventTask.select('text.taskLabel')
+      .attr('x', d => this.calculateTaskLabelPosition(d) + xValueToAdd)
+      .attr('y', (this.barHeight + this.barMargin) / 2);
+  }
+
+  showTaskTooltip(d, x, y): void {
+    this.tooltip
+      .style('top', (y + 15) + 'px')
+      .style('left', (x) + 'px')
+      .style('display', 'block')
+      .html(`${d.name}<br>`
+        + `Projekt: ${d.group}<br>`
+        + `${new Date(d.start).toLocaleDateString('de-DE', this.dateOptions)}`
+        + ` - ${new Date(d.end).toLocaleDateString('de-DE', this.dateOptions)}<br>`
+        + `Fortschritt: ${d.progress}<br>`)
+      .transition()
+      .style('display', 'block')
+      .duration(500)
+      .style('opacity', 1);
   }
 
   // get label position of a task depending on chart range so it is displayed centered on the visible part of the bar
   private calculateTaskLabelPosition(d: any): number {
-
     const xAxisStart = this.xAxis(d.start);
     const xAxisEnd = this.xAxis(d.end);
 
     const startPosition = Math.max(xAxisStart, this.xAxis.range()[0]);
     const endPosition = Math.min(xAxisEnd, this.xAxis.range()[1]);
 
-    return (endPosition - startPosition) / 2 + startPosition;
+    return (endPosition - startPosition) / 2;
+  }
+
+  private calculateBarWidth(task: any): number {
+    return this.xAxis(task.end) - this.xAxis(task.start);
+  }
+
+  wrapLabel(svgText, maxWidth): void {
+
+    svgText.each(function(): void {
+      const text = d3.select(this);
+      const words = text.text().split(/\s+/);
+
+      let line = [];
+      let lineNumber = 0;
+      const lineHeight = 1.1;
+      const y = text.attr('y');
+
+      let tspan = text
+        .text(null)
+        .append('tspan')
+        .attr('x', 0)
+        .attr('y', y);
+
+      for (const word of words) {
+
+        line.push(word);
+
+        if (tspan.node().getComputedTextLength() > maxWidth) {
+          line.pop();
+          tspan.text(line.join(' '));
+          line = [word];
+
+          tspan = text
+          .append('tspan')
+          .attr('x', 0)
+          .attr('y', y)
+          .attr('dy', ++lineNumber * lineHeight + 'em')
+          .text(word);
+        } else {
+          tspan.text(line.join(' '));
+        }
+      }
+    });
   }
 }
