@@ -1,7 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {GanttControlsService} from './gantt-controls.service';
 import {ChartComponent} from './chart/chart.component';
-import {TimelineService} from './services/timeline.service'; // auf den "realistischeren" Service umschalten.
 import {forkJoin, Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 
@@ -31,8 +30,6 @@ export class GanttComponent implements OnInit, OnDestroy {
   selectedTimelineId: number;
 
   constructor(public ganttControlsService: GanttControlsService,
-              private timelineService: TimelineService,
-
               private timelinesService: TimelinesService,
               private milestonesService: MilestonesService,
               private tasksService: TasksService) {  }
