@@ -1,4 +1,4 @@
-package online.dipa.hub.server;
+package online.dipa.hub;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
