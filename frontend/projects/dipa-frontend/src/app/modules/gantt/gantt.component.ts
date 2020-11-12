@@ -1,9 +1,10 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {GanttControlsService} from './gantt-controls.service';
 import {ChartComponent} from './chart/chart.component';
-import {TimelineService} from './services/timeline.service';
 import {forkJoin, Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
+
+import {MilestonesService, TasksService, TimelinesService} from 'dipa-api-client';
 
 @Component({
   selector: 'app-gantt',
@@ -11,8 +12,6 @@ import {map, tap} from 'rxjs/operators';
   styleUrls: ['./gantt.component.scss']
 })
 export class GanttComponent implements OnInit, OnDestroy {
-
-  // @Output() dateChange: EventEmitter<any> = new EventEmitter();
 
   @ViewChild('ganttChart', { static: true }) chart: ChartComponent;
 
@@ -24,8 +23,16 @@ export class GanttComponent implements OnInit, OnDestroy {
 
   vm$: Observable<any>;
 
+  timelineData = [];
+
+  timelinesSubscription;
+
+  selectedTimelineId: number;
+
   constructor(public ganttControlsService: GanttControlsService,
-              private timelineService: TimelineService) {  }
+              private timelinesService: TimelinesService,
+              private milestonesService: MilestonesService,
+              private tasksService: TasksService) {  }
 
   static getMinimumDate(data: Date[]): Date {
     return data.reduce((acc, curr) => {
@@ -41,6 +48,13 @@ export class GanttComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
+    this.timelinesSubscription = this.timelinesService.getTimelines()
+    .subscribe((data) => {
+      this.timelineData = data;
+      this.selectedTimelineId = this.timelineData.find(c => c.defaultTimeline === true)?.id;
+      this.setData();
+    });
+
     this.periodStartDateSubscription = this.ganttControlsService.getPeriodStartDate()
     .subscribe((data) => {
       if (this.periodStartDate !== data) {
@@ -54,39 +68,48 @@ export class GanttComponent implements OnInit, OnDestroy {
         this.periodEndDate = data;
       }
     });
-
-    this.vm$ = forkJoin([this.timelineService.getTaskData(), this.timelineService.getMilestoneTaskData()])
-      .pipe(
-        map(([taskData, milestoneData]) => {
-          const milestoneDates = milestoneData.map(x => x.start);
-          const taskStartDates = taskData.map(x => x.start);
-          const taskEndDates = taskData.map(x => x.end);
-
-          const datesArray: Date[] = [...milestoneDates, ...taskStartDates, ...taskEndDates];
-
-          const periodStartDate = GanttComponent.getMinimumDate(datesArray);
-          const periodEndDate = GanttComponent.getMaximumDate(datesArray);
-
-          return {
-            milestoneData,
-            taskData,
-            periodStartDate,
-            periodEndDate
-          };
-        }),
-        tap( data => {
-          // this.periodEndDate = data.periodEndDate;
-          // this.periodStartDate = data.periodStartDate;
-
-          this.ganttControlsService.setPeriodStartDate(data.periodStartDate);
-          this.ganttControlsService.setPeriodEndDate(data.periodEndDate);
-        })
-      );
   }
 
   ngOnDestroy(): void {
     this.periodStartDateSubscription.unsubscribe();
     this.periodEndDateSubscription.unsubscribe();
+  }
+
+  setData(): void {
+    this.vm$ = forkJoin([
+      this.tasksService.getTasksForTimeline(this.selectedTimelineId),
+      this.milestonesService.getMilestonesForTimeline(this.selectedTimelineId)
+    ])
+    .pipe(
+      map(([taskData, milestoneData]) => {
+        const milestoneDates = milestoneData.map(x => new Date(x.date));
+        const taskStartDates = taskData.map(x => new Date(x.start));
+        const taskEndDates = taskData.map(x => new Date(x.end));
+
+        const datesArray: Date[] = [...milestoneDates, ...taskStartDates, ...taskEndDates];
+
+        const periodStartDate = GanttComponent.getMinimumDate(datesArray);
+        const periodEndDate = GanttComponent.getMaximumDate(datesArray);
+
+        return {
+          milestoneData,
+          taskData,
+          periodStartDate,
+          periodEndDate
+        };
+      }),
+      tap( data => {
+        // this.periodEndDate = data.periodEndDate;
+        // this.periodStartDate = data.periodStartDate;
+
+        this.ganttControlsService.setPeriodStartDate(data.periodStartDate);
+        this.ganttControlsService.setPeriodEndDate(data.periodEndDate);
+      })
+    );
+  }
+
+  changeTimeline(event): void {
+    this.setData();
   }
 
   changeStartDate(change: string, $event: any): void {

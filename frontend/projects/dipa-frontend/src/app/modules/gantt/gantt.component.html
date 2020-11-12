@@ -9,7 +9,7 @@
           <mat-button-toggle class="md-button" value="DAYS">Tage</mat-button-toggle>
         </mat-button-toggle-group>
       </div>
-      <div class="col text-right">
+      <div class="col mat-form-field--inline">
         <mat-form-field appearance="fill">
           <mat-label>Anfang Zeitachse</mat-label>
           <input matInput [matDatepicker]="picker1" [value]="periodStartDate"
@@ -27,6 +27,21 @@
         </mat-form-field>
       </div>
     </div>
+
+    <div class="row">
+        <div *ngIf="timelineData" class="col">
+          <mat-form-field appearance="fill" floatLabel="always">
+            <mat-label>Zeitplan</mat-label>
+            <mat-select [(value)]="selectedTimelineId" (selectionChange)="changeTimeline($event)">
+              <mat-option *ngFor="let timeline of timelineData"
+                          [value]="timeline.id">
+                {{ timeline.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+    </div>
+
   </div>
 
   <ng-container *ngIf="vm$ | async as vm">
@@ -35,5 +50,6 @@
                [taskData]="vm.taskData"
     ></app-chart>
   </ng-container>
+
 </div>
 
