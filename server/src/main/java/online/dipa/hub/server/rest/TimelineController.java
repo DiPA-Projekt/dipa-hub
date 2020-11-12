@@ -1,6 +1,7 @@
 package online.dipa.hub.server.rest;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -14,147 +15,156 @@ import online.dipa.hub.api.rest.TimelinesApi;
 @RestApiController
 public class TimelineController implements TimelinesApi {
 
-
-    // @Api(value = "timelines", description = "the timelines API")
-
-    // LocalDate.parse("2020-01-08")
-    
-    // LocalDate.of(2020, 1, 8)
-
 	@Override
 	public ResponseEntity<List<Timeline>> getTimelines() {
 		return ResponseEntity.ok(List.of(
 			new Timeline()
 				.id(1L)
-				.name("epic_1")
-				.defaultTimeline(true),
+				.name("Serveraustausch")
+				.defaultTimeline(false),
 			new Timeline()
 				.id(2L)
-				.name("epic_2")
-				.defaultTimeline(false)
+				.name("Softwareneuentwicklung")
+				.defaultTimeline(true)
 			)
 		);
 	};
 
-
     @Override
 	public ResponseEntity<List<Milestone>> getMilestonesForTimeline(Integer timelineId) {
-		if (timelineId <= 1) {
-		return ResponseEntity.ok(List.of(
-			new Milestone()
-				.id(1L)
-				.name("Projektstart")
-				.date(LocalDate.parse("2020-01-01"))
-				.timelineId(1L),
-			new Milestone()
-				.id(2L)
-				.name("Kick Off")
-				.date(LocalDate.parse("2020-02-01"))
-				.timelineId(1L),
-			new Milestone()
-				.id(3L)
-				.name("Zuschlagserteilung")
-				.date(LocalDate.parse("2020-08-01"))
-				.timelineId(1L),
-			new Milestone()
-				.id(4L)
-				.name("Rolloutdrehbuch")
-				.date(LocalDate.parse("2020-11-01"))
-				.timelineId(1L),
-			new Milestone()
-				.id(5L)
-				.name("Beginn Rollout Phase 1")
-				.date(LocalDate.parse("2021-11-01"))
-				.timelineId(1L),
-			new Milestone()
-				.id(6L)
-				.name("Beginn Rollout Phase 2")
-				.date(LocalDate.parse("2021-04-01"))
-				.timelineId(1L)
-			));
-		}
-		else {
-		return ResponseEntity.ok(List.of(
-			new Milestone()
-				.id(7L)
-				.name("Ende Phase 1")
-				.date(LocalDate.parse("2021-05-01"))
-				.timelineId(2L),
-			new Milestone()
-				.id(8L)
-				.name("Beginn Rollout Phase 3")
-				.date(LocalDate.parse("2020-06-01"))
-				.timelineId(2L),
-			new Milestone()
-				.id(9L)
-				.name("Ende Phase 2")
-				.date(LocalDate.parse("2020-08-01"))
-				.timelineId(2L),
-			new Milestone()
-				.id(10L)
-				.name("Ende Phase 3")
-				.date(LocalDate.parse("2020-11-01"))
-				.timelineId(2L),
-			new Milestone()
-				.id(11L)
-				.name("Projektabschlussbericht")
-				.date(LocalDate.parse("2022-02-01"))
-				.timelineId(2L),
-			new Milestone()
-				.id(12L)
-				.name("Projektende")
-				.date(LocalDate.parse("2022-05-01"))
-				.timelineId(2L)
-			));
-		}
-	};
-
-
-	@Override
-	public ResponseEntity<List<Task>> getTasksForTimeline(Integer timelineId) {
-		if (timelineId <= 1) {
-		return ResponseEntity.ok(List.of(
-			new Task()
-				.id(1L)
-				.name("Task 1")
-				.start(LocalDate.parse("2020-01-01"))
-				.end(LocalDate.parse("2020-04-04"))
-				.timelineId(1L),
-			new Task()
-				.id(2L)
-				.name("Task 2")
-				.start(LocalDate.parse("2020-05-01"))
-                .end(LocalDate.parse("2020-05-30"))
-				.timelineId(1L),
-			new Task()
-				.id(3L)
-				.name("Task 3")
-				.start(LocalDate.parse("2020-06-08"))
-				.end(LocalDate.parse("2020-10-15"))
-				.timelineId(1L)
-			));
-		}
-		else {
-		return ResponseEntity.ok(List.of(
-			new Task()
-				.id(4L)
-				.name("Task 4")
-				.start(LocalDate.parse("2020-09-15"))
-				.end(LocalDate.parse("2020-11-23"))
-				.timelineId(2L),
-			new Task()
-				.id(5L)
-				.name("Task 5")
-				.start(LocalDate.parse("2020-10-23"))
-				.end(LocalDate.parse("2020-11-30"))
-				.timelineId(2L)
-			));
+		switch (timelineId) {
+			case 1:
+				return ResponseEntity.ok(List.of(
+					new Milestone()
+						.id(1L)
+						.name("Projektstart")
+						.date(LocalDate.parse("2020-02-01")),
+					new Milestone()
+						.id(2L)
+						.name("Kick Off")
+						.date(LocalDate.parse("2020-03-01")),
+					new Milestone()
+						.id(3L)
+						.name("Zuschlagserteilung")
+						.date(LocalDate.parse("2020-09-01")),
+					new Milestone()
+						.id(4L)
+						.name("Rolloutdrehbuch")
+						.date(LocalDate.parse("2020-12-01")),
+					new Milestone()
+						.id(5L)
+						.name("Beginn Rollout Phase 1")
+						.date(LocalDate.parse("2021-02-01")),
+					new Milestone()
+						.id(6L)
+						.name("Beginn Rollout Phase 2")
+						.date(LocalDate.parse("2021-05-01")),
+					new Milestone()
+						.id(7L)
+						.name("Ende Phase 1")
+						.date(LocalDate.parse("2021-06-01")),
+					new Milestone()
+						.id(8L)
+						.name("Beginn Rollout Phase 3")
+						.date(LocalDate.parse("2021-07-01")),
+					new Milestone()
+						.id(9L)
+						.name("Ende Phase 2")
+						.date(LocalDate.parse("2021-09-01")),
+					new Milestone()
+						.id(10L)
+						.name("Ende Phase 3")
+						.date(LocalDate.parse("2021-12-01")),
+					new Milestone()
+						.id(11L)
+						.name("Projektabschlussbericht")
+						.date(LocalDate.parse("2022-03-01")),
+					new Milestone()
+						.id(12L)
+						.name("Projektende")
+						.date(LocalDate.parse("2022-06-01"))
+					)
+				);
+			case 2:
+				return ResponseEntity.ok(List.of(
+					new Milestone()
+						.id(21L)
+						.name("Projekteinrichtung")
+						.date(LocalDate.parse("2020-05-01")),
+					new Milestone()
+						.id(22L)
+						.name("Entwicklung Pre-Alpha")
+						.date(LocalDate.parse("2020-07-01")),
+					new Milestone()
+						.id(23L)
+						.name("Entwicklung Alpha")
+						.date(LocalDate.parse("2020-11-01")),
+					new Milestone()
+						.id(24L)
+						.name("Entwicklung Beta")
+						.date(LocalDate.parse("2021-02-01")),
+					new Milestone()
+						.id(25L)
+						.name("Entwicklung Release Candidate")
+						.date(LocalDate.parse("2021-05-01")),
+					new Milestone()
+						.id(26L)
+						.name("Entwicklung Release 1.0")
+						.date(LocalDate.parse("2021-08-01")),
+					new Milestone()
+						.id(27L)
+						.name("Projektabschluss")
+						.date(LocalDate.parse("2021-11-01")),
+					new Milestone()
+						.id(28L)
+						.name("Release 1.0")
+						.date(LocalDate.parse("2022-02-01"))
+					)
+				);
+			default:
+				return ResponseEntity.ok(List.of(
+					new Milestone()
+						.id(31L)
+						.name("Test")
+						.date(LocalDate.parse("2020-01-01"))
+				));
 		}
 	}
 
+	@Override
+	public ResponseEntity<List<Task>> getTasksForTimeline(Integer timelineId) {
+		switch (timelineId) {
+			case 1:
+				return ResponseEntity.ok(List.of(
+					new Task()
+						.id(1L)
+						.name("Task 1")
+						.start(LocalDate.parse("2020-01-01"))
+						.end(LocalDate.parse("2020-04-04")),
+					new Task()
+						.id(2L)
+						.name("Task 2")
+						.start(LocalDate.parse("2020-05-01"))
+						.end(LocalDate.parse("2020-05-30")),
+					new Task()
+						.id(3L)
+						.name("Task 3")
+						.start(LocalDate.parse("2020-06-08"))
+						.end(LocalDate.parse("2020-10-15"))
+					));
 
-
-
+			case 2:
+				return ResponseEntity.ok(Collections.emptyList());
+			default:
+				return ResponseEntity.ok(List.of(
+						new Task()
+								.id(6L)
+								.name("Test")
+								.start(LocalDate.parse("2020-01-01"))
+								.end(LocalDate.parse("2020-12-31"))
+				));
+		}
+	}
 
 }
 

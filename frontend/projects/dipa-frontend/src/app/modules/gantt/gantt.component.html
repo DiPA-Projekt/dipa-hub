@@ -9,7 +9,7 @@
           <mat-button-toggle class="md-button" value="DAYS">Tage</mat-button-toggle>
         </mat-button-toggle-group>
       </div>
-      <div class="col text-right">
+      <div class="col mat-form-field--inline">
         <mat-form-field appearance="fill">
           <mat-label>Anfang Zeitachse</mat-label>
           <input matInput [matDatepicker]="picker1" [value]="periodStartDate"
@@ -28,37 +28,28 @@
       </div>
     </div>
 
-    <div *ngIf="allTimelines" class="col text-right">
-      <mat-form-field appearance="fill">
-        <mat-select [(value)]="selected">
-          <mat-option *ngFor="let timeline of allTimelines" [(value)]="timeline.id">
-            {{ timeline.id }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+    <div class="row">
+        <div *ngIf="timelineData" class="col">
+          <mat-form-field appearance="fill" floatLabel="always">
+            <mat-label>Zeitplan</mat-label>
+            <mat-select [(value)]="selectedTimelineId" (selectionChange)="changeTimeline($event)">
+              <mat-option *ngFor="let timeline of timelineData"
+                          [value]="timeline.id">
+                {{ timeline.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
     </div>
 
   </div>
 
   <ng-container *ngIf="vm$ | async as vm">
-    <ng-container *ngFor="let timeline of allTimelines">
-    <app-chart #ganttChart *ngIf="timeline.id === selected"
+    <app-chart #ganttChart
                [milestoneData]="vm.milestoneData"
                [taskData]="vm.taskData"
     ></app-chart>
   </ng-container>
-  </ng-container>
 
-
-  <ng-container *ngIf="vm_2$ | async as vm">
-    <ng-container *ngFor="let timeline of allTimelines">
-    <app-chart #ganttChart *ngIf="timeline.id === selected"
-               [milestoneData]="vm.milestoneData"
-               [taskData]="vm.taskData"
-               [periodStartDate]="periodStartDate"
-               [periodEndDate]="periodEndDate"
-    ></app-chart>
-  </ng-container>
-  </ng-container>
 </div>
 
