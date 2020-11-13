@@ -25,6 +25,10 @@ public class TimelineController implements TimelinesApi {
 			new Timeline()
 				.id(2L)
 				.name("Softwareneuentwicklung")
+				.defaultTimeline(false),
+			new Timeline()
+				.id(3L)
+				.name("Beschaffung")
 				.defaultTimeline(true)
 			)
 		);
@@ -121,13 +125,82 @@ public class TimelineController implements TimelinesApi {
 						.date(LocalDate.parse("2022-02-01"))
 					)
 				);
+			case 3:
+				return ResponseEntity.ok(List.of(
+					new Milestone()
+						.id(41L)
+						.name("Bedarf ermittelt")
+						.date(LocalDate.parse("2020-01-01")),
+					new Milestone()
+						.id(42L)
+						.name("Bedarf strukturiert")
+						.date(LocalDate.parse("2020-04-01")),
+					new Milestone()
+						.id(43L)
+						.name("Haushaltsmittel geklärt")
+						.date(LocalDate.parse("2020-07-01")),
+					new Milestone()
+						.id(44L)
+						.name("Alternative Beschaffungsvarianten geprüft")
+						.date(LocalDate.parse("2020-10-01")),
+					new Milestone()
+						.id(45L)
+						.name("Beschaffung konzipiert")
+						.date(LocalDate.parse("2021-01-01")),
+					new Milestone()
+						.id(46L)
+						.name("Lose gebildet")
+						.date(LocalDate.parse("2021-04-01")),
+					new Milestone()
+						.id(47L)
+						.name("Verfahrensart festgelegt")
+						.date(LocalDate.parse("2021-07-01")),
+					new Milestone()
+						.id(48L)
+						.name("Methoden und Instrumente festgelegt")
+						.date(LocalDate.parse("2021-10-01")),
+					new Milestone()
+						.id(49L)
+						.name("Vergabeunterlagen erstellt")
+						.date(LocalDate.parse("2022-01-01")),
+					new Milestone()
+						.id(50L)
+						.name("Durchführung entschieden")
+						.date(LocalDate.parse("2022-04-01")),
+					new Milestone()
+						.id(51L)
+						.name("Vergabeunterlagen veröffentlicht / Ausgewählte Bieter zur Angebotsabgabe aufgefordert")
+						.date(LocalDate.parse("2022-07-01")),
+					new Milestone()
+						.id(52L)
+						.name("Teilnahmeanträge geöffnet")
+						.date(LocalDate.parse("2022-10-01")),
+					new Milestone()
+						.id(53L)
+						.name("Bewerber ausgewählt")
+						.date(LocalDate.parse("2023-01-01")),
+					new Milestone()
+						.id(54L)
+						.name("Angebote geöffnet")
+						.date(LocalDate.parse("2023-04-01")),
+					new Milestone()
+						.id(55L)
+						.name("Angebote / Verhandlungen bewertet")
+						.date(LocalDate.parse("2023-07-01")),
+					new Milestone()
+						.id(56L)
+						.name("Vertrag geschlossen (oder Verfahren aufgehoben)")
+						.date(LocalDate.parse("2023-10-01"))
+					)
+				);
 			default:
 				return ResponseEntity.ok(List.of(
 					new Milestone()
 						.id(31L)
 						.name("Test")
 						.date(LocalDate.parse("2020-01-01"))
-				));
+					)
+				);
 		}
 	}
 
@@ -151,18 +224,20 @@ public class TimelineController implements TimelinesApi {
 						.name("Task 3")
 						.start(LocalDate.parse("2020-06-08"))
 						.end(LocalDate.parse("2020-10-15"))
-					));
-
+					)
+				);
 			case 2:
+			case 3:
 				return ResponseEntity.ok(Collections.emptyList());
 			default:
 				return ResponseEntity.ok(List.of(
-						new Task()
-								.id(6L)
-								.name("Test")
-								.start(LocalDate.parse("2020-01-01"))
-								.end(LocalDate.parse("2020-12-31"))
-				));
+					new Task()
+						.id(6L)
+						.name("Test")
+						.start(LocalDate.parse("2020-01-01"))
+						.end(LocalDate.parse("2020-12-31"))
+					)
+				);
 		}
 	}
 }
