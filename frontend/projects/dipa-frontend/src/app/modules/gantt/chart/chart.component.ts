@@ -1,8 +1,20 @@
-import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewEncapsulation} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+  ViewEncapsulation
+} from '@angular/core';
 
 import * as d3 from 'd3';
 import {parseSvg} from 'd3-interpolate/src/transform/parse';
 import {GanttControlsService} from '../gantt-controls.service';
+import {ResizedEvent} from 'angular-resize-event';
 
 @Component({
   selector: 'app-chart',
@@ -11,12 +23,15 @@ import {GanttControlsService} from '../gantt-controls.service';
   encapsulation: ViewEncapsulation.None
 })
 
-export class ChartComponent implements OnInit, OnChanges, OnDestroy {
+export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
 
   constructor(public ganttControlsService: GanttControlsService) { }
 
   @Input() milestoneData = [];
   @Input() taskData = [];
+
+  @ViewChild('chart')
+  chartFigure: ElementRef;
 
   periodStartDate: Date;
   periodEndDate: Date;
@@ -38,7 +53,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
   private barMargin = 8;
   private barHeightWithMargin = this.barHeight + 2 * this.barMargin;
 
-  private padding = { top: 25, left: 75};
+  private padding = { top: 25, left: 0};
 
 
   private groupColors;
@@ -137,6 +152,28 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     this.periodEndDateSubscription.unsubscribe();
   }
 
+  ngAfterViewInit(): void {
+    this.resizeChart(this.chartFigure.nativeElement.offsetWidth);
+  }
+
+  onResized(event: ResizedEvent): void {
+    // only resize if width was changed, height is not relevant here
+    if (event.newWidth !== this.viewBoxWidth) {
+      this.resizeChart(event.newWidth);
+    }
+  }
+
+  private resizeChart(newSize): void {
+
+    this.resizeXAxis(newSize);
+    this.resizeZoomElement(newSize);
+    this.resizeSvg(newSize);
+    this.resizeHeaderX(newSize);
+
+    this.viewBoxWidth = newSize;
+    this.updateChart();
+  }
+
   private drawChart(): void {
 
     if (this.groups == null) {
@@ -177,7 +214,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     this.drawHeaderX();
     this.drawVerticalGridLines();
 
-    this.drawHeaderY();
+    /*this.drawHeaderY();*/
     this.drawGroups();
 
     this.drawTasks(this.taskData);
@@ -189,7 +226,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     this.svg = d3.select('figure#chart')
       .append('svg')
       .attr('width', '100%')
-      .attr('height', '100vh')
+      // .attr('height', '100vh')
       .attr('viewBox', '0 0 ' + this.viewBoxWidth + ' ' + this.viewBoxHeight);
 
     this.svg
@@ -213,8 +250,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     const xGroup = this.svg.append('g').attr('class', 'x-group');
     xGroup.attr('transform', 'translate(' + this.padding.left + ',0)');
 
-    const yGroup = this.svg.append('g').attr('class', 'y-group');
-    yGroup.attr('transform', 'translate(0,' + (this.padding.top + this.barMargin) + ')');
+    // const yGroup = this.svg.append('g').attr('class', 'y-group');
+    // yGroup.attr('transform', 'translate(0,' + (this.padding.top + this.barMargin) + ')');
 
     this.zoom = d3.zoom()
       .on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event); });
@@ -308,7 +345,14 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private refreshXAxis(): void {
-    this.xAxis.domain([this.periodStartDate, this.periodEndDate]);
+    this.xAxis
+      .domain([this.periodStartDate, this.periodEndDate]);
+    this.setZoomScaleExtent();
+  }
+
+  private resizeXAxis(newSize): void {
+    this.xAxis
+      .range([0, newSize - this.padding.left]);
     this.setZoomScaleExtent();
   }
 
@@ -341,6 +385,27 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     // vertical grid lines
     xGroup.selectAll('line.xGridLines').remove();
     this.drawVerticalGridLines();
+  }
+
+  resizeHeaderX(newSize): void {
+    const xGroup = this.svg.select('g.x-group');
+
+    // x-axis header background
+    xGroup.select('rect.headerX')
+      .attr('width', (newSize - this.padding.left));
+  }
+
+  resizeSvg(newSize): void {
+    this.svg
+      .attr('viewBox', '0 0 ' + newSize + ' ' + this.viewBoxHeight);
+
+    this.svg.select('#dataMask rect')
+      .attr('width', (newSize - this.padding.left));
+  }
+
+  resizeZoomElement(newSize): void {
+    this.zoomElement
+      .attr('width', newSize - this.padding.left);
   }
 
   private drawHeaderX(): void {
@@ -394,7 +459,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
       .attr('x2', Math.min(Math.max(this.xAxis(new Date()), 0), this.xAxis.range()[1]));
   }
 
-  private drawHeaderY(): void {
+  /*private drawHeaderY(): void {
     const occurrences = [];
     let sumOccurrences = 0;
 
@@ -427,7 +492,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
           }
         }
       });
-  }
+  }*/
 
   private drawGroups(): void {
     const yGroup = this.svg.select('g.y-group');
@@ -496,7 +561,10 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
         this.tooltip
         .transition()
         .duration(500)
-        .style('opacity', 0);
+        .style('opacity', 0)
+        .transition()
+        .delay(500)
+        .style('display', 'none');
       });
 
     const maxLabelWidth = 40;
