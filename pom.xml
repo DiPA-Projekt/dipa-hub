@@ -43,7 +43,7 @@
 				
 		<!-- maven plugins -->
 		<openapi-generator-maven-plugin.version>4.3.1</openapi-generator-maven-plugin.version>
-		<frontend-maven-plugin.version>1.10.2</frontend-maven-plugin.version>
+		<frontend-maven-plugin.version>1.10.3</frontend-maven-plugin.version>
 		<dockerfile-maven.version>1.4.13</dockerfile-maven.version>
 
 		<!-- build profile defaults -->
