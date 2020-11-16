@@ -15,17 +15,17 @@ import org.springframework.http.HttpStatus;
 @EnableJpaRepositories()
 public class Application {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
-	public static void main(final String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
+    public static void main(final String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
 
-	@Bean
-	public WebServerFactoryCustomizer<ConfigurableTomcatWebServerFactory> containerCustomizer() {
-		return container -> {
-			LOGGER.info("Adding Default 404-Page: /index.html");
-			container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/index.html"));
-		};
-	}
+    @Bean
+    public WebServerFactoryCustomizer<ConfigurableTomcatWebServerFactory> containerCustomizer() {
+        return container -> {
+            LOGGER.info("Adding Default 404-Page: /index.html");
+            container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/index.html"));
+        };
+    }
 }

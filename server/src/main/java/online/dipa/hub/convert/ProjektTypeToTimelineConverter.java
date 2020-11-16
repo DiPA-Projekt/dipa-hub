@@ -8,10 +8,10 @@ import online.dipa.hub.persistence.entities.ProjectTypeEntity;
 
 @Component
 public class ProjektTypeToTimelineConverter implements Converter<ProjectTypeEntity, Timeline> {
-	@Override
-	public Timeline convert(final ProjectTypeEntity projectTypeEntity) {
-		return new Timeline().id(projectTypeEntity.getId())
-							 .name(projectTypeEntity.getName())
-							 .defaultTimeline(projectTypeEntity.isDefaultType());
-	}
+    @Override
+    public Timeline convert(final ProjectTypeEntity projectTypeEntity) {
+        return new Timeline().id(projectTypeEntity.getId())
+                             .name(projectTypeEntity.getName())
+                             .defaultTimeline(projectTypeEntity.isDefaultType());
+    }
 }

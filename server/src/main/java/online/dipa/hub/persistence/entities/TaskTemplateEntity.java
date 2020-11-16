@@ -20,53 +20,53 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class TaskTemplateEntity extends BaseEntity {
 
-	@Size(max = 255)
-	@Basic(optional = false)
-	@NotEmpty
-	@Column(length = 255)
-	private String name;
+    @Size(max = 255)
+    @Basic(optional = false)
+    @NotEmpty
+    @Column(length = 255)
+    private String name;
 
-	@Basic
-	@Column(nullable = false)
-	private int startOffset;
+    @Basic
+    @Column(nullable = false)
+    private int startOffset;
 
-	@Basic
-	@Column(nullable = false)
-	private int endOffset;
+    @Basic
+    @Column(nullable = false)
+    private int endOffset;
 
-	@NotNull
-	@ManyToOne(optional = false, fetch = FetchType.EAGER)
-	private ProjectTypeEntity projectType;
+    @NotNull
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    private ProjectTypeEntity projectType;
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(final String name) {
-		this.name = name;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	public int getStartOffset() {
-		return startOffset;
-	}
+    public int getStartOffset() {
+        return startOffset;
+    }
 
-	public void setStartOffset(final int startOffset) {
-		this.startOffset = startOffset;
-	}
+    public void setStartOffset(final int startOffset) {
+        this.startOffset = startOffset;
+    }
 
-	public int getEndOffset() {
-		return endOffset;
-	}
+    public int getEndOffset() {
+        return endOffset;
+    }
 
-	public void setEndOffset(final int endOffset) {
-		this.endOffset = endOffset;
-	}
+    public void setEndOffset(final int endOffset) {
+        this.endOffset = endOffset;
+    }
 
-	public ProjectTypeEntity getProjectType() {
-		return projectType;
-	}
+    public ProjectTypeEntity getProjectType() {
+        return projectType;
+    }
 
-	public void setProjectType(final ProjectTypeEntity projectType) {
-		this.projectType = projectType;
-	}
+    public void setProjectType(final ProjectTypeEntity projectType) {
+        this.projectType = projectType;
+    }
 }

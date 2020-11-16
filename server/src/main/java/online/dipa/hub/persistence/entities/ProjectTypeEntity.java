@@ -23,52 +23,52 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ProjectTypeEntity extends BaseEntity {
 
-	@Size(max = 255)
-	@NotNull
-	@Basic(optional = false)
-	@Column(unique = true)
-	private String name;
+    @Size(max = 255)
+    @NotNull
+    @Basic(optional = false)
+    @Column(unique = true)
+    private String name;
 
-	@Basic(optional = false)
-	private boolean defaultType;
+    @Basic(optional = false)
+    private boolean defaultType;
 
-	@OneToMany(mappedBy = "projectType", cascade = { ALL })
-	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-	private Set<MilestoneTemplateEntity> milestones = new HashSet<>();
+    @OneToMany(mappedBy = "projectType", cascade = { ALL })
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<MilestoneTemplateEntity> milestones = new HashSet<>();
 
-	@OneToMany(mappedBy = "projectType", cascade = { ALL })
-	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-	private Set<TaskTemplateEntity> task = new HashSet<>();
+    @OneToMany(mappedBy = "projectType", cascade = { ALL })
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<TaskTemplateEntity> task = new HashSet<>();
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(final String name) {
-		this.name = name;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	public boolean isDefaultType() {
-		return defaultType;
-	}
+    public boolean isDefaultType() {
+        return defaultType;
+    }
 
-	public void setDefaultType(final boolean defaultType) {
-		this.defaultType = defaultType;
-	}
+    public void setDefaultType(final boolean defaultType) {
+        this.defaultType = defaultType;
+    }
 
-	public Set<MilestoneTemplateEntity> getMilestones() {
-		return milestones;
-	}
+    public Set<MilestoneTemplateEntity> getMilestones() {
+        return milestones;
+    }
 
-	public void setMilestones(final Set<MilestoneTemplateEntity> milestones) {
-		this.milestones = milestones;
-	}
+    public void setMilestones(final Set<MilestoneTemplateEntity> milestones) {
+        this.milestones = milestones;
+    }
 
-	public Set<TaskTemplateEntity> getTask() {
-		return task;
-	}
+    public Set<TaskTemplateEntity> getTask() {
+        return task;
+    }
 
-	public void setTask(final Set<TaskTemplateEntity> task) {
-		this.task = task;
-	}
+    public void setTask(final Set<TaskTemplateEntity> task) {
+        this.task = task;
+    }
 }

@@ -23,40 +23,40 @@ import online.dipa.hub.persistence.repositories.ProjectTypeRepository;
 @Transactional(readOnly = true)
 public class TimelineController implements TimelinesApi {
 
-	@Autowired
-	private ProjectTypeRepository projectTypeRepository;
+    @Autowired
+    private ProjectTypeRepository projectTypeRepository;
 
-	@Autowired
-	private ConversionService conversionService;
+    @Autowired
+    private ConversionService conversionService;
 
-	@Override
-	public ResponseEntity<List<Timeline>> getTimelines() {
-		final List<Timeline> timelines = projectTypeRepository.findAll()
-															  .stream()
-															  .map(p -> conversionService.convert(p, Timeline.class))
-															  .collect(Collectors.toList());
+    @Override
+    public ResponseEntity<List<Timeline>> getTimelines() {
+        final List<Timeline> timelines = projectTypeRepository.findAll()
+                                                              .stream()
+                                                              .map(p -> conversionService.convert(p, Timeline.class))
+                                                              .collect(Collectors.toList());
 
-		return ResponseEntity.ok(timelines);
-	}
+        return ResponseEntity.ok(timelines);
+    }
 
-	@Override
-	public ResponseEntity<List<Milestone>> getMilestonesForTimeline(final Long timelineId) {
-		final ProjectTypeEntity projectTypeEntity = projectTypeRepository.findById(timelineId)
-																		 .orElseThrow(() -> new EntityNotFoundException(
-																				 String.format(
-																						 "Timeline with id: %1$s not found.",
-																						 timelineId)));
-		final List<Milestone> milestoneList = projectTypeEntity.getMilestones()
-															   .stream()
-															   .map(m -> conversionService.convert(m, Milestone.class))
-															   .sorted(Comparator.comparing(Milestone::getDate))
-															   .collect(Collectors.toList());
+    @Override
+    public ResponseEntity<List<Milestone>> getMilestonesForTimeline(final Long timelineId) {
+        final ProjectTypeEntity projectTypeEntity = projectTypeRepository.findById(timelineId)
+                                                                         .orElseThrow(() -> new EntityNotFoundException(
+                                                                                 String.format(
+                                                                                         "Timeline with id: %1$s not found.",
+                                                                                         timelineId)));
+        final List<Milestone> milestoneList = projectTypeEntity.getMilestones()
+                                                               .stream()
+                                                               .map(m -> conversionService.convert(m, Milestone.class))
+                                                               .sorted(Comparator.comparing(Milestone::getDate))
+                                                               .collect(Collectors.toList());
 
-		return ResponseEntity.ok(milestoneList);
-	}
+        return ResponseEntity.ok(milestoneList);
+    }
 
-	@Override
-	public ResponseEntity<List<Task>> getTasksForTimeline(final Long timelineId) {
-		return ResponseEntity.ok(Collections.emptyList());
-	}
+    @Override
+    public ResponseEntity<List<Task>> getTasksForTimeline(final Long timelineId) {
+        return ResponseEntity.ok(Collections.emptyList());
+    }
 }

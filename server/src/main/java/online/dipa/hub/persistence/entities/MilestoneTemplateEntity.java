@@ -19,39 +19,39 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class MilestoneTemplateEntity extends BaseEntity {
 
-	@Size(max = 255)
-	@NotEmpty
-	@Basic(optional = false)
-	private String name;
+    @Size(max = 255)
+    @NotEmpty
+    @Basic(optional = false)
+    private String name;
 
-	@Basic(optional = false)
-	private int dateOffset;
+    @Basic(optional = false)
+    private int dateOffset;
 
-	@NotNull
-	@ManyToOne(optional = false, fetch = FetchType.EAGER)
-	private ProjectTypeEntity projectType;
+    @NotNull
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    private ProjectTypeEntity projectType;
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(final String name) {
-		this.name = name;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	public int getDateOffset() {
-		return dateOffset;
-	}
+    public int getDateOffset() {
+        return dateOffset;
+    }
 
-	public void setDateOffset(final int dateOffset) {
-		this.dateOffset = dateOffset;
-	}
+    public void setDateOffset(final int dateOffset) {
+        this.dateOffset = dateOffset;
+    }
 
-	public ProjectTypeEntity getProjectType() {
-		return projectType;
-	}
+    public ProjectTypeEntity getProjectType() {
+        return projectType;
+    }
 
-	public void setProjectType(final ProjectTypeEntity projectType) {
-		this.projectType = projectType;
-	}
+    public void setProjectType(final ProjectTypeEntity projectType) {
+        this.projectType = projectType;
+    }
 }
