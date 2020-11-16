@@ -1,0 +1,150 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1605304206615-1
+      author: becker (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: milestone_templatePK
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: date_offset
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_type_id
+                  type: BIGINT
+            tableName: milestone_template
+  - changeSet:
+      id: 1605304206615-2
+      author: becker (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: project_typePK
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: default_type
+                  type: BOOLEAN
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+            tableName: project_type
+  - changeSet:
+      id: 1605304206615-3
+      author: becker (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: task_templatePK
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: end_offset
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: start_offset
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_type_id
+                  type: BIGINT
+            tableName: task_template
+  - changeSet:
+      id: 1605304206615-4
+      author: becker (generated)
+      changes:
+        - addUniqueConstraint:
+            columnNames: id
+            constraintName: UC_MILESTONE_TEMPLATEID_COL
+            tableName: milestone_template
+  - changeSet:
+      id: 1605304206615-5
+      author: becker (generated)
+      changes:
+        - addUniqueConstraint:
+            columnNames: id
+            constraintName: UC_PROJECT_TYPEID_COL
+            tableName: project_type
+  - changeSet:
+      id: 1605304206615-6
+      author: becker (generated)
+      changes:
+        - addUniqueConstraint:
+            columnNames: name
+            constraintName: UC_PROJECT_TYPENAME_COL
+            tableName: project_type
+  - changeSet:
+      id: 1605304206615-7
+      author: becker (generated)
+      changes:
+        - addUniqueConstraint:
+            columnNames: id
+            constraintName: UC_TASK_TEMPLATEID_COL
+            tableName: task_template
+  - changeSet:
+      id: 1605304206615-8
+      author: becker (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_type_id
+            baseTableName: milestone_template
+            constraintName: FK5nkusah4f9cwpwmpop2mrcnxm
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_type
+            validate: true
+  - changeSet:
+      id: 1605304206615-9
+      author: becker (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_type_id
+            baseTableName: task_template
+            constraintName: FKeqi79aws4b3hvcq5q33wxjdnb
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_type
+            validate: true
+
