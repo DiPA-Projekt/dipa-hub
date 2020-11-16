@@ -3,15 +3,17 @@
   <component name="SaveActionSettings">
     <option name="actions">
       <set>
+        <option value="activate" />
         <option value="activateOnShortcut" />
         <option value="organizeImports" />
-        <option value="reformatChangedCode" />
+        <option value="reformat" />
         <option value="fieldCanBeFinal" />
         <option value="localCanBeFinal" />
         <option value="unqualifiedFieldAccess" />
         <option value="missingOverrideAnnotation" />
         <option value="useBlocks" />
         <option value="unnecessaryThis" />
+        <option value="explicitTypeCanBeDiamond" />
         <option value="unnecessarySemicolon" />
       </set>
     </option>
