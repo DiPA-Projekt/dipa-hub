@@ -9,6 +9,7 @@ get:
       name: timelineId
       schema:
         type: integer
+        format: int64
       required: true
       description: Numeric ID of the timeline to get.
   responses:
