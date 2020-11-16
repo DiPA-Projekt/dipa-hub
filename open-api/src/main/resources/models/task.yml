@@ -1,0 +1,22 @@
+Task:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the task
+      type: integer
+      format: int64
+      example: 2
+    name:
+      description: The name of the task
+      type: string
+      example: "Projektstart"
+    start:
+      description: The start date of the task
+      type: string
+      format: date
+      example: "2020-11-03"
+    end:
+      description: The end date of the task
+      type: string
+      format: date
+      example: "2020-11-30"

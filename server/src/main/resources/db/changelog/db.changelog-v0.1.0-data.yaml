@@ -1,0 +1,593 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-project-types
+      author: becker
+      changes:
+        - insert:
+            tableName: project_type
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: name
+                  value: Serveraustausch
+              - column:
+                  name: default_type
+                  value: false
+        - insert:
+            tableName: project_type
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: name
+                  value: Softwareneuentwicklung
+              - column:
+                  name: default_type
+                  value: false
+        - insert:
+            tableName: project_type
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: name
+                  value: Beschaffung
+              - column:
+                  name: default_type
+                  value: true
+  - changeSet:
+      id: insert-milestones-servertausch
+      author: becker
+      changes:
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: name
+                  value: Projektstart
+              - column:
+                  name: date_offset
+                  value: 0
+              - column:
+                  name: project_type_id
+                  value: 1
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: name
+                  value: Kick Off
+              - column:
+                  name: date_offset
+                  value: 30
+              - column:
+                  name: project_type_id
+                  value: 1
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: name
+                  value: Zuschlagserteilung
+              - column:
+                  name: date_offset
+                  value: 214
+              - column:
+                  name: project_type_id
+                  value: 1
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: name
+                  value: Rolloutdrehbuch
+              - column:
+                  name: date_offset
+                  value: 305
+              - column:
+                  name: project_type_id
+                  value: 1
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: name
+                  value: Beginn Rollout Phase 1
+              - column:
+                  name: date_offset
+                  value: 365
+              - column:
+                  name: project_type_id
+                  value: 1
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 6
+              - column:
+                  name: name
+                  value: Beginn Rollout Phase 2
+              - column:
+                  name: date_offset
+                  value: 456
+              - column:
+                  name: project_type_id
+                  value: 1
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 7
+              - column:
+                  name: name
+                  value: Ende Phase 1
+              - column:
+                  name: date_offset
+                  value: 487
+              - column:
+                  name: project_type_id
+                  value: 1
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 8
+              - column:
+                  name: name
+                  value: Beginn Rollout Phase 3
+              - column:
+                  name: date_offset
+                  value: 517
+              - column:
+                  name: project_type_id
+                  value: 1
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 9
+              - column:
+                  name: name
+                  value: Ende Phase 2
+              - column:
+                  name: date_offset
+                  value: 579
+              - column:
+                  name: project_type_id
+                  value: 1
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 10
+              - column:
+                  name: name
+                  value: Ende Phase 3
+              - column:
+                  name: date_offset
+                  value: 670
+              - column:
+                  name: project_type_id
+                  value: 1
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 11
+              - column:
+                  name: name
+                  value: Projektabschlussbericht
+              - column:
+                  name: date_offset
+                  value: 760
+              - column:
+                  name: project_type_id
+                  value: 1
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 12
+              - column:
+                  name: name
+                  value: Projektende
+              - column:
+                  name: date_offset
+                  value: 852
+              - column:
+                  name: project_type_id
+                  value: 1
+  - changeSet:
+      id: insert-milestones-softwareneuentwicklung
+      author: becker
+      changes:
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 21
+              - column:
+                  name: name
+                  value: Projekteinrichtung
+              - column:
+                  name: date_offset
+                  value: 0
+              - column:
+                  name: project_type_id
+                  value: 2
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 22
+              - column:
+                  name: name
+                  value: Entwicklung Pre-Alpha
+              - column:
+                  name: date_offset
+                  value: 62
+              - column:
+                  name: project_type_id
+                  value: 2
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 23
+              - column:
+                  name: name
+                  value: Entwicklung Alpha
+              - column:
+                  name: date_offset
+                  value: 185
+              - column:
+                  name: project_type_id
+                  value: 2
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 24
+              - column:
+                  name: name
+                  value: Entwicklung Beta
+              - column:
+                  name: date_offset
+                  value: 277
+              - column:
+                  name: project_type_id
+                  value: 2
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 25
+              - column:
+                  name: name
+                  value: Entwicklung Release Candidate
+              - column:
+                  name: date_offset
+                  value: 366
+              - column:
+                  name: project_type_id
+                  value: 2
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 26
+              - column:
+                  name: name
+                  value: Entwicklung Release 1.0
+              - column:
+                  name: date_offset
+                  value: 458
+              - column:
+                  name: project_type_id
+                  value: 2
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 27
+              - column:
+                  name: name
+                  value: Projektabschluss
+              - column:
+                  name: date_offset
+                  value: 550
+              - column:
+                  name: project_type_id
+                  value: 2
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 28
+              - column:
+                  name: name
+                  value: Release 1.0
+              - column:
+                  name: date_offset
+                  value: 642
+              - column:
+                  name: project_type_id
+                  value: 2
+  - changeSet:
+      id: insert-milestones-beschaffung
+      author: becker
+      changes:
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 41
+              - column:
+                  name: name
+                  value: Bedarf ermittelt
+              - column:
+                  name: date_offset
+                  value: 0
+              - column:
+                  name: project_type_id
+                  value: 3
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 42
+              - column:
+                  name: name
+                  value: Bedarf strukturiert
+              - column:
+                  name: date_offset
+                  value: 92
+              - column:
+                  name: project_type_id
+                  value: 3
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 43
+              - column:
+                  name: name
+                  value: Haushaltsmittel geklärt
+              - column:
+                  name: date_offset
+                  value: 183
+              - column:
+                  name: project_type_id
+                  value: 3
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 44
+              - column:
+                  name: name
+                  value: Alternative Beschaffungsvarianten geprüft
+              - column:
+                  name: date_offset
+                  value: 275
+              - column:
+                  name: project_type_id
+                  value: 3
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 45
+              - column:
+                  name: name
+                  value: Beschaffung konzipiert
+              - column:
+                  name: date_offset
+                  value: 367
+              - column:
+                  name: project_type_id
+                  value: 3
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 46
+              - column:
+                  name: name
+                  value: Lose gebildet
+              - column:
+                  name: date_offset
+                  value: 457
+              - column:
+                  name: project_type_id
+                  value: 3
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 47
+              - column:
+                  name: name
+                  value: Verfahrensart festgelegt
+              - column:
+                  name: date_offset
+                  value: 548
+              - column:
+                  name: project_type_id
+                  value: 3
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 48
+              - column:
+                  name: name
+                  value: Methoden und Instrumente festgelegt
+              - column:
+                  name: date_offset
+                  value: 640
+              - column:
+                  name: project_type_id
+                  value: 3
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 49
+              - column:
+                  name: name
+                  value: Vergabeunterlagen erstellt
+              - column:
+                  name: date_offset
+                  value: 732
+              - column:
+                  name: project_type_id
+                  value: 3
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 50
+              - column:
+                  name: name
+                  value: Durchführung entschieden
+              - column:
+                  name: date_offset
+                  value: 822
+              - column:
+                  name: project_type_id
+                  value: 3
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 51
+              - column:
+                  name: name
+                  value: Vergabeunterlagen veröffentlicht / Ausgewählte Bieter zur Angebotsabgabe aufgefordert
+              - column:
+                  name: date_offset
+                  value: 913
+              - column:
+                  name: project_type_id
+                  value: 3
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 52
+              - column:
+                  name: name
+                  value: Teilnahmeanträge geöffnet
+              - column:
+                  name: date_offset
+                  value: 1005
+              - column:
+                  name: project_type_id
+                  value: 3
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 53
+              - column:
+                  name: name
+                  value: Bewerber ausgewählt
+              - column:
+                  name: date_offset
+                  value: 1097
+              - column:
+                  name: project_type_id
+                  value: 3
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 54
+              - column:
+                  name: name
+                  value: Angebote geöffnet
+              - column:
+                  name: date_offset
+                  value: 1187
+              - column:
+                  name: project_type_id
+                  value: 3
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 55
+              - column:
+                  name: name
+                  value: Angebote / Verhandlungen bewertet
+              - column:
+                  name: date_offset
+                  value: 1278
+              - column:
+                  name: project_type_id
+                  value: 3
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 56
+              - column:
+                  name: name
+                  value: Vertrag geschlossen (oder Verfahren aufgehoben)
+              - column:
+                  name: date_offset
+                  value: 1370
+              - column:
+                  name: project_type_id
+                  value: 3

@@ -1,4 +1,4 @@
-package online.dipa.hub.server;
+package online.dipa.hub;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,15 +8,16 @@ import org.springframework.boot.web.embedded.tomcat.ConfigurableTomcatWebServerF
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpStatus;
 
-
 @SpringBootApplication
+@EnableJpaRepositories()
 public class Application {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
@@ -27,5 +28,4 @@ public class Application {
             container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/index.html"));
         };
     }
-
 }

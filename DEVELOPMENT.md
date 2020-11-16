@@ -75,7 +75,7 @@ Der folgende Abschnitt beschreibt das Minimalsetup um DiPA auf Basis des Source 
 1. Java 11 muss lokal verfügbar sein (inkl. korrekt gesetzter `JAVA_HOME`-Variable)
 2. Die Entwicklungs-Infrastruktur muss laufen, siehe [Lokale Entwicklungs-Infrastruktur](#lokale-entwicklungsinfrastruktur).
 3. Im Basis-Verzeichnis `mvnw clean install` ausführen (oder `mvnw -DskipTests clean install` ohne Testfälle).
-4. Mit `java -jar .\server\target\dipa-server-0.0.1-SNAPSHOT.jar` kann der DiPA Server lokal gestartet werden.
+4. Mit `java -jar .\server\target\dipa-server-<current-version>.jar` kann der DiPA Server lokal gestartet werden. Dabei ist `<current-version>` zu ersetzen durch jeweils aktuelle Version des gebauten Branches (z.B. `0.0.1-SNAPSHOT`). 
 5. Im Browser http://localhost:9080 öffnen. 
 
 ## Architektur

@@ -53,22 +53,22 @@ spec:
         track: @k8s.release.track@
     spec:
       containers:
-        - image: mvp.dipa.online/dipa-projekt/dipa-hub:@k8s.image.version@
+        - image: docker.dipa.online/dipa-projekt/dipa-hub:@k8s.image.version@
           name: dipa-hub
-#          env:
-#            - name: WORDPRESS_DB_HOST
-#              value: wordpress-mysql
-#            - name: WORDPRESS_DB_PASSWORD
-#              valueFrom:
-#                secretKeyRef:
-#                  name: mysql-pass
-#                  key: password
+          #          env:
+          #            - name: WORDPRESS_DB_HOST
+          #              value: wordpress-mysql
+          #            - name: WORDPRESS_DB_PASSWORD
+          #              valueFrom:
+          #                secretKeyRef:
+          #                  name: mysql-pass
+          #                  key: password
           ports:
             - containerPort: 9080
               name: dipa-hub
-#          volumeMounts:
-#            - name: wordpress-persistent-storage
-#              mountPath: /var/www/html
+      #          volumeMounts:
+      #            - name: wordpress-persistent-storage
+      #              mountPath: /var/www/html
       imagePullSecrets:
         - name: regcred
 #      volumes:
