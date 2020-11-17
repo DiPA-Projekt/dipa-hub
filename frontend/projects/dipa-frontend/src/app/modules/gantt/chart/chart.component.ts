@@ -21,8 +21,12 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
   periodStartDate: Date;
   periodEndDate: Date;
 
+  viewType: String;
+
   periodStartDateSubscription;
   periodEndDateSubscription;
+
+  viewTypeSubscription;
 
   // element for chart
   private svg;
@@ -56,6 +60,14 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
 
   private zoom;
 
+  private ticksSetting;
+
+  private timeReverse = null;
+
+  private oneDayTick = 1.2096e+9;
+
+  private formatDate;
+
   // See: http://stackoverflow.com/questions/14227981/count-how-many-strings-in-an-array-have-duplicates-in-the-same-array
   private static getCounts(arr): any {
     let i = arr.length; // var to loop over
@@ -72,7 +84,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   // Define filter conditions
-  formatDate(date): any {
+  formatDateFull(date): any {
     return (d3.timeSecond(date) < date ? d3.timeFormat('.%L')
       : d3.timeMinute(date) < date ? d3.timeFormat(':%S')
         : d3.timeHour(date) < date ? d3.timeFormat('%H:%M')
@@ -108,6 +120,141 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
     });
+
+    this.viewTypeSubscription = this.ganttControlsService.getViewType()
+    .subscribe((data) => {
+      if (this.viewType !== data) {
+        this.viewType = data;
+
+        if (this.xAxis) {
+          console.log(data)
+
+          switch(data) { 
+            case "DAYS": { 
+              this.formatDate = this.formatDateDay;
+              
+              if(['MONTHS', 'WEEKS', 'YEARS'].includes(this.timeReverse)){
+                this.ticksSetting = null;
+              }
+              else{
+                var ticksList = this.xAxis.ticks()
+                var numberTicks = d3.timeDay.count(ticksList[0], ticksList[ticksList.length-1]) 
+                if (numberTicks < 18){
+                  this.ticksSetting = numberTicks;
+                }
+                else{
+                  this.ticksSetting = null;
+                }  
+              }
+              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick); });
+
+              this.refreshXAxis();
+              this.updateChart();
+
+              this.ticksSetting = null;
+              this.timeReverse = "DAYS"
+
+              break; 
+            } 
+            case "WEEKS": { 
+              this.formatDate = this.formatDateWeek;
+            
+              if(['MONTHS', 'YEARS'].includes(this.timeReverse)){
+                this.ticksSetting = null;
+              }
+              else{
+                let ticksList = this.xAxis.ticks()
+                console.log(ticksList)
+                let numberTicks = d3.timeWeek.count(ticksList[0], ticksList[ticksList.length-1]) + 1
+                console.log(numberTicks)
+                if (numberTicks < 7){
+                  this.zoomToType(7);
+                }
+                else{
+                  this.ticksSetting = null;
+                }  
+              }
+              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick *7); });
+              
+              this.refreshXAxis();
+
+              this.updateChart()
+              this.ticksSetting = null;
+              this.timeReverse = "WEEKS"
+              break; 
+            } 
+            case "MONTHS": { 
+              this.formatDate = this.formatDateMonth;
+
+              // this.zoomToType(30)
+              if(['YEARS'].includes(this.timeReverse)){
+                this.ticksSetting = null;
+              }
+              else{
+                var ticksList = this.xAxis.ticks()
+
+                var numberTicks = d3.timeMonth.count(ticksList[0], ticksList[ticksList.length-1]) + 1  
+
+                if (numberTicks < 7){
+                  this.zoomToType(30);
+                }
+                else{
+                  this.ticksSetting = null;
+                }  
+              }
+            
+              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick *30); });
+
+              this.ticksSetting = null;             
+              this.refreshXAxis();
+              this.updateChart()
+
+              this.timeReverse = "MONTHS"
+              break; 
+           } 
+            case "YEARS": { 
+
+              this.formatDate = this.formatDateYear;
+              this.ticksSetting = d3.timeYear.every(1);
+
+              var ticksList = this.xAxis.ticks()
+
+              var numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length-1]) + 1  
+
+              if (numberTicks < 2){
+                this.zoomToType(365/2);
+              } 
+
+              this.refreshXAxis()
+              this.updateChart();
+              this.timeReverse = "YEARS";
+              break; 
+            } 
+            case null: {
+              this.formatDate = this.formatDateFull;
+              this.ticksSetting = null;
+              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick); });
+
+              var ticksList = this.xAxis.ticks()
+
+              var numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length-1]) + 1  
+
+              console.log(numberTicks)
+              if (numberTicks < 3){
+                this.zoomToType(365/2);
+              } 
+
+              this.refreshXAxis()
+              this.updateChart();
+              this.timeReverse = null;
+              break;
+            }
+          } 
+        }
+      }
+    });
+
+    this.formatDate = this.formatDateFull;
 
     this.groups = [...new Set(this.taskData.map(item => item?.group))];
 
@@ -217,7 +364,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     yGroup.attr('transform', 'translate(0,' + (this.padding.top + this.barMargin) + ')');
 
     this.zoom = d3.zoom()
-      .on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event); });
+      .on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick); });
 
     this.zoomElement = this.svg
       .append('rect')
@@ -236,7 +383,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
       .attr('mask', 'url(#dataMask)');
   }
 
-  onZoom(event: d3.D3ZoomEvent<any, any>): void {
+  onZoom(event: d3.D3ZoomEvent<any, any>, minTimeMs): void {
 
     const eventTransform: d3.ZoomTransform = event.transform;
 
@@ -258,10 +405,11 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     const start = xAxisRescaled.domain()[0];
     const end = xAxisRescaled.domain()[1];
 
-    this.zoomTo(start, end);
-
     // reset the transform so the scale can be changed from other elements like dropdown menu
     this.zoomElement.call(this.zoom.transform, d3.zoomIdentity);
+
+    this.setZoomScaleExtent(minTimeMs)
+    this.zoomTo(start, end);
 
     this.periodStartDate = xAxisRescaled.invert(xAxisRescaled.range()[0]);
     this.periodEndDate = xAxisRescaled.invert(xAxisRescaled.range()[1]);
@@ -272,8 +420,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
 
   zoomTo(start: Date, end: Date): void {
     this.xAxis.domain([start, end]);
-    this.setZoomScaleExtent();
-
     this.updateChart();
   }
 
@@ -286,8 +432,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   // set minimum and maximum zoom levels
-  setZoomScaleExtent(): void {
-    const minTimeMs = 1.2096e+9; // 14 days to show 1 day ticks
+  setZoomScaleExtent(minTimeMs): void {
+    // const minTimeMs = 1.2096e+9; // 14 days to show 1 day ticks
     const maxTimeMs = 3.1536e+11; // ~ 10 years
 
     const widthMs = this.periodEndDate.getTime() - this.periodStartDate.getTime();
@@ -304,12 +450,12 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     this.xAxis = d3.scaleTime()
       .domain([this.periodStartDate, this.periodEndDate])
       .range([0, this.viewBoxWidth - this.padding.left]);
-    this.setZoomScaleExtent();
+    this.setZoomScaleExtent(this.oneDayTick);
   }
 
   private refreshXAxis(): void {
     this.xAxis.domain([this.periodStartDate, this.periodEndDate]);
-    this.setZoomScaleExtent();
+    // this.setZoomScaleExtent(this.oneDayTick);
   }
 
   // Set Y axis
@@ -324,7 +470,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
 
     // vertical grid lines
     xGroup.selectAll('line.xGridLines')
-      .data(this.xAxis.ticks())
+      .data(this.xAxis.ticks(this.ticksSetting))
       .enter()
       .append('line')
       .attr('class', 'xGridLines')
@@ -343,6 +489,41 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     this.drawVerticalGridLines();
   }
 
+  formatDateDay(date): any {
+    return (d3.timeYear(date) < date ? (d3.timeMonth(date) < date ? d3.timeFormat("%a, %d.") : d3.timeFormat("%d.%b"))
+    : d3.timeFormat("%d.%m.%y"))(date)
+  }
+
+  formatDateWeek(date): any {
+    return (d3.timeWeek(date) ? d3.timeFormat("KW-%V") : d3.timeFormat("KW-%V %y"))
+    (date)
+  }
+
+  formatDateMonth(date): any {
+    return (d3.timeYear(date) < date ? d3.timeFormat("%b") : d3.timeFormat("%b %y"))
+    (date)
+  }
+
+  formatDateYear(date): any {
+    return (d3.timeFormat("%Y"))
+    (date)
+  }
+
+  zoomToType(dateFactor){
+
+    const widthMs = this.periodEndDate.getTime() - this.periodStartDate.getTime();
+
+    const maxScaleFactor = widthMs / (this.oneDayTick *dateFactor);
+
+    console.log(maxScaleFactor)
+    this.svg
+    .transition()
+    .duration(0)
+    .call(this.zoom.scaleTo, maxScaleFactor)
+    .on('end', () => this.refreshXAxis());
+    
+  }
+
   private drawHeaderX(): void {
     const xGroup = this.svg.select('g.x-group');
 
@@ -357,7 +538,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
 
     // x-axis labels
     xGroup.selectAll('text')
-      .data(this.xAxis.ticks())
+      .data(this.xAxis.ticks(this.ticksSetting))
       .enter()
       .append('text')
       .attr('class', 'xAxisLabel')
@@ -369,10 +550,13 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     xGroup
       .append('line')
       .attr('class', 'currentDate')
-      .attr('x1', 0)
-      .attr('x2', Math.min(Math.max(this.xAxis(new Date()), 0), this.xAxis.range()[1]))
       .attr('y1', this.barHeight + this.barMargin)
-      .attr('y2', this.barHeight + this.barMargin);
+      .attr('y2', this.barHeight + this.barMargin)
+      .transition()
+      .duration(2000)
+      .attr('x1', 0)
+      .attr('x2', Math.min(Math.max(this.xAxis(new Date()), 0), this.xAxis.range()[1]));
+   
   }
 
   private redrawHeaderX(): void {
@@ -381,7 +565,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     // x-axis labels
     xGroup.selectAll('text.xAxisLabel').remove();
     xGroup.selectAll('text')
-      .data(this.xAxis.ticks())
+      .data(this.xAxis.ticks(this.ticksSetting))
       .enter()
       .append('text')
       .attr('class', 'xAxisLabel')
@@ -391,7 +575,9 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
 
     // current date indicator
     xGroup.select('line.currentDate')
-      .attr('x2', Math.min(Math.max(this.xAxis(new Date()), 0), this.xAxis.range()[1]));
+    .transition()
+    .duration(2000)
+    .attr('x2', Math.min(Math.max(this.xAxis(new Date()), 0), this.xAxis.range()[1]));
   }
 
   private drawHeaderY(): void {
