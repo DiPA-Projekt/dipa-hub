@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {GanttControlsService} from './gantt-controls.service';
 import {ChartComponent} from './chart/chart.component';
 import {forkJoin, Observable} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import {last, map, tap} from 'rxjs/operators';
 
 import {MilestonesService, TasksService, TimelinesService} from 'dipa-api-client';
 
@@ -106,6 +106,26 @@ export class GanttComponent implements OnInit, OnDestroy {
         this.ganttControlsService.setPeriodEndDate(data.periodEndDate);
       })
     );
+  }
+
+  changeViewType(event) {
+
+  let toggle = event.source;
+
+    if (toggle){
+        let group = toggle.buttonToggleGroup;
+
+        if (event.value.some(item => item == toggle.value)) {
+            group.value = [toggle.value];
+        }
+        console.log(group.value[0])
+        this.ganttControlsService.setViewType(group.value[0]);
+
+    }
+    else {
+      this.ganttControlsService.setViewType(null);
+    }
+  
   }
 
   changeTimeline(event): void {
