@@ -17,6 +17,7 @@ import {ResizedEvent} from 'angular-resize-event';
 import {MilestonesArea} from './chart-elements/MilestonesArea';
 import {TasksArea} from './chart-elements/TasksArea';
 import {XAxis} from './chart-elements/XAxis';
+import {ProjectDuration} from './chart-elements/ProjectDuration';
 
 @Component({
   selector: 'app-chart',
@@ -64,12 +65,13 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   private viewBoxHeight = 400;
   private viewBoxWidth = 750;
 
-  private padding = { top: 25, left: 0};
+  private padding = { top: 40, left: 0};
 
   private xScale;
   private zoom;
 
   headerX: XAxis;
+  projectDuration: ProjectDuration;
   milestoneViewItem: MilestonesArea;
   taskViewItem: TasksArea;
 
@@ -146,6 +148,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     this.headerX = new XAxis(this.svg, this.xScale);
     this.headerX.draw();
+    this.projectDuration = new ProjectDuration(this.svg, this.xScale);
+    this.projectDuration.draw();
 
     this.taskViewItem = new TasksArea(this.svg, this.xScale, this.taskData);
     this.taskViewItem.draw({left: 0, top: 0});
@@ -155,6 +159,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
   private redrawChart(): void {
     this.headerX.redraw();
+    this.projectDuration.redraw();
 
     this.taskViewItem.redraw({left: 0, top: 0});
     this.milestoneViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()});
@@ -204,6 +209,9 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   private initializeSvgGraphElements(): void {
     const xGroup = this.svg.append('g').attr('class', 'x-group');
     xGroup.attr('transform', 'translate(' + this.padding.left + ',0)');
+
+    const projectGroup = this.svg.append('g').attr('class', 'project-group');
+    projectGroup.attr('transform', 'translate(' + this.padding.left + ',25)');
 
     this.zoom = d3.zoom()
       .on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event); });
