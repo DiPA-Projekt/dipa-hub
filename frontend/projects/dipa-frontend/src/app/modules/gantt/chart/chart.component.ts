@@ -127,7 +127,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
         this.viewType = data;
 
         if (this.xAxis) {
-          console.log(data)
 
           switch(data) { 
             case "DAYS": { 
@@ -164,11 +163,11 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
               }
               else{
                 let ticksList = this.xAxis.ticks()
-                console.log(ticksList)
+                
                 let numberTicks = d3.timeWeek.count(ticksList[0], ticksList[ticksList.length-1]) + 1
-                console.log(numberTicks)
+
                 if (numberTicks < 7){
-                  this.zoomToType(7);
+                  this.zoomToViewType(7, 1);
                 }
                 else{
                   this.ticksSetting = null;
@@ -186,7 +185,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
             case "MONTHS": { 
               this.formatDate = this.formatDateMonth;
 
-              // this.zoomToType(30)
+              // this.zoomToViewType(30)
               if(['YEARS'].includes(this.timeReverse)){
                 this.ticksSetting = null;
               }
@@ -196,7 +195,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
                 var numberTicks = d3.timeMonth.count(ticksList[0], ticksList[ticksList.length-1]) + 1  
 
                 if (numberTicks < 7){
-                  this.zoomToType(30);
+                  this.zoomToViewType(30, 1);
                 }
                 else{
                   this.ticksSetting = null;
@@ -222,7 +221,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
               var numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length-1]) + 1  
 
               if (numberTicks < 2){
-                this.zoomToType(365/2);
+                this.zoomToViewType(365, 12);
               } 
 
               this.refreshXAxis()
@@ -239,9 +238,11 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
 
               var numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length-1]) + 1  
 
-              console.log(numberTicks)
+              // this zoom back feature is only for cases when users zoomed into one-two years
+
               if (numberTicks < 3){
-                this.zoomToType(365/2);
+                // chart can show max 12 years => ony need to zoom back to 3 years => /4
+                this.zoomToViewType(365, 4);
               } 
 
               this.refreshXAxis()
@@ -509,13 +510,12 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     (date)
   }
 
-  zoomToType(dateFactor){
+  zoomToViewType(dateFactor, yearFactor){
 
     const widthMs = this.periodEndDate.getTime() - this.periodStartDate.getTime();
 
-    const maxScaleFactor = widthMs / (this.oneDayTick *dateFactor);
+    const maxScaleFactor = widthMs / ((this.oneDayTick *dateFactor)/ yearFactor);
 
-    console.log(maxScaleFactor)
     this.svg
     .transition()
     .duration(0)
