@@ -14,7 +14,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
-
+import {AngularResizedEventModule} from 'angular-resize-event';
 
 
 @NgModule({
@@ -34,7 +34,8 @@ import {MatSelectModule} from '@angular/material/select';
     MatDatepickerModule,
     MatButtonToggleModule,
     MatInputModule,
-    MatSelectModule
+    MatSelectModule,
+    AngularResizedEventModule
   ]
 })
 export class GanttModule { }
