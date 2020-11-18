@@ -54,8 +54,12 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   periodStartDate: Date;
   periodEndDate: Date;
 
+  viewType: String;
+
   periodStartDateSubscription;
   periodEndDateSubscription;
+
+  viewTypeSubscription;
 
   // element for chart
   private svg;
@@ -68,6 +72,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
   private xScale;
   private zoom;
+
+  private oneDayTick = 1.2096e+9;
 
   headerX: XAxis;
   milestoneViewItem: MilestonesArea;
@@ -97,6 +103,106 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
         }
       }
     });
+
+    this.viewTypeSubscription = this.ganttControlsService.getViewType()
+    .subscribe((data) => {
+      if (this.viewType !== data) {
+        this.viewType = data;
+
+        if (this.xScale) {
+
+          switch(data) { 
+            case "DAYS": { 
+              this.headerX.formatDate = this.headerX.formatDateDay;
+              this.headerX.tickSetting = null;
+
+              let ticksList = this.xScale.ticks();
+              let numberTicks = d3.timeDay.count(ticksList[0], ticksList[ticksList.length-1]);
+
+              if (numberTicks < 18){
+                this.headerX.tickSetting = numberTicks;
+              }
+                 
+              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick); });
+              this.refreshXScale();
+              this.redrawChart();
+
+              break; 
+            } 
+            case "WEEKS": { 
+              this.headerX.formatDate = this.headerX.formatDateWeek;
+              this.headerX.tickSetting = null;
+
+              let ticksList = this.xScale.ticks();
+              let numberTicks = d3.timeWeek.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
+
+              if (numberTicks < 7){
+                this.zoomToViewType(7, 1);
+              }
+               
+              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick *7); });
+              this.refreshXScale();
+              this.redrawChart();
+
+              break; 
+            } 
+            case "MONTHS": { 
+              this.headerX.formatDate = this.headerX.formatDateMonth;
+              this.headerX.tickSetting = null; 
+
+              let ticksList = this.xScale.ticks();
+
+              let numberTicks = d3.timeMonth.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
+
+              if (numberTicks < 7){
+                this.zoomToViewType(30, 1);
+              }
+             
+              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick *30); });   
+              this.refreshXScale();
+              this.redrawChart();
+
+              break; 
+           } 
+            case "YEARS": { 
+              this.headerX.formatDate = this.headerX.formatDateYear;
+              this.headerX.tickSetting = d3.timeYear.every(1);
+
+              let ticksList = this.xScale.ticks();
+              let numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length-1]) + 1;  
+
+              if (numberTicks < 2){
+                this.zoomToViewType(365, 12);
+              } 
+
+              this.refreshXScale();
+              this.redrawChart();
+              break; 
+            } 
+            case null: {
+              this.headerX.formatDate = this.headerX.formatDateFull;
+              this.headerX.tickSetting = null;
+
+              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick); });
+
+              var ticksList = this.xScale.ticks();
+
+              var numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length-1]) + 1 ;
+
+              if (numberTicks < 3){
+                this.zoomToViewType(365, 4);
+              } 
+
+              this.refreshXScale();
+              this.redrawChart();
+
+              break;
+            }
+          } 
+        }
+      }
+    });
+
 
     d3.select('figure#chart')
       .append('div')
@@ -145,6 +251,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.initializeXScale();
 
     this.headerX = new XAxis(this.svg, this.xScale);
+    this.headerX.formatDate = this.headerX.formatDateFull;
     this.headerX.draw();
 
     this.taskViewItem = new TasksArea(this.svg, this.xScale, this.taskData);
@@ -206,7 +313,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     xGroup.attr('transform', 'translate(' + this.padding.left + ',0)');
 
     this.zoom = d3.zoom()
-      .on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event); });
+      .on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick); });
 
     this.zoomElement = this.svg
       .append('rect')
@@ -225,7 +332,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       .attr('mask', 'url(#dataMask)');
   }
 
-  onZoom(event: d3.D3ZoomEvent<any, any>): void {
+  onZoom(event: d3.D3ZoomEvent<any, any>, minTimeMs): void {
 
     const eventTransform: d3.ZoomTransform = event.transform;
 
@@ -247,7 +354,9 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     const start = xScaleTransformed.domain()[0];
     const end = xScaleTransformed.domain()[1];
 
+    this.setZoomScaleExtent(minTimeMs)
     this.zoomTo(start, end);
+
 
     // reset the transform so the scale can be changed from other elements like dropdown menu
     this.zoomElement.call(this.zoom.transform, d3.zoomIdentity);
@@ -261,14 +370,14 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
   zoomTo(start: Date, end: Date): void {
     this.xScale.domain([start, end]);
-    this.setZoomScaleExtent();
+    // this.setZoomScaleExtent();
 
     this.redrawChart();
   }
 
   // set minimum and maximum zoom levels
-  setZoomScaleExtent(): void {
-    const minTimeMs = 1.2096e+9; // 14 days to show 1 day ticks
+  setZoomScaleExtent(minTimeMs): void {
+    // const minTimeMs = 1.2096e+9; // 14 days to show 1 day ticks
     const maxTimeMs = 3.1536e+11; // ~ 10 years
 
     const widthMs = this.periodEndDate.getTime() - this.periodStartDate.getTime();
@@ -285,13 +394,13 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.xScale = d3.scaleTime()
       .domain([this.periodStartDate, this.periodEndDate])
       .range([0, this.viewBoxWidth - this.padding.left]);
-    this.setZoomScaleExtent();
+    this.setZoomScaleExtent(this.oneDayTick);
   }
 
   private refreshXScale(): void {
     this.xScale
       .domain([this.periodStartDate, this.periodEndDate]);
-    this.setZoomScaleExtent();
+    this.setZoomScaleExtent(this.oneDayTick);
   }
 
   private resizeXScale(newSize): void {
@@ -302,6 +411,20 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   resizeZoomElement(newSize): void {
     this.zoomElement
       .attr('width', newSize - this.padding.left);
+  }
+
+  zoomToViewType(dateFactor, yearFactor){
+
+    const widthMs = this.periodEndDate.getTime() - this.periodStartDate.getTime();
+
+    const maxScaleFactor = widthMs / ((this.oneDayTick *dateFactor) / yearFactor);
+
+    this.svg
+    .transition()
+    .duration(0)
+    .call(this.zoom.scaleTo, maxScaleFactor)
+    .on('end', () => this.refreshXScale());
+
   }
 
 }
