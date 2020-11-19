@@ -28,6 +28,7 @@ export class GanttComponent implements OnInit, OnDestroy {
   timelinesSubscription;
 
   selectedTimelineId: number;
+  viewTypeSelected : any;
 
   constructor(public ganttControlsService: GanttControlsService,
               private timelinesService: TimelinesService,
@@ -130,6 +131,8 @@ export class GanttComponent implements OnInit, OnDestroy {
 
   changeTimeline(event): void {
     this.setData();
+    this.viewTypeSelected = undefined;
+    this.ganttControlsService.setViewType(null);
   }
 
   changeStartDate(change: string, $event: any): void {
