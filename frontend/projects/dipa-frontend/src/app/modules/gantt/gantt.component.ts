@@ -108,14 +108,14 @@ export class GanttComponent implements OnInit, OnDestroy {
     );
   }
 
-  changeViewType(event) {
+  changeViewType(event): void {
 
-  let toggle = event.source;
+  const toggle = event.source;
 
     if (toggle){
-        let group = toggle.buttonToggleGroup;
+        const group = toggle.buttonToggleGroup;
 
-        if (event.value.some(item => item == toggle.value)) {
+        if (event.value.some(item => item === toggle.value)) {
             group.value = [toggle.value];
         }
 

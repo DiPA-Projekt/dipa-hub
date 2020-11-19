@@ -54,7 +54,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   periodStartDate: Date;
   periodEndDate: Date;
 
-  viewType: String;
+  viewType: string;
 
   periodStartDateSubscription;
   periodEndDateSubscription;
@@ -112,12 +112,12 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
         if (this.xScale) {
 
           switch(data) { 
-            case "DAYS": { 
+            case 'DAYS': { 
               this.headerX.formatDate = this.headerX.formatDateDay;
               this.headerX.tickSetting = null;
 
-              let ticksList = this.xScale.ticks();
-              let numberTicks = d3.timeDay.count(ticksList[0], ticksList[ticksList.length-1]);
+              const ticksList = this.xScale.ticks();
+              const numberTicks = d3.timeDay.count(ticksList[0], ticksList[ticksList.length-1]);
 
               if (numberTicks < 18){
                 this.headerX.tickSetting = numberTicks;
@@ -129,12 +129,12 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
               break; 
             } 
-            case "WEEKS": { 
+            case 'WEEKS': { 
               this.headerX.formatDate = this.headerX.formatDateWeek;
               this.headerX.tickSetting = null;
 
-              let ticksList = this.xScale.ticks();
-              let numberTicks = d3.timeWeek.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
+              const ticksList = this.xScale.ticks();
+              const numberTicks = d3.timeWeek.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
 
               if (numberTicks < 7){
                 this.zoomToViewType(7, 1);
@@ -146,13 +146,12 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
               break; 
             } 
-            case "MONTHS": { 
+            case 'MONTHS': { 
               this.headerX.formatDate = this.headerX.formatDateMonth;
               this.headerX.tickSetting = null; 
 
-              let ticksList = this.xScale.ticks();
-
-              let numberTicks = d3.timeMonth.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
+              const ticksList = this.xScale.ticks();
+              const numberTicks = d3.timeMonth.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
 
               if (numberTicks < 7){
                 this.zoomToViewType(30, 1);
@@ -164,12 +163,12 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
               break; 
            } 
-            case "YEARS": { 
+            case 'YEARS': { 
               this.headerX.formatDate = this.headerX.formatDateYear;
               this.headerX.tickSetting = d3.timeYear.every(1);
 
-              let ticksList = this.xScale.ticks();
-              let numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length-1]) + 1;  
+              const ticksList = this.xScale.ticks();
+              const numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length-1]) + 1;  
 
               if (numberTicks < 2){
                 this.zoomToViewType(365, 12);
@@ -185,9 +184,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
               this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick); });
 
-              var ticksList = this.xScale.ticks();
-
-              var numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length-1]) + 1 ;
+              const ticksList = this.xScale.ticks();
+              const numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length-1]) + 1 ;
 
               if (numberTicks < 3){
                 this.zoomToViewType(365, 4);
@@ -354,7 +352,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     const start = xScaleTransformed.domain()[0];
     const end = xScaleTransformed.domain()[1];
 
-    this.setZoomScaleExtent(minTimeMs)
+    this.setZoomScaleExtent(minTimeMs);
     this.zoomTo(start, end);
 
 
@@ -413,7 +411,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       .attr('width', newSize - this.padding.left);
   }
 
-  zoomToViewType(dateFactor, yearFactor){
+  zoomToViewType(dateFactor, yearFactor): void{
 
     const widthMs = this.periodEndDate.getTime() - this.periodStartDate.getTime();
 
