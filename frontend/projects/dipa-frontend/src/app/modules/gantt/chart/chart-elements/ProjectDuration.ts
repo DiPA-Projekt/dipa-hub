@@ -5,15 +5,12 @@ export class ProjectDuration {
   svg;
   readonly xScale;
 
-  svgBbox;
-  projectGroup;
-
   dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
 
   elementColor = '#c6e0b4';
 
   projectStartDate: Date = new Date(2020, 7, 17);
-  projectEndDate: Date = new Date(2024, 7, 19);
+  projectEndDate: Date = new Date(2024, 7, 18);
 
   startDateText;
   endDateText;
@@ -24,16 +21,17 @@ export class ProjectDuration {
   constructor(svg: any, xScale: any) {
     this.svg = svg;
     this.xScale = xScale;
-    this.svgBbox = this.svg.node().getBBox();
-    this.projectGroup = this.svg.select('g.project-group');
   }
 
   draw(): void {
+
+    const projectGroup = this.svg.select('g.project-group');
+
     const visibleProjectStartDatePosition = Math.max(this.xScale(this.projectStartDate), 0);
     const visibleProjectEndDatePosition = Math.min(this.xScale(this.projectEndDate), this.xScale.range()[1]);
 
     // project duration indicator
-    this.projectGroup
+    projectGroup
       .append('rect')
       .attr('class', 'projectDuration')
       .style('fill', this.elementColor)
@@ -42,21 +40,11 @@ export class ProjectDuration {
       .attr('width', Math.min(Math.max(this.xScale(this.projectEndDate) - visibleProjectStartDatePosition, 0), this.xScale.range()[1]))
       .attr('height', this.height);
 
-    const initialStartDatePosition = Math.min(visibleProjectStartDatePosition, this.xScale.range()[1] - 120);
-    const initialEndDatePosition = visibleProjectEndDatePosition - 60;
-
-    this.drawProjectStartDate(initialStartDatePosition);
-    this.drawProjectEndDate(initialEndDatePosition);
-
-    this.drawVerticalProjectDateLines();
-  }
-
-  private drawProjectStartDate(x): void {
     // project start date
-    this.startDateText = this.projectGroup
+    this.startDateText = projectGroup
       .append('text')
       .attr('class', 'projectStartDateLabel')
-      .attr('x', x)
+      .attr('x', Math.min(visibleProjectStartDatePosition, this.xScale.range()[1] - 120))
       .attr('y', this.height / 2)
       .attr('dominant-baseline', 'central');
 
@@ -75,14 +63,12 @@ export class ProjectDuration {
       .attr('class', 'minusText')
       .text(' - ')
       .attr('dx', this.dx);
-  }
 
-  private drawProjectEndDate(x): void {
     // project end date
-    this.endDateText = this.projectGroup
+    this.endDateText = projectGroup
       .append('text')
       .attr('class', 'projectEndDateLabel')
-      .attr('x', x)
+      .attr('x', visibleProjectEndDatePosition - 60)
       .attr('y', this.height / 2)
       .attr('dominant-baseline', 'central');
 
@@ -98,31 +84,10 @@ export class ProjectDuration {
       .attr('dx', this.dx);
   }
 
-  private drawVerticalProjectDateLines(): void {
-    const viewBoxHeight = this.svgBbox.height;
-
-    // projectStartDate grid line
-    this.projectGroup
-      .append('line')
-      .attr('class', 'projectStartDateLine')
-      .attr('x1', this.xScale(this.projectStartDate))
-      .attr('x2', this.xScale(this.projectStartDate))
-      .attr('y1', 0)
-      .attr('y2', viewBoxHeight)
-      .attr('stroke', d3.rgb(this.elementColor).darker());
-
-    // projectEndDate grid line
-    this.projectGroup
-      .append('line')
-      .attr('class', 'projectEndDateLine')
-      .attr('x1', this.xScale(this.projectEndDate))
-      .attr('x2', this.xScale(this.projectEndDate))
-      .attr('y1', 0)
-      .attr('y2', viewBoxHeight)
-      .attr('stroke', d3.rgb(this.elementColor).darker());
-  }
-
   redraw(): void {
+
+    const projectGroup = this.svg.select('g.project-group');
+
     // get current width of text elements
     const startDateSvgBbox = this.startDateText.node().getBBox().width;
     const endDateSvgBbox = this.endDateText.node().getBBox().width;
@@ -136,37 +101,28 @@ export class ProjectDuration {
     const rightBorder = Math.max(visibleProjectEndDatePosition - (endDateSvgBbox + this.dx), startDateSvgBbox);
 
     // project duration indicator
-    this.projectGroup.select('rect.projectDuration')
+    projectGroup.select('rect.projectDuration')
       .attr('x', this.xScale(this.projectStartDate))
       .attr('width', (this.xScale(this.projectEndDate) - this.xScale(this.projectStartDate)));
 
-    this.redrawProjectStartDate(leftBorder);
-    this.redrawProjectEndDate(rightBorder);
+    // project start date
+    this.startDateText
+      .attr('x', leftBorder);
+
+    const projectStartDateOutsideViewbox = this.xScale(this.projectStartDate) < 0;
+    this.startDateText.select('tspan.triangleLeft')
+        .attr('fill', projectStartDateOutsideViewbox ? null : 'none');
+
+    this.startDateText.select('tspan.projectStartDate')
+      .text(this.projectStartDate.toLocaleDateString('de-DE', this.dateOptions));
 
     const connectLeftAndRightDate = rightBorder - leftBorder <= startDateSvgBbox;
     this.startDateText.select('tspan.minusText')
       .attr('fill', connectLeftAndRightDate ? null : 'none');
 
-    this.redrawVerticalProjectDateLines();
-  }
-
-  private redrawProjectStartDate(x): void {
-    // project start date
-    this.startDateText
-      .attr('x', x);
-
-    const projectStartDateOutsideViewbox = this.xScale(this.projectStartDate) < 0;
-    this.startDateText.select('tspan.triangleLeft')
-      .attr('fill', projectStartDateOutsideViewbox ? null : 'none');
-
-    this.startDateText.select('tspan.projectStartDate')
-      .text(this.projectStartDate.toLocaleDateString('de-DE', this.dateOptions));
-  }
-
-  private redrawProjectEndDate(x): void {
     // project end date
     this.endDateText
-      .attr('x', x);
+      .attr('x', rightBorder);
 
     this.endDateText.select('tspan.projectEndDate')
       .text(this.projectEndDate.toLocaleDateString('de-DE', this.dateOptions));
@@ -174,18 +130,6 @@ export class ProjectDuration {
     const projectEndDateOutsideViewbox = this.xScale(this.projectEndDate) > this.xScale.range()[1];
     this.endDateText.select('tspan.triangleRight')
       .attr('fill', projectEndDateOutsideViewbox ? null : 'none');
-  }
-
-  private redrawVerticalProjectDateLines(): void {
-    // projectStartDate grid line
-    this.projectGroup.select('line.projectStartDateLine')
-      .attr('x1', this.xScale(this.projectStartDate))
-      .attr('x2', this.xScale(this.projectStartDate));
-
-    // projectEndDate grid line
-    this.projectGroup.select('line.projectEndDateLine')
-      .attr('x1', this.xScale(this.projectEndDate))
-      .attr('x2', this.xScale(this.projectEndDate));
   }
 
 }
