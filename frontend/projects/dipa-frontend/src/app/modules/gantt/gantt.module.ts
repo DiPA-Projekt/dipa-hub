@@ -15,6 +15,7 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {AngularResizedEventModule} from 'angular-resize-event';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -24,6 +25,7 @@ import {AngularResizedEventModule} from 'angular-resize-event';
     // TooltipComponent
   ],
   imports: [
+    FormsModule,
     CommonModule,
     GanttRoutingModule,
     MatCardModule,
