@@ -39,6 +39,11 @@
           font-size: 10px;
           fill: #fff;
         }
+
+        line.currentDate {
+          stroke: #f00;
+          stroke-width: 6;
+        }
       }
 
       g.y-group {

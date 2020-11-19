@@ -9,6 +9,10 @@ export class XAxis {
 
   height = 28;
 
+  formatDate;
+
+  tickSetting;
+
   constructor(svg: any, xScale: any) {
     this.svg = svg;
     this.xScale = xScale;
@@ -50,7 +54,7 @@ export class XAxis {
     // x-axis labels
     xGroup.selectAll('text.xAxisLabel').remove();
     xGroup.selectAll('text')
-      .data(this.xScale.ticks())
+      .data(this.xScale.ticks(this.tickSetting))
       .enter()
       .append('text')
       .attr('class', 'xAxisLabel')
@@ -76,7 +80,7 @@ export class XAxis {
 
     // vertical grid lines
     xGroup.selectAll('line.xGridLines')
-      .data(this.xScale.ticks())
+      .data(this.xScale.ticks(this.tickSetting))
       .enter()
       .append('line')
       .attr('class', 'xGridLines')
@@ -96,7 +100,7 @@ export class XAxis {
   }
 
   // Define filter conditions
-  formatDate(date): any {
+  formatDateFull(date): any {
     return (d3.timeSecond(date) < date ? d3.timeFormat('.%L')
         : d3.timeMinute(date) < date ? d3.timeFormat(':%S')
           : d3.timeHour(date) < date ? d3.timeFormat('%H:%M')
@@ -107,5 +111,26 @@ export class XAxis {
     )
     (date);
   }
+
+  formatDateDay(date): any {
+    return (d3.timeYear(date) < date ? (d3.timeMonth(date) < date ? d3.timeFormat("%a, %d.") : d3.timeFormat("%d. %b"))
+    : d3.timeFormat("%d.%m.%y"))(date);
+  }
+
+  formatDateWeek(date): any {
+    return (d3.timeFormat("%V")(date) == "01" ? d3.timeFormat("%Y") : d3.timeFormat("KW %V"))
+    (date);
+  }
+
+  formatDateMonth(date): any {
+    return (d3.timeYear(date) < date ? d3.timeFormat("%b") : d3.timeFormat("%b %y"))
+    (date);
+  }
+
+  formatDateYear(date): any {
+    return (d3.timeFormat("%Y"))
+    (date);
+  }
+
 
 }
