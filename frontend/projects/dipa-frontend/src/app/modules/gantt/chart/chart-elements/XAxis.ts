@@ -44,15 +44,6 @@ export class XAxis {
       .attr('x', d => this.xScale(d) + 4)
       .attr('y', 18);
 
-    // current date indicator
-    xGroup
-      .append('line')
-      .attr('class', 'currentDate')
-      .attr('x1', 0)
-      .attr('x2', Math.min(Math.max(this.xScale(new Date()), 0), this.xScale.range()[1]))
-      .attr('y1', this.height)
-      .attr('y2', this.height);
-
     this.drawVerticalGridLines();
   }
 
@@ -70,10 +61,6 @@ export class XAxis {
       .text(d => this.formatDate(d))
       .attr('x', d => this.xScale(d) + 4)
       .attr('y', 18);
-
-    // current date indicator
-    xGroup.select('line.currentDate')
-      .attr('x2', Math.min(Math.max(this.xScale(new Date()), 0), this.xScale.range()[1]));
 
     this.redrawVerticalGridLines();
   }

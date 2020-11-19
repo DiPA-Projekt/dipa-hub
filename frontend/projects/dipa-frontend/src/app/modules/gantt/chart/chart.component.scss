@@ -39,11 +39,6 @@
           font-size: 10px;
           fill: #fff;
         }
-
-        line.currentDate {
-          stroke: #f00;
-          stroke-width: 6;
-        }
       }
 
       g.y-group {
@@ -53,6 +48,13 @@
 
         rect.groupBackground {
           opacity: 0.2;
+        }
+      }
+
+      g.project-group {
+        text {
+          font-size: 10px;
+          opacity: 0.87;
         }
       }
 
