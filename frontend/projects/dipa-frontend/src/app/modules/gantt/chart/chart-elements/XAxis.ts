@@ -8,6 +8,7 @@ export class XAxis {
   svgBbox;
 
   height = 28;
+  
   formatDate;
 
   tickSetting;
@@ -147,22 +148,22 @@ export class XAxis {
     const darkColor = '#a14fe8';
 
     const circle = this.svg.select('g.current-date-group')
-    .append('circle')
-    .attr('class', 'currentDateCircle')
-    .style('stroke', lightColor)
-    .style('fill', 'white')
-    .attr('r', 4)
-    .attr('cx', this.xScale(this.today))
-    .attr('cy', 5);
+      .append('circle')
+      .attr('class', 'currentDateCircle')
+      .style('stroke', lightColor)
+      .style('fill', 'white')
+      .attr('r', 4)
+      .attr('cx', this.xScale(this.today))
+      .attr('cy', 5);
 
     const point = this.svg.select('g.current-date-group')
-    .append('circle')
-    .attr('class', 'currentDatePoint')
-    .style('stroke', lightColor)
-    .style('fill', lightColor)
-    .attr('r', 1)
-    .attr('cx', this.xScale(this.today))
-    .attr('cy', 5);
+      .append('circle')
+      .attr('class', 'currentDatePoint')
+      .style('stroke', lightColor)
+      .style('fill', lightColor)
+      .attr('r', 1)
+      .attr('cx', this.xScale(this.today))
+      .attr('cy', 5);
     
     const currentLine = this.svg.select('g.current-date-group')
       .append('line')

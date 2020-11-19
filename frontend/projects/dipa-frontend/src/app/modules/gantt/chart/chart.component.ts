@@ -313,10 +313,10 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
   private initializeSvgGraphElements(): void {
     const xGroup = this.svg.append('g').attr('class', 'x-group');
-    xGroup.attr('transform', 'translate(' + this.padding.left + ',0)');
+    xGroup.attr('transform', 'translate(' + this.padding.left + ',20)');
 
     const projectGroup = this.svg.append('g').attr('class', 'project-group');
-    projectGroup.attr('transform', 'translate(' + this.padding.left + ',25)');
+    projectGroup.attr('transform', 'translate(' + this.padding.left + ',45)');
 
     this.zoom = d3.zoom()
       .on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick); });
@@ -332,8 +332,11 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       .call(this.zoom);
 
     const dataGroup = this.svg.append('g').attr('class', 'data-group');
-    dataGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + 10) + ')');
+    dataGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + 30) + ')');
 
+    const currentDateGroup = this.svg.append('g').attr('class', 'current-date-group');
+    currentDateGroup.attr('transform', 'translate(' + this.padding.left + ',0)');
+    
     dataGroup
       .attr('mask', 'url(#dataMask)');
   }
