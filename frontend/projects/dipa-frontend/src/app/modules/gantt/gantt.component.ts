@@ -91,9 +91,12 @@ export class GanttComponent implements OnInit, OnDestroy {
         const periodStartDate = GanttComponent.getMinimumDate(datesArray);
         const periodEndDate = GanttComponent.getMaximumDate(datesArray);
 
+        const selectedTimeline = this.timelineData.find(c => c.id === this.selectedTimelineId);
+
         return {
           milestoneData,
           taskData,
+          selectedTimeline,
           periodStartDate,
           periodEndDate
         };

@@ -46,6 +46,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     });
   }
 
+  @Input() timelineData = {};
   @Input() milestoneData = [];
   @Input() taskData = [];
 
@@ -148,7 +149,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     this.headerX = new XAxis(this.svg, this.xScale);
     this.headerX.draw();
-    this.projectDuration = new ProjectDuration(this.svg, this.xScale);
+    this.projectDuration = new ProjectDuration(this.svg, this.xScale, this.timelineData);
     this.projectDuration.draw();
 
     this.taskViewItem = new TasksArea(this.svg, this.xScale, this.taskData);

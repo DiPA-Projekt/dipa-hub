@@ -46,6 +46,7 @@
       <div class="col">
         <ng-container *ngIf="vm$ | async as vm">
           <app-chart #ganttChart
+                     [timelineData]="vm.selectedTimeline"
                      [milestoneData]="vm.milestoneData"
                      [taskData]="vm.taskData"
           ></app-chart>

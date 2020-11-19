@@ -12,6 +12,8 @@ public class ProjektTypeToTimelineConverter implements Converter<ProjectTypeEnti
     public Timeline convert(final ProjectTypeEntity projectTypeEntity) {
         return new Timeline().id(projectTypeEntity.getId())
                              .name(projectTypeEntity.getName())
+                             .start(projectTypeEntity.getStart())
+                             .end(projectTypeEntity.getEnd())
                              .defaultTimeline(projectTypeEntity.isDefaultType());
     }
 }

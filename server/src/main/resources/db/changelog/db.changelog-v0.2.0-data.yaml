@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: update-project-types-start-end
+      author: bock
+      changes:
+        - update:
+            tableName: project_type
+            columns:
+            - column:
+                name: start
+                value: "2020-08-19"
+            - column:
+                name: end
+                value: "2023-03-21"
+            where: id=1
+        - update:
+            tableName: project_type
+            columns:
+            - column:
+                name: start
+                value: "2020-08-19"
+            - column:
+                name: end
+                value: "2022-08-23"
+            where: id=2
+        - update:
+            tableName: project_type
+            columns:
+            - column:
+                name: start
+                value: "2020-08-17"
+            - column:
+                name: end
+                value: "2024-08-19"
+            where: id=3
