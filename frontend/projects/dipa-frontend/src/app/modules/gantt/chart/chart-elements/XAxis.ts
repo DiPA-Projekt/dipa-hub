@@ -154,7 +154,6 @@ export class XAxis {
       .append('circle')
       .attr('class', 'currentDateCircle')
       .style('stroke', lightColor)
-      .style('fill', 'white')
       .attr('cx', this.xScale(this.today));
 
     const point = this.svg.select('g.current-date-group')
