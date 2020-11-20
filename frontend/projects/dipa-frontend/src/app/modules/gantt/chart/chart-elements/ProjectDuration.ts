@@ -32,6 +32,26 @@ export class ProjectDuration {
     const visibleProjectStartDatePosition = Math.max(this.xScale(this.projectStartDate), 0);
     const visibleProjectEndDatePosition = Math.min(this.xScale(this.projectEndDate), this.xScale.range()[1]);
 
+    const drag = d3.drag()
+      .on('drag', (event: d3.D3DragEvent<any, any, any>) => {
+
+        const projectDuration = this.projectGroup.select('rect.projectDuration');
+
+        const xValueStart = parseFloat(projectDuration.attr('x'));
+        const width = parseFloat(projectDuration.attr('width'));
+
+        const xValueStartNew = xValueStart + event.dx;
+        const xValueEndNew = xValueStartNew + width;
+
+        // set new values
+        this.projectStartDate = this.xScale.invert(xValueStartNew);
+        this.projectEndDate = this.xScale.invert(xValueEndNew);
+
+        // refresh gui
+        projectDuration.attr('x', xValueStartNew);
+        this.redraw();
+      });
+
     // project duration indicator
     this.projectGroup
       .append('rect')
@@ -40,7 +60,8 @@ export class ProjectDuration {
       .style('stroke', d3.rgb(this.elementColor).darker())
       .attr('x', Math.min(visibleProjectStartDatePosition, this.xScale.range()[1]))
       .attr('width', Math.min(Math.max(this.xScale(this.projectEndDate) - visibleProjectStartDatePosition, 0), this.xScale.range()[1]))
-      .attr('height', this.height);
+      .attr('height', this.height)
+      .call(drag);
 
     const initialStartDatePosition = Math.min(visibleProjectStartDatePosition, this.xScale.range()[1] - 120);
     const initialEndDatePosition = visibleProjectEndDatePosition - 60;
