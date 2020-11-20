@@ -3,7 +3,8 @@
   <div class="container">
     <div class="row">
       <div class="col">
-        <mat-button-toggle-group name="chartMetric" aria-label="Chart Metric">
+        <mat-button-toggle-group name="chartMetric" #group="matButtonToggleGroup" multiple aria-label="Chart Metric" [(ngModel)]="viewTypeSelected" (change)="changeViewType($event)">
+          <mat-button-toggle class="md-button" value="YEARS">Jahre</mat-button-toggle>
           <mat-button-toggle class="md-button" value="MONTHS">Monate</mat-button-toggle>
           <mat-button-toggle class="md-button" value="WEEKS">Wochen</mat-button-toggle>
           <mat-button-toggle class="md-button" value="DAYS">Tage</mat-button-toggle>
