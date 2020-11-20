@@ -137,6 +137,9 @@ export class ProjectDuration {
 
     // project duration indicator
     this.projectGroup.select('rect.projectDuration')
+      .transition()
+      .ease(d3.easeLinear)
+      .duration(200)
       .attr('x', this.xScale(this.projectStartDate))
       .attr('width', (this.xScale(this.projectEndDate) - this.xScale(this.projectStartDate)));
 
@@ -153,6 +156,9 @@ export class ProjectDuration {
   private redrawProjectStartDate(x): void {
     // project start date
     this.startDateText
+      .transition()
+      .ease(d3.easeLinear)
+      .duration(200)
       .attr('x', x);
 
     const projectStartDateOutsideViewbox = this.xScale(this.projectStartDate) < 0;
@@ -166,6 +172,9 @@ export class ProjectDuration {
   private redrawProjectEndDate(x): void {
     // project end date
     this.endDateText
+      .transition()
+      .ease(d3.easeLinear)
+      .duration(200)
       .attr('x', x);
 
     this.endDateText.select('tspan.projectEndDate')
@@ -179,11 +188,17 @@ export class ProjectDuration {
   private redrawVerticalProjectDateLines(): void {
     // projectStartDate grid line
     this.projectGroup.select('line.projectStartDateLine')
+      .transition()
+      .ease(d3.easeLinear)
+      .duration(200)
       .attr('x1', this.xScale(this.projectStartDate))
       .attr('x2', this.xScale(this.projectStartDate));
 
     // projectEndDate grid line
     this.projectGroup.select('line.projectEndDateLine')
+      .transition()
+      .ease(d3.easeLinear)
+      .duration(200)
       .attr('x1', this.xScale(this.projectEndDate))
       .attr('x2', this.xScale(this.projectEndDate));
   }

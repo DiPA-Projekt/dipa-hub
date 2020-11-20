@@ -133,16 +133,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
             } 
             case 'WEEKS': { 
               this.headerX.formatDate = this.headerX.formatDateWeek;
-              this.headerX.tickSetting = null;
 
-              const ticksList = this.xScale.ticks();
-              const numberTicks = d3.timeWeek.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
-
-              if (numberTicks < 7){
-                this.zoomToViewType(7, 1);
-              }
-               
-              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick *7); });
+              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event,  (this.oneDayTick * 7) / 12); });
               this.refreshXScale();
               this.redrawChart();
 
@@ -150,16 +142,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
             } 
             case 'MONTHS': { 
               this.headerX.formatDate = this.headerX.formatDateMonth;
-              this.headerX.tickSetting = null; 
 
-              const ticksList = this.xScale.ticks();
-              const numberTicks = d3.timeMonth.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
-
-              if (numberTicks < 7){
-                this.zoomToViewType(30, 1);
-              }
-             
-              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick *30); });   
+              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, (this.oneDayTick * 30) / 12); });   
               this.refreshXScale();
               this.redrawChart();
 
@@ -167,15 +151,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
            } 
             case 'YEARS': { 
               this.headerX.formatDate = this.headerX.formatDateYear;
-              this.headerX.tickSetting = d3.timeYear.every(1);
 
-              const ticksList = this.xScale.ticks();
-              const numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length-1]) + 1;  
-
-              if (numberTicks < 2){
-                this.zoomToViewType(365, 12);
-              } 
-
+              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, (this.oneDayTick * 365) / 12); });
               this.refreshXScale();
               this.redrawChart();
               break; 
@@ -263,6 +240,75 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   }
 
   private redrawChart(): void {
+
+    const ticksList = this.xScale.ticks();
+
+    this.svg.select('g.x-group').selectAll('text.outsideXAxisLabel').remove();
+
+    switch (this.viewType){
+      case 'WEEKS' :{
+        const numberTicks = d3.timeWeek.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
+        
+        if (numberTicks > 12){
+          this.headerX.tickSetting = null;
+        }
+        else {
+          this.headerX.tickSetting = d3.timeWeek.every(1);
+        }
+
+        break;
+      }
+      case 'MONTHS' :{
+        const numberTicks = d3.timeMonth.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
+
+        if (numberTicks === 1){
+          
+          const textOutsideBox = this.xScale(ticksList[0]) < this.xScale.range()[1];
+
+          if (textOutsideBox){
+            this.svg.select('g.x-group')
+            .append('text')
+            .attr('class', 'outsideXAxisLabel')
+            .text(this.headerX.formatDateMonth(ticksList[0]))
+            .attr('x', 10)
+            .attr('y', 18);
+          }
+        }
+
+        if (numberTicks > 12){
+          this.headerX.tickSetting = null;
+        }
+        else {
+          this.headerX.tickSetting = d3.timeMonth.every(1);
+        }
+        break;
+      }
+      case 'YEARS' :{
+        const numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
+
+        if (numberTicks === 1){
+
+          const textOutsideBox = this.xScale(ticksList[0]) < this.xScale.range()[1];
+
+          if (textOutsideBox){
+            this.svg.select('g.x-group')
+            .append('text')
+            .attr('class', 'outsideXAxisLabel')
+            .text(this.headerX.formatDateYear(ticksList[0]))
+            .attr('x', 10)
+            .attr('y', 18);
+          }
+        }
+
+        if (numberTicks > 12){
+          this.headerX.tickSetting = null;
+        }
+        else {
+          this.headerX.tickSetting = d3.timeYear.every(1);
+        }
+        break;
+      }
+    }
     this.headerX.redraw();
     this.projectDuration.redraw();
 
