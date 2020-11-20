@@ -113,73 +113,73 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
         if (this.xScale) {
 
-          switch(data) { 
-            case 'DAYS': { 
+          switch (data) {
+            case 'DAYS': {
               this.headerX.formatDate = this.headerX.formatDateDay;
               this.headerX.tickSetting = null;
 
               const ticksList = this.xScale.ticks();
-              const numberTicks = d3.timeDay.count(ticksList[0], ticksList[ticksList.length-1]);
+              const numberTicks = d3.timeDay.count(ticksList[0], ticksList[ticksList.length - 1]);
 
               if (numberTicks < 18){
                 this.headerX.tickSetting = numberTicks;
               }
-                 
+
               this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick); });
               this.refreshXScale();
               this.redrawChart();
 
-              break; 
-            } 
-            case 'WEEKS': { 
+              break;
+            }
+            case 'WEEKS': {
               this.headerX.formatDate = this.headerX.formatDateWeek;
               this.headerX.tickSetting = null;
 
               const ticksList = this.xScale.ticks();
-              const numberTicks = d3.timeWeek.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
+              const numberTicks = d3.timeWeek.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
 
               if (numberTicks < 7){
                 this.zoomToViewType(7, 1);
               }
-               
-              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick *7); });
+
+              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick * 7); });
               this.refreshXScale();
               this.redrawChart();
 
-              break; 
-            } 
-            case 'MONTHS': { 
+              break;
+            }
+            case 'MONTHS': {
               this.headerX.formatDate = this.headerX.formatDateMonth;
-              this.headerX.tickSetting = null; 
+              this.headerX.tickSetting = null;
 
               const ticksList = this.xScale.ticks();
-              const numberTicks = d3.timeMonth.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
+              const numberTicks = d3.timeMonth.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
 
               if (numberTicks < 7){
                 this.zoomToViewType(30, 1);
               }
-             
-              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick *30); });   
+
+              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick * 30); });
               this.refreshXScale();
               this.redrawChart();
 
-              break; 
-           } 
-            case 'YEARS': { 
+              break;
+           }
+            case 'YEARS': {
               this.headerX.formatDate = this.headerX.formatDateYear;
               this.headerX.tickSetting = d3.timeYear.every(1);
 
               const ticksList = this.xScale.ticks();
-              const numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length-1]) + 1;  
+              const numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
 
               if (numberTicks < 2){
                 this.zoomToViewType(365, 12);
-              } 
+              }
 
               this.refreshXScale();
               this.redrawChart();
-              break; 
-            } 
+              break;
+            }
             case null: {
               this.headerX.formatDate = this.headerX.formatDateFull;
               this.headerX.tickSetting = null;
@@ -187,18 +187,18 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
               this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick); });
 
               const ticksList = this.xScale.ticks();
-              const numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length-1]) + 1 ;
+              const numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length - 1]) + 1 ;
 
               if (numberTicks < 3){
                 this.zoomToViewType(365, 4);
-              } 
+              }
 
               this.refreshXScale();
               this.redrawChart();
 
               break;
             }
-          } 
+          }
         }
       }
     });
@@ -315,9 +315,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     const xGroup = this.svg.append('g').attr('class', 'x-group');
     xGroup.attr('transform', 'translate(' + this.padding.left + ',0)');
 
-    const projectGroup = this.svg.append('g').attr('class', 'project-group');
-    projectGroup.attr('transform', 'translate(' + this.padding.left + ',25)');
-
     this.zoom = d3.zoom()
       .on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick); });
 
@@ -330,6 +327,9 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       .style('pointer-events', 'all')
       .attr('transform', 'translate(' + this.padding.left + ',' + this.padding.top + ')')
       .call(this.zoom);
+
+    const projectGroup = this.svg.append('g').attr('class', 'project-group');
+    projectGroup.attr('transform', 'translate(' + this.padding.left + ',25)');
 
     const dataGroup = this.svg.append('g').attr('class', 'data-group');
     dataGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + 10) + ')');
@@ -423,14 +423,13 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     const widthMs = this.periodEndDate.getTime() - this.periodStartDate.getTime();
 
-    const maxScaleFactor = widthMs / ((this.oneDayTick *dateFactor) / yearFactor);
+    const maxScaleFactor = widthMs / ((this.oneDayTick * dateFactor) / yearFactor);
 
     this.svg
     .transition()
     .duration(0)
     .call(this.zoom.scaleTo, maxScaleFactor)
     .on('end', () => this.refreshXScale());
-
   }
 
 }

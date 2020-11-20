@@ -21,6 +21,8 @@ export class ProjectDuration {
   dx = 3;
   height = 18;
 
+  dragDxStack = 0;
+
   constructor(svg: any, xScale: any) {
     this.svg = svg;
     this.xScale = xScale;
@@ -122,6 +124,69 @@ export class ProjectDuration {
   private drawVerticalProjectDateLines(): void {
     const viewBoxHeight = this.svgBbox.height;
 
+    const dragProjectLeft = d3.drag()
+      .on('drag', (event: d3.D3DragEvent<any, any, any>) => {
+
+        const projectDuration = this.projectGroup.select('rect.projectDuration');
+
+        const width = parseFloat(projectDuration.attr('width'));
+        const xValueStart = parseFloat(projectDuration.attr('x'));
+
+        const xValueNew = (xValueStart + event.dx);
+        const widthNew = (width - event.dx - this.dragDxStack);
+
+        // do not allow negative project duration and remember dx values on a stack
+        if (widthNew <= 0) {
+          this.dragDxStack += event.dx;
+          return;
+        } else if (this.dragDxStack > 0) {
+          if (this.dragDxStack + event.dx < 0) {
+            this.dragDxStack = 0;
+          } else {
+            this.dragDxStack += event.dx;
+            return;
+          }
+        }
+
+        this.projectStartDate = this.xScale.invert(xValueNew);
+
+        this.redraw();
+      })
+      .on('end', (event: d3.D3DragEvent<any, any, any>) => {
+        this.dragDxStack = 0;
+      });
+
+    const dragProjectEnd = d3.drag()
+      .on('drag', (event: d3.D3DragEvent<any, any, any>) => {
+
+        const projectDuration = this.projectGroup.select('rect.projectDuration');
+
+        const width = parseFloat(projectDuration.attr('width'));
+        const xValueStart = parseFloat(projectDuration.attr('x'));
+
+        const widthNew = (width + event.dx + this.dragDxStack);
+
+        // do not allow negative project duration and remember dx values on a stack
+        if (widthNew <= 0) {
+          this.dragDxStack += event.dx;
+          return;
+        } else if (this.dragDxStack < 0) {
+          if (this.dragDxStack + event.dx > 0) {
+            this.dragDxStack = 0;
+          } else {
+            this.dragDxStack += event.dx;
+            return;
+          }
+        }
+
+        this.projectEndDate = this.xScale.invert(xValueStart + widthNew);
+
+        this.redraw();
+      })
+      .on('end', (event: d3.D3DragEvent<any, any, any>) => {
+        this.dragDxStack = 0;
+      });
+
     // projectStartDate grid line
     this.projectGroup
       .append('line')
@@ -130,7 +195,8 @@ export class ProjectDuration {
       .attr('x2', this.xScale(this.projectStartDate))
       .attr('y1', 0)
       .attr('y2', viewBoxHeight)
-      .attr('stroke', d3.rgb(this.elementColor).darker());
+      .attr('stroke', d3.rgb(this.elementColor).darker())
+      .call(dragProjectLeft);
 
     // projectEndDate grid line
     this.projectGroup
@@ -140,7 +206,8 @@ export class ProjectDuration {
       .attr('x2', this.xScale(this.projectEndDate))
       .attr('y1', 0)
       .attr('y2', viewBoxHeight)
-      .attr('stroke', d3.rgb(this.elementColor).darker());
+      .attr('stroke', d3.rgb(this.elementColor).darker())
+      .call(dragProjectEnd);
   }
 
   redraw(): void {

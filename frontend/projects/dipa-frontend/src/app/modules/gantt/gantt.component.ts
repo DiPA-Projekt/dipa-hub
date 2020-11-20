@@ -28,7 +28,7 @@ export class GanttComponent implements OnInit, OnDestroy {
   timelinesSubscription;
 
   selectedTimelineId: number;
-  viewTypeSelected : any;
+  viewTypeSelected: any;
 
   constructor(public ganttControlsService: GanttControlsService,
               private timelinesService: TimelinesService,
@@ -111,22 +111,20 @@ export class GanttComponent implements OnInit, OnDestroy {
 
   changeViewType(event): void {
 
-  const toggle = event.source;
+    const toggle = event.source;
 
     if (toggle){
-        const group = toggle.buttonToggleGroup;
+      const group = toggle.buttonToggleGroup;
 
-        if (event.value.some(item => item === toggle.value)) {
-            group.value = [toggle.value];
-        }
+      if (event.value.some(item => item === toggle.value)) {
+          group.value = [toggle.value];
+      }
 
-        this.ganttControlsService.setViewType(group.value[0]);
+      this.ganttControlsService.setViewType(group.value[0]);
 
-    }
-    else {
+    } else {
       this.ganttControlsService.setViewType(null);
     }
-  
   }
 
   changeTimeline(event): void {
