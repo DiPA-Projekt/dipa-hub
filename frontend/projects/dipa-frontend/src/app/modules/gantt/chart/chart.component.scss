@@ -56,6 +56,10 @@
           font-size: 10px;
           opacity: 0.87;
         }
+
+        line.projectStartDateLine, line.projectEndDateLine {
+          stroke-width: 2;
+        }
       }
 
       g.data-group {
