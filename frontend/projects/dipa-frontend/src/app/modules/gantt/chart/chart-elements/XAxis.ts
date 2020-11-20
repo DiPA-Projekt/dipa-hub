@@ -147,23 +147,22 @@ export class XAxis {
     const lightColor = '#b47ae6';
     const darkColor = '#a14fe8';
 
+    const viewBoxHeight = this.svgBbox.height;
+    const distanceFromTop = 30;
+
     const circle = this.svg.select('g.current-date-group')
       .append('circle')
       .attr('class', 'currentDateCircle')
       .style('stroke', lightColor)
       .style('fill', 'white')
-      .attr('r', 4)
-      .attr('cx', this.xScale(this.today))
-      .attr('cy', 5);
+      .attr('cx', this.xScale(this.today));
 
     const point = this.svg.select('g.current-date-group')
       .append('circle')
       .attr('class', 'currentDatePoint')
       .style('stroke', lightColor)
       .style('fill', lightColor)
-      .attr('r', 1)
-      .attr('cx', this.xScale(this.today))
-      .attr('cy', 5);
+      .attr('cx', this.xScale(this.today));
     
     const currentLine = this.svg.select('g.current-date-group')
       .append('line')
@@ -172,7 +171,7 @@ export class XAxis {
       .attr('x1', this.xScale(this.today))
       .attr('x2', this.xScale(this.today))
       .attr('y1', 0)
-      .attr('y2', 400)
+      .attr('y2', viewBoxHeight + distanceFromTop)
       .attr('stroke', d3.rgb(lightColor).darker());
 
       
@@ -207,7 +206,6 @@ export class XAxis {
       .style('top', (y + 15) + 'px')
       .style('left', (x + 10) + 'px')
       .style('display', 'block')
-      .attr('font-size', 11)
       .html('Heute: '
         + `${new Date().toLocaleDateString('de-DE', this.dateOptions)}<br>`)
       .transition()

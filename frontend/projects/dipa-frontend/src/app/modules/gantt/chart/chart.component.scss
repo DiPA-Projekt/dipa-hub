@@ -62,6 +62,17 @@
         }
       }
 
+      g.current-date-group {
+        circle.currentDateCircle {
+          r: 4;
+          cy: 5;
+        }
+        circle.currentDatePoint {
+          r: 1;
+          cy: 5;
+        }
+      }
+
       g.data-group {
         path.milestone {
           cursor: move;
