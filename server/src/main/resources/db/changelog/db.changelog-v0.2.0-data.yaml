@@ -1,35 +1,37 @@
 databaseChangeLog:
   - changeSet:
-      id: update-project-types-start-end
+      id: delete-serveraustausch-milestone-projektstart
+      author: bock
+      changes:
+        - delete:
+            tableName: milestone_template
+            where: id=1 AND project_type_id=1
+  - changeSet:
+      id: add-3-month-to-some-milestone-template-entries
+      author: bock
+      changes:
+        - update:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: date_offset
+                  valueComputed: date_offset+90
+            where: project_type_id!=1
+  - changeSet:
+      id: set-new-default-project_type
       author: bock
       changes:
         - update:
             tableName: project_type
             columns:
-            - column:
-                name: start
-                value: "2020-08-19"
-            - column:
-                name: end
-                value: "2023-03-21"
-            where: id=1
-        - update:
-            tableName: project_type
-            columns:
-            - column:
-                name: start
-                value: "2020-08-19"
-            - column:
-                name: end
-                value: "2022-08-23"
+              - column:
+                  name: default_type
+                  value: true
             where: id=2
         - update:
             tableName: project_type
             columns:
-            - column:
-                name: start
-                value: "2020-08-17"
-            - column:
-                name: end
-                value: "2024-08-19"
+              - column:
+                  name: default_type
+                  value: false
             where: id=3

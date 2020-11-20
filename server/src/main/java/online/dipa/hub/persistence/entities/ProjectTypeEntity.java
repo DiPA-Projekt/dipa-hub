@@ -2,7 +2,6 @@ package online.dipa.hub.persistence.entities;
 
 import static javax.persistence.CascadeType.ALL;
 
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,19 +32,13 @@ public class ProjectTypeEntity extends BaseEntity {
     @Basic(optional = false)
     private boolean defaultType;
 
-    @Basic(optional = false)
-    private LocalDate start;
-
-    @Basic(optional = false)
-    private LocalDate end;
-
     @OneToMany(mappedBy = "projectType", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<MilestoneTemplateEntity> milestones = new HashSet<>();
 
     @OneToMany(mappedBy = "projectType", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<TaskTemplateEntity> task = new HashSet<>();
+    private Set<TaskTemplateEntity> tasks = new HashSet<>();
 
     public String getName() {
         return name;
@@ -63,22 +56,6 @@ public class ProjectTypeEntity extends BaseEntity {
         this.defaultType = defaultType;
     }
 
-    public LocalDate getStart() {
-        return start;
-    }
-
-    public void setStart(final LocalDate start) {
-        this.start = start;
-    }
-
-    public LocalDate getEnd() {
-        return end;
-    }
-
-    public void setEnd(final LocalDate end) {
-        this.end = end;
-    }
-
     public Set<MilestoneTemplateEntity> getMilestones() {
         return milestones;
     }
@@ -87,11 +64,11 @@ public class ProjectTypeEntity extends BaseEntity {
         this.milestones = milestones;
     }
 
-    public Set<TaskTemplateEntity> getTask() {
-        return task;
+    public Set<TaskTemplateEntity> getTasks() {
+        return tasks;
     }
 
-    public void setTask(final Set<TaskTemplateEntity> task) {
-        this.task = task;
+    public void setTask(final Set<TaskTemplateEntity> tasks) {
+        this.tasks = tasks;
     }
 }

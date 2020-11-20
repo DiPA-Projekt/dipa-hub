@@ -6,9 +6,6 @@ databaseChangeLog:
       file: db.changelog-v0.1.0-data.yaml
       relativeToChangelogFile: true
   - include:
-      file: db.changelog-v0.2.0.yaml
-      relativeToChangelogFile: true
-  - include:
       file: db.changelog-v0.2.0-data.yaml
       relativeToChangelogFile: true
 
