@@ -29,6 +29,7 @@ public class TimelineService {
     private ProjectTypeRepository projectTypeRepository;
 
     public List<Timeline> getTimelines() {
+
         List<Timeline> timelines = projectTypeRepository.findAll()
                 .stream()
                 .map(p -> conversionService.convert(p, Timeline.class))
@@ -40,15 +41,24 @@ public class TimelineService {
             if (sessionTimeline == null) {
                 sessionTimeline = new TimelineState();
 
+                sessionTimeline.setId(t.getId());
+                sessionTimeline.setName(t.getName());
                 sessionTimeline.setStart(t.getStart());
                 sessionTimeline.setEnd(t.getEnd());
-                sessionTimeline.setDefaultType(t.getDefaultTimeline());
-            }
+                sessionTimeline.setDefaultTimeline(t.getDefaultTimeline());
 
-            sessionTimelines.putIfAbsent(t.getId(), sessionTimeline);
+                sessionTimelines.put(t.getId(), sessionTimeline);
+            }
         });
 
-        return timelines;
+        return sessionTimelines.values().stream()
+                .map(t -> new Timeline()
+                        .id(t.getId())
+                        .name(t.getName())
+                        .start(t.getStart())
+                        .end(t.getEnd())
+                        .defaultTimeline(t.getDefaultTimeline()))
+                .collect(Collectors.toList());
     }
 
     public List<Milestone> getMilestonesForTimeline(final Long timelineId) {

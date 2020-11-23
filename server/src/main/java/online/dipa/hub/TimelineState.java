@@ -8,16 +8,36 @@ import java.util.List;
 
 public class TimelineState {
 
+    Long id;
+
+    String name;
+
     LocalDate start;
 
     LocalDate end;
 
-    Boolean isDefaultType;
+    Boolean defaultTimeline;
 
     List<Milestone> milestones;
 
     List<Task> tasks;
 
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public LocalDate getStart() {
         return start;
@@ -35,12 +55,12 @@ public class TimelineState {
         this.end = end;
     }
 
-    public Boolean getDefaultType() {
-        return isDefaultType;
+    public Boolean getDefaultTimeline() {
+        return defaultTimeline;
     }
 
-    public void setDefaultType(Boolean defaultType) {
-        isDefaultType = defaultType;
+    public void setDefaultTimeline(Boolean defaultTimeline) {
+        this.defaultTimeline = defaultTimeline;
     }
 
     public List<Milestone> getMilestones() {
