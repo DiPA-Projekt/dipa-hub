@@ -122,7 +122,7 @@ export class ProjectDuration {
       .attr('stroke', d3.rgb(this.elementColor).darker());
   }
 
-  redraw(): void {
+  redraw(animationDuration): void {
     // get current width of text elements
     const startDateSvgBbox = this.startDateText.node().getBBox().width;
     const endDateSvgBbox = this.endDateText.node().getBBox().width;
@@ -139,26 +139,26 @@ export class ProjectDuration {
     this.projectGroup.select('rect.projectDuration')
       .transition()
       .ease(d3.easeLinear)
-      .duration(200)
+      .duration(animationDuration)
       .attr('x', this.xScale(this.projectStartDate))
       .attr('width', (this.xScale(this.projectEndDate) - this.xScale(this.projectStartDate)));
 
-    this.redrawProjectStartDate(leftBorder);
-    this.redrawProjectEndDate(rightBorder);
+    this.redrawProjectStartDate(leftBorder, animationDuration);
+    this.redrawProjectEndDate(rightBorder, animationDuration);
 
     const connectLeftAndRightDate = rightBorder - leftBorder <= startDateSvgBbox;
     this.startDateText.select('tspan.minusText')
       .attr('fill', connectLeftAndRightDate ? null : 'none');
 
-    this.redrawVerticalProjectDateLines();
+    this.redrawVerticalProjectDateLines(animationDuration);
   }
 
-  private redrawProjectStartDate(x): void {
+  private redrawProjectStartDate(x, animationDuration): void {
     // project start date
     this.startDateText
       .transition()
       .ease(d3.easeLinear)
-      .duration(200)
+      .duration(animationDuration)
       .attr('x', x);
 
     const projectStartDateOutsideViewbox = this.xScale(this.projectStartDate) < 0;
@@ -169,12 +169,12 @@ export class ProjectDuration {
       .text(this.projectStartDate.toLocaleDateString('de-DE', this.dateOptions));
   }
 
-  private redrawProjectEndDate(x): void {
+  private redrawProjectEndDate(x, animationDuration): void {
     // project end date
     this.endDateText
       .transition()
       .ease(d3.easeLinear)
-      .duration(200)
+      .duration(animationDuration)
       .attr('x', x);
 
     this.endDateText.select('tspan.projectEndDate')
@@ -185,12 +185,12 @@ export class ProjectDuration {
       .attr('fill', projectEndDateOutsideViewbox ? null : 'none');
   }
 
-  private redrawVerticalProjectDateLines(): void {
+  private redrawVerticalProjectDateLines(animationDuration): void {
     // projectStartDate grid line
     this.projectGroup.select('line.projectStartDateLine')
       .transition()
       .ease(d3.easeLinear)
-      .duration(200)
+      .duration(animationDuration)
       .attr('x1', this.xScale(this.projectStartDate))
       .attr('x2', this.xScale(this.projectStartDate));
 
@@ -198,7 +198,7 @@ export class ProjectDuration {
     this.projectGroup.select('line.projectEndDateLine')
       .transition()
       .ease(d3.easeLinear)
-      .duration(200)
+      .duration(animationDuration)
       .attr('x1', this.xScale(this.projectEndDate))
       .attr('x2', this.xScale(this.projectEndDate));
   }

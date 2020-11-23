@@ -89,7 +89,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
         if (this.xScale) {
           this.refreshXScale();
-          this.redrawChart();
+          this.redrawChart(200);
         }
       }
     });
@@ -101,7 +101,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
         if (this.xScale) {
           this.refreshXScale();
-          this.redrawChart();
+          this.redrawChart(200);
         }
       }
     });
@@ -127,7 +127,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
                  
               this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick); });
               this.refreshXScale();
-              this.redrawChart();
+              this.redrawChart(0);
 
               break; 
             } 
@@ -136,7 +136,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
               this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event,  (this.oneDayTick * 7) / 12); });
               this.refreshXScale();
-              this.redrawChart();
+              this.redrawChart(0);
 
               break; 
             } 
@@ -145,7 +145,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
               this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, (this.oneDayTick * 30) / 12); });   
               this.refreshXScale();
-              this.redrawChart();
+              this.redrawChart(0);
 
               break; 
            } 
@@ -154,7 +154,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
               this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, (this.oneDayTick * 365) / 12); });
               this.refreshXScale();
-              this.redrawChart();
+              this.redrawChart(0);
               break; 
             } 
             case null: {
@@ -163,15 +163,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
               this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick); });
 
-              const ticksList = this.xScale.ticks();
-              const numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length-1]) + 1 ;
-
-              if (numberTicks < 3){
-                this.zoomToViewType(365, 4);
-              } 
-
               this.refreshXScale();
-              this.redrawChart();
+              this.redrawChart(0);
 
               break;
             }
@@ -239,7 +232,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.milestoneViewItem.draw({left: 0, top: this.taskViewItem.getAreaHeight()});
   }
 
-  private redrawChart(): void {
+  private redrawChart(animationDuration): void {
 
     const ticksList = this.xScale.ticks();
 
@@ -310,10 +303,10 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       }
     }
     this.headerX.redraw();
-    this.projectDuration.redraw();
+    this.projectDuration.redraw(animationDuration);
 
     this.taskViewItem.redraw({left: 0, top: 0});
-    this.milestoneViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()});
+    this.milestoneViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()}, animationDuration);
   }
 
   private resizeChart(newSize): void {
@@ -325,7 +318,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.headerX.resize(newSize);
 
     this.viewBoxWidth = newSize;
-    this.redrawChart();
+    this.redrawChart(0);
   }
 
   private createSvg(): any {
@@ -410,8 +403,17 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     const end = xScaleTransformed.domain()[1];
 
     this.setZoomScaleExtent(minTimeMs);
-    this.zoomTo(start, end);
+    //zoom to new start and end dates
+    this.xScale.domain([start, end]);
 
+    if (event.sourceEvent){
+      if (event.sourceEvent.type === 'mousemove'){
+        this.redrawChart(0);
+      }
+      else{
+        this.redrawChart(200);
+      }
+    }
 
     // reset the transform so the scale can be changed from other elements like dropdown menu
     this.zoomElement.call(this.zoom.transform, d3.zoomIdentity);
@@ -421,13 +423,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     this.ganttControlsService.setPeriodStartDate(this.periodStartDate);
     this.ganttControlsService.setPeriodEndDate(this.periodEndDate);
-  }
-
-  zoomTo(start: Date, end: Date): void {
-    this.xScale.domain([start, end]);
-    // this.setZoomScaleExtent();
-
-    this.redrawChart();
   }
 
   // set minimum and maximum zoom levels
@@ -466,20 +461,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   resizeZoomElement(newSize): void {
     this.zoomElement
       .attr('width', newSize - this.padding.left);
-  }
-
-  zoomToViewType(dateFactor, yearFactor): void{
-
-    const widthMs = this.periodEndDate.getTime() - this.periodStartDate.getTime();
-
-    const maxScaleFactor = widthMs / ((this.oneDayTick *dateFactor) / yearFactor);
-
-    this.svg
-    .transition()
-    .duration(0)
-    .call(this.zoom.scaleTo, maxScaleFactor)
-    .on('end', () => this.refreshXScale());
-
   }
 
 }

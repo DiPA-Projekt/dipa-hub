@@ -9,6 +9,8 @@ export class TasksArea implements IChartElement{
   data: any[];
   tooltip;
 
+  animationDuration;
+
   dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
 
   elementHeight = 20;
