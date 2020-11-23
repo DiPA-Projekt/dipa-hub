@@ -7,7 +7,7 @@ databaseChangeLog:
             tableName: milestone_template
             where: id=1 AND project_type_id=1
   - changeSet:
-      id: add-3-month-to-some-milestone-template-entries
+      id: add-2-month-to-some-milestone-template-entries
       author: bock
       changes:
         - update:
@@ -15,8 +15,52 @@ databaseChangeLog:
             columns:
               - column:
                   name: date_offset
-                  valueComputed: date_offset+90
+                  valueComputed: date_offset+61
             where: project_type_id!=1
+  - changeSet:
+      id: add-additional-month-to-Entwicklung-Pre-Alpha-milestone
+      author: bock
+      changes:
+        - update:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: date_offset
+                  valueComputed: date_offset+61
+            where: id=22
+  - changeSet:
+      id: add-additional-month-after-Entwicklung-Pre-Alpha-milestone
+      author: bock
+      changes:
+        - update:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: date_offset
+                  valueComputed: date_offset+31
+            where: id>22 AND project_type_id=2
+  - changeSet:
+      id: update-milestone-projektabschluss-softwareneuentwicklung
+      author: bock
+      changes:
+        - update:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: name
+                  value: Release 1.0
+            where: id=27
+  - changeSet:
+      id: update-milestone-release-1-softwareneuentwicklung
+      author: bock
+      changes:
+        - update:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: name
+                  value: Projektabschluss
+            where: id=28
   - changeSet:
       id: set-new-default-project_type
       author: bock
