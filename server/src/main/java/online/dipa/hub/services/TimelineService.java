@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class TimelineService {
 
-    Map<Long, TimelineState> sessionTimelines;
+    private Map<Long, TimelineState> sessionTimelines;
 
     @Autowired
     private ConversionService conversionService;
@@ -29,52 +29,42 @@ public class TimelineService {
     private ProjectTypeRepository projectTypeRepository;
 
     public List<Timeline> getTimelines() {
+        initializeTimelines();
 
-        List<Timeline> timelines = projectTypeRepository.findAll()
-                .stream()
-                .map(p -> conversionService.convert(p, Timeline.class))
-                .collect(Collectors.toList());
-
-        timelines.forEach(t -> {
-            TimelineState sessionTimeline = getSessionTimelines().get(t.getId());
-
-            if (sessionTimeline == null) {
-                sessionTimeline = new TimelineState();
-                sessionTimeline.setTimeline(t);
-                sessionTimelines.put(t.getId(), sessionTimeline);
-            }
-        });
-
-        return sessionTimelines.values().stream()
+        return this.sessionTimelines.values().stream()
                 .map(TimelineState::getTimeline)
                 .collect(Collectors.toList());
     }
 
-    public List<Milestone> getMilestonesForTimeline(final Long timelineId) {
-
-        List<Milestone> milestones;
-
-        TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
-        if (sessionTimeline != null) {
-
-            milestones = sessionTimeline.getMilestones();
-            if (milestones == null) {
-                // get milestones from DB
-                milestones = getMilestones(timelineId);
-                sessionTimeline.setMilestones(milestones);
-            }
-        } else {
-            sessionTimeline = new TimelineState();
-            // get milestones from DB
-            milestones = getMilestones(timelineId);
-            sessionTimeline.setMilestones(milestones);
-
-            sessionTimelines.put(timelineId, sessionTimeline);
-        }
-        return milestones;
+    private void initializeTimelines() {
+        projectTypeRepository.findAll()
+                .stream()
+                .map(p -> conversionService.convert(p, Timeline.class))
+                .forEach(t -> {
+                    TimelineState sessionTimeline = findTimelineState(t.getId());
+                    if (sessionTimeline.getTimeline() == null) {
+                        sessionTimeline.setTimeline(t);
+                    }
+                });
     }
 
-    private List<Milestone> getMilestones(final Long timelineId) {
+    public List<Milestone> getMilestonesForTimeline(final Long timelineId) {
+        initializeMilestones(timelineId);
+
+        return this.sessionTimelines
+                .get(timelineId)
+                .getMilestones();
+    }
+
+    private void initializeMilestones(final Long timelineId) {
+        TimelineState sessionTimeline = findTimelineState(timelineId);
+
+        if (sessionTimeline.getMilestones() == null) {
+            sessionTimeline.setMilestones(this.loadMilestones(timelineId));
+        }
+    }
+
+    private List<Milestone> loadMilestones(final Long timelineId) {
         final ProjectTypeEntity projectTypeEntity = projectTypeRepository.findById(timelineId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format(
@@ -86,6 +76,10 @@ public class TimelineService {
                 .map(m -> conversionService.convert(m, Milestone.class))
                 .sorted(Comparator.comparing(Milestone::getDate))
                 .collect(Collectors.toList());
+    }
+
+    private TimelineState findTimelineState(Long timelineId) {
+        return getSessionTimelines().computeIfAbsent(timelineId, t -> new TimelineState());
     }
 
     private Map<Long, TimelineState> getSessionTimelines() {
