@@ -14,7 +14,6 @@ import online.dipa.hub.api.model.Timeline;
 import online.dipa.hub.api.rest.TimelinesApi;
 
 @RestApiController
-@Transactional(readOnly = true)
 public class TimelineController implements TimelinesApi {
 
     @Autowired

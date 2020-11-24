@@ -2,65 +2,24 @@ package online.dipa.hub;
 
 import online.dipa.hub.api.model.Milestone;
 import online.dipa.hub.api.model.Task;
+import online.dipa.hub.api.model.Timeline;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public class TimelineState {
 
-    Long id;
-
-    String name;
-
-    LocalDate start;
-
-    LocalDate end;
-
-    Boolean defaultTimeline;
+    Timeline timeline;
 
     List<Milestone> milestones;
 
     List<Task> tasks;
 
-
-    public Long getId() {
-        return id;
+    public Timeline getTimeline() {
+        return timeline;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public LocalDate getStart() {
-        return start;
-    }
-
-    public void setStart(LocalDate start) {
-        this.start = start;
-    }
-
-    public LocalDate getEnd() {
-        return end;
-    }
-
-    public void setEnd(LocalDate end) {
-        this.end = end;
-    }
-
-    public Boolean getDefaultTimeline() {
-        return defaultTimeline;
-    }
-
-    public void setDefaultTimeline(Boolean defaultTimeline) {
-        this.defaultTimeline = defaultTimeline;
+    public void setTimeline(Timeline timeline) {
+        this.timeline = timeline;
     }
 
     public List<Milestone> getMilestones() {

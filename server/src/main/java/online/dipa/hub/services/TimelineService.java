@@ -40,24 +40,13 @@ public class TimelineService {
 
             if (sessionTimeline == null) {
                 sessionTimeline = new TimelineState();
-
-                sessionTimeline.setId(t.getId());
-                sessionTimeline.setName(t.getName());
-                sessionTimeline.setStart(t.getStart());
-                sessionTimeline.setEnd(t.getEnd());
-                sessionTimeline.setDefaultTimeline(t.getDefaultTimeline());
-
+                sessionTimeline.setTimeline(t);
                 sessionTimelines.put(t.getId(), sessionTimeline);
             }
         });
 
         return sessionTimelines.values().stream()
-                .map(t -> new Timeline()
-                        .id(t.getId())
-                        .name(t.getName())
-                        .start(t.getStart())
-                        .end(t.getEnd())
-                        .defaultTimeline(t.getDefaultTimeline()))
+                .map(TimelineState::getTimeline)
                 .collect(Collectors.toList());
     }
 
