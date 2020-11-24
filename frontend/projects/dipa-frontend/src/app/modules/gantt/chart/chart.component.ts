@@ -414,7 +414,10 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
         this.redrawChart(200);
       }
     }
-
+    else{
+      this.redrawChart(0);
+    }
+  
     // reset the transform so the scale can be changed from other elements like dropdown menu
     this.zoomElement.call(this.zoom.transform, d3.zoomIdentity);
 
