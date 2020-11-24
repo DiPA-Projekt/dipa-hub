@@ -9,6 +9,8 @@ export class MilestonesArea implements IChartElement {
   data: any[];
   tooltip;
 
+  animationDuration;
+
   dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
 
   elementHeight = 20;
@@ -94,11 +96,14 @@ export class MilestonesArea implements IChartElement {
       .call(this.wrapLabel, maxLabelWidth);
   }
 
-  redraw(offset): void {
+  redraw(offset, animationDuration): void {
     // milestones
     const dataGroup = this.svg.select('g.data-group');
 
     dataGroup.selectAll('g.milestoneEntry')
+      .transition()
+      .ease(d3.easeCubic)
+      .duration(animationDuration)
       .attr('transform', (d, i) => 'translate(' + (offset.left + this.xScale(new Date(d.date))) + ','
         + (offset.top + this.elementHeightWithMargin * (i % 3) + this.elementHeight / 2) + ')');
   }
