@@ -1,5 +1,28 @@
 # DiPA Hub Server
 
+## Multi Tenancy (Mandantenfähigkeit)
+
+Der Server ist mandantenfähig. Die grundsätzlich Funktionsweise ist in [diesem Artikel](https://tech.asimio.net/2017/01/17/Multitenant-applications-using-Spring-Boot-JPA-Hibernate-and-Postgres.html) recht gut erläutert. Die Umsetzung in DiPA ist ähnlich (nicht identisch). Alle notwendigen Klassen finden sich im Package: `online.dipa.hub.tenancy`.   
+
+Die Mandanten sind in der `application.yml` definiert. Jeder Mandant hat seine eigene Datenbank. Der erste in der Konfiguration hinterlegte Mandant ist der "Default" Mandant. Wird für Request kein Mandant ermittelt, oder ist der Mandant nicht konfiguriert wir der Default Mandant verwendet. 
+
+Der Mandant wird aus der "niedrigsten" Subdomain des Requests ermittelt. Also z.B.
+
+```
+<tenantid>.develop.dipa.online
+itzbund.develop.dipa.online
+ba.develop.dipa.online
+```
+
+Um in der lokalen Entwicklungsumgebung mandantenfähig arbeiten zu können, müssen also lokal entsprechende DNS Einträge existieren. Unter Windows kann man diese in der `C:\Windows\System32\drivers\etc\hosts` konfigurieren. z.B. mit folgendem Ausschnitt:
+
+```
+127.0.0.1 ba.dipa.local
+127.0.0.1 itzbund.dipa.local
+127.0.0.1 test.dipa.local
+```
+
+
 ## Build / Continous Deployment
 
 Derzeit werden drei Deployments für die unterschiedlichen "tracks" erstellt:
