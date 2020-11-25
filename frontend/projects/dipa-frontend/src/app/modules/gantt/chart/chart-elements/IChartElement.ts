@@ -7,8 +7,10 @@ export interface IChartElement {
 
   dateOptions: any;
 
+  animationDuration: any;
+
   draw(offset): void;
-  redraw(offset): void;
+  redraw(offset, animationDuration): void;
   showTooltip(d, x, y): void;
   getAreaHeight(): number;
 }
