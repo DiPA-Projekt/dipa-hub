@@ -140,6 +140,60 @@ Aus dem CI Build heraus entstehen 2 automatische Deployments jeweils für den `H
 des `develop` branches (aktuellster Stand der Entwicklung) und den `main` (letztes Release).
 Beim lokalen Build auf der Entwickler-Maschine kann ein drittes Deployment erzeugt werden um bspw. 
 bestimmte Sacherverhalte vorab testen zu können (siehe Detail Beschreibung).
+
+### Rolling Delete
+Damit der Speicherverbrauch durch das Continuous Deployment nicht überhand nimmt, werden veraltete Deployments regelmäßig gelöscht. Täglich läuft das nachfolgende Skript (Eintrag in `/etc/cron.daily/dipa_docker_rolling_delete` als Link auf `/home/dipa-deployment/rolling-delete/dipa_docker_rolling_delete`). Es überspringt die jüngsten drei Deployments (Variable `FILES_TO_SKIP`), löscht alle älteren Deployments und ruft anschließend den Docker Garbage Collector auf. Das Logfile zum Skript (`/home/dipa-deployment/rolling-delete/dipa_docker_rolling_delete.log`) wird täglich neu erstellt und überschreibt den vorherigen Stand.
+
+```bash
+#!/bin/bash
+
+# Variables
+LOG_DIR='/home/dipa-deployment/rolling-delete'
+LOG=${LOG_DIR}/dipa_docker_rolling_delete.log
+TAGS_DIR='/etc/docker-registry/data/docker/registry/v2/repositories/dipa-projekt/dipa-hub/_manifests/tags'
+FILES_TO_SKIP=3
+
+# Ensure log folder is present
+if [ ! -d ${LOG_DIR} ]
+  then
+    mkdir ${LOG_DIR}
+fi
+
+# Create new log file with time stamp
+echo 'Start rolling delete at ' `date` > ${LOG}
+
+# Ensure tags folder is present
+if [ ! -d ${TAGS_DIR} ]
+  then echo 'Tags folder ${TAGS_DIR} missing! Giving up' >> ${LOG} 2>&1
+  return 1
+fi
+
+# Go through files, odered by date, newest first
+FILE_COUNT=0
+for file in `ls -tdc ${TAGS_DIR}/*develop*`
+  do
+    if [ ${FILE_COUNT} -lt ${FILES_TO_SKIP} ]
+      then
+        echo "${FILE_COUNT}: skip   ${file}" >> ${LOG}
+      else
+        echo "${FILE_COUNT}: delete ${file}" >> ${LOG}
+        rm -rf ${file} >> ${LOG} 2>&1
+    fi
+    (( FILE_COUNT++ ))
+done
+
+# Call docker cleanup command if necessary
+if [ ${FILE_COUNT} -gt ${FILES_TO_SKIP} ]
+  then
+    echo 'Calling /usr/bin/docker exec -it docker-registry_registry_1 bin/registry garbage-collect /etc/docker/registry/config.yml -m' >>>
+    /usr/bin/docker exec -it docker-registry_registry_1 bin/registry garbage-collect /etc/docker/registry/config.yml -m >> ${LOG} 2>&1
+  else
+    echo 'No files deleted.' >> ${LOG}
+fi
+
+# Finalize with time stamp
+echo 'Finished rolling delete at ' `date` >> ${LOG}
+```
  
 ## Lokale Entwicklungs-Infrastruktur
 
