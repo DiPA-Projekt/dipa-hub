@@ -20,8 +20,8 @@ class ProjectTypeRepositoryTest {
                                                    .extracting(ProjectTypeEntity::getId, ProjectTypeEntity::getName,
                                                            ProjectTypeEntity::isDefaultType)
                                                    .containsExactly(tuple(1L, "Serveraustausch", false),
-                                                           tuple(2L, "Softwareneuentwicklung", true),
-                                                           tuple(3L, "Beschaffung", false));
+                                                           tuple(2L, "Softwareneuentwicklung", false),
+                                                           tuple(3L, "Beschaffung", true));
     }
 
 }
