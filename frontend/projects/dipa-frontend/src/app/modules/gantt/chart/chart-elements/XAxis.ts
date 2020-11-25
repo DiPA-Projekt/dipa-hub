@@ -128,12 +128,12 @@ export class XAxis {
   }
 
   formatDateWeek(date): any {
-    return (d3.timeFormat('%V')(date) === '01' ? d3.timeFormat('%Y') : d3.timeFormat('KW %V'))
+    return (d3.timeFormat('%V')(date) == '01' ? d3.timeFormat('KW %V-%y') : d3.timeFormat('KW %V'))
     (date);
   }
 
   formatDateMonth(date): any {
-    return (d3.timeYear(date) < date ? d3.timeFormat('%b') : d3.timeFormat('%b %y'))
+    return (d3.timeYear(date) < date ? d3.timeFormat('%B') : d3.timeFormat('%b %y'))
     (date);
   }
 
@@ -172,6 +172,7 @@ export class XAxis {
       .attr('y1', 0)
       .attr('y2', viewBoxHeight + distanceFromTop)
       .attr('stroke', d3.rgb(lightColor).darker());
+
 
     this.svg.select('g.current-date-group').on('mouseover', (event) => {
       currentLine.attr('stroke-width', 1.5).style('stroke', darkColor);
@@ -222,5 +223,6 @@ export class XAxis {
 
     this.svg.select('g.current-date-group').select('circle.currentDatePoint')
       .attr('cx', this.xScale(this.today));
+
   }
 }
