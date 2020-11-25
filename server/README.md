@@ -1,5 +1,25 @@
 # DiPA Hub Server
 
+## Datenbank / Schema-Änderungen
+
+Das Datenbank-Schema wird mit über die Anwendung versioniert auf Basis von [Liquibase](https://www.liquibase.org/get-started). Liquibase prüft anhand entsprechender Tracking-Tables in der Datenbank welchen Stand die Datenbank bzw. das Schema hat und führt beim Start der Anwendung notwendige Migrationen automatisch durch.
+
+Dafür sind unter `src/main/resources/db/changelog` entsprechende Migrationsskripte zu hinterlegen (gegliedert nach `minor` Version). Neue Migrations-Dateien müssen in der `db.changelog-master.yaml` hinterlegt werden. Liquibase unterstützt sowohl Migrationsskripten in seiner eigenen Migrationssprache (Datenbanktyp unabhängig), als auch in nativem SQL. 
+
+### Migrationen von Mandanten Datenbank
+
+Die Liquibase Migrationen werden automatisch für alle Mandanten-Datenbanken durchgeführt. Dabei wird jeweils der Mandant als Liquibase [Context](https://docs.liquibase.com/concepts/contexts.html) gesetzt. Es können also Migrationsskripten wie folgt spezifisch für einen oder mehrere Mandanten ausgeführt werden:
+
+```yaml
+- changeSet:
+  id: insert-milestones-softwareneuentwicklung
+  author: becker
+  context: itzbund
+  changes:
+    ...
+```  
+
+
 ## Multi Tenancy (Mandantenfähigkeit)
 
 Der Server ist mandantenfähig. Die grundsätzlich Funktionsweise ist in [diesem Artikel](https://tech.asimio.net/2017/01/17/Multitenant-applications-using-Spring-Boot-JPA-Hibernate-and-Postgres.html) recht gut erläutert. Die Umsetzung in DiPA ist ähnlich (nicht identisch). Alle notwendigen Klassen finden sich im Package: `online.dipa.hub.tenancy`.   
