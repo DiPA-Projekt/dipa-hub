@@ -371,6 +371,9 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       .attr('transform', 'translate(' + this.padding.left + ',' + this.padding.top + ')')
       .call(this.zoom);
 
+    const projectGroup = this.svg.append('g').attr('class', 'project-group');
+    projectGroup.attr('transform', 'translate(' + this.padding.left + ',25)');
+
     const dataGroup = this.svg.append('g').attr('class', 'data-group');
     dataGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + 30) + ')');
 

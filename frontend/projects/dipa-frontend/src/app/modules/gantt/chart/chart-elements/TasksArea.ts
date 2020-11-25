@@ -132,10 +132,6 @@ export class TasksArea implements IChartElement{
           }
         }
 
-        if (widthNew <= 0) {
-          return;
-        }
-
         eventTask.select('rect.task').attr('x', +oldX + dragDx);
 
         event.subject.start = this.xScale.invert(xValueNew + oldX);

@@ -10,7 +10,11 @@ export class ProjectDuration {
 
   dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
 
-  elementColor = '#c6e0b4';
+  elementColor;
+
+  noRiskColor = '#40c924';
+  middleRiskColor = '#f7ec1b';
+  highRiskColor = '#f71b1b';
 
   projectStartDate: Date = new Date(2020, 7, 17);
   projectEndDate: Date = new Date(2024, 7, 19);
@@ -20,6 +24,12 @@ export class ProjectDuration {
 
   dx = 3;
   height = 18;
+
+  dragDxStack = 0;
+
+  initialProjectDuration;
+  changedProjectDuration;
+
 
   constructor(svg: any, xScale: any, timelineData: any) {
     this.svg = svg;
@@ -31,8 +41,30 @@ export class ProjectDuration {
   }
 
   draw(): void {
+    this.elementColor = this.noRiskColor;
+
     const visibleProjectStartDatePosition = Math.max(this.xScale(this.projectStartDate), 0);
     const visibleProjectEndDatePosition = Math.min(this.xScale(this.projectEndDate), this.xScale.range()[1]);
+
+    const drag = d3.drag()
+      .on('drag', (event: d3.D3DragEvent<any, any, any>) => {
+
+        const projectDuration = this.projectGroup.select('rect.projectDuration');
+
+        const xValueStart = parseFloat(projectDuration.attr('x'));
+        const width = parseFloat(projectDuration.attr('width'));
+
+        const xValueStartNew = xValueStart + event.dx;
+        const xValueEndNew = xValueStartNew + width;
+
+        // set new values
+        this.projectStartDate = this.xScale.invert(xValueStartNew);
+        this.projectEndDate = this.xScale.invert(xValueEndNew);
+
+        // refresh gui
+        projectDuration.attr('x', xValueStartNew);
+        this.redraw(0);
+      });
 
     // project duration indicator
     this.projectGroup
@@ -42,7 +74,8 @@ export class ProjectDuration {
       .style('stroke', d3.rgb(this.elementColor).darker())
       .attr('x', Math.min(visibleProjectStartDatePosition, this.xScale.range()[1]))
       .attr('width', Math.min(Math.max(this.xScale(this.projectEndDate) - visibleProjectStartDatePosition, 0), this.xScale.range()[1]))
-      .attr('height', this.height);
+      .attr('height', this.height)
+      .call(drag);
 
     const initialStartDatePosition = Math.min(visibleProjectStartDatePosition, this.xScale.range()[1] - 120);
     const initialEndDatePosition = visibleProjectEndDatePosition - 60;
@@ -51,6 +84,8 @@ export class ProjectDuration {
     this.drawProjectEndDate(initialEndDatePosition);
 
     this.drawVerticalProjectDateLines();
+
+    this.initialProjectDuration = this.calculateProjectDuration(this.projectStartDate, this.projectEndDate);
   }
 
   private drawProjectStartDate(x): void {
@@ -103,6 +138,75 @@ export class ProjectDuration {
   private drawVerticalProjectDateLines(): void {
     const viewBoxHeight = this.svgBbox.height;
 
+    const dragProjectLeft = d3.drag()
+      .on('drag', (event: d3.D3DragEvent<any, any, any>) => {
+
+        const projectDuration = this.projectGroup.select('rect.projectDuration');
+
+        const width = parseFloat(projectDuration.attr('width'));
+        const xValueStart = parseFloat(projectDuration.attr('x'));
+
+        const xValueNew = (xValueStart + event.dx);
+        const widthNew = (width - event.dx - this.dragDxStack);
+
+        // do not allow negative project duration and remember dx values on a stack
+        if (widthNew <= 0) {
+          this.dragDxStack += event.dx;
+          return;
+        } else if (this.dragDxStack > 0) {
+          if (this.dragDxStack + event.dx < 0) {
+            this.dragDxStack = 0;
+          } else {
+            this.dragDxStack += event.dx;
+            return;
+          }
+        }
+
+        this.projectStartDate = this.xScale.invert(xValueNew);
+
+        this.changedProjectDuration = this.calculateProjectDuration(this.projectStartDate, this.projectEndDate);
+        this.riskCalculate(this.initialProjectDuration, this.changedProjectDuration);
+
+        this.redraw(0);
+      })
+      .on('end', (event: d3.D3DragEvent<any, any, any>) => {
+        this.dragDxStack = 0;
+      });
+
+    const dragProjectEnd = d3.drag()
+      .on('drag', (event: d3.D3DragEvent<any, any, any>) => {
+
+        const projectDuration = this.projectGroup.select('rect.projectDuration');
+
+        const width = parseFloat(projectDuration.attr('width'));
+        const xValueStart = parseFloat(projectDuration.attr('x'));
+
+        const widthNew = (width + event.dx + this.dragDxStack);
+
+        // do not allow negative project duration and remember dx values on a stack
+        if (widthNew <= 0) {
+          this.dragDxStack += event.dx;
+          return;
+        } else if (this.dragDxStack < 0) {
+          if (this.dragDxStack + event.dx > 0) {
+            this.dragDxStack = 0;
+          } else {
+            this.dragDxStack += event.dx;
+            return;
+          }
+        }
+
+        this.projectEndDate = this.xScale.invert(xValueStart + widthNew);
+
+        this.changedProjectDuration = this.calculateProjectDuration(this.projectStartDate, this.projectEndDate);
+        this.riskCalculate(this.initialProjectDuration, this.changedProjectDuration);
+
+        this.redraw(0);
+      })
+      .on('end', (event: d3.D3DragEvent<any, any, any>) => {
+        this.dragDxStack = 0;
+      });
+
     // projectStartDate grid line
     this.projectGroup
       .append('line')
@@ -111,7 +215,8 @@ export class ProjectDuration {
       .attr('x2', this.xScale(this.projectStartDate))
       .attr('y1', 0)
       .attr('y2', viewBoxHeight)
-      .attr('stroke', d3.rgb(this.elementColor).darker());
+      .attr('stroke', d3.rgb(this.elementColor).darker())
+      .call(dragProjectLeft);
 
     // projectEndDate grid line
     this.projectGroup
@@ -121,7 +226,8 @@ export class ProjectDuration {
       .attr('x2', this.xScale(this.projectEndDate))
       .attr('y1', 0)
       .attr('y2', viewBoxHeight)
-      .attr('stroke', d3.rgb(this.elementColor).darker());
+      .attr('stroke', d3.rgb(this.elementColor).darker())
+      .call(dragProjectEnd);
   }
 
   redraw(animationDuration): void {
@@ -142,6 +248,8 @@ export class ProjectDuration {
       .transition()
       .ease(d3.easeLinear)
       .duration(animationDuration)
+      .style('fill', this.elementColor)
+      .style('stroke', d3.rgb(this.elementColor).darker())
       .attr('x', this.xScale(this.projectStartDate))
       .attr('width', (this.xScale(this.projectEndDate) - this.xScale(this.projectStartDate)));
 
@@ -193,6 +301,7 @@ export class ProjectDuration {
       .transition()
       .ease(d3.easeLinear)
       .duration(animationDuration)
+      .attr('stroke', d3.rgb(this.elementColor).darker())
       .attr('x1', this.xScale(this.projectStartDate))
       .attr('x2', this.xScale(this.projectStartDate));
 
@@ -201,8 +310,28 @@ export class ProjectDuration {
       .transition()
       .ease(d3.easeLinear)
       .duration(animationDuration)
+      .attr('stroke', d3.rgb(this.elementColor).darker())
       .attr('x1', this.xScale(this.projectEndDate))
       .attr('x2', this.xScale(this.projectEndDate));
   }
 
+  private calculateProjectDuration(startDate, endDate): number{
+    return Math.round(Math.abs((startDate - endDate) / 24 * 60 * 60 * 1000));
+  }
+
+  private riskCalculate(initProjectDuration, changedProjectDuration): void {
+    const riskPercentage = Math.abs(initProjectDuration - changedProjectDuration) / initProjectDuration;
+
+    console.log(riskPercentage)
+
+    if (riskPercentage < 0.25){
+      this.elementColor = this.noRiskColor;
+    }
+    else if (riskPercentage > 0.25 && riskPercentage < 0.5) {
+      this.elementColor = this.middleRiskColor;
+    }
+    else {
+      this.elementColor = this.highRiskColor;
+    }
+  }
 }
