@@ -21,9 +21,11 @@ export class ProjectDuration {
   dx = 3;
   height = 18;
 
-  constructor(svg: any, xScale: any) {
+  constructor(svg: any, xScale: any, timelineData: any) {
     this.svg = svg;
     this.xScale = xScale;
+    this.projectStartDate = new Date(timelineData.start);
+    this.projectEndDate = new Date(timelineData.end);
     this.svgBbox = this.svg.node().getBBox();
     this.projectGroup = this.svg.select('g.project-group');
   }

@@ -1,0 +1,92 @@
+package online.dipa.hub.services;
+
+import online.dipa.hub.TimelineState;
+import online.dipa.hub.api.model.Milestone;
+import online.dipa.hub.api.model.Timeline;
+import online.dipa.hub.persistence.entities.ProjectTypeEntity;
+import online.dipa.hub.persistence.repositories.ProjectTypeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.annotation.SessionScope;
+
+import javax.persistence.EntityNotFoundException;
+import java.util.*;
+import java.util.stream.Collectors;
+
+@Service
+@SessionScope
+@Transactional
+public class TimelineService {
+
+    private Map<Long, TimelineState> sessionTimelines;
+
+    @Autowired
+    private ConversionService conversionService;
+
+    @Autowired
+    private ProjectTypeRepository projectTypeRepository;
+
+    public List<Timeline> getTimelines() {
+        initializeTimelines();
+
+        return this.sessionTimelines.values().stream()
+                .map(TimelineState::getTimeline)
+                .collect(Collectors.toList());
+    }
+
+    private void initializeTimelines() {
+        projectTypeRepository.findAll()
+                .stream()
+                .map(p -> conversionService.convert(p, Timeline.class))
+                .forEach(t -> {
+                    TimelineState sessionTimeline = findTimelineState(t.getId());
+                    if (sessionTimeline.getTimeline() == null) {
+                        sessionTimeline.setTimeline(t);
+                    }
+                });
+    }
+
+    public List<Milestone> getMilestonesForTimeline(final Long timelineId) {
+        initializeMilestones(timelineId);
+
+        return this.sessionTimelines
+                .get(timelineId)
+                .getMilestones();
+    }
+
+    private void initializeMilestones(final Long timelineId) {
+        TimelineState sessionTimeline = findTimelineState(timelineId);
+
+        if (sessionTimeline.getMilestones() == null) {
+            sessionTimeline.setMilestones(this.loadMilestones(timelineId));
+        }
+    }
+
+    private List<Milestone> loadMilestones(final Long timelineId) {
+        final ProjectTypeEntity projectTypeEntity = projectTypeRepository.findById(timelineId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(
+                                "Timeline with id: %1$s not found.",
+                                timelineId)));
+
+        return projectTypeEntity.getMilestones()
+                .stream()
+                .map(m -> conversionService.convert(m, Milestone.class))
+                .sorted(Comparator.comparing(Milestone::getDate))
+                .collect(Collectors.toList());
+    }
+
+    private TimelineState findTimelineState(Long timelineId) {
+        return getSessionTimelines().computeIfAbsent(timelineId, t -> new TimelineState());
+    }
+
+    private Map<Long, TimelineState> getSessionTimelines() {
+        if (this.sessionTimelines == null) {
+            this.sessionTimelines = new HashMap<>();
+        }
+        return this.sessionTimelines;
+    }
+
+}

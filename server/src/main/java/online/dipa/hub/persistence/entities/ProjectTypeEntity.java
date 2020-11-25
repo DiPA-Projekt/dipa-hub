@@ -38,7 +38,7 @@ public class ProjectTypeEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "projectType", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<TaskTemplateEntity> task = new HashSet<>();
+    private Set<TaskTemplateEntity> tasks = new HashSet<>();
 
     public String getName() {
         return name;
@@ -64,11 +64,11 @@ public class ProjectTypeEntity extends BaseEntity {
         this.milestones = milestones;
     }
 
-    public Set<TaskTemplateEntity> getTask() {
-        return task;
+    public Set<TaskTemplateEntity> getTasks() {
+        return tasks;
     }
 
-    public void setTask(final Set<TaskTemplateEntity> task) {
-        this.task = task;
+    public void setTask(final Set<TaskTemplateEntity> tasks) {
+        this.tasks = tasks;
     }
 }
