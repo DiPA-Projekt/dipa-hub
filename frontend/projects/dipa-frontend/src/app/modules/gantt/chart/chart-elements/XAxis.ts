@@ -128,19 +128,11 @@ export class XAxis {
   }
 
   formatDateWeek(date): any {
-<<<<<<< HEAD
     return (d3.timeFormat('%V')(date) == '01' ? d3.timeFormat('KW %V-%y') : d3.timeFormat('KW %V'))
-=======
-    return (d3.timeFormat('%V')(date) === '01' ? d3.timeFormat('%Y') : d3.timeFormat('KW %V'))
->>>>>>> 1cd575a5fb1fc283777828a1358c414d5f8c0cba
     (date);
   }
   formatDateMonth(date): any {
-<<<<<<< HEAD
     return (d3.timeYear(date) < date ? d3.timeFormat('%B') : d3.timeFormat('%b %y'))
-=======
-    return (d3.timeYear(date) < date ? d3.timeFormat('%b') : d3.timeFormat('%b %y'))
->>>>>>> 1cd575a5fb1fc283777828a1358c414d5f8c0cba
     (date);
   }
 
