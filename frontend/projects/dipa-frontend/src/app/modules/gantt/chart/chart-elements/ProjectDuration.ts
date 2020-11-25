@@ -12,7 +12,7 @@ export class ProjectDuration {
 
   elementColor;
 
-  noRiskColor = '#40c924';
+  noRiskColor = '#4aed5a';
   middleRiskColor = '#f7ec1b';
   highRiskColor = '#f71b1b';
 
@@ -21,6 +21,10 @@ export class ProjectDuration {
 
   startDateText;
   endDateText;
+
+  riskAlarmText;
+  riskAlarmStatus;
+  riskAlarmIcon;
 
   dx = 3;
   height = 18;
@@ -83,6 +87,11 @@ export class ProjectDuration {
     this.drawProjectStartDate(initialStartDatePosition);
     this.drawProjectEndDate(initialEndDatePosition);
 
+    // const visible = Math.abs(initialEndDatePosition - initialStartDatePosition);
+
+    // this.drawRiskAlarmText(initialStartDatePosition + (visible / 2) -10);
+    // this.drawRiskAlarmText((initialEndDatePosition-initialStartDatePosition)/2);
+
     this.drawVerticalProjectDateLines();
 
     this.initialProjectDuration = this.calculateProjectDuration(this.projectStartDate, this.projectEndDate);
@@ -133,6 +142,32 @@ export class ProjectDuration {
       .attr('class', 'triangleRight')
       .text('▶')
       .attr('dx', this.dx);
+  }
+
+  private redrawRiskAlarmText(x): void {
+    // 
+    this.projectGroup.select('text.riskAlarmText').remove();
+
+    this.riskAlarmText = this.projectGroup
+      .append('text')
+      .attr('x', x)
+      .attr('y', this.height / 2)
+      .attr('class', 'riskAlarmText')
+      .attr('dominant-baseline', 'central');
+
+    this.riskAlarmText
+      .append('tspan')
+      .attr('class', 'fa') 
+      .text(this.riskAlarmIcon)
+      .attr('dominant-baseline', 'central')
+      .attr('x', x)
+      .attr('dx', this.dx);
+    
+    this.riskAlarmText
+      .append('tspan')
+      .text(this.riskAlarmStatus)
+      .attr('dx', this.dx); 
+
   }
 
   private drawVerticalProjectDateLines(): void {
@@ -256,9 +291,18 @@ export class ProjectDuration {
     this.redrawProjectStartDate(leftBorder, animationDuration);
     this.redrawProjectEndDate(rightBorder, animationDuration);
 
+    const visible = Math.abs(visibleProjectEndDatePosition - visibleProjectStartDatePosition);
+
     const connectLeftAndRightDate = rightBorder - leftBorder <= startDateSvgBbox;
     this.startDateText.select('tspan.minusText')
       .attr('fill', connectLeftAndRightDate ? null : 'none');
+    
+    if (connectLeftAndRightDate) {
+      this.riskAlarmIcon = null;
+      this.riskAlarmStatus = null;
+    }
+
+    this.redrawRiskAlarmText(leftBorder + (visible / 2) - 10);
 
     this.redrawVerticalProjectDateLines(animationDuration);
   }
@@ -326,12 +370,18 @@ export class ProjectDuration {
 
     if (riskPercentage < 0.25){
       this.elementColor = this.noRiskColor;
+      this.riskAlarmIcon = '\uf164';
+      this.riskAlarmStatus = 'Kein Risiko'
     }
     else if (riskPercentage > 0.25 && riskPercentage < 0.5) {
       this.elementColor = this.middleRiskColor;
+      this.riskAlarmIcon = '\uf165';
+      this.riskAlarmStatus = 'Mittleres Risiko'
     }
     else {
       this.elementColor = this.highRiskColor;
+      this.riskAlarmIcon = '\uf165';
+      this.riskAlarmStatus = 'Hohes Risiko'
     }
   }
 }
