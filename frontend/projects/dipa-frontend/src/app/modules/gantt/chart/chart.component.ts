@@ -136,7 +136,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
             case 'MONTHS': {
               this.headerX.formatDate = this.headerX.formatDateMonth;
 
-              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, (this.oneDayTick * 30) / 12); });   
+              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, (this.oneDayTick * 30) / 12); });
               this.refreshXScale();
               this.redrawChart(0);
 
@@ -148,8 +148,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
               this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, (this.oneDayTick * 365) / 12); });
               this.refreshXScale();
               this.redrawChart(0);
-              break; 
-            } 
+              break;
+            }
             case null: {
               this.headerX.formatDate = this.headerX.formatDateFull;
               this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick); });
@@ -272,7 +272,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
         const numberTicks = d3.timeMonth.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
 
         if (numberTicks === 1){
-          
+
           const textOutsideBox = this.xScale(ticksList[0]) < this.xScale.range()[1];
 
           if (textOutsideBox){
@@ -445,7 +445,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     else{
       this.redrawChart(0);
     }
-  
+
     // reset the transform so the scale can be changed from other elements like dropdown menu
     this.zoomElement.call(this.zoom.transform, d3.zoomIdentity);
 

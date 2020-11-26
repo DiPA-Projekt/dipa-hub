@@ -8,11 +8,11 @@ import java.util.List;
 
 public class TimelineState {
 
-    Timeline timeline;
+    private Timeline timeline;
 
-    List<Milestone> milestones;
+    private List<Milestone> milestones;
 
-    List<Task> tasks;
+    private List<Task> tasks;
 
     public Timeline getTimeline() {
         return timeline;
