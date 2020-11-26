@@ -34,12 +34,14 @@ export class ProjectDuration {
   initialProjectDuration;
   changedProjectDuration;
 
+  timelineId;
 
   constructor(svg: any, xScale: any, timelineData: any) {
     this.svg = svg;
     this.xScale = xScale;
     this.projectStartDate = new Date(timelineData.start);
     this.projectEndDate = new Date(timelineData.end);
+    this.timelineId = timelineData.id;
     this.svgBbox = this.svg.node().getBBox();
     this.projectGroup = this.svg.select('g.project-group');
   }
@@ -86,11 +88,6 @@ export class ProjectDuration {
 
     this.drawProjectStartDate(initialStartDatePosition);
     this.drawProjectEndDate(initialEndDatePosition);
-
-    // const visible = Math.abs(initialEndDatePosition - initialStartDatePosition);
-
-    // this.drawRiskAlarmText(initialStartDatePosition + (visible / 2) -10);
-    // this.drawRiskAlarmText((initialEndDatePosition-initialStartDatePosition)/2);
 
     this.drawVerticalProjectDateLines();
 
@@ -142,32 +139,6 @@ export class ProjectDuration {
       .attr('class', 'triangleRight')
       .text('▶')
       .attr('dx', this.dx);
-  }
-
-  private redrawRiskAlarmText(x): void {
-    // 
-    this.projectGroup.select('text.riskAlarmText').remove();
-
-    this.riskAlarmText = this.projectGroup
-      .append('text')
-      .attr('x', x)
-      .attr('y', this.height / 2)
-      .attr('class', 'riskAlarmText')
-      .attr('dominant-baseline', 'central');
-
-    this.riskAlarmText
-      .append('tspan')
-      .attr('class', 'fa') 
-      .text(this.riskAlarmIcon)
-      .attr('dominant-baseline', 'central')
-      .attr('x', x)
-      .attr('dx', this.dx);
-    
-    this.riskAlarmText
-      .append('tspan')
-      .text(this.riskAlarmStatus)
-      .attr('dx', this.dx); 
-
   }
 
   private drawVerticalProjectDateLines(): void {
@@ -298,11 +269,11 @@ export class ProjectDuration {
       .attr('fill', connectLeftAndRightDate ? null : 'none');
     
     if (connectLeftAndRightDate) {
-      this.riskAlarmIcon = null;
-      this.riskAlarmStatus = null;
+      this.projectGroup.select('text.riskAlarmText').remove();
     }
-
-    this.redrawRiskAlarmText(leftBorder + (visible / 2) - 10);
+    else {
+      this.redrawRiskAlarmText(leftBorder + (visible / 2) - 10, animationDuration);
+    }
 
     this.redrawVerticalProjectDateLines(animationDuration);
   }
@@ -359,6 +330,34 @@ export class ProjectDuration {
       .attr('x2', this.xScale(this.projectEndDate));
   }
 
+  private redrawRiskAlarmText(x, animationDuration): void {
+    // 
+    this.projectGroup.select('text.riskAlarmText').remove();
+
+    this.riskAlarmText = this.projectGroup
+      .append('text')
+      .attr('x', x)
+      .attr('y', this.height / 2)
+      .attr('class', 'riskAlarmText')
+      .attr('dominant-baseline', 'central');
+
+    this.riskAlarmText
+      .append('tspan')
+      .transition()
+      .ease(d3.easeBounceInOut)
+      .duration(animationDuration)
+      .attr('class', 'material-icons')
+      .text(this.riskAlarmIcon)
+      .attr('x', x)
+      .attr('dx', this.dx);
+    
+    this.riskAlarmText
+      .append('tspan')
+      .text(this.riskAlarmStatus)
+      .attr('dx', this.dx);
+
+  }
+
   private calculateProjectDuration(startDate, endDate): number{
     return Math.round(Math.abs((startDate - endDate) / 24 * 60 * 60 * 1000));
   }
@@ -366,22 +365,22 @@ export class ProjectDuration {
   private riskCalculate(initProjectDuration, changedProjectDuration): void {
     const riskPercentage = Math.abs(initProjectDuration - changedProjectDuration) / initProjectDuration;
 
-    console.log(riskPercentage)
-
-    if (riskPercentage < 0.25){
-      this.elementColor = this.noRiskColor;
-      this.riskAlarmIcon = '\uf164';
-      this.riskAlarmStatus = 'Kein Risiko'
-    }
-    else if (riskPercentage > 0.25 && riskPercentage < 0.5) {
-      this.elementColor = this.middleRiskColor;
-      this.riskAlarmIcon = '\uf165';
-      this.riskAlarmStatus = 'Mittleres Risiko'
-    }
-    else {
-      this.elementColor = this.highRiskColor;
-      this.riskAlarmIcon = '\uf165';
-      this.riskAlarmStatus = 'Hohes Risiko'
+    if (this.timelineId == 1) {
+      if (riskPercentage < 0.25){
+        this.elementColor = this.noRiskColor;
+        this.riskAlarmIcon = 'thumb_up';
+        this.riskAlarmStatus = 'Kein Risiko'
+      }
+      else if (riskPercentage > 0.25 && riskPercentage < 0.5) {
+        this.elementColor = this.middleRiskColor;
+        this.riskAlarmIcon = 'thumb_down';
+        this.riskAlarmStatus = 'Mittleres Risiko'
+      }
+      else {
+        this.elementColor = this.highRiskColor;
+        this.riskAlarmIcon = 'thumb_down';
+        this.riskAlarmStatus = 'Hohes Risiko'
+      }
     }
   }
 }

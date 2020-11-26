@@ -321,7 +321,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       case null :{
         const numberTicks = d3.timeDay.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
 
-        if (numberTicks > 7){
+        if (numberTicks > 12){
           this.headerX.tickSetting = null;
         }
         else {
