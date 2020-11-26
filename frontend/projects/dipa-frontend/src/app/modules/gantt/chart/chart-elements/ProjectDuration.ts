@@ -343,11 +343,9 @@ export class ProjectDuration {
 
     this.riskAlarmText
       .append('tspan')
-      .transition()
-      .ease(d3.easeBounceInOut)
-      .duration(animationDuration)
       .attr('class', 'material-icons')
       .text(this.riskAlarmIcon)
+      .style('font-size', '16px')
       .attr('x', x)
       .attr('dx', this.dx);
     
