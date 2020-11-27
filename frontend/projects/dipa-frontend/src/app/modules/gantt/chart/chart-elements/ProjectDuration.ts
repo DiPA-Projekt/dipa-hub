@@ -60,8 +60,7 @@ export class ProjectDuration {
         this.redraw(0);
       })
       .on('start', (event: d3.D3DragEvent<any, any, any>) => {
-        // this.dragStartDate = this.xScale.invert(event.x);
-        this.dragStartDate = this.projectStartDate; // TODO: copy?
+        this.dragStartDate = this.projectStartDate;
       })
       .on('end', (event: d3.D3DragEvent<any, any, any>) => {
 
