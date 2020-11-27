@@ -37,11 +37,11 @@ export class ProjectDuration {
   timelineName;
   tooltip;
 
-  riskInformation = [{'minVal':0,'maxVal':1,'prob':'85','overtime':9,'color':this.highRiskColor,'icon':'thumb_down','text':'Hohes Risiko'},
-                    {'minVal':1,'maxVal':1.5,'prob':'50','overtime':3,'color':this.middleRiskColor,'icon':'thumb_down','text':'Mittleres Risiko'},
-                    {'minVal':1.5,'maxVal':2.5,'prob':'10','overtime':1,'color':this.noRiskColor,'icon':'thumb_up','text':'Kein Risiko'},
-                    {'minVal':2.5,'maxVal':3,'prob':'50','overtime':3,'color':this.middleRiskColor,'icon':'thumb_down','text':'Mittleres Risiko'},
-                    {'minVal':3,'maxVal':10,'prob':'85','overtime':9,'color':this.highRiskColor,'icon':'thumb_down','text':'Hohes Risiko'}];
+  riskInformation = [{minVal: 0, maxVal: 1, prob: '85', overtime: 9, color: this.highRiskColor, icon: 'thumb_down', text: 'Hohes Risiko'},
+                    {minVal: 1, maxVal: 1.5, prob: '50', overtime: 3, color: this.middleRiskColor, icon: 'thumb_down', text: 'Mittleres Risiko'},
+                    {minVal: 1.5, maxVal: 2.5, prob: '10', overtime: 1, color: this.noRiskColor, icon: 'thumb_up', text: 'Kein Risiko'},
+                    {minVal: 2.5, maxVal: 3, prob: '50', overtime: 3, color: this.middleRiskColor, icon: 'thumb_down', text: 'Mittleres Risiko'},
+                    {minVal: 3, maxVal: 10, prob: '85', overtime: 9, color: this.highRiskColor, icon: 'thumb_down', text: 'Hohes Risiko'}];
 
   constructor(svg: any, xScale: any, timelineData: any) {
     this.svg = svg;
@@ -101,7 +101,6 @@ export class ProjectDuration {
 
     this.projectDurationYears = this.calculateProjectDuration(this.projectStartDate, this.projectEndDate);
     this.riskCalculate(this.projectDurationYears);
-    
   }
 
   private drawProjectStartDate(x): void {
@@ -178,7 +177,6 @@ export class ProjectDuration {
           }
         }
 
-        
         this.projectStartDate = this.xScale.invert(xValueNew);
 
         this.projectDurationYears = this.calculateProjectDuration(this.projectStartDate, this.projectEndDate);
@@ -262,9 +260,6 @@ export class ProjectDuration {
 
     // project duration indicator
     this.projectGroup.select('rect.projectDuration')
-      .transition()
-      .ease(d3.easeLinear)
-      .duration(animationDuration)
       .style('fill', this.elementColor)
       .style('stroke', d3.rgb(this.elementColor).darker())
       .attr('x', this.xScale(this.projectStartDate))
@@ -278,7 +273,7 @@ export class ProjectDuration {
     const connectLeftAndRightDate = rightBorder - leftBorder <= startDateSvgBbox;
     this.startDateText.select('tspan.minusText')
       .attr('fill', connectLeftAndRightDate ? null : 'none');
-    
+
     if (connectLeftAndRightDate) {
       this.projectGroup.select('text.riskAlarmText').remove();
     }
@@ -342,7 +337,7 @@ export class ProjectDuration {
   }
 
   private redrawRiskAlarmText(x, animationDuration): void {
-    // 
+    //
     this.projectGroup.select('text.riskAlarmText').remove();
 
     this.riskAlarmText = this.projectGroup
@@ -359,12 +354,12 @@ export class ProjectDuration {
       .style('font-size', '16px')
       .attr('x', x)
       .attr('dx', this.dx);
-    
+
     this.riskAlarmText
       .append('tspan')
       .text(this.riskAlarmStatus)
       .attr('dx', this.dx);
-    
+
     this.riskAlarmText
       .on('mouseover', (event) => {
         this.showLineTooltip(event.layerX, event.layerY);
@@ -378,35 +373,33 @@ export class ProjectDuration {
           .delay(50)
           .style('display', 'none');
       });
-
   }
 
-  private calculateProjectDuration(startDate, endDate): number{
+  private calculateProjectDuration(startDate, endDate): number {
     const daysDiff = Math.round(Math.abs((startDate.getTime() - endDate.getTime()) / (24 * 60 * 60 * 1000)));
-    const yearsDiff = Math.round((daysDiff / 365) * 10) /10;
+    const yearsDiff = Math.round((daysDiff / 365) * 10) / 10;
     return yearsDiff;
   }
 
   private riskCalculate(projectDurationYears): void {
-   
+
     const timeText = projectDurationYears < 1 ? 'Monaten' : 'Jahren';
 
     const time = projectDurationYears < 1 ? Math.round(projectDurationYears * 12) : projectDurationYears;
-    
-    if (this.timelineName === 'Serveraustausch') {
-      for (let i = 0; i< this.riskInformation.length; i++) {
-       
-        if (this.riskInformation[i].minVal < projectDurationYears && projectDurationYears < this.riskInformation[i].maxVal ) {
 
-          const info = this.riskInformation[i];
+    if (this.timelineName === 'Serveraustausch') {
+      for (const item of this.riskInformation) {
+
+        if (item.minVal < projectDurationYears && projectDurationYears < item.maxVal) {
+
+          const info = item;
 
           const overtimeText = info.overtime > 1 ? 'Monaten' : 'Monat';
 
           this.riskAlarmIcon = info.icon;
           this.riskAlarmStatus = `${info.text}: ${info.prob}% +${info.overtime}M`;
           this.elementColor = info.color;
-          this.riskTooltip = `<span class="material-icons">${info.icon}</span> Das Projekt hat eine Laufzeit von ${time} ${timeText} mit ${info.prob}% Wahrscheinlichkeit, dass es um ${info.overtime} ${overtimeText} verlängert wird.`;           
-        
+          this.riskTooltip = `<span class="material-icons">${info.icon}</span> Das Projekt hat eine Laufzeit von ${time} ${timeText} mit ${info.prob}% Wahrscheinlichkeit, dass es um ${info.overtime} ${overtimeText} verlängert wird.`;
         }
       }
     }
