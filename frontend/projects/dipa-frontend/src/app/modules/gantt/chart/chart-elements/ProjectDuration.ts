@@ -37,11 +37,11 @@ export class ProjectDuration {
   timelineName;
   tooltip;
 
-  riskInformation = [{'minVal':0,'maxVal':1,'prob':'85','overtime':'9','color':this.highRiskColor,'icon':'thumb_down','text':'Hohes Risiko'},
-                    {'minVal':1,'maxVal':1.5,'prob':'50','overtime':'3','color':this.middleRiskColor,'icon':'thumb_down','text':'Mittleres Risiko'},
-                    {'minVal':1.5,'maxVal':2.5,'prob':'10','overtime':'1','color':this.noRiskColor,'icon':'thumb_up','text':'Kein Risiko'},
-                    {'minVal':2.5,'maxVal':3,'prob':'50','overtime':'3','color':this.middleRiskColor,'icon':'thumb_down','text':'Mittleres Risiko'},
-                    {'minVal':3,'maxVal':10,'prob':'85','overtime':'9','color':this.highRiskColor,'icon':'thumb_down','text':'Hohes Risiko'}];
+  riskInformation = [{'minVal':0,'maxVal':1,'prob':'85','overtime':9,'color':this.highRiskColor,'icon':'thumb_down','text':'Hohes Risiko'},
+                    {'minVal':1,'maxVal':1.5,'prob':'50','overtime':3,'color':this.middleRiskColor,'icon':'thumb_down','text':'Mittleres Risiko'},
+                    {'minVal':1.5,'maxVal':2.5,'prob':'10','overtime':1,'color':this.noRiskColor,'icon':'thumb_up','text':'Kein Risiko'},
+                    {'minVal':2.5,'maxVal':3,'prob':'50','overtime':3,'color':this.middleRiskColor,'icon':'thumb_down','text':'Mittleres Risiko'},
+                    {'minVal':3,'maxVal':10,'prob':'85','overtime':9,'color':this.highRiskColor,'icon':'thumb_down','text':'Hohes Risiko'}];
 
   constructor(svg: any, xScale: any, timelineData: any) {
     this.svg = svg;
@@ -400,10 +400,12 @@ export class ProjectDuration {
 
           const info = this.riskInformation[i];
 
+          const overtimeText = info.overtime > 1 ? 'Monaten' : 'Monat';
+
           this.riskAlarmIcon = info.icon;
           this.riskAlarmStatus = `${info.text}: ${info.prob}% +${info.overtime}M`;
           this.elementColor = info.color;
-          this.riskTooltip = `<span class="material-icons">${info.icon}</span> Das Projekt hat eine Laufzeit von ${time} ${timeText} mit ${info.prob}% Wahrscheinlichkeit, dass es um ${info.overtime} Monaten verlängert wird.`;           
+          this.riskTooltip = `<span class="material-icons">${info.icon}</span> Das Projekt hat eine Laufzeit von ${time} ${timeText} mit ${info.prob}% Wahrscheinlichkeit, dass es um ${info.overtime} ${overtimeText} verlängert wird.`;           
         
         }
       }
