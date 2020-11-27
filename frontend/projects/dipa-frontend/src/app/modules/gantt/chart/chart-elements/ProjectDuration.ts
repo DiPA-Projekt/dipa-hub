@@ -12,14 +12,17 @@ export class ProjectDuration {
 
   elementColor = '#c6e0b4';
 
-  projectStartDate: Date = new Date(2020, 7, 17);
-  projectEndDate: Date = new Date(2024, 7, 19);
+  projectStartDate: any;
+  projectEndDate: any;
 
   startDateText;
   endDateText;
 
   dx = 3;
   height = 18;
+
+  dragStartDate;
+  public onDragEnd?: (days: number) => void;
 
   constructor(svg: any, xScale: any, timelineData: any) {
     this.svg = svg;
@@ -28,6 +31,9 @@ export class ProjectDuration {
     this.projectEndDate = new Date(timelineData.end);
     this.svgBbox = this.svg.node().getBBox();
     this.projectGroup = this.svg.select('g.project-group');
+
+    this.projectStartDate.setHours(0, 0, 0, 0);
+    this.projectEndDate.setHours(0, 0, 0, 0);
   }
 
   draw(): void {
@@ -51,7 +57,20 @@ export class ProjectDuration {
 
         // refresh gui
         projectDuration.attr('x', xValueStartNew);
-        this.redraw();
+        this.redraw(0);
+      })
+      .on('start', (event: d3.D3DragEvent<any, any, any>) => {
+        // this.dragStartDate = this.xScale.invert(event.x);
+        this.dragStartDate = this.projectStartDate; // TODO: copy?
+      })
+      .on('end', (event: d3.D3DragEvent<any, any, any>) => {
+
+        const dragOffset: number = Math.floor((this.projectStartDate - this.dragStartDate ) / (1000 * 60 * 60 * 24));
+
+        this.projectStartDate.setHours(0, 0, 0, 0);
+        this.projectEndDate.setHours(0, 0, 0, 0);
+
+        this.onDragEnd(dragOffset);
       });
 
     // project duration indicator

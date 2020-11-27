@@ -12,6 +12,8 @@ paths:
     $ref: "paths/status.yml"
   /timelines:
     $ref: "paths/timelines.yml"
+  /timelines/{timelineId}:
+    $ref: "paths/move-timeline.yml"
   /timelines/{timelineId}/milestones:
     $ref: "paths/milestones.yml"
   /timelines/{timelineId}/tasks:

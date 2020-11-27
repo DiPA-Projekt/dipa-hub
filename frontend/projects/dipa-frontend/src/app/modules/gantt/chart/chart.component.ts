@@ -18,6 +18,7 @@ import {MilestonesArea} from './chart-elements/MilestonesArea';
 import {TasksArea} from './chart-elements/TasksArea';
 import {XAxis} from './chart-elements/XAxis';
 import {ProjectDuration} from './chart-elements/ProjectDuration';
+import {MilestonesService, TasksService, TimelinesService} from 'dipa-api-client';
 
 @Component({
   selector: 'app-chart',
@@ -28,7 +29,10 @@ import {ProjectDuration} from './chart-elements/ProjectDuration';
 
 export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
 
-  constructor(public ganttControlsService: GanttControlsService) {
+  constructor(public ganttControlsService: GanttControlsService,
+              private milestonesService: MilestonesService,
+              private tasksService: TasksService,
+              private timelinesService: TimelinesService) {
     d3.timeFormatDefaultLocale({
       // @ts-ignore
       decimal: ',',
@@ -46,9 +50,9 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     });
   }
 
-  @Input() timelineData = {};
   @Input() milestoneData = [];
   @Input() taskData = [];
+  @Input() timelineData: any = {};
 
   @ViewChild('chart')
   chartFigure: ElementRef;
@@ -81,6 +85,10 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   projectDuration: ProjectDuration;
   milestoneViewItem: MilestonesArea;
   taskViewItem: TasksArea;
+
+  milestoneSubscription;
+  taskSubscription;
+  timelinesSubscription;
 
   ngOnInit(): void {
     this.periodStartDateSubscription = this.ganttControlsService.getPeriodStartDate()
@@ -192,6 +200,10 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   ngOnDestroy(): void {
     this.periodStartDateSubscription.unsubscribe();
     this.periodEndDateSubscription.unsubscribe();
+
+    this.milestoneSubscription?.unsubscribe();
+    this.taskSubscription?.unsubscribe();
+    this.timelinesSubscription?.unsubscribe();
   }
 
   ngAfterViewInit(): void {
@@ -227,8 +239,36 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.projectDuration = new ProjectDuration(this.svg, this.xScale, this.timelineData);
     this.projectDuration.draw();
 
+    this.projectDuration.onDragEnd = (offsetDays: number) => {
+
+      this.timelinesSubscription = this.timelinesService.moveTimelineByDays(this.timelineData.id, {days: offsetDays})
+        .subscribe(() => {
+
+          this.projectDuration.redraw(200);
+
+          this.milestoneSubscription = this.milestonesService.getMilestonesForTimeline(this.timelineData.id)
+            .subscribe((data) => {
+
+              this.milestoneData = data;
+              this.milestoneViewItem.setData(data);
+
+              this.milestoneViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()}, 200);
+            });
+
+          this.taskSubscription = this.tasksService.getTasksForTimeline(this.timelineData.id)
+            .subscribe((data) => {
+
+              this.taskData = data;
+              this.taskViewItem.setData(data);
+
+              this.taskViewItem.redraw({left: 0, top: 0});
+            });
+        });
+    };
+
     this.taskViewItem = new TasksArea(this.svg, this.xScale, this.taskData);
     this.taskViewItem.draw({left: 0, top: 0});
+
     this.milestoneViewItem = new MilestonesArea(this.svg, this.xScale, this.milestoneData);
     this.milestoneViewItem.draw({left: 0, top: this.taskViewItem.getAreaHeight()});
   }
@@ -240,8 +280,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.svg.select('g.x-group').selectAll('text.outsideXAxisLabel').remove();
 
     switch (this.viewType){
-      case 'WEEKS' :{
-        const numberTicks = d3.timeWeek.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
+      case 'WEEKS': {
+        const numberTicks = d3.timeWeek.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
 
         if (numberTicks > 12){
           this.headerX.tickSetting = null;
@@ -252,8 +292,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
         break;
       }
-      case 'MONTHS' :{
-        const numberTicks = d3.timeMonth.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
+      case 'MONTHS': {
+        const numberTicks = d3.timeMonth.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
 
         if (numberTicks === 1){
 
@@ -277,8 +317,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
         }
         break;
       }
-      case 'YEARS' :{
-        const numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
+      case 'YEARS': {
+        const numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
 
         if (numberTicks === 1){
 
@@ -355,9 +395,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     const xGroup = this.svg.append('g').attr('class', 'x-group');
     xGroup.attr('transform', 'translate(' + this.padding.left + ',20)');
 
-    const projectGroup = this.svg.append('g').attr('class', 'project-group');
-    projectGroup.attr('transform', 'translate(' + this.padding.left + ',45)');
-
     this.zoom = d3.zoom()
       .on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick); });
 
@@ -370,6 +407,9 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       .style('pointer-events', 'all')
       .attr('transform', 'translate(' + this.padding.left + ',' + this.padding.top + ')')
       .call(this.zoom);
+
+    const projectGroup = this.svg.append('g').attr('class', 'project-group');
+    projectGroup.attr('transform', 'translate(' + this.padding.left + ',45)');
 
     const dataGroup = this.svg.append('g').attr('class', 'data-group');
     dataGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + 30) + ')');
@@ -404,7 +444,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     const end = xScaleTransformed.domain()[1];
 
     this.setZoomScaleExtent(minTimeMs);
-    //zoom to new start and end dates
+    // zoom to new start and end dates
     this.xScale.domain([start, end]);
 
     if (event.sourceEvent){
