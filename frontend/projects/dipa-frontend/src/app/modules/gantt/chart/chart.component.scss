@@ -57,6 +57,10 @@
       }
 
       g.project-group {
+        rect.projectDuration {
+          cursor: move;
+        }
+
         text {
           font-size: 10px;
           opacity: 0.87;
@@ -64,6 +68,7 @@
 
         line.projectStartDateLine, line.projectEndDateLine {
           stroke-width: 2;
+          cursor: ew-resize;
         }
       }
 
