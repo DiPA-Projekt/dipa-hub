@@ -230,9 +230,9 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.svg.select('g.x-group').selectAll('text.outsideXAxisLabel').remove();
 
     switch (this.viewType){
-      case 'DAYS' :{
-        const numberTicks = d3.timeDay.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
-        
+      case 'DAYS' : {
+        const numberTicks = d3.timeDay.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
+
         if (numberTicks > 12){
           this.headerX.tickSetting = null;
         }
@@ -242,11 +242,11 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
         break;
       }
-      case 'WEEKS' :{
-        const numberTicks = d3.timeWeek.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
+      case 'WEEKS' : {
+        const numberTicks = d3.timeWeek.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
 
         if (numberTicks === 1){
-          
+
           const textOutsideBox = this.xScale(ticksList[0]) < this.xScale.range()[1];
 
           if (textOutsideBox){
@@ -258,7 +258,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
             .attr('y', 18);
           }
         }
-        
+
         if (numberTicks > 12){
           this.headerX.tickSetting = null;
         }
@@ -268,8 +268,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
         break;
       }
-      case 'MONTHS' :{
-        const numberTicks = d3.timeMonth.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
+      case 'MONTHS' : {
+        const numberTicks = d3.timeMonth.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
 
         if (numberTicks === 1){
 
@@ -293,8 +293,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
         }
         break;
       }
-      case 'YEARS' :{
-        const numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
+      case 'YEARS' : {
+        const numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
 
         if (numberTicks === 1){
 
@@ -318,8 +318,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
         }
         break;
       }
-      case null :{
-        const numberTicks = d3.timeDay.count(ticksList[0], ticksList[ticksList.length-1]) + 1;
+      case null : {
+        const numberTicks = d3.timeDay.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
 
         if (numberTicks > 12){
           this.headerX.tickSetting = null;
@@ -431,7 +431,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     const end = xScaleTransformed.domain()[1];
 
     this.setZoomScaleExtent(minTimeMs);
-    //zoom to new start and end dates
+    // zoom to new start and end dates
     this.xScale.domain([start, end]);
 
     if (event.sourceEvent){
