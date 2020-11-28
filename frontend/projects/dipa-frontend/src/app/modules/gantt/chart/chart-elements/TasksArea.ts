@@ -9,6 +9,8 @@ export class TasksArea implements IChartElement{
   data: any[];
   tooltip;
 
+  animationDuration;
+
   dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
 
   elementHeight = 20;
@@ -26,6 +28,14 @@ export class TasksArea implements IChartElement{
     this.data = data;
 
     this.tooltip = d3.select('figure#chart .tooltip');
+  }
+
+  setData(data): void {
+    this.data = data;
+
+    const dataGroup = this.svg.select('g.data-group');
+    dataGroup.selectAll('g.taskEntry')
+      .data(this.data);
   }
 
   draw(offset): void {
@@ -184,8 +194,12 @@ export class TasksArea implements IChartElement{
       .append('g')
       .attr('class', 'taskEntry')
       .attr('id', (d) => 'taskEntry_' + d.id)
-      .attr('transform', (d, i) => 'translate(' + (offset.left + this.xScale(new Date(d.start))) + ','
-        + (offset.top + this.elementHeightWithMargin * i + this.elementHeight / 2) + ')')
+      .attr('transform', (d, i) => {
+        const taskStartDate = new Date(d.start);
+        taskStartDate.setHours(0, 0, 0, 0);
+        return 'translate(' + (offset.left + this.xScale(taskStartDate)) + ','
+          + (offset.top + this.elementHeightWithMargin * i + this.elementHeight / 2) + ')';
+      })
       .call(drag);
 
     taskGroup
@@ -281,8 +295,12 @@ export class TasksArea implements IChartElement{
     const dataGroup = this.svg.select('g.data-group');
 
     const taskGroup = dataGroup.selectAll('g.taskEntry')
-      .attr('transform', (d, i) => 'translate(' + (offset.left + this.xScale(new Date(d.start))) + ','
-        + (offset.top + this.elementHeightWithMargin * i + this.elementHeight / 2) + ')');
+      .attr('transform', (d, i) => {
+        const taskStartDate = new Date(d.start);
+        taskStartDate.setHours(0, 0, 0, 0);
+        return 'translate(' + (offset.left + this.xScale(taskStartDate)) + ','
+          + (offset.top + this.elementHeightWithMargin * i + this.elementHeight / 2) + ')';
+      });
 
     taskGroup.selectAll('rect.task')
       .attr('width', d => this.calculateBarWidth(d));

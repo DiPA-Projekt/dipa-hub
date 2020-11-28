@@ -83,18 +83,24 @@ export class GanttComponent implements OnInit, OnDestroy {
     ])
     .pipe(
       map(([taskData, milestoneData]) => {
-        const milestoneDates = milestoneData.map(x => new Date(x.date));
-        const taskStartDates = taskData.map(x => new Date(x.start));
-        const taskEndDates = taskData.map(x => new Date(x.end));
+        const milestoneDates = milestoneData.map(x => this.createDateAtMidnight(x.date));
+        const taskStartDates = taskData.map(x => this.createDateAtMidnight(x.start));
+        const taskEndDates = taskData.map(x => this.createDateAtMidnight(x.end));
 
         const datesArray: Date[] = [...milestoneDates, ...taskStartDates, ...taskEndDates];
 
         const periodStartDate = GanttComponent.getMinimumDate(datesArray);
         const periodEndDate = GanttComponent.getMaximumDate(datesArray);
 
+        console.log('periodStartDate: ' + periodStartDate);
+        console.log('periodEndDate: ' + periodEndDate);
+
+        const selectedTimeline = this.timelineData.find(c => c.id === this.selectedTimelineId);
+
         return {
           milestoneData,
           taskData,
+          selectedTimeline,
           periodStartDate,
           periodEndDate
         };
@@ -114,15 +120,14 @@ export class GanttComponent implements OnInit, OnDestroy {
     const toggle = event.source;
 
     if (toggle){
-      const group = toggle.buttonToggleGroup;
+        const group = toggle.buttonToggleGroup;
 
-      if (event.value.some(item => item === toggle.value)) {
-          group.value = [toggle.value];
-      }
-
-      this.ganttControlsService.setViewType(group.value[0]);
-
-    } else {
+        if (event.value.some(item => item === toggle.value)) {
+            group.value = [toggle.value];
+        }
+        this.ganttControlsService.setViewType(group.value[0]);
+    }
+    else {
       this.ganttControlsService.setViewType(null);
     }
   }
@@ -145,6 +150,12 @@ export class GanttComponent implements OnInit, OnDestroy {
       // this.periodEndDate = $event.value;
       this.ganttControlsService.setPeriodEndDate($event.value);
     }
+  }
+
+  createDateAtMidnight(date: any): Date {
+    const dateAtMidnight = new Date(date);
+    dateAtMidnight.setHours(0, 0, 0, 0);
+    return dateAtMidnight;
   }
 
 }
