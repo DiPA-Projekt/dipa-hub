@@ -302,10 +302,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.svg.select('g.x-group').selectAll('text.outsideXAxisLabel').remove();
 
     switch (this.viewType){
-<<<<<<< HEAD
-      case 'WEEKS': {
-        const numberTicks = d3.timeWeek.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
-=======
       case 'DAYS' : {
         const numberTicks = d3.timeDay.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
 
@@ -334,7 +330,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
             .attr('y', 18);
           }
         }
->>>>>>> b8cd2a48f375eca31db198790279d8ad1cf3dd49
 
         if (numberTicks > 12){
           this.headerX.tickSetting = null;
@@ -345,11 +340,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
         break;
       }
-<<<<<<< HEAD
-      case 'MONTHS': {
-=======
       case 'MONTHS' : {
->>>>>>> b8cd2a48f375eca31db198790279d8ad1cf3dd49
         const numberTicks = d3.timeMonth.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
 
         if (numberTicks === 1){
@@ -374,11 +365,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
         }
         break;
       }
-<<<<<<< HEAD
-      case 'YEARS': {
-=======
       case 'YEARS' : {
->>>>>>> b8cd2a48f375eca31db198790279d8ad1cf3dd49
         const numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
 
         if (numberTicks === 1){
