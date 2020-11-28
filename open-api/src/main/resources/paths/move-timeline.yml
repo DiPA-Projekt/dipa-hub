@@ -13,7 +13,7 @@ patch:
       required: true
       description: Numeric ID of the timeline to move.
   requestBody:
-    description: days
+    description: objects
     required: true
     content:
       application/json:
@@ -21,6 +21,9 @@ patch:
           type: object
           properties:
             days:
+              type: integer
+              format: int64
+            movedMilestoneId:
               type: integer
               format: int64
   responses:

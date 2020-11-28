@@ -241,9 +241,10 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     this.projectDuration.onDragEnd = (offsetDays: number) => {
 
-      this.timelinesSubscription = this.timelinesService.moveTimelineByDays(this.timelineData.id, {days: offsetDays})
-        .subscribe(() => {
+      const inlineObject  = {days: offsetDays}
 
+      this.timelinesSubscription = this.timelinesService.moveTimelineByDays(this.timelineData.id, inlineObject)
+        .subscribe(() => {
           this.projectDuration.redraw(200);
 
           this.milestoneSubscription = this.milestonesService.getMilestonesForTimeline(this.timelineData.id)
@@ -271,6 +272,37 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     this.milestoneViewItem = new MilestonesArea(this.svg, this.xScale, this.milestoneData);
     this.milestoneViewItem.draw({left: 0, top: this.taskViewItem.getAreaHeight()});
+
+    this.milestoneViewItem.onDragProjectEnd = (offsetDays: number, id: number) => {
+
+      const inlineObject  = {days: offsetDays, movedMilestoneId: id}
+
+      this.timelinesSubscription = this.timelinesService.moveTimelineByDays(this.timelineData.id, inlineObject)
+      .subscribe(() => {
+
+        this.timelinesSubscription = this.timelinesService.getTimelines()
+        .subscribe((data) => {
+
+          this.timelineData = data.find(c => c.id === this.timelineData.id);
+          this.projectDuration.projectEndDate = new Date(this.timelineData.end);
+          this.projectDuration.projectStartDate = new Date(this.timelineData.start);
+          this.projectDuration.redraw(200);
+
+        });
+
+        this.milestoneSubscription = this.milestonesService.getMilestonesForTimeline(this.timelineData.id)
+            .subscribe((data) => {
+
+              this.milestoneData = data;
+              this.milestoneViewItem.setData(data);
+
+              this.milestoneViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()}, 200);
+            });
+
+
+      });
+  
+    };
   }
 
   private redrawChart(animationDuration): void {

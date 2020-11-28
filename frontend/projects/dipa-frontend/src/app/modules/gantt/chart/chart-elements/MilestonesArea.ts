@@ -19,7 +19,9 @@ export class MilestonesArea implements IChartElement {
 
   elementColor = '#62a9f9';
 
-  public onDragEnd?: () => void;
+  initMilestoneDate;
+
+  public onDragProjectEnd?: (days: number, id: number) => void;
 
   constructor(svg: any, xScale: any, data: any[]) {
     this.svg = svg;
@@ -38,7 +40,7 @@ export class MilestonesArea implements IChartElement {
   }
 
   draw(offset): void {
-
+    
     const dataGroup = this.svg.select('g.data-group');
 
     const drag = d3.drag()
@@ -57,11 +59,20 @@ export class MilestonesArea implements IChartElement {
         event.subject.date = this.xScale.invert(xValueNew);
 
         this.showTooltip(event.subject, event.sourceEvent.layerX, event.sourceEvent.layerY);
-      }).on('end', (event: d3.D3DragEvent<any, any, any>) => {
+      })
+      .on('start', (event: d3.D3DragEvent<any, any, any>) => {
 
+        this.initMilestoneDate = new Date(this.data.find(d => d.id === event.subject.id).date);
+
+      })
+      .on('end', (event: d3.D3DragEvent<any, any, any>) => {
+        
         this.adjustMilestonePosition(event.subject);
 
-        // this.onDragEnd();
+        const dragOffset: number = Math.floor((event.subject.date - this.initMilestoneDate) / (1000 * 60 * 60 * 24));
+        
+        this.onDragProjectEnd(dragOffset, event.subject.id);
+        
       });
 
     // milestones

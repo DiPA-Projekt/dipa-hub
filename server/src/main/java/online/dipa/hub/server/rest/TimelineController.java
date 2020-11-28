@@ -39,7 +39,16 @@ public class TimelineController implements TimelinesApi {
 
     @Override
     public ResponseEntity<Void> moveTimelineByDays(Long timelineId, InlineObject inlineObject) {
-        timelineService.moveTimelineByDays(timelineId, inlineObject.getDays());
+        Long daysOffset = inlineObject.getDays();
+        Long movedMilestoneId = inlineObject.getMovedMilestoneId();
+
+        if (movedMilestoneId == null){
+            timelineService.moveTimelineByDays(timelineId, daysOffset);
+        }
+        else {
+            timelineService.moveMileStoneByDays(timelineId, daysOffset, movedMilestoneId);
+        }
+      
         return ResponseEntity.noContent().build();
     }
 }
