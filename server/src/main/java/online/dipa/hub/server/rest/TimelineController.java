@@ -38,8 +38,13 @@ public class TimelineController implements TimelinesApi {
     }
 
     @Override
-    public ResponseEntity<Void> moveTimelineByDays(Long timelineId, InlineObject inlineObject) {
-        timelineService.moveTimelineByDays(timelineId, inlineObject.getDays());
+    public ResponseEntity<Void> applyOperation(Long timelineId, InlineObject inlineObject) {
+
+        switch (inlineObject.getOperation()) {
+            case "moveTimeline": timelineService.moveTimelineByDays(timelineId, inlineObject.getDays());
+                break;
+        }
+
         return ResponseEntity.noContent().build();
     }
 }

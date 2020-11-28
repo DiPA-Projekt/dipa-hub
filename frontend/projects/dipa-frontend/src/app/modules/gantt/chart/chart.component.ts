@@ -241,7 +241,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     this.projectDuration.onDragEnd = (offsetDays: number) => {
 
-      this.timelinesSubscription = this.timelinesService.moveTimelineByDays(this.timelineData.id, {days: offsetDays})
+      this.timelinesSubscription = this.timelinesService.applyOperation(this.timelineData.id, {operation: 'moveTimeline', days: offsetDays})
         .subscribe(() => {
 
           this.projectDuration.redraw(200);
