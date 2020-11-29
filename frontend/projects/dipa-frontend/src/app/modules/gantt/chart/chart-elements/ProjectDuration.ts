@@ -442,7 +442,7 @@ export class ProjectDuration {
 
           const info = item;
 
-          const overtimeText = info.overtime > 1 ? 'Monaten' : 'Monat';
+          const overtimeText = info.overtime > 1 ? 'Monate' : 'Monat';
 
           this.riskAlarmIcon = info.icon;
           this.riskAlarmStatus = `${info.text}: ${info.prob}% +${info.overtime}M`;
