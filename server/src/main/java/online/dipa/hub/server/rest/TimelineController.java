@@ -47,6 +47,8 @@ public class TimelineController implements TimelinesApi {
                 break;
             case "moveTimelineEnd": timelineService.moveTimelineEndByDays(timelineId, inlineObject.getDays());
                 break;
+            case "moveMilestone": timelineService.moveMileStoneByDays(timelineId, inlineObject.getDays(), inlineObject.getMovedMilestoneId());
+                break;
         }
 
         return ResponseEntity.noContent().build();

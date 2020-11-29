@@ -264,6 +264,15 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     this.milestoneViewItem = new MilestonesArea(this.svg, this.xScale, this.milestoneData);
     this.milestoneViewItem.draw({left: 0, top: this.taskViewItem.getAreaHeight()});
+
+    this.milestoneViewItem.onDragProjectEnd = (offsetDays: number, id: number) => {
+
+      const moveMilestone$ = this.timelinesService.applyOperation(
+        this.timelineData.id,
+        {operation: 'moveMilestone', days: offsetDays, movedMilestoneId: id});
+      this.timelineSubscription = this.subscribeForRedraw(moveMilestone$);
+
+    };
   }
 
   private redrawChart(animationDuration): void {
