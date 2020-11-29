@@ -91,6 +91,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   milestoneSubscription;
   taskSubscription;
   timelineSubscription;
+  timelineStartSubscription;
+  timelineEndSubscription;
 
   ngOnInit(): void {
     this.periodStartDateSubscription = this.ganttControlsService.getPeriodStartDate()
@@ -196,6 +198,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.milestoneSubscription?.unsubscribe();
     this.taskSubscription?.unsubscribe();
     this.timelineSubscription?.unsubscribe();
+    this.timelineStartSubscription?.unsubscribe();
+    this.timelineEndSubscription?.unsubscribe();
   }
 
   ngAfterViewInit(): void {
@@ -237,6 +241,22 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
         this.timelineData.id,
         {operation: 'moveTimeline', days: offsetDays});
       this.timelineSubscription = this.subscribeForRedraw(moveTimeline$);
+    };
+
+    this.projectDuration.onDragEndProjectStart = (offsetDays: number) => {
+
+      const moveTimelineStart$ = this.timelinesService.applyOperation(
+        this.timelineData.id,
+        {operation: 'moveTimelineStart', days: offsetDays});
+      this.timelineStartSubscription = this.subscribeForRedraw(moveTimelineStart$);
+    };
+
+    this.projectDuration.onDragEndProjectEnd = (offsetDays: number) => {
+
+      const moveTimelineEnd$ = this.timelinesService.applyOperation(
+        this.timelineData.id,
+        {operation: 'moveTimelineEnd', days: offsetDays});
+      this.timelineEndSubscription = this.subscribeForRedraw(moveTimelineEnd$);
     };
 
     this.taskViewItem = new TasksArea(this.svg, this.xScale, this.taskData);
@@ -548,6 +568,5 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       this.milestoneViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()}, 200);
     });
   }
-
 
 }

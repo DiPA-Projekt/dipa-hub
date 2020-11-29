@@ -17,6 +17,8 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 @Service
 @SessionScope
 @Transactional
@@ -105,6 +107,50 @@ public class TimelineService {
         }
     }
 
+    public void moveTimelineStartByDays(final Long timelineId, final Long days) {
+
+        TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+
+        LocalDate timelineStart = sessionTimeline.getTimeline().getStart();
+        LocalDate timelineEnd = sessionTimeline.getTimeline().getEnd();
+
+        long oldDaysBetween = DAYS.between(timelineStart, timelineEnd);
+        long newDaysBetween = oldDaysBetween - days;
+        double factor = (double)newDaysBetween / oldDaysBetween;
+
+        LocalDate newTimelineStart = timelineStart.plusDays(days);
+        sessionTimeline.getTimeline().setStart(newTimelineStart);
+
+        for (Milestone m : sessionTimeline.getMilestones()) {
+            long oldMilestoneRelativePosition = DAYS.between(timelineStart, m.getDate());
+            long newMilestoneRelativePosition = (long)(oldMilestoneRelativePosition * factor);
+
+            m.setDate(newTimelineStart.plusDays(newMilestoneRelativePosition));
+        }
+    }
+
+    public void moveTimelineEndByDays(final Long timelineId, final Long days) {
+
+        TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+
+        LocalDate timelineStart = sessionTimeline.getTimeline().getStart();
+        LocalDate timelineEnd = sessionTimeline.getTimeline().getEnd();
+
+        long oldDaysBetween = DAYS.between(timelineStart, timelineEnd);
+        long newDaysBetween = oldDaysBetween + days;
+        double factor = (double)newDaysBetween / oldDaysBetween;
+
+        LocalDate newTimelineEnd = timelineEnd.plusDays(days);
+        sessionTimeline.getTimeline().setEnd(newTimelineEnd);
+
+        for (Milestone m : sessionTimeline.getMilestones()) {
+            long oldMilestoneRelativePosition = DAYS.between(timelineStart, m.getDate());
+            long newMilestoneRelativePosition = (long)(oldMilestoneRelativePosition * factor);
+
+            m.setDate(timelineStart.plusDays(newMilestoneRelativePosition));
+        }
+    }
+
     public void moveMileStoneByDays (final Long timelineId, final Long days, final Long movedMilestoneId) {
         TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
 
@@ -128,8 +174,8 @@ public class TimelineService {
         long daysOffsetEnd = Duration.between(oldProjectEnd.atStartOfDay(), newLastMilestoneDate.atStartOfDay()).toDays();
         LocalDate newProjectEnd = sessionTimeline.getTimeline().getEnd().plusDays(daysOffsetEnd);
 
-
         sessionTimeline.getTimeline().setStart(newProjectStart);
         sessionTimeline.getTimeline().setEnd(newProjectEnd);
     }
+
 }
