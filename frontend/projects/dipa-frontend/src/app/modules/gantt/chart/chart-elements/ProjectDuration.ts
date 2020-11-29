@@ -56,6 +56,9 @@ export class ProjectDuration {
     this.timelineName = timelineData.name;
     this.svgBbox = this.svg.node().getBBox();
     this.projectGroup = this.svg.select('g.project-group');
+
+    this.projectStartDate.setHours(0, 0, 0, 0);
+    this.projectEndDate.setHours(0, 0, 0, 0);
     this.tooltip = d3.select('figure#chart .tooltip');
 
     this.projectStartDate.setHours(0, 0, 0, 0);
@@ -439,7 +442,7 @@ export class ProjectDuration {
 
           const info = item;
 
-          const overtimeText = info.overtime > 1 ? 'Monaten' : 'Monat';
+          const overtimeText = info.overtime > 1 ? 'Monate' : 'Monat';
 
           this.riskAlarmIcon = info.icon;
           this.riskAlarmStatus = `${info.text}: ${info.prob}% +${info.overtime}M`;

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.SessionScope;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -95,7 +96,6 @@ public class TimelineService {
     public void moveTimelineByDays(final Long timelineId, final Long days) {
 
         TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
-
         LocalDate newTimelineStart = sessionTimeline.getTimeline().getStart().plusDays(days);
         LocalDate newTimelineEnd = sessionTimeline.getTimeline().getEnd().plusDays(days);
 
@@ -149,6 +149,33 @@ public class TimelineService {
 
             m.setDate(timelineStart.plusDays(newMilestoneRelativePosition));
         }
+    }
+
+    public void moveMileStoneByDays (final Long timelineId, final Long days, final Long movedMilestoneId) {
+        TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+
+        LocalDate oldFirstMilestoneDate = sessionTimeline.getMilestones().stream().map(m -> m.getDate()).min(LocalDate::compareTo).get();
+        LocalDate oldProjectStart = sessionTimeline.getTimeline().getStart();
+        long diffProjectStartMilestone = Duration.between(oldFirstMilestoneDate.atStartOfDay(), oldProjectStart.atStartOfDay()).toDays();
+
+        for (Milestone m : sessionTimeline.getMilestones()) {
+            if (m.getId() == movedMilestoneId) {
+                m.setDate(m.getDate().plusDays(days));
+            }
+        }
+
+        LocalDate newFirstMilestoneDate = sessionTimeline.getMilestones().stream().map(m -> m.getDate()).min(LocalDate::compareTo).get();       
+        long daysOffsetStart = Duration.between(oldProjectStart.atStartOfDay(), newFirstMilestoneDate.atStartOfDay()).toDays();
+        LocalDate newProjectStart = sessionTimeline.getTimeline().getStart().plusDays(daysOffsetStart + diffProjectStartMilestone);
+
+        LocalDate newLastMilestoneDate = sessionTimeline.getMilestones().stream().map(m -> m.getDate()).max(LocalDate::compareTo).get();
+        LocalDate oldProjectEnd = sessionTimeline.getTimeline().getEnd();
+
+        long daysOffsetEnd = Duration.between(oldProjectEnd.atStartOfDay(), newLastMilestoneDate.atStartOfDay()).toDays();
+        LocalDate newProjectEnd = sessionTimeline.getTimeline().getEnd().plusDays(daysOffsetEnd);
+
+        sessionTimeline.getTimeline().setStart(newProjectStart);
+        sessionTimeline.getTimeline().setEnd(newProjectEnd);
     }
 
 }
