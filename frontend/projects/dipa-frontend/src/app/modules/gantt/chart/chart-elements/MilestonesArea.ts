@@ -19,12 +19,22 @@ export class MilestonesArea implements IChartElement {
 
   elementColor = '#62a9f9';
 
+  public onDragEnd?: () => void;
+
   constructor(svg: any, xScale: any, data: any[]) {
     this.svg = svg;
     this.xScale = xScale;
     this.data = data;
 
     this.tooltip = d3.select('figure#chart .tooltip');
+  }
+
+  setData(data): void {
+    this.data = data;
+
+    const dataGroup = this.svg.select('g.data-group');
+    dataGroup.selectAll('g.milestoneEntry')
+      .data(this.data);
   }
 
   draw(offset): void {
@@ -47,6 +57,11 @@ export class MilestonesArea implements IChartElement {
         event.subject.date = this.xScale.invert(xValueNew);
 
         this.showTooltip(event.subject, event.sourceEvent.layerX, event.sourceEvent.layerY);
+      }).on('end', (event: d3.D3DragEvent<any, any, any>) => {
+
+        this.adjustMilestonePosition(event.subject);
+
+        // this.onDragEnd();
       });
 
     // milestones
@@ -56,8 +71,12 @@ export class MilestonesArea implements IChartElement {
       .append('g')
       .attr('class', 'milestoneEntry')
       .attr('id', (d) => 'milestoneEntry_' + d.id)
-      .attr('transform', (d, i) => 'translate(' + (offset.left + this.xScale(new Date(d.date))) + ','
-        + (offset.top + this.elementHeightWithMargin * (i % 3) + this.elementHeight / 2) + ')')
+      .attr('transform', (d, i) => {
+        const milestoneDate = new Date(d.date);
+        milestoneDate.setHours(0, 0, 0, 0);
+        return 'translate(' + (offset.left + this.xScale(milestoneDate)) + ','
+          + (offset.top + this.elementHeightWithMargin * (i % 3) + this.elementHeight / 2) + ')';
+      })
       .call(drag);
 
     milestone
@@ -104,8 +123,12 @@ export class MilestonesArea implements IChartElement {
       .transition()
       .ease(d3.easeCubic)
       .duration(animationDuration)
-      .attr('transform', (d, i) => 'translate(' + (offset.left + this.xScale(new Date(d.date))) + ','
-        + (offset.top + this.elementHeightWithMargin * (i % 3) + this.elementHeight / 2) + ')');
+      .attr('transform', (d, i) => {
+        const milestoneDate = new Date(d.date);
+        milestoneDate.setHours(0, 0, 0, 0);
+        return 'translate(' + (offset.left + this.xScale(milestoneDate)) + ','
+        + (offset.top + this.elementHeightWithMargin * (i % 3) + this.elementHeight / 2) + ')';
+      });
   }
 
   showTooltip(d, x, y): void {
@@ -163,6 +186,23 @@ export class MilestonesArea implements IChartElement {
   getAreaHeight(): number {
     // for now the milestones are spread over 3 rows
     return Math.max(this.data.length, 3) * this.elementHeightWithMargin;
+  }
+
+  private adjustMilestonePosition(milestoneData): void {
+    const dataGroup = this.svg.select('g.data-group');
+
+    const milestone = dataGroup.select('#milestoneEntry_' + milestoneData.id);
+
+    milestoneData.date.setHours(0, 0, 0, 0);
+
+    const xValueNew = this.xScale(milestoneData.date);
+    const yTransformValue = parseSvg(milestone.attr('transform')).translateY;
+
+    milestone
+      .transition()
+      .ease(d3.easeCubic)
+      .duration(this.animationDuration)
+      .attr('transform', 'translate(' + xValueNew + ',' + yTransformValue + ')');
   }
 
 }

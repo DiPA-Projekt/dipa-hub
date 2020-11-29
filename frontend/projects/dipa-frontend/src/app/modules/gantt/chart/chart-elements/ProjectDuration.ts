@@ -16,8 +16,8 @@ export class ProjectDuration {
   middleRiskColor = '#f7ec1b';
   highRiskColor = '#f73b3b';
 
-  projectStartDate: Date = new Date(2020, 7, 17);
-  projectEndDate: Date = new Date(2024, 7, 19);
+  projectStartDate: any;
+  projectEndDate: any;
 
   startDateText;
   endDateText;
@@ -43,6 +43,9 @@ export class ProjectDuration {
                     {minVal: 2.5, maxVal: 3, prob: '50', overtime: 3, color: this.middleRiskColor, icon: 'thumb_down', text: 'Mittleres Risiko'},
                     {minVal: 3, maxVal: 10, prob: '85', overtime: 9, color: this.highRiskColor, icon: 'thumb_down', text: 'Hohes Risiko'}];
 
+  dragStartDate;
+  public onDragEnd?: (days: number) => void;
+
   constructor(svg: any, xScale: any, timelineData: any) {
     this.svg = svg;
     this.xScale = xScale;
@@ -52,6 +55,14 @@ export class ProjectDuration {
     this.svgBbox = this.svg.node().getBBox();
     this.projectGroup = this.svg.select('g.project-group');
     this.tooltip = d3.select('figure#chart .tooltip');
+
+    this.projectStartDate.setHours(0, 0, 0, 0);
+    this.projectEndDate.setHours(0, 0, 0, 0);
+  }
+
+  setData(timelineData): void {
+    this.projectStartDate = new Date(timelineData.start);
+    this.projectEndDate = new Date(timelineData.end);
   }
 
   draw(): void {
@@ -78,6 +89,18 @@ export class ProjectDuration {
         // refresh gui
         projectDuration.attr('x', xValueStartNew);
         this.redraw(0);
+      })
+      .on('start', (event: d3.D3DragEvent<any, any, any>) => {
+        this.dragStartDate = this.projectStartDate;
+      })
+      .on('end', (event: d3.D3DragEvent<any, any, any>) => {
+
+        const dragOffset: number = Math.floor((this.projectStartDate - this.dragStartDate ) / (1000 * 60 * 60 * 24));
+
+        this.projectStartDate.setHours(0, 0, 0, 0);
+        this.projectEndDate.setHours(0, 0, 0, 0);
+
+        this.onDragEnd(dragOffset);
       });
 
     // project duration indicator
