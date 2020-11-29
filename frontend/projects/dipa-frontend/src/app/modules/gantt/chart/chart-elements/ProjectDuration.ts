@@ -45,6 +45,8 @@ export class ProjectDuration {
 
   dragStartDate;
   public onDragEnd?: (days: number) => void;
+  public onDragEndProjectStart?: (days: number) => void;
+  public onDragEndProjectEnd?: (days: number) => void;
 
   constructor(svg: any, xScale: any, timelineData: any) {
     this.svg = svg;
@@ -176,7 +178,7 @@ export class ProjectDuration {
   private drawVerticalProjectDateLines(): void {
     const viewBoxHeight = this.svgBbox.height;
 
-    const dragProjectLeft = d3.drag()
+    const dragProjectStart = d3.drag()
       .on('drag', (event: d3.D3DragEvent<any, any, any>) => {
 
         const projectDuration = this.projectGroup.select('rect.projectDuration');
@@ -207,8 +209,18 @@ export class ProjectDuration {
 
         this.redraw(0);
       })
+      .on('start', (event: d3.D3DragEvent<any, any, any>) => {
+        this.dragStartDate = this.projectStartDate;
+      })
       .on('end', (event: d3.D3DragEvent<any, any, any>) => {
+
         this.dragDxStack = 0;
+
+        const dragOffset: number = Math.floor((this.projectStartDate - this.dragStartDate ) / (1000 * 60 * 60 * 24));
+
+        this.projectStartDate.setHours(0, 0, 0, 0);
+
+        this.onDragEndProjectStart(dragOffset);
       });
 
     const dragProjectEnd = d3.drag()
@@ -241,8 +253,18 @@ export class ProjectDuration {
 
         this.redraw(0);
       })
+      .on('start', (event: d3.D3DragEvent<any, any, any>) => {
+        this.dragStartDate = this.projectEndDate;
+      })
       .on('end', (event: d3.D3DragEvent<any, any, any>) => {
+
         this.dragDxStack = 0;
+
+        const dragOffset: number = Math.floor((this.projectEndDate - this.dragStartDate ) / (1000 * 60 * 60 * 24));
+
+        this.projectEndDate.setHours(0, 0, 0, 0);
+
+        this.onDragEndProjectEnd(dragOffset);
       });
 
     // projectStartDate grid line
@@ -254,7 +276,7 @@ export class ProjectDuration {
       .attr('y1', 0)
       .attr('y2', viewBoxHeight)
       .attr('stroke', d3.rgb(this.elementColor).darker())
-      .call(dragProjectLeft);
+      .call(dragProjectStart);
 
     // projectEndDate grid line
     this.projectGroup

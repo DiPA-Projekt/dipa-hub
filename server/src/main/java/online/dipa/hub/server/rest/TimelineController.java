@@ -43,6 +43,10 @@ public class TimelineController implements TimelinesApi {
         switch (inlineObject.getOperation()) {
             case "moveTimeline": timelineService.moveTimelineByDays(timelineId, inlineObject.getDays());
                 break;
+            case "moveTimelineStart": timelineService.moveTimelineStartByDays(timelineId, inlineObject.getDays());
+                break;
+            case "moveTimelineEnd": timelineService.moveTimelineEndByDays(timelineId, inlineObject.getDays());
+                break;
         }
 
         return ResponseEntity.noContent().build();
