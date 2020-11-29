@@ -83,14 +83,17 @@ export class GanttComponent implements OnInit, OnDestroy {
     ])
     .pipe(
       map(([taskData, milestoneData]) => {
-        const milestoneDates = milestoneData.map(x => new Date(x.date));
-        const taskStartDates = taskData.map(x => new Date(x.start));
-        const taskEndDates = taskData.map(x => new Date(x.end));
+        const milestoneDates = milestoneData.map(x => this.createDateAtMidnight(x.date));
+        const taskStartDates = taskData.map(x => this.createDateAtMidnight(x.start));
+        const taskEndDates = taskData.map(x => this.createDateAtMidnight(x.end));
 
         const datesArray: Date[] = [...milestoneDates, ...taskStartDates, ...taskEndDates];
 
         const periodStartDate = GanttComponent.getMinimumDate(datesArray);
         const periodEndDate = GanttComponent.getMaximumDate(datesArray);
+
+        console.log('periodStartDate: ' + periodStartDate);
+        console.log('periodEndDate: ' + periodEndDate);
 
         const selectedTimeline = this.timelineData.find(c => c.id === this.selectedTimelineId);
 
@@ -129,6 +132,10 @@ export class GanttComponent implements OnInit, OnDestroy {
   }
 
   changeTimeline(event): void {
+    this.timelinesSubscription = this.timelinesService.getTimelines()
+    .subscribe((data) => {
+      this.timelineData = data;
+    });
     this.setData();
     this.viewTypeSelected = undefined;
     this.ganttControlsService.setViewType(null);
@@ -146,6 +153,12 @@ export class GanttComponent implements OnInit, OnDestroy {
       // this.periodEndDate = $event.value;
       this.ganttControlsService.setPeriodEndDate($event.value);
     }
+  }
+
+  createDateAtMidnight(date: any): Date {
+    const dateAtMidnight = new Date(date);
+    dateAtMidnight.setHours(0, 0, 0, 0);
+    return dateAtMidnight;
   }
 
 }

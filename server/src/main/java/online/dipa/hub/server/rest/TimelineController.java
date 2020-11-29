@@ -3,6 +3,7 @@ package online.dipa.hub.server.rest;
 import java.util.Collections;
 import java.util.List;
 
+import online.dipa.hub.api.model.InlineObject;
 import online.dipa.hub.services.TimelineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,5 +35,16 @@ public class TimelineController implements TimelinesApi {
     @Override
     public ResponseEntity<List<Task>> getTasksForTimeline(final Long timelineId) {
         return ResponseEntity.ok(Collections.emptyList());
+    }
+
+    @Override
+    public ResponseEntity<Void> applyOperation(Long timelineId, InlineObject inlineObject) {
+
+        switch (inlineObject.getOperation()) {
+            case "moveTimeline": timelineService.moveTimelineByDays(timelineId, inlineObject.getDays());
+                break;
+        }
+
+        return ResponseEntity.noContent().build();
     }
 }

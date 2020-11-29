@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.SessionScope;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -87,6 +88,21 @@ public class TimelineService {
             this.sessionTimelines = new HashMap<>();
         }
         return this.sessionTimelines;
+    }
+
+    public void moveTimelineByDays(final Long timelineId, final Long days) {
+
+        TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+
+        LocalDate newTimelineStart = sessionTimeline.getTimeline().getStart().plusDays(days);
+        LocalDate newTimelineEnd = sessionTimeline.getTimeline().getEnd().plusDays(days);
+
+        sessionTimeline.getTimeline().setStart(newTimelineStart);
+        sessionTimeline.getTimeline().setEnd(newTimelineEnd);
+
+        for (Milestone m : sessionTimeline.getMilestones()) {
+            m.setDate(m.getDate().plusDays(days));
+        }
     }
 
 }
