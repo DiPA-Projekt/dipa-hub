@@ -94,7 +94,6 @@ public class TimelineService {
     public void moveTimelineByDays(final Long timelineId, final Long days) {
 
         TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
-     
         LocalDate newTimelineStart = sessionTimeline.getTimeline().getStart().plusDays(days);
         LocalDate newTimelineEnd = sessionTimeline.getTimeline().getEnd().plusDays(days);
 

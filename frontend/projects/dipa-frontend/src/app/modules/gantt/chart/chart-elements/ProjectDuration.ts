@@ -30,9 +30,6 @@ export class ProjectDuration {
   dx = 3;
   height = 18;
 
-  dragStartDate;
-  public onDragEnd?: (days: number) => void;
-
   dragDxStack = 0;
 
   projectDurationYears;
@@ -46,6 +43,9 @@ export class ProjectDuration {
                     {minVal: 2.5, maxVal: 3, prob: '50', overtime: 3, color: this.middleRiskColor, icon: 'thumb_down', text: 'Mittleres Risiko'},
                     {minVal: 3, maxVal: 10, prob: '85', overtime: 9, color: this.highRiskColor, icon: 'thumb_down', text: 'Hohes Risiko'}];
 
+  dragStartDate;
+  public onDragEnd?: (days: number) => void;
+
   constructor(svg: any, xScale: any, timelineData: any) {
     this.svg = svg;
     this.xScale = xScale;
@@ -58,6 +58,14 @@ export class ProjectDuration {
     this.projectStartDate.setHours(0, 0, 0, 0);
     this.projectEndDate.setHours(0, 0, 0, 0);
     this.tooltip = d3.select('figure#chart .tooltip');
+
+    this.projectStartDate.setHours(0, 0, 0, 0);
+    this.projectEndDate.setHours(0, 0, 0, 0);
+  }
+
+  setData(timelineData): void {
+    this.projectStartDate = new Date(timelineData.start);
+    this.projectEndDate = new Date(timelineData.end);
   }
 
   draw(): void {
