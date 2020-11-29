@@ -132,6 +132,10 @@ export class GanttComponent implements OnInit, OnDestroy {
   }
 
   changeTimeline(event): void {
+    this.timelinesSubscription = this.timelinesService.getTimelines()
+    .subscribe((data) => {
+      this.timelineData = data;
+    });
     this.setData();
     this.viewTypeSelected = undefined;
     this.ganttControlsService.setViewType(null);

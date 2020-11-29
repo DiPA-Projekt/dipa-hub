@@ -520,11 +520,14 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   private subscribeForRedraw(obs): Observable<any> {
     return obs.pipe(
       switchMap(() => forkJoin([
+        this.timelinesService.getTimelines(),
         this.tasksService.getTasksForTimeline(this.timelineData.id),
         this.milestonesService.getMilestonesForTimeline(this.timelineData.id)
       ]))
-    ).subscribe(([taskData, milestoneData]) => {
+    ).subscribe(([timelinesData, taskData, milestoneData]) => {
 
+      this.timelineData = timelinesData.find(c => c.id === this.timelineData.id);
+      this.projectDuration.setData(this.timelineData);
       this.projectDuration.redraw(0);
 
       this.taskData = taskData;

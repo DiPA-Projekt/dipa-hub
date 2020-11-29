@@ -60,6 +60,11 @@ export class ProjectDuration {
     this.projectEndDate.setHours(0, 0, 0, 0);
   }
 
+  setData(timelineData): void {
+    this.projectStartDate = new Date(timelineData.start);
+    this.projectEndDate = new Date(timelineData.end);
+  }
+
   draw(): void {
     this.elementColor = this.noRiskColor;
 
