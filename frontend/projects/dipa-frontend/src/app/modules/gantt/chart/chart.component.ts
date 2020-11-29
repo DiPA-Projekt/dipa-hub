@@ -231,10 +231,9 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     this.projectDuration.onDragEnd = (offsetDays: number) => {
 
-      const inlineObject  = {days: offsetDays}
-
-      this.timelinesSubscription = this.timelinesService.moveTimelineByDays(this.timelineData.id, inlineObject)
+      this.timelinesSubscription = this.timelinesService.applyOperation(this.timelineData.id, {operation: 'moveTimeline', days: offsetDays})
         .subscribe(() => {
+
           this.projectDuration.redraw(200);
 
           this.milestoneSubscription = this.milestonesService.getMilestonesForTimeline(this.timelineData.id)
@@ -265,9 +264,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     this.milestoneViewItem.onDragProjectEnd = (offsetDays: number, id: number) => {
 
-      const inlineObject  = {days: offsetDays, movedMilestoneId: id}
-
-      this.timelinesSubscription = this.timelinesService.moveTimelineByDays(this.timelineData.id, inlineObject)
+      this.timelinesSubscription = this.timelinesService.applyOperation(this.timelineData.id, {operation: 'moveMilestone', days: offsetDays, movedMilestoneId: id})
       .subscribe(() => {
 
         this.timelinesSubscription = this.timelinesService.getTimelines()
@@ -288,7 +285,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
               this.milestoneViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()}, 200);
             });
-
 
       });
   

@@ -1,9 +1,9 @@
 patch:
   tags:
     - timelines
-  summary: Move timeline
-  description: Move timeline and its milestones for a specific number of days.
-  operationId: moveTimelineByDays
+  summary: Apply operation for timeline
+  description: Apply an operation for a timeline and its milestones.
+  operationId: applyOperation
   parameters:
     - in: path
       name: timelineId
@@ -11,15 +11,17 @@ patch:
         type: integer
         format: int64
       required: true
-      description: Numeric ID of the timeline to move.
+      description: Numeric ID of the timeline.
   requestBody:
-    description: objects
+    description: operation type with parameters
     required: true
     content:
       application/json:
         schema:
           type: object
           properties:
+            operation:
+              type: string
             days:
               type: integer
               format: int64
