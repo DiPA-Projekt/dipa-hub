@@ -19,6 +19,8 @@ import {TasksArea} from './chart-elements/TasksArea';
 import {XAxis} from './chart-elements/XAxis';
 import {ProjectDuration} from './chart-elements/ProjectDuration';
 import {MilestonesService, TasksService, TimelinesService} from 'dipa-api-client';
+import {forkJoin, Observable} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-chart',
@@ -88,7 +90,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
   milestoneSubscription;
   taskSubscription;
-  timelinesSubscription;
+  timelineSubscription;
 
   ngOnInit(): void {
     this.periodStartDateSubscription = this.ganttControlsService.getPeriodStartDate()
@@ -203,7 +205,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     this.milestoneSubscription?.unsubscribe();
     this.taskSubscription?.unsubscribe();
-    this.timelinesSubscription?.unsubscribe();
+    this.timelineSubscription?.unsubscribe();
   }
 
   ngAfterViewInit(): void {
@@ -241,29 +243,10 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     this.projectDuration.onDragEnd = (offsetDays: number) => {
 
-      this.timelinesSubscription = this.timelinesService.applyOperation(this.timelineData.id, {operation: 'moveTimeline', days: offsetDays})
-        .subscribe(() => {
-
-          this.projectDuration.redraw(200);
-
-          this.milestoneSubscription = this.milestonesService.getMilestonesForTimeline(this.timelineData.id)
-            .subscribe((data) => {
-
-              this.milestoneData = data;
-              this.milestoneViewItem.setData(data);
-
-              this.milestoneViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()}, 200);
-            });
-
-          this.taskSubscription = this.tasksService.getTasksForTimeline(this.timelineData.id)
-            .subscribe((data) => {
-
-              this.taskData = data;
-              this.taskViewItem.setData(data);
-
-              this.taskViewItem.redraw({left: 0, top: 0});
-            });
-        });
+      const moveTimeline$ = this.timelinesService.applyOperation(
+        this.timelineData.id,
+        {operation: 'moveTimeline', days: offsetDays});
+      this.timelineSubscription = this.subscribeForRedraw(moveTimeline$);
     };
 
     this.taskViewItem = new TasksArea(this.svg, this.xScale, this.taskData);
@@ -506,5 +489,26 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.zoomElement
       .attr('width', newSize - this.padding.left);
   }
+
+  private subscribeForRedraw(obs): Observable<any> {
+    return obs.pipe(
+      switchMap(() => forkJoin([
+        this.tasksService.getTasksForTimeline(this.timelineData.id),
+        this.milestonesService.getMilestonesForTimeline(this.timelineData.id)
+      ]))
+    ).subscribe(([taskData, milestoneData]) => {
+
+      this.projectDuration.redraw(0);
+
+      this.taskData = taskData;
+      this.taskViewItem.setData(taskData);
+      this.taskViewItem.redraw({left: 0, top: 0});
+
+      this.milestoneData = milestoneData;
+      this.milestoneViewItem.setData(milestoneData);
+      this.milestoneViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()}, 200);
+    });
+  }
+
 
 }
