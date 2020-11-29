@@ -173,7 +173,6 @@ export class XAxis {
       .attr('y2', viewBoxHeight + distanceFromTop)
       .attr('stroke', d3.rgb(lightColor).darker());
 
-
     this.svg.select('g.current-date-group').on('mouseover', (event) => {
       currentLine.attr('stroke-width', 1.5).style('stroke', darkColor);
 
@@ -223,6 +222,5 @@ export class XAxis {
 
     this.svg.select('g.current-date-group').select('circle.currentDatePoint')
       .attr('cx', this.xScale(this.today));
-
   }
 }
