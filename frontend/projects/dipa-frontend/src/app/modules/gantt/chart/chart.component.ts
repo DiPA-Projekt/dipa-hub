@@ -237,26 +237,36 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     this.projectDuration.onDragEnd = (offsetDays: number) => {
 
-      const moveTimeline$ = this.timelinesService.applyOperation(
-        this.timelineData.id,
-        {operation: 'moveTimeline', days: offsetDays});
-      this.timelineSubscription = this.subscribeForRedraw(moveTimeline$);
+      if (offsetDays !== 0) {
+        const moveTimeline$ = this.timelinesService.applyOperation(
+          this.timelineData.id,
+          {operation: 'moveTimeline', days: offsetDays});
+        this.timelineSubscription = this.subscribeForRedraw(moveTimeline$);
+      } else {
+        this.projectDuration.redraw(200);
+      }
     };
 
     this.projectDuration.onDragEndProjectStart = (offsetDays: number) => {
-
-      const moveTimelineStart$ = this.timelinesService.applyOperation(
-        this.timelineData.id,
-        {operation: 'moveTimelineStart', days: offsetDays});
-      this.timelineStartSubscription = this.subscribeForRedraw(moveTimelineStart$);
+      if (offsetDays !== 0) {
+        const moveTimelineStart$ = this.timelinesService.applyOperation(
+          this.timelineData.id,
+          {operation: 'moveTimelineStart', days: offsetDays});
+        this.timelineStartSubscription = this.subscribeForRedraw(moveTimelineStart$);
+      } else {
+        this.projectDuration.redraw(200);
+      }
     };
 
     this.projectDuration.onDragEndProjectEnd = (offsetDays: number) => {
-
-      const moveTimelineEnd$ = this.timelinesService.applyOperation(
-        this.timelineData.id,
-        {operation: 'moveTimelineEnd', days: offsetDays});
-      this.timelineEndSubscription = this.subscribeForRedraw(moveTimelineEnd$);
+      if (offsetDays !== 0) {
+        const moveTimelineEnd$ = this.timelinesService.applyOperation(
+          this.timelineData.id,
+          {operation: 'moveTimelineEnd', days: offsetDays});
+        this.timelineEndSubscription = this.subscribeForRedraw(moveTimelineEnd$);
+      } else {
+        this.projectDuration.redraw(200);
+      }
     };
 
     this.taskViewItem = new TasksArea(this.svg, this.xScale, this.taskData);
@@ -265,13 +275,16 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.milestoneViewItem = new MilestonesArea(this.svg, this.xScale, this.milestoneData);
     this.milestoneViewItem.draw({left: 0, top: this.taskViewItem.getAreaHeight()});
 
-    this.milestoneViewItem.onDragProjectEnd = (offsetDays: number, id: number) => {
-
-      const moveMilestone$ = this.timelinesService.applyOperation(
-        this.timelineData.id,
+    this.milestoneViewItem.onDragEndMilestone = (offsetDays: number, id: number) => {
+      if (offsetDays !== 0) {
+        const moveMilestone$ = this.timelinesService.applyOperation(
+          this.timelineData.id,
         {operation: 'moveMilestone', days: offsetDays, movedMilestoneId: id});
-      this.timelineSubscription = this.subscribeForRedraw(moveMilestone$);
 
+        this.timelineSubscription = this.subscribeForRedraw(moveMilestone$);
+      } else {
+        this.milestoneViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()}, 200);
+      }
     };
   }
 
@@ -557,7 +570,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
       this.timelineData = timelinesData.find(c => c.id === this.timelineData.id);
       this.projectDuration.setData(this.timelineData);
-      this.projectDuration.redraw(0);
+      this.projectDuration.redraw(200);
 
       this.taskData = taskData;
       this.taskViewItem.setData(taskData);
