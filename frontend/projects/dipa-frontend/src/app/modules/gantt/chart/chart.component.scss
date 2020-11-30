@@ -16,6 +16,8 @@
     align-items: center;
     height: 100%;
     width: 100%;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
 
     svg {
       defs {
@@ -38,9 +40,9 @@
           fill: #fff;
         }
 
-        line.currentDate {
-          stroke: #f00;
-          stroke-width: 6;
+        text.outsideXAxisLabel {
+          font-size: 10px;
+          fill: #fff;
         }
       }
 
@@ -51,6 +53,35 @@
 
         rect.groupBackground {
           opacity: 0.2;
+        }
+      }
+
+      g.project-group {
+        rect.projectDuration {
+          cursor: move;
+        }
+
+        text {
+          font-size: 10px;
+          opacity: 0.87;
+        }
+
+        line.projectStartDateLine, line.projectEndDateLine {
+          cursor: ew-resize;
+          stroke-width: 2;
+          cursor: ew-resize;
+        }
+      }
+
+      g.current-date-group {
+        circle.currentDateCircle {
+          r: 4;
+          cy: 5;
+          fill: white;
+        }
+        circle.currentDatePoint {
+          r: 1;
+          cy: 5;
         }
       }
 

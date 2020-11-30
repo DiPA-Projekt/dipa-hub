@@ -1,0 +1,47 @@
+server:
+  port: 9080
+  use-forward-headers: true
+
+spring:
+  banner:
+    location: classpath:dipa-banner.txt
+  jpa:
+    database: h2
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  #  datasource:
+  #    platform: h2
+  #    url: "jdbc:h2:mem:dipahub"
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+dipa:
+  tenants:
+    dataSources:
+      - tenantId: itzbund
+        url: jdbc:h2:mem:dipahub-itzbund
+        platform: h2
+      - tenantId: ba
+        url: jdbc:h2:mem:dipahub-ba
+        platform: h2
+
+logging:
+  path: "logs"
+
+#server.port=9080
+#server.use-forward-headers=true
+#spring.jpa.hibernate.ddl-auto=validate
+#spring.jpa.open-in-view=false
+#spring.datasource.platform=h2
+#spring.h2.console.enabled=true
+#spring.datasource.url=jdbc:h2:mem:dipahub
+#spring.datasource.initialization-mode=always
+#spring.datasource.platform=postgres
+#spring.datasource.url=jdbc:postgresql://localhost:5432/dipa-core
+#spring.datasource.username=dipa
+#spring.datasource.password=secret-pwd
+#logging.path=logs
+#spring.liquibase.change-log=classpath:db/changelog/db.changelog-master.yaml
+#spring.banner.location=classpath:dipa-banner.txt
