@@ -63,6 +63,7 @@ export class MilestonesArea implements IChartElement {
       .on('start', (event: d3.D3DragEvent<any, any, any>) => {
 
         this.initMilestoneDate = new Date(this.data.find(d => d.id === event.subject.id).date);
+        this.initMilestoneDate.setHours(0, 0, 0, 0);
 
       })
       .on('end', (event: d3.D3DragEvent<any, any, any>) => {
@@ -204,7 +205,7 @@ export class MilestonesArea implements IChartElement {
 
     const milestone = dataGroup.select('#milestoneEntry_' + milestoneData.id);
 
-    milestoneData.date.setHours(0, 0, 0, 0);
+    // milestoneData.date.setHours(0, 0, 0, 0);
 
     const xValueNew = this.xScale(milestoneData.date);
     const yTransformValue = parseSvg(milestone.attr('transform')).translateY;
