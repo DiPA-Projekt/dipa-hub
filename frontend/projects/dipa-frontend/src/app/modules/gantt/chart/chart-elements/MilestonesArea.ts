@@ -64,7 +64,6 @@ export class MilestonesArea implements IChartElement {
 
         this.initMilestoneDate = new Date(this.data.find(d => d.id === event.subject.id).date);
         this.initMilestoneDate.setHours(0, 0, 0, 0);
-
       })
       .on('end', (event: d3.D3DragEvent<any, any, any>) => {
         
