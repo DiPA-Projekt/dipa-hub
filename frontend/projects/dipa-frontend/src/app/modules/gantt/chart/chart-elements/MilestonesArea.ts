@@ -21,7 +21,7 @@ export class MilestonesArea implements IChartElement {
 
   initMilestoneDate;
 
-  public onDragProjectEnd?: (days: number, id: number) => void;
+  public onDragEndMilestone?: (days: number, id: number) => void;
 
   constructor(svg: any, xScale: any, data: any[]) {
     this.svg = svg;
@@ -40,7 +40,7 @@ export class MilestonesArea implements IChartElement {
   }
 
   draw(offset): void {
-    
+
     const dataGroup = this.svg.select('g.data-group');
 
     const drag = d3.drag()
@@ -63,16 +63,17 @@ export class MilestonesArea implements IChartElement {
       .on('start', (event: d3.D3DragEvent<any, any, any>) => {
 
         this.initMilestoneDate = new Date(this.data.find(d => d.id === event.subject.id).date);
-
+        this.initMilestoneDate.setHours(0, 0, 0, 0);
       })
       .on('end', (event: d3.D3DragEvent<any, any, any>) => {
-        
+
         this.adjustMilestonePosition(event.subject);
 
-        const dragOffset: number = Math.floor((event.subject.date - this.initMilestoneDate) / (1000 * 60 * 60 * 24));
-        
-        this.onDragProjectEnd(dragOffset, event.subject.id);
-        
+        const milestoneDate: any = new Date(event.subject.date);
+        const dragOffset: number = Math.floor((milestoneDate - this.initMilestoneDate) / (1000 * 60 * 60 * 24));
+
+        this.onDragEndMilestone(dragOffset, event.subject.id);
+
       });
 
     // milestones
@@ -204,9 +205,10 @@ export class MilestonesArea implements IChartElement {
 
     const milestone = dataGroup.select('#milestoneEntry_' + milestoneData.id);
 
-    milestoneData.date.setHours(0, 0, 0, 0);
+    const milestoneDate = new Date(milestoneData.date);
+    milestoneDate.setHours(0, 0, 0, 0);
 
-    const xValueNew = this.xScale(milestoneData.date);
+    const xValueNew = this.xScale(milestoneDate);
     const yTransformValue = parseSvg(milestone.attr('transform')).translateY;
 
     milestone
