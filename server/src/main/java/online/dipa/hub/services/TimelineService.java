@@ -154,21 +154,21 @@ public class TimelineService {
     public void moveMileStoneByDays (final Long timelineId, final Long days, final Long movedMilestoneId) {
         TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
 
-        LocalDate oldFirstMilestoneDate = sessionTimeline.getMilestones().stream().map(m -> m.getDate()).min(LocalDate::compareTo).get();
+        LocalDate oldFirstMilestoneDate = sessionTimeline.getMilestones().stream().map(Milestone::getDate).min(LocalDate::compareTo).get();
         LocalDate oldProjectStart = sessionTimeline.getTimeline().getStart();
         long diffProjectStartMilestone = Duration.between(oldFirstMilestoneDate.atStartOfDay(), oldProjectStart.atStartOfDay()).toDays();
 
         for (Milestone m : sessionTimeline.getMilestones()) {
-            if (m.getId() == movedMilestoneId) {
+            if (m.getId().equals(movedMilestoneId)) {
                 m.setDate(m.getDate().plusDays(days));
             }
         }
 
-        LocalDate newFirstMilestoneDate = sessionTimeline.getMilestones().stream().map(m -> m.getDate()).min(LocalDate::compareTo).get();       
+        LocalDate newFirstMilestoneDate = sessionTimeline.getMilestones().stream().map(Milestone::getDate).min(LocalDate::compareTo).get();
         long daysOffsetStart = Duration.between(oldProjectStart.atStartOfDay(), newFirstMilestoneDate.atStartOfDay()).toDays();
         LocalDate newProjectStart = sessionTimeline.getTimeline().getStart().plusDays(daysOffsetStart + diffProjectStartMilestone);
 
-        LocalDate newLastMilestoneDate = sessionTimeline.getMilestones().stream().map(m -> m.getDate()).max(LocalDate::compareTo).get();
+        LocalDate newLastMilestoneDate = sessionTimeline.getMilestones().stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
         LocalDate oldProjectEnd = sessionTimeline.getTimeline().getEnd();
 
         long daysOffsetEnd = Duration.between(oldProjectEnd.atStartOfDay(), newLastMilestoneDate.atStartOfDay()).toDays();
