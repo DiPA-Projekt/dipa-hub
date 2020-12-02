@@ -99,7 +99,11 @@ export class ProjectDuration {
         this.dragStartDate = this.projectStartDate;
       })
       .on('end', (event: d3.D3DragEvent<any, any, any>) => {
+        this.projectStartDate.setHours(0, 0, 0, 0);
+        this.projectEndDate.setHours(0, 0, 0, 0);
+
         const dragOffset: number = Math.floor((this.projectStartDate - this.dragStartDate ) / (1000 * 60 * 60 * 24));
+
         this.onDragEnd(dragOffset);
       });
 
@@ -210,8 +214,10 @@ export class ProjectDuration {
       })
       .on('end', (event: d3.D3DragEvent<any, any, any>) => {
         this.dragDxStack = 0;
+        this.projectStartDate.setHours(0, 0, 0, 0);
 
         const dragOffset: number = Math.floor((this.projectStartDate - this.dragStartDate ) / (1000 * 60 * 60 * 24));
+
         this.onDragEndProjectStart(dragOffset);
       });
 
@@ -248,8 +254,10 @@ export class ProjectDuration {
       })
       .on('end', (event: d3.D3DragEvent<any, any, any>) => {
         this.dragDxStack = 0;
+        this.projectEndDate.setHours(0, 0, 0, 0);
 
         const dragOffset: number = Math.floor((this.projectEndDate - this.dragStartDate ) / (1000 * 60 * 60 * 24));
+
         this.onDragEndProjectEnd(dragOffset);
       });
 
