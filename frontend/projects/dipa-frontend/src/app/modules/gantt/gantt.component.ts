@@ -139,16 +139,16 @@ export class GanttComponent implements OnInit, OnDestroy {
   }
 
   changeStartDate(change: string, $event: any): void {
-    if ($event.value) {
-      // this.periodStartDate = $event.value;
-      this.ganttControlsService.setPeriodStartDate($event.value);
+    if ($event.targetElement.value) {
+      const newStartDate = this.parseGermanDate($event.targetElement.value);
+      this.ganttControlsService.setPeriodStartDate(newStartDate);
     }
   }
 
   changeEndDate(change: string, $event: any): void {
-    if ($event.value) {
-      // this.periodEndDate = $event.value;
-      this.ganttControlsService.setPeriodEndDate($event.value);
+    if ($event.targetElement.value) {
+      const newEndDate = this.parseGermanDate($event.targetElement.value);
+      this.ganttControlsService.setPeriodEndDate(newEndDate);
     }
   }
 
@@ -156,6 +156,11 @@ export class GanttComponent implements OnInit, OnDestroy {
     const dateAtMidnight = new Date(date);
     dateAtMidnight.setHours(0, 0, 0, 0);
     return dateAtMidnight;
+  }
+
+  parseGermanDate(input: string): Date {
+    const parts = input.match(/(\d+)/g);
+    return new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
   }
 
 }

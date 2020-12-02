@@ -65,6 +65,9 @@ export class ProjectDuration {
     this.projectEndDate = new Date(timelineData.end);
     this.projectStartDate.setHours(0, 0, 0, 0);
     this.projectEndDate.setHours(0, 0, 0, 0);
+
+    this.projectDurationYears = this.calculateProjectDuration(this.projectStartDate, this.projectEndDate);
+    this.riskCalculate(this.projectDurationYears);
   }
 
   draw(): void {
@@ -199,8 +202,6 @@ export class ProjectDuration {
 
         this.projectStartDate = this.xScale.invert(xValueNew);
 
-        this.projectDurationYears = this.calculateProjectDuration(this.projectStartDate, this.projectEndDate);
-        this.riskCalculate(this.projectDurationYears);
 
         this.redraw(0);
       })
@@ -239,8 +240,6 @@ export class ProjectDuration {
 
         this.projectEndDate = this.xScale.invert(xValueStart + widthNew);
 
-        this.projectDurationYears = this.calculateProjectDuration(this.projectStartDate, this.projectEndDate);
-        this.riskCalculate(this.projectDurationYears);
 
         this.redraw(0);
       })
