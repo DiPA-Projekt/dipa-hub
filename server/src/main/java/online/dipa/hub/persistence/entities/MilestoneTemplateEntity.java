@@ -13,6 +13,8 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import liquibase.hub.model.Project;
+
 @Entity
 @Table(name = "milestone_template")
 @Cacheable
@@ -29,7 +31,7 @@ public class MilestoneTemplateEntity extends BaseEntity {
 
     @NotNull
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    private ProjectTypeEntity projectType;
+    private PlanTemplateEntity planTemplate;
 
     public String getName() {
         return name;
@@ -47,11 +49,11 @@ public class MilestoneTemplateEntity extends BaseEntity {
         this.dateOffset = dateOffset;
     }
 
-    public ProjectTypeEntity getProjectType() {
-        return projectType;
+    public PlanTemplateEntity getPlanTemplate() {
+        return planTemplate;
     }
 
-    public void setProjectType(final ProjectTypeEntity projectType) {
-        this.projectType = projectType;
+    public void setPlanTemplate(final PlanTemplateEntity planTemplate) {
+        this.planTemplate = planTemplate;
     }
 }

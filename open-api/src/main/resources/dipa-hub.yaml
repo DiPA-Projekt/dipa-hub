@@ -14,6 +14,10 @@ paths:
     $ref: "paths/timelines.yml"
   /timelines/{timelineId}:
     $ref: "paths/timeline-ops.yml"
+  /timelines/{timelineId}/increments:
+    $ref: "paths/increments.yml"
+  /timelines/{timelineId}/increments/{increment}:
+    $ref: "paths/increment-ops.yml"
   /timelines/{timelineId}/milestones:
     $ref: "paths/milestones.yml"
   /timelines/{timelineId}/tasks:

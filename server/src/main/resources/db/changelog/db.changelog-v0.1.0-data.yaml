@@ -67,7 +67,7 @@ databaseChangeLog:
                   name: date_offset
                   value: 30
               - column:
-                  name: project_type_id
+                  name: plan_template_id
                   value: 1
         - insert:
             tableName: milestone_template
@@ -82,7 +82,7 @@ databaseChangeLog:
                   name: date_offset
                   value: 214
               - column:
-                  name: project_type_id
+                  name: plan_template_id
                   value: 1
         - insert:
             tableName: milestone_template
@@ -97,7 +97,7 @@ databaseChangeLog:
                   name: date_offset
                   value: 305
               - column:
-                  name: project_type_id
+                  name: plan_template_id
                   value: 1
         - insert:
             tableName: milestone_template
@@ -112,7 +112,7 @@ databaseChangeLog:
                   name: date_offset
                   value: 365
               - column:
-                  name: project_type_id
+                  name: plan_template_id
                   value: 1
         - insert:
             tableName: milestone_template
@@ -127,7 +127,7 @@ databaseChangeLog:
                   name: date_offset
                   value: 456
               - column:
-                  name: project_type_id
+                  name: plan_template_id
                   value: 1
         - insert:
             tableName: milestone_template
@@ -142,7 +142,7 @@ databaseChangeLog:
                   name: date_offset
                   value: 487
               - column:
-                  name: project_type_id
+                  name: plan_template_id
                   value: 1
         - insert:
             tableName: milestone_template
@@ -157,7 +157,7 @@ databaseChangeLog:
                   name: date_offset
                   value: 517
               - column:
-                  name: project_type_id
+                  name: plan_template_id
                   value: 1
         - insert:
             tableName: milestone_template
@@ -172,7 +172,7 @@ databaseChangeLog:
                   name: date_offset
                   value: 579
               - column:
-                  name: project_type_id
+                  name: plan_template_id
                   value: 1
         - insert:
             tableName: milestone_template
@@ -187,7 +187,7 @@ databaseChangeLog:
                   name: date_offset
                   value: 670
               - column:
-                  name: project_type_id
+                  name: plan_template_id
                   value: 1
         - insert:
             tableName: milestone_template
@@ -202,7 +202,7 @@ databaseChangeLog:
                   name: date_offset
                   value: 760
               - column:
-                  name: project_type_id
+                  name: plan_template_id
                   value: 1
         - insert:
             tableName: milestone_template
@@ -217,28 +217,13 @@ databaseChangeLog:
                   name: date_offset
                   value: 852
               - column:
-                  name: project_type_id
+                  name: plan_template_id
                   value: 1
   - changeSet:
       id: insert-milestones-softwareneuentwicklung
       author: becker
       context: itzbund
       changes:
-        - insert:
-            tableName: milestone_template
-            columns:
-              - column:
-                  name: id
-                  value: 21
-              - column:
-                  name: name
-                  value: Projekteinrichtung
-              - column:
-                  name: date_offset
-                  value: 0
-              - column:
-                  name: project_type_id
-                  value: 2
         - insert:
             tableName: milestone_template
             columns:
@@ -252,8 +237,8 @@ databaseChangeLog:
                   name: date_offset
                   value: 62
               - column:
-                  name: project_type_id
-                  value: 2
+                  name: plan_template_id
+                  value: 3
         - insert:
             tableName: milestone_template
             columns:
@@ -267,8 +252,8 @@ databaseChangeLog:
                   name: date_offset
                   value: 185
               - column:
-                  name: project_type_id
-                  value: 2
+                  name: plan_template_id
+                  value: 3
         - insert:
             tableName: milestone_template
             columns:
@@ -282,8 +267,8 @@ databaseChangeLog:
                   name: date_offset
                   value: 277
               - column:
-                  name: project_type_id
-                  value: 2
+                  name: plan_template_id
+                  value: 3
         - insert:
             tableName: milestone_template
             columns:
@@ -297,8 +282,8 @@ databaseChangeLog:
                   name: date_offset
                   value: 366
               - column:
-                  name: project_type_id
-                  value: 2
+                  name: plan_template_id
+                  value: 3
         - insert:
             tableName: milestone_template
             columns:
@@ -312,8 +297,8 @@ databaseChangeLog:
                   name: date_offset
                   value: 458
               - column:
-                  name: project_type_id
-                  value: 2
+                  name: plan_template_id
+                  value: 3
         - insert:
             tableName: milestone_template
             columns:
@@ -327,23 +312,8 @@ databaseChangeLog:
                   name: date_offset
                   value: 550
               - column:
-                  name: project_type_id
-                  value: 2
-        - insert:
-            tableName: milestone_template
-            columns:
-              - column:
-                  name: id
-                  value: 28
-              - column:
-                  name: name
-                  value: Projektabschluss
-              - column:
-                  name: date_offset
-                  value: 642
-              - column:
-                  name: project_type_id
-                  value: 2
+                  name: plan_template_id
+                  value: 3
   - changeSet:
       id: insert-milestones-beschaffung
       author: becker
@@ -361,8 +331,8 @@ databaseChangeLog:
                   name: date_offset
                   value: 0
               - column:
-                  name: project_type_id
-                  value: 3
+                  name: plan_template_id
+                  value: 5
         - insert:
             tableName: milestone_template
             columns:
@@ -376,8 +346,8 @@ databaseChangeLog:
                   name: date_offset
                   value: 92
               - column:
-                  name: project_type_id
-                  value: 3
+                  name: plan_template_id
+                  value: 5
         - insert:
             tableName: milestone_template
             columns:
@@ -391,8 +361,8 @@ databaseChangeLog:
                   name: date_offset
                   value: 183
               - column:
-                  name: project_type_id
-                  value: 3
+                  name: plan_template_id
+                  value: 5
         - insert:
             tableName: milestone_template
             columns:
@@ -406,8 +376,8 @@ databaseChangeLog:
                   name: date_offset
                   value: 275
               - column:
-                  name: project_type_id
-                  value: 3
+                  name: plan_template_id
+                  value: 5
         - insert:
             tableName: milestone_template
             columns:
@@ -421,8 +391,8 @@ databaseChangeLog:
                   name: date_offset
                   value: 367
               - column:
-                  name: project_type_id
-                  value: 3
+                  name: plan_template_id
+                  value: 5
         - insert:
             tableName: milestone_template
             columns:
@@ -436,8 +406,8 @@ databaseChangeLog:
                   name: date_offset
                   value: 457
               - column:
-                  name: project_type_id
-                  value: 3
+                  name: plan_template_id
+                  value: 5
         - insert:
             tableName: milestone_template
             columns:
@@ -451,8 +421,8 @@ databaseChangeLog:
                   name: date_offset
                   value: 548
               - column:
-                  name: project_type_id
-                  value: 3
+                  name: plan_template_id
+                  value: 5
         - insert:
             tableName: milestone_template
             columns:
@@ -466,8 +436,8 @@ databaseChangeLog:
                   name: date_offset
                   value: 640
               - column:
-                  name: project_type_id
-                  value: 3
+                  name: plan_template_id
+                  value: 5
         - insert:
             tableName: milestone_template
             columns:
@@ -481,8 +451,8 @@ databaseChangeLog:
                   name: date_offset
                   value: 732
               - column:
-                  name: project_type_id
-                  value: 3
+                  name: plan_template_id
+                  value: 5
         - insert:
             tableName: milestone_template
             columns:
@@ -496,8 +466,8 @@ databaseChangeLog:
                   name: date_offset
                   value: 822
               - column:
-                  name: project_type_id
-                  value: 3
+                  name: plan_template_id
+                  value: 5
         - insert:
             tableName: milestone_template
             columns:
@@ -511,8 +481,8 @@ databaseChangeLog:
                   name: date_offset
                   value: 913
               - column:
-                  name: project_type_id
-                  value: 3
+                  name: plan_template_id
+                  value: 5
         - insert:
             tableName: milestone_template
             columns:
@@ -526,8 +496,8 @@ databaseChangeLog:
                   name: date_offset
                   value: 1005
               - column:
-                  name: project_type_id
-                  value: 3
+                  name: plan_template_id
+                  value: 5
         - insert:
             tableName: milestone_template
             columns:
@@ -541,8 +511,8 @@ databaseChangeLog:
                   name: date_offset
                   value: 1097
               - column:
-                  name: project_type_id
-                  value: 3
+                  name: plan_template_id
+                  value: 5
         - insert:
             tableName: milestone_template
             columns:
@@ -556,8 +526,8 @@ databaseChangeLog:
                   name: date_offset
                   value: 1187
               - column:
-                  name: project_type_id
-                  value: 3
+                  name: plan_template_id
+                  value: 5
         - insert:
             tableName: milestone_template
             columns:
@@ -571,8 +541,8 @@ databaseChangeLog:
                   name: date_offset
                   value: 1278
               - column:
-                  name: project_type_id
-                  value: 3
+                  name: plan_template_id
+                  value: 5
         - insert:
             tableName: milestone_template
             columns:
@@ -586,8 +556,8 @@ databaseChangeLog:
                   name: date_offset
                   value: 1370
               - column:
-                  name: project_type_id
-                  value: 3
+                  name: plan_template_id
+                  value: 5
   - changeSet:
       id: add-2-month-to-some-milestone-template-entries
       author: bock
@@ -598,7 +568,7 @@ databaseChangeLog:
               - column:
                   name: date_offset
                   valueComputed: date_offset+61
-            where: project_type_id!=1
+            where: plan_template_id!=1
   - changeSet:
       id: add-additional-month-to-Entwicklung-Pre-Alpha-milestone
       author: bock
@@ -620,5 +590,4 @@ databaseChangeLog:
               - column:
                   name: date_offset
                   valueComputed: date_offset+31
-            where: id>22 AND project_type_id=2
-
+            where: id>22 AND plan_template_id=2

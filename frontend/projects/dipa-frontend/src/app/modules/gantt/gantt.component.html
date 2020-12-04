@@ -28,7 +28,10 @@
         </mat-form-field>
       </div>
     </div>
-
+    
+    <div class = "row">
+      <button mat-button color="accent" (click)="increment($event)">Inkrement</button>
+    </div>
     <div class="row">
         <div *ngIf="timelineData" class="col">
           <mat-form-field appearance="fill" floatLabel="always">

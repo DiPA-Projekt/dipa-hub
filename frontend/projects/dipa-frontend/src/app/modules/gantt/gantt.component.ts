@@ -4,7 +4,7 @@ import {ChartComponent} from './chart/chart.component';
 import {forkJoin, Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 
-import {MilestonesService, TasksService, TimelinesService} from 'dipa-api-client';
+import {MilestonesService, TasksService, TimelinesService, TimelinesIncrementService} from 'dipa-api-client';
 
 @Component({
   selector: 'app-gantt',
@@ -30,10 +30,13 @@ export class GanttComponent implements OnInit, OnDestroy {
   selectedTimelineId: number;
   viewTypeSelected: any;
 
+  incrementValue = 0;
+
   constructor(public ganttControlsService: GanttControlsService,
               private timelinesService: TimelinesService,
               private milestonesService: MilestonesService,
-              private tasksService: TasksService) {  }
+              private tasksService: TasksService,
+              private timelinesIncrementService: TimelinesIncrementService) {  }
 
   static getMinimumDate(data: Date[]): Date {
     return data.reduce((acc, curr) => {
@@ -110,6 +113,16 @@ export class GanttComponent implements OnInit, OnDestroy {
         this.ganttControlsService.setPeriodEndDate(data.periodEndDate);
       })
     );
+  }
+
+  increment($event: any): void {
+    this.incrementValue = this.incrementValue +1;
+
+    console.log(this.incrementValue);
+
+    this.timelinesIncrementService.incrementOperation(this.selectedTimelineId, this.incrementValue);
+    console.log(this.selectedTimelineId)
+    this.setData()
   }
 
   changeViewType(event): void {
