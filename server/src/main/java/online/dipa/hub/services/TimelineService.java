@@ -143,7 +143,7 @@ public class TimelineService {
 
         for (Milestone m : sessionTimeline.getMilestones()) {
             long oldMilestoneRelativePosition = DAYS.between(timelineStart, m.getDate());
-            long newMilestoneRelativePosition = (long) (oldMilestoneRelativePosition * factor);
+            long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
 
             m.setDate(newTimelineStart.plusDays(newMilestoneRelativePosition));
         }
@@ -165,7 +165,7 @@ public class TimelineService {
 
         for (Milestone m : sessionTimeline.getMilestones()) {
             long oldMilestoneRelativePosition = DAYS.between(timelineStart, m.getDate());
-            long newMilestoneRelativePosition = (long) (oldMilestoneRelativePosition * factor);
+            long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
 
             m.setDate(timelineStart.plusDays(newMilestoneRelativePosition));
         }
