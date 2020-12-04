@@ -76,6 +76,28 @@ export class GanttComponent implements OnInit, OnDestroy {
     this.periodEndDateSubscription.unsubscribe();
   }
 
+  getIcsCalendarFile(): void {
+
+    const filename = 'Meilensteine.ics';
+
+    this.timelinesService.getTimelineCalendar(this.selectedTimelineId)
+      .subscribe(
+        (response: any) => {
+          const dataType = response.type;
+          const binaryData = [response];
+          // use a temporary link with document-attribute for naming file
+          const downloadLink = document.createElement('a');
+          downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, {type: dataType}));
+          if (filename) {
+            downloadLink.setAttribute('download', filename);
+          }
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          downloadLink.remove();
+        }
+      );
+  }
+
   setData(): void {
     this.vm$ = forkJoin([
       this.tasksService.getTasksForTimeline(this.selectedTimelineId),

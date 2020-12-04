@@ -110,6 +110,13 @@
             </exclusions>
         </dependency>
 
+        <!-- ics Export -->
+
+        <dependency>
+            <groupId>org.mnode.ical4j</groupId>
+            <artifactId>ical4j</artifactId>
+            <version>3.0.20</version>
+        </dependency>
 
     </dependencies>
 

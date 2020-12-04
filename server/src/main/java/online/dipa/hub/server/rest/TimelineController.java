@@ -1,18 +1,23 @@
 package online.dipa.hub.server.rest;
 
-import java.util.Collections;
-import java.util.List;
-
 import online.dipa.hub.api.model.InlineObject;
-import online.dipa.hub.services.TimelineService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-
 import online.dipa.hub.api.model.Milestone;
 import online.dipa.hub.api.model.Task;
 import online.dipa.hub.api.model.Timeline;
 import online.dipa.hub.api.rest.TimelinesApi;
+import online.dipa.hub.services.TimelineService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileUrlResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 @RestApiController
 public class TimelineController implements TimelinesApi {
@@ -52,5 +57,23 @@ public class TimelineController implements TimelinesApi {
         }
 
         return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Resource> getTimelineCalendar(final Long timelineId) {
+
+        try {
+            File icsFile = timelineService.getCalendarFileForTimeline(timelineId);
+            FileUrlResource icsFileResource = new FileUrlResource(icsFile.getPath());
+// Access-Control-Expose-Headers
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType("application/octet-stream"))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + icsFile.getName() + "\"")
+                    .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
+                    .body(icsFileResource);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 }

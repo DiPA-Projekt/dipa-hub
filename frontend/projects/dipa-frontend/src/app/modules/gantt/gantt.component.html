@@ -29,8 +29,8 @@
       </div>
     </div>
 
-    <div class="row">
-        <div *ngIf="timelineData" class="col">
+    <div *ngIf="timelineData" class="row">
+        <div class="col">
           <mat-form-field appearance="fill" floatLabel="always">
             <mat-label>Vorhabensart</mat-label>
             <mat-select [(value)]="selectedTimelineId" (selectionChange)="changeTimeline($event)">
@@ -40,6 +40,15 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
+        </div>
+        <div class="col">
+          <button (click)="getIcsCalendarFile()"
+                  mat-raised-button
+                  title="Exportiere Meilensteine im iCal Format"
+                  aria-label="Exportiere Meilensteine im iCal Format">
+            <mat-icon>event_note</mat-icon>
+            Export
+          </button>
         </div>
     </div>
 
