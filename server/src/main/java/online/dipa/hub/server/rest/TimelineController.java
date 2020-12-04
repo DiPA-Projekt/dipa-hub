@@ -1,5 +1,9 @@
 package online.dipa.hub.server.rest;
 
+import java.util.Collections;
+import java.util.List;
+
+import online.dipa.hub.api.model.Increment;
 import online.dipa.hub.api.model.InlineObject;
 import online.dipa.hub.api.model.Milestone;
 import online.dipa.hub.api.model.Task;
@@ -57,6 +61,19 @@ public class TimelineController implements TimelinesApi {
         }
 
         return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> incrementOperation(final Long timelineId, final Long increment) {
+
+        timelineService.setIncrementTimeline(timelineId, increment);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<List<Increment>> getIncrementsForTimeline(final Long timelineId) {
+        final List<Increment> incrementsList = timelineService.getIncrementsForTimeline(timelineId);
+        return ResponseEntity.ok(incrementsList);
     }
 
     @Override

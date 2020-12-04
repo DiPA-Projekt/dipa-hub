@@ -20,6 +20,11 @@ Timeline:
       type: string
       format: date
       example: "2024-8-18"
+    increment:
+      description: Number of increments
+      type: integer
+      format: int64
+      example: 2
     defaultTimeline:
       description: Flag if this timeline is the default timeline.
       type: boolean

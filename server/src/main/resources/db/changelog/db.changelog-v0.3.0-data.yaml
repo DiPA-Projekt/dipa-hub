@@ -1,0 +1,348 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-project-approach-servertausch
+      author: nguyen
+      context: ba
+      changes:
+        - insert:
+            tableName: project_approach
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: name
+                  value: Serveraustausch Vorgehensweise
+              - column:
+                  name: iterativ
+                  value: false
+              - column:
+                  name: project_type_id
+                  value: 1
+  - changeSet:
+      id: insert-project-approach-softwareneuentwicklung-agil
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_approach
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: name
+                  value: VMXT ITZBund agil
+              - column:
+                  name: iterativ
+                  value: false
+              - column:
+                  name: project_type_id
+                  value: 2
+  - changeSet:
+      id: insert-project-approach-softwareneuentwicklung-iterativ
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_approach
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: name
+                  value: VMXT ITZBund inkrementell
+              - column:
+                  name: iterativ
+                  value: true
+              - column:
+                  name: project_type_id
+                  value: 2
+  - changeSet:
+      id: insert-project-types-beschaffung
+      author: nguyen
+      changes:
+        - insert:
+            tableName: project_approach
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: name
+                  value: Beschaffung Vorgehensweise
+              - column:
+                  name: iterativ
+                  value: false
+              - column:
+                  name: project_type_id
+                  value: 3
+  - changeSet:
+      id: insert-plan-template-servertausch
+      author: nguyen
+      context: ba
+      changes:
+        - insert:
+            tableName: plan_template
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: name
+                  value: Serveraustausch PlanTemplate
+              - column:
+                  name: project_type_id
+                  value: 1
+  - changeSet:
+      id: insert-master-plan-template-softwareneuentwicklung
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: plan_template
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: name
+                  value: VMXT ITZBund master PlanTemplate
+              - column:
+                  name: project_type_id
+                  value: 2
+  - changeSet:
+      id: insert-plan-template-softwareneuentwicklung-agil
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: plan_template
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: name
+                  value: VMXT ITZBund agil PlanTemplate
+              - column:
+                  name: project_type_id
+                  value: 2
+              - column:
+                  name: project_approach_id
+                  value: 2
+  - changeSet:
+      id: insert-plan-template-softwareneuentwicklung-iterativ
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: plan_template
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: name
+                  value: VMXT ITZBund inkrementell PlanTemplate
+              - column:
+                  name: project_type_id
+                  value: 2
+              - column:
+                  name: project_approach_id
+                  value: 3
+  - changeSet:
+      id: insert-plan-template-beschaffung
+      author: nguyen
+      changes:
+        - insert:
+            tableName: plan_template
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: name
+                  value: Beschaffung PlanTemplate
+              - column:
+                  name: project_type_id
+                  value: 3
+  - changeSet:
+      id: insert-milestones-softwareneuentwicklung-master
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 21
+              - column:
+                  name: name
+                  value: Projekteinrichtung
+              - column:
+                  name: date_offset
+                  value: 0
+              - column:
+                  name: plan_template_id
+                  value: 2
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 28
+              - column:
+                  name: name
+                  value: Projektabschluss
+              - column:
+                  name: date_offset
+                  value: 642
+              - column:
+                  name: plan_template_id
+                  value: 2
+  - changeSet:
+      id: insert-milestones-softwareneuentwicklung-increment
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 57
+              - column:
+                  name: name
+                  value: System spezifiziert
+              - column:
+                  name: date_offset
+                  value: 62
+              - column:
+                  name: plan_template_id
+                  value: 4
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 58
+              - column:
+                  name: name
+                  value: System entworfen
+              - column:
+                  name: date_offset
+                  value: 150
+              - column:
+                  name: plan_template_id
+                  value: 4
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 59
+              - column:
+                  name: name
+                  value: Feinentwurf
+              - column:
+                  name: date_offset
+                  value: 230
+              - column:
+                  name: plan_template_id
+                  value: 4
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 60
+              - column:
+                  name: name
+                  value: Systemelemente realisiert
+              - column:
+                  name: date_offset
+                  value: 350
+              - column:
+                  name: plan_template_id
+                  value: 4
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 61
+              - column:
+                  name: name
+                  value: System integriert
+              - column:
+                  name: date_offset
+                  value: 458
+              - column:
+                  name: plan_template_id
+                  value: 4
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 62
+              - column:
+                  name: name
+                  value: Lieferung durchgeführt
+              - column:
+                  name: date_offset
+                  value: 500
+              - column:
+                  name: plan_template_id
+                  value: 4
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 63
+              - column:
+                  name: name
+                  value: Abnahme erfolgt
+              - column:
+                  name: date_offset
+                  value: 580
+              - column:
+                  name: plan_template_id
+                  value: 4
+  - changeSet:
+      id: add-2-month-to-some-milestone-template-entries
+      author: bock
+      changes:
+        - update:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: date_offset
+                  valueComputed: date_offset+61
+            where: plan_template_id!=1
+  - changeSet:
+      id: add-additional-month-to-Entwicklung-Pre-Alpha-milestone
+      author: bock
+      changes:
+        - update:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: date_offset
+                  valueComputed: date_offset+61
+            where: id=22
+  - changeSet:
+      id: add-additional-month-after-Entwicklung-Pre-Alpha-milestone
+      author: bock
+      changes:
+        - update:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: date_offset
+                  valueComputed: date_offset+31
+            where: id>22 AND plan_template_id=2
