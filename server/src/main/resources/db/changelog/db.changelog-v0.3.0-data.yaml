@@ -313,3 +313,36 @@ databaseChangeLog:
               - column:
                   name: plan_template_id
                   value: 4
+  - changeSet:
+      id: add-2-month-to-some-milestone-template-entries
+      author: bock
+      changes:
+        - update:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: date_offset
+                  valueComputed: date_offset+61
+            where: plan_template_id!=1
+  - changeSet:
+      id: add-additional-month-to-Entwicklung-Pre-Alpha-milestone
+      author: bock
+      changes:
+        - update:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: date_offset
+                  valueComputed: date_offset+61
+            where: id=22
+  - changeSet:
+      id: add-additional-month-after-Entwicklung-Pre-Alpha-milestone
+      author: bock
+      changes:
+        - update:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: date_offset
+                  valueComputed: date_offset+31
+            where: id>22 AND plan_template_id=2

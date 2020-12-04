@@ -57,7 +57,7 @@ public class TimelineController implements TimelinesApi {
 
     @Override
     public ResponseEntity<Void> incrementOperation(final Long timelineId, final Long increment) {
-        System.out.print(increment);
+        
         timelineService.setIncrementTimeline(timelineId, increment);
         return ResponseEntity.noContent().build();
     }
@@ -65,7 +65,6 @@ public class TimelineController implements TimelinesApi {
     @Override
     public ResponseEntity<List<Increment>> getIncrementsForTimeline(final Long timelineId) {
         final List<Increment> incrementsList = timelineService.getIncrementsForTimeline(timelineId);
-        
         return ResponseEntity.ok(incrementsList);
     }
     

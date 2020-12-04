@@ -201,20 +201,18 @@ public class TimelineService {
     }
 
     public List<Increment> getIncrementsForTimeline(final Long timelineId) {
-        initializeIncrements(timelineId);
+        updateIncrements(timelineId);
 
         return this.sessionTimelines
                 .get(timelineId)
                 .getIncrements();
     }
 
-    private void initializeIncrements(final Long timelineId) {
+    private void updateIncrements(final Long timelineId) {
         TimelineState sessionTimeline = findTimelineState(timelineId);
         Long incrementCountSessionTimeline = sessionTimeline.getIncrementCount();
-
-        if (sessionTimeline.getIncrements() == null) {
-            sessionTimeline.setIncrements(this.loadIncrements(timelineId, incrementCountSessionTimeline));
-        }
+        sessionTimeline.setIncrements(this.loadIncrements(timelineId, incrementCountSessionTimeline));
+        
     }
 
     private List<Increment> loadIncrements(final Long timelineId, final Long incrementCount) {
@@ -239,7 +237,7 @@ public class TimelineService {
 
             Increment increment = new Increment();
             increment.setId(id);
-            increment.setName("Increment " + id);
+            increment.setName("Inkrement " + id);
             increment.setStart(startDateIncrement);
             increment.setEnd(endDateIncrement);
 
@@ -269,7 +267,7 @@ public class TimelineService {
         TimelineState sessionTimeline = findTimelineState(timelineId);
 
         sessionTimeline.setIncrementCount(increment);
-        initializeIncrements(timelineId);
+        updateIncrements(timelineId);
         sessionTimeline.setMilestones(this.loadMilestones(timelineId, increment));
         System.out.println(increment);
 
