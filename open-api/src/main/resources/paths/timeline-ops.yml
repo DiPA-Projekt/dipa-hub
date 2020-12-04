@@ -29,5 +29,5 @@ patch:
               type: integer
               format: int64
   responses:
-    200:
-      description: OK
+    204:
+      description: The operation was applied successfully.
