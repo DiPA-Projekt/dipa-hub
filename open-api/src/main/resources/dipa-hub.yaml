@@ -14,6 +14,8 @@ paths:
     $ref: "paths/timelines.yml"
   /timelines/{timelineId}:
     $ref: "paths/timeline-ops.yml"
+  /timelines/{timelineId}/ical:
+    $ref: "paths/ical.yml"
   /timelines/{timelineId}/milestones:
     $ref: "paths/milestones.yml"
   /timelines/{timelineId}/tasks:

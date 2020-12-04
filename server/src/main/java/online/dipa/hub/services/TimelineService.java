@@ -1,5 +1,7 @@
 package online.dipa.hub.services;
 
+import net.fortuna.ical4j.model.TimeZone;
+import online.dipa.hub.IcsCalendar;
 import online.dipa.hub.TimelineState;
 import online.dipa.hub.api.model.Milestone;
 import online.dipa.hub.api.model.Timeline;
@@ -12,9 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.SessionScope;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -38,6 +45,19 @@ public class TimelineService {
         return this.sessionTimelines.values().stream()
                 .map(TimelineState::getTimeline)
                 .collect(Collectors.toList());
+    }
+
+    public Timeline getTimeline(final Long timelineId) {
+        initializeTimelines();
+
+        return this.sessionTimelines.values().stream()
+                .map(TimelineState::getTimeline)
+                .filter(t -> t.getId().equals(timelineId))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(
+                                "Timeline with id: %1$s not found.",
+                                timelineId)));
     }
 
     private void initializeTimelines() {
@@ -116,14 +136,14 @@ public class TimelineService {
 
         long oldDaysBetween = DAYS.between(timelineStart, timelineEnd);
         long newDaysBetween = oldDaysBetween - days;
-        double factor = (double)newDaysBetween / oldDaysBetween;
+        double factor = (double) newDaysBetween / oldDaysBetween;
 
         LocalDate newTimelineStart = timelineStart.plusDays(days);
         sessionTimeline.getTimeline().setStart(newTimelineStart);
 
         for (Milestone m : sessionTimeline.getMilestones()) {
             long oldMilestoneRelativePosition = DAYS.between(timelineStart, m.getDate());
-            long newMilestoneRelativePosition = (long)(oldMilestoneRelativePosition * factor);
+            long newMilestoneRelativePosition = (long) (oldMilestoneRelativePosition * factor);
 
             m.setDate(newTimelineStart.plusDays(newMilestoneRelativePosition));
         }
@@ -138,20 +158,20 @@ public class TimelineService {
 
         long oldDaysBetween = DAYS.between(timelineStart, timelineEnd);
         long newDaysBetween = oldDaysBetween + days;
-        double factor = (double)newDaysBetween / oldDaysBetween;
+        double factor = (double) newDaysBetween / oldDaysBetween;
 
         LocalDate newTimelineEnd = timelineEnd.plusDays(days);
         sessionTimeline.getTimeline().setEnd(newTimelineEnd);
 
         for (Milestone m : sessionTimeline.getMilestones()) {
             long oldMilestoneRelativePosition = DAYS.between(timelineStart, m.getDate());
-            long newMilestoneRelativePosition = (long)(oldMilestoneRelativePosition * factor);
+            long newMilestoneRelativePosition = (long) (oldMilestoneRelativePosition * factor);
 
             m.setDate(timelineStart.plusDays(newMilestoneRelativePosition));
         }
     }
 
-    public void moveMileStoneByDays (final Long timelineId, final Long days, final Long movedMilestoneId) {
+    public void moveMileStoneByDays(final Long timelineId, final Long days, final Long movedMilestoneId) {
         TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
 
         LocalDate oldFirstMilestoneDate = sessionTimeline.getMilestones().stream().map(Milestone::getDate).min(LocalDate::compareTo).get();
@@ -176,6 +196,25 @@ public class TimelineService {
 
         sessionTimeline.getTimeline().setStart(newProjectStart);
         sessionTimeline.getTimeline().setEnd(newProjectEnd);
+    }
+
+    public File getCalendarFileForTimeline(final Long timelineId) throws IOException {
+
+        IcsCalendar icsCalendar = new IcsCalendar();
+        TimeZone timezone = icsCalendar.createTimezoneEurope();
+
+        Timeline timeline = getTimeline(timelineId);
+
+        List<Milestone> milestones = getMilestonesForTimeline(timelineId);
+        for(Milestone milestone: milestones) {
+            LocalDate eventDate = milestone.getDate();
+            String eventTitle = milestone.getName() + " - " + timeline.getName();
+            String eventComment = "Test Comment";
+
+            icsCalendar.addEvent(timezone, eventDate, eventTitle, eventComment);
+        }
+
+        return icsCalendar.getCalendarFile("Meilensteine");
     }
 
 }
