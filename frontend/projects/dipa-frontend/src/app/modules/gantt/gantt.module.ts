@@ -16,6 +16,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {AngularResizedEventModule} from 'angular-resize-event';
 import { FormsModule } from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
 
 
 @NgModule({
@@ -37,7 +38,8 @@ import { FormsModule } from '@angular/forms';
     MatButtonToggleModule,
     MatInputModule,
     MatSelectModule,
-    AngularResizedEventModule
+    AngularResizedEventModule,
+    MatButtonModule
   ]
 })
 export class GanttModule { }

@@ -13,8 +13,6 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import liquibase.hub.model.Project;
-
 @Entity
 @Table(name = "milestone_template")
 @Cacheable

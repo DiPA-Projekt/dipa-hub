@@ -28,9 +28,10 @@ export class GanttComponent implements OnInit, OnDestroy {
   timelinesSubscription;
 
   selectedTimelineId: number;
+  selectedProjectType: string;
   viewTypeSelected: any;
 
-  incrementValue = 0;
+  incrementValue = 1;
 
   constructor(public ganttControlsService: GanttControlsService,
               private timelinesService: TimelinesService,
@@ -57,6 +58,7 @@ export class GanttComponent implements OnInit, OnDestroy {
     .subscribe((data) => {
       this.timelineData = data;
       this.selectedTimelineId = this.timelineData.find(c => c.defaultTimeline === true)?.id;
+      this.selectedProjectType = this.timelineData.filter(item => item.id === this.selectedTimelineId)[0].projectType;
       this.setData();
     });
 
@@ -116,19 +118,6 @@ export class GanttComponent implements OnInit, OnDestroy {
     );
   }
 
-  increment($event: any): void {
-    this.incrementValue = this.incrementValue +1;
-
-    console.log(this.incrementValue);
-
-    this.timelinesIncrementService.incrementOperation(this.selectedTimelineId, this.incrementValue).subscribe((data) => {
-      this.incrementService.getIncrementsForTimeline(this.selectedTimelineId).subscribe((data) => console.log(data));
-
-    });;
-    console.log(this.selectedTimelineId);
-    this.setData();
-  }
-
   changeViewType(event): void {
 
     const toggle = event.source;
@@ -153,6 +142,27 @@ export class GanttComponent implements OnInit, OnDestroy {
     this.setData();
     this.viewTypeSelected = undefined;
     this.ganttControlsService.setViewType(null);
+  }
+
+  getProjectTypeList(): any[] {
+    const timelineProjectTypeList = [];
+
+    this.timelineData.forEach(timeline => {
+      if (timelineProjectTypeList.indexOf(timeline.projectType) < 0) {
+        timelineProjectTypeList.push(timeline.projectType);
+      }
+    });
+
+    return timelineProjectTypeList;
+  }
+
+  changeProjectType(event): void {
+    this.selectedTimelineId = this.timelineData.filter(timeline => timeline.projectType === this.selectedProjectType)[0].id;
+    this.changeTimeline(event);
+  }
+
+  filterTimeline(): any[] {
+    return this.timelineData.filter(timeline => timeline.projectType === this.selectedProjectType);
   }
 
   changeStartDate(change: string, $event: any): void {

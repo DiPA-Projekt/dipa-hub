@@ -8,7 +8,6 @@ import online.dipa.hub.api.model.InlineObject;
 import online.dipa.hub.services.TimelineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 
 import online.dipa.hub.api.model.Milestone;
 import online.dipa.hub.api.model.Task;
@@ -57,7 +56,6 @@ public class TimelineController implements TimelinesApi {
 
     @Override
     public ResponseEntity<Void> incrementOperation(final Long timelineId, final Long increment) {
-        
         timelineService.setIncrementTimeline(timelineId, increment);
         return ResponseEntity.noContent().build();
     }

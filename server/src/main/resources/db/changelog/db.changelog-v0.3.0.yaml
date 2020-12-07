@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1605304206615-10
+      id: create-projectApproach-table
       author: nguyen
       changes:
         - createTable:
@@ -30,7 +30,7 @@ databaseChangeLog:
                   type: BIGINT
             tableName: project_approach
   - changeSet:
-      id: 1605304206615-11
+      id: create-planTemplate-table
       author: nguyen
       changes:
         - createTable:
@@ -59,4 +59,3 @@ databaseChangeLog:
                   name: project_approach_id
                   type: BIGINT
             tableName: plan_template
-

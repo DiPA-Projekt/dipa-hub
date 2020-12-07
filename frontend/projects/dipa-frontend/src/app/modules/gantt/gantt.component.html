@@ -1,7 +1,33 @@
 <div id="gantt" #gantt>
 
   <div class="container">
-    <div class="row">
+    <div class="row justify-content-between">
+      <div class="col">
+        <div class="row justify-content-start">
+          <div *ngIf="timelineData" class="col">
+            <mat-form-field appearance="fill" floatLabel="always">
+              <mat-label>Vorhabensart</mat-label>
+              <mat-select [(value)]="selectedProjectType" (selectionChange)="changeProjectType($event)">
+                <mat-option *ngFor="let projectTypeName of getProjectTypeList()"
+                            [value]="projectTypeName">
+                  {{ projectTypeName }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div *ngIf="timelineData" class="col">
+            <mat-form-field appearance="fill" floatLabel="always">
+              <mat-label>Vorgehensweise</mat-label>
+              <mat-select [(value)]="selectedTimelineId" (selectionChange)="changeTimeline($event)">
+                <mat-option *ngFor="let timeline of filterTimeline()"
+                            [value]="timeline.id">
+                  {{ timeline.projectApproach }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
       <div class="col">
         <mat-button-toggle-group name="chartMetric" #group="matButtonToggleGroup" multiple aria-label="Chart Metric" [(ngModel)]="viewTypeSelected" (change)="changeViewType($event)">
           <mat-button-toggle class="md-button" value="YEARS">Jahre</mat-button-toggle>
@@ -10,6 +36,8 @@
           <mat-button-toggle class="md-button" value="DAYS">Tage</mat-button-toggle>
         </mat-button-toggle-group>
       </div>
+    </div>
+    <div class="row">
       <div class="col mat-form-field--inline">
         <mat-form-field appearance="fill">
           <mat-label>Anfang Zeitachse</mat-label>
@@ -28,24 +56,6 @@
         </mat-form-field>
       </div>
     </div>
-    
-    <div class = "row">
-      <button mat-button color="accent" (click)="increment($event)">Inkrement</button>
-    </div>
-    <div class="row">
-        <div *ngIf="timelineData" class="col">
-          <mat-form-field appearance="fill" floatLabel="always">
-            <mat-label>Vorhabensart</mat-label>
-            <mat-select [(value)]="selectedTimelineId" (selectionChange)="changeTimeline($event)">
-              <mat-option *ngFor="let timeline of timelineData"
-                          [value]="timeline.id">
-                {{ timeline.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-    </div>
-
     <div class="row">
       <div class="col">
         <ng-container *ngIf="vm$ | async as vm">

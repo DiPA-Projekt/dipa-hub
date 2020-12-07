@@ -1,4 +1,73 @@
 databaseChangeLog:
+  - changeSet:  
+      id: dropForeignKeyConstraint-milestoneTemplate
+      author: nguyen
+      changes:  
+      - dropForeignKeyConstraint:
+            baseColumnNames: project_type_id
+            baseTableName: milestone_template
+            constraintName: FK5nkusah4f9cwpwmpop2mrcnxm
+  - changeSet:  
+      id: dropForeignKeyConstraint-taskTemplate
+      author: nguyen
+      changes:  
+      - dropForeignKeyConstraint:
+            baseColumnNames: project_type_id
+            baseTableName: task_template
+            constraintName: FKeqi79aws4b3hvcq5q33wxjdnb
+  - changeSet:
+      id: rename-column-milestone-template
+      author: nguyen
+      changes:
+      - renameColumn:
+           catalogName: cat
+           columnData: BIGINT
+           newColumnName: plan_template_id
+           oldColumnName: project_type_id
+           tableName: milestone_template
+  - changeSet:
+      id: rename-column-task-template
+      author: nguyen
+      changes:
+        - renameColumn:
+            catalogName: cat
+            columnData: BIGINT
+            newColumnName: plan_template_id
+            oldColumnName: project_type_id
+            tableName: task_template
+  - changeSet:
+      id: update-templateplanId-SoftwareEntwicklung-masterPlan
+      author: nguyen
+      changes:
+        - update:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: plan_template_id
+                  valueComputed: 2
+            where: id=21 AND id=28
+  - changeSet:
+      id: update-templateplanId-softwareEntwicklung-agil
+      author: nguyen
+      changes:
+        - update:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: plan_template_id
+                  valueComputed: 3
+            where: id>21 AND id<28
+  - changeSet:
+      id: update-templateplanId-Beschaffung
+      author: nguyen
+      changes:
+        - update:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: plan_template_id
+                  valueComputed: 5
+            where: id>40 AND id<57
   - changeSet:
       id: insert-project-approach-servertausch
       author: nguyen
@@ -169,42 +238,7 @@ databaseChangeLog:
                   name: project_type_id
                   value: 3
   - changeSet:
-      id: insert-milestones-softwareneuentwicklung-master
-      author: nguyen
-      context: itzbund
-      changes:
-        - insert:
-            tableName: milestone_template
-            columns:
-              - column:
-                  name: id
-                  value: 21
-              - column:
-                  name: name
-                  value: Projekteinrichtung
-              - column:
-                  name: date_offset
-                  value: 0
-              - column:
-                  name: plan_template_id
-                  value: 2
-        - insert:
-            tableName: milestone_template
-            columns:
-              - column:
-                  name: id
-                  value: 28
-              - column:
-                  name: name
-                  value: Projektabschluss
-              - column:
-                  name: date_offset
-                  value: 642
-              - column:
-                  name: plan_template_id
-                  value: 2
-  - changeSet:
-      id: insert-milestones-softwareneuentwicklung-increment
+      id: insert-milestones-softwareneuentwicklung-iterativ
       author: nguyen
       context: itzbund
       changes:
@@ -219,7 +253,7 @@ databaseChangeLog:
                   value: System spezifiziert
               - column:
                   name: date_offset
-                  value: 62
+                  value: 125
               - column:
                   name: plan_template_id
                   value: 4
@@ -234,7 +268,7 @@ databaseChangeLog:
                   value: System entworfen
               - column:
                   name: date_offset
-                  value: 150
+                  value: 211
               - column:
                   name: plan_template_id
                   value: 4
@@ -249,7 +283,7 @@ databaseChangeLog:
                   value: Feinentwurf
               - column:
                   name: date_offset
-                  value: 230
+                  value: 271
               - column:
                   name: plan_template_id
                   value: 4
@@ -264,7 +298,7 @@ databaseChangeLog:
                   value: Systemelemente realisiert
               - column:
                   name: date_offset
-                  value: 350
+                  value: 371
               - column:
                   name: plan_template_id
                   value: 4
@@ -279,7 +313,7 @@ databaseChangeLog:
                   value: System integriert
               - column:
                   name: date_offset
-                  value: 458
+                  value: 489
               - column:
                   name: plan_template_id
                   value: 4
@@ -294,7 +328,7 @@ databaseChangeLog:
                   value: Lieferung durchgeführt
               - column:
                   name: date_offset
-                  value: 500
+                  value: 561
               - column:
                   name: plan_template_id
                   value: 4
@@ -309,40 +343,7 @@ databaseChangeLog:
                   value: Abnahme erfolgt
               - column:
                   name: date_offset
-                  value: 580
+                  value: 641
               - column:
                   name: plan_template_id
                   value: 4
-  - changeSet:
-      id: add-2-month-to-some-milestone-template-entries
-      author: bock
-      changes:
-        - update:
-            tableName: milestone_template
-            columns:
-              - column:
-                  name: date_offset
-                  valueComputed: date_offset+61
-            where: plan_template_id!=1
-  - changeSet:
-      id: add-additional-month-to-Entwicklung-Pre-Alpha-milestone
-      author: bock
-      changes:
-        - update:
-            tableName: milestone_template
-            columns:
-              - column:
-                  name: date_offset
-                  valueComputed: date_offset+61
-            where: id=22
-  - changeSet:
-      id: add-additional-month-after-Entwicklung-Pre-Alpha-milestone
-      author: bock
-      changes:
-        - update:
-            tableName: milestone_template
-            columns:
-              - column:
-                  name: date_offset
-                  valueComputed: date_offset+31
-            where: id>22 AND plan_template_id=2
