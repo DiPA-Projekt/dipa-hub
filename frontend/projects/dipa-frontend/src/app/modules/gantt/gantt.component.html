@@ -38,6 +38,15 @@
       </div>
     </div>
     <div class="row">
+      <div class="col">
+        <button (click)="getIcsCalendarFile()"
+                mat-raised-button
+                title="Exportiere Meilensteine im iCal Format"
+                aria-label="Exportiere Meilensteine im iCal Format">
+          <mat-icon>event_note</mat-icon>
+          Export
+        </button>
+      </div>
       <div class="col mat-form-field--inline">
         <mat-form-field appearance="fill">
           <mat-label>Anfang Zeitachse</mat-label>
@@ -56,6 +65,7 @@
         </mat-form-field>
       </div>
     </div>
+
     <div class="row">
       <div class="col">
         <ng-container *ngIf="vm$ | async as vm">

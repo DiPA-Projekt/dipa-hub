@@ -15,7 +15,7 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {AngularResizedEventModule} from 'angular-resize-event';
-import { FormsModule } from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 
 
@@ -25,21 +25,21 @@ import {MatButtonModule} from '@angular/material/button';
     ChartComponent,
     // TooltipComponent
   ],
-  imports: [
-    FormsModule,
-    CommonModule,
-    GanttRoutingModule,
-    MatCardModule,
-    MatIconModule,
-    MatSlideToggleModule,
-    MatTableModule,
-    MatFormFieldModule,
-    MatDatepickerModule,
-    MatButtonToggleModule,
-    MatInputModule,
-    MatSelectModule,
-    AngularResizedEventModule,
-    MatButtonModule
-  ]
+    imports: [
+        FormsModule,
+        CommonModule,
+        GanttRoutingModule,
+        MatCardModule,
+        MatIconModule,
+        MatSlideToggleModule,
+        MatTableModule,
+        MatFormFieldModule,
+        MatDatepickerModule,
+        MatButtonToggleModule,
+        MatInputModule,
+        MatSelectModule,
+        AngularResizedEventModule,
+        MatButtonModule
+    ]
 })
 export class GanttModule { }

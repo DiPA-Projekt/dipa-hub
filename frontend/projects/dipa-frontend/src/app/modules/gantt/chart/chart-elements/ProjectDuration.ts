@@ -34,7 +34,7 @@ export class ProjectDuration {
 
   projectDurationYears;
 
-  timelineName;
+  timelineProjectType;
   tooltip;
 
   riskInformation = [{minVal: 0, maxVal: 1, prob: '85', overtime: 9, color: this.highRiskColor, icon: 'thumb_down', text: 'Hohes Risiko'},
@@ -51,7 +51,7 @@ export class ProjectDuration {
   constructor(svg: any, xScale: any, timelineData: any) {
     this.svg = svg;
     this.xScale = xScale;
-    this.timelineName = timelineData.name;
+    this.timelineProjectType = timelineData.projectType;
     this.svgBbox = this.svg.node().getBBox();
     this.projectGroup = this.svg.select('g.project-group');
 
@@ -65,6 +65,9 @@ export class ProjectDuration {
     this.projectEndDate = new Date(timelineData.end);
     this.projectStartDate.setHours(0, 0, 0, 0);
     this.projectEndDate.setHours(0, 0, 0, 0);
+
+    this.projectDurationYears = this.calculateProjectDuration(this.projectStartDate, this.projectEndDate);
+    this.riskCalculate(this.projectDurationYears);
   }
 
   draw(): void {
@@ -96,7 +99,11 @@ export class ProjectDuration {
         this.dragStartDate = this.projectStartDate;
       })
       .on('end', (event: d3.D3DragEvent<any, any, any>) => {
+        this.projectStartDate.setHours(0, 0, 0, 0);
+        this.projectEndDate.setHours(0, 0, 0, 0);
+
         const dragOffset: number = Math.floor((this.projectStartDate - this.dragStartDate ) / (1000 * 60 * 60 * 24));
+
         this.onDragEnd(dragOffset);
       });
 
@@ -199,8 +206,6 @@ export class ProjectDuration {
 
         this.projectStartDate = this.xScale.invert(xValueNew);
 
-        this.projectDurationYears = this.calculateProjectDuration(this.projectStartDate, this.projectEndDate);
-        this.riskCalculate(this.projectDurationYears);
 
         this.redraw(0);
       })
@@ -209,8 +214,10 @@ export class ProjectDuration {
       })
       .on('end', (event: d3.D3DragEvent<any, any, any>) => {
         this.dragDxStack = 0;
+        this.projectStartDate.setHours(0, 0, 0, 0);
 
         const dragOffset: number = Math.floor((this.projectStartDate - this.dragStartDate ) / (1000 * 60 * 60 * 24));
+
         this.onDragEndProjectStart(dragOffset);
       });
 
@@ -239,8 +246,6 @@ export class ProjectDuration {
 
         this.projectEndDate = this.xScale.invert(xValueStart + widthNew);
 
-        this.projectDurationYears = this.calculateProjectDuration(this.projectStartDate, this.projectEndDate);
-        this.riskCalculate(this.projectDurationYears);
 
         this.redraw(0);
       })
@@ -249,8 +254,10 @@ export class ProjectDuration {
       })
       .on('end', (event: d3.D3DragEvent<any, any, any>) => {
         this.dragDxStack = 0;
+        this.projectEndDate.setHours(0, 0, 0, 0);
 
         const dragOffset: number = Math.floor((this.projectEndDate - this.dragStartDate ) / (1000 * 60 * 60 * 24));
+
         this.onDragEndProjectEnd(dragOffset);
       });
 
@@ -414,12 +421,11 @@ export class ProjectDuration {
   }
 
   private riskCalculate(projectDurationYears): void {
-
     const timeText = projectDurationYears < 1 ? 'Monaten' : 'Jahren';
 
     const time = projectDurationYears < 1 ? Math.round(projectDurationYears * 12) : projectDurationYears;
 
-    if (this.timelineName === 'Serveraustausch') {
+    if (this.timelineProjectType === 'Serveraustausch') {
       for (const item of this.riskInformation) {
 
         if (item.minVal < projectDurationYears && projectDurationYears < item.maxVal) {
