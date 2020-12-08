@@ -32,7 +32,7 @@ public class ProjectApproachEntity extends BaseEntity {
     private String name;
 
     @Basic(optional = false)
-    private boolean iterativ;
+    private boolean iterative;
 
     @OneToMany(mappedBy = "projectApproach", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -50,12 +50,12 @@ public class ProjectApproachEntity extends BaseEntity {
         this.name = name;
     }
     
-    public boolean isIterativ() {
-        return iterativ;
+    public boolean isIterative() {
+        return iterative;
     }
 
-    public void setIterativ(final boolean iterativ) {
-        this.iterativ = iterativ;
+    public void setIterative(final boolean iterative) {
+        this.iterative = iterative;
     }
 
     public Set<PlanTemplateEntity> getPlanTemplate() {

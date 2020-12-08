@@ -10,9 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import online.dipa.hub.api.model.Milestone;
+import online.dipa.hub.api.model.ProjectApproach;
+import online.dipa.hub.api.model.ProjectType;
 import online.dipa.hub.api.model.Task;
 import online.dipa.hub.api.model.Timeline;
 import online.dipa.hub.api.rest.TimelinesApi;
+
 import org.springframework.core.io.FileUrlResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -32,6 +35,18 @@ public class TimelineController implements TimelinesApi {
     public ResponseEntity<List<Timeline>> getTimelines() {
         final List<Timeline> timelines = timelineService.getTimelines();
         return ResponseEntity.ok(timelines);
+    }
+
+    @Override
+    public ResponseEntity<List<ProjectType>> getProjectTypes() {
+        final List<ProjectType> projectTypesList = timelineService.getProjectTypes();
+        return ResponseEntity.ok(projectTypesList);
+    }
+
+    @Override
+    public ResponseEntity<List<ProjectApproach>> getProjectApproaches() {
+        final List<ProjectApproach> projectApproachList = timelineService.getProjectApproaches();
+        return ResponseEntity.ok(projectApproachList);
     }
 
     @Override
@@ -63,8 +78,15 @@ public class TimelineController implements TimelinesApi {
     }
 
     @Override
-    public ResponseEntity<Void> incrementOperation(final Long timelineId, final Long increment) {
-        timelineService.setIncrementTimeline(timelineId, increment);
+    public ResponseEntity<Void> addIncrement(final Long timelineId) {
+        timelineService.addIncrement(timelineId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteIncrement(final Long timelineId) {
+        
+        timelineService.deleteIncrement(timelineId);
         return ResponseEntity.noContent().build();
     }
 
@@ -90,4 +112,10 @@ public class TimelineController implements TimelinesApi {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    // @Override
+    // public ResponseEntity<List<ProjectType>> getProjectTypes() {
+    //     final List<ProjectType> projectTypesList = timelineService.getProjectTypes();
+    //     return ResponseEntity.ok(projectTypesList);
+    // }
 }

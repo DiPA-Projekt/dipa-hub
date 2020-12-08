@@ -21,7 +21,7 @@ databaseChangeLog:
               - column:
                   constraints:
                     nullable: false
-                  name: iterativ
+                  name: iterative
                   type: BOOLEAN
               - column:
                   constraints:

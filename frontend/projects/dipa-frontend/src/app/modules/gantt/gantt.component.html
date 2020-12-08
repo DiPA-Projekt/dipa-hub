@@ -7,10 +7,10 @@
           <div *ngIf="timelineData" class="col">
             <mat-form-field appearance="fill" floatLabel="always">
               <mat-label>Vorhabensart</mat-label>
-              <mat-select [(value)]="selectedProjectType" (selectionChange)="changeProjectType($event)">
-                <mat-option *ngFor="let projectTypeName of getProjectTypeList()"
-                            [value]="projectTypeName">
-                  {{ projectTypeName }}
+              <mat-select [(value)]="selectedProjectTypeId" (selectionChange)="changeProjectType($event)">
+                <mat-option *ngFor="let projectType of projectTypesList"
+                            [value]="projectType.id">
+                  {{ projectType.name }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
@@ -18,10 +18,10 @@
           <div *ngIf="timelineData" class="col">
             <mat-form-field appearance="fill" floatLabel="always">
               <mat-label>Vorgehensweise</mat-label>
-              <mat-select [(value)]="selectedTimelineId" (selectionChange)="changeTimeline($event)">
-                <mat-option *ngFor="let timeline of filterTimeline()"
-                            [value]="timeline.id">
-                  {{ timeline.projectApproach }}
+              <mat-select [(value)]="selectedProjectApproachId" (selectionChange)="changeProjectApproach($event)">
+                <mat-option *ngFor="let projectApproach of filterProjectApproaches()"
+                            [value]="projectApproach.id">
+                  {{ projectApproach.name }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
@@ -64,6 +64,12 @@
           <mat-datepicker #picker2></mat-datepicker>
         </mat-form-field>
       </div>
+    </div>
+    <div class = "row">
+      <button mat-button color="accent" (click)="addIncrement($event)">Inkrement hinzufügen</button>
+    </div>
+    <div class = "row">
+      <button mat-button color="accent" (click)="deleteIncrement($event)">Inkrement löschen</button>
     </div>
 
     <div class="row">

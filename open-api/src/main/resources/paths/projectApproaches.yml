@@ -1,0 +1,15 @@
+get:
+  tags:
+    - projectApproaches
+  summary: projectApproaches List
+  description: Retrieves the list of projectApproaches
+  operationId: getProjectApproaches
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../models/projectApproach.yml#/ProjectApproach"

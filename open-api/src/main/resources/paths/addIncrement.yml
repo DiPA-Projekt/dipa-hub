@@ -1,0 +1,16 @@
+patch:
+  tags:
+    - timelines-increment
+  summary: Add increment for timeline
+  description: Add increment for timeline
+  operationId: addIncrement
+  parameters:
+    - in: path
+      name: timelineId
+      schema:
+        type: integer
+        format: int64
+      description: Numeric ID of the timeline.
+  responses:
+    200:
+      description: OK
