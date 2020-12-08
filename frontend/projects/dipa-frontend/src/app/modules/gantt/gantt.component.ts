@@ -193,24 +193,6 @@ export class GanttComponent implements OnInit, OnDestroy {
     return this.projectApproachesList.filter(projectApproach => projectApproach.projectTypeId === this.selectedProjectTypeId);
   }
 
-  addIncrement(event): void{
-    this.timelinesIncrementService.addIncrement(this.selectedTimelineId).subscribe((data) => {
-      this.incrementService.getIncrementsForTimeline(this.selectedTimelineId).subscribe((data) => console.log(data));
-
-    });
-    this.setData();
-  }
-
-  deleteIncrement(event): void{
-
-    this.timelinesIncrementService.deleteIncrement(this.selectedTimelineId).subscribe((data) => {
-      this.incrementService.getIncrementsForTimeline(this.selectedTimelineId).subscribe((data) => console.log(data));
-
-    });
-    this.setData();
-
-  }
-
   changeStartDate(change: string, $event: any): void {
     if ($event.targetElement.value) {
       const newStartDate = this.parseGermanDate($event.targetElement.value);
