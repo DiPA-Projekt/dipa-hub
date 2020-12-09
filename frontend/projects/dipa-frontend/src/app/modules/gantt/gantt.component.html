@@ -1,55 +1,73 @@
 <div id="gantt" #gantt>
 
   <div class="container">
-    <div class="row">
-      <div class="col">
-        <mat-button-toggle-group name="chartMetric" #group="matButtonToggleGroup" multiple aria-label="Chart Metric" [(ngModel)]="viewTypeSelected" (change)="changeViewType($event)">
-          <mat-button-toggle class="md-button" value="YEARS">Jahre</mat-button-toggle>
-          <mat-button-toggle class="md-button" value="MONTHS">Monate</mat-button-toggle>
-          <mat-button-toggle class="md-button" value="WEEKS">Wochen</mat-button-toggle>
-          <mat-button-toggle class="md-button" value="DAYS">Tage</mat-button-toggle>
-        </mat-button-toggle-group>
+    <div class="row justify-content-between">
+      <div class="col-6">
+        <div class="row justify-content-start">
+          <div *ngIf="timelineData" class="col">
+            <mat-form-field appearance="fill" floatLabel="always">
+              <mat-label>Vorhabensart</mat-label>
+              <mat-select [(value)]="selectedProjectTypeId" (selectionChange)="changeProjectType($event)">
+                <mat-option *ngFor="let projectType of projectTypesList"
+                            [value]="projectType.id">
+                  {{ projectType.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div *ngIf="timelineData" class="col">
+            <mat-form-field appearance="fill" floatLabel="always">
+              <mat-label>Vorgehensweise</mat-label>
+              <mat-select [(value)]="selectedProjectApproachId" (selectionChange)="changeProjectApproach($event)">
+                <mat-option *ngFor="let projectApproach of filterProjectApproaches()"
+                            [value]="projectApproach.id">
+                  {{ projectApproach.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
       </div>
-      <div class="col mat-form-field--inline">
-        <mat-form-field appearance="fill">
-          <mat-label>Anfang Zeitachse</mat-label>
-          <input matInput [matDatepicker]="picker1" [value]="periodStartDate"
-          (dateChange)="changeStartDate('change', $event)">
-          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-          <mat-datepicker #picker1></mat-datepicker>
-        </mat-form-field>
-
-        <mat-form-field appearance="fill">
-          <mat-label>Ende Zeitachse</mat-label>
-          <input matInput [matDatepicker]="picker2" [value]="periodEndDate"
-          (dateChange)="changeEndDate('change', $event)">
-          <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-          <mat-datepicker #picker2></mat-datepicker>
-        </mat-form-field>
+      <div class="col-6">
+        <div class="row justify-content-end">
+          <mat-button-toggle-group name="chartMetric" #group="matButtonToggleGroup" multiple aria-label="Chart Metric" [(ngModel)]="viewTypeSelected" (change)="changeViewType($event)">
+            <mat-button-toggle class="md-button" value="YEARS">Jahre</mat-button-toggle>
+            <mat-button-toggle class="md-button" value="MONTHS">Monate</mat-button-toggle>
+            <mat-button-toggle class="md-button" value="WEEKS">Wochen</mat-button-toggle>
+            <mat-button-toggle class="md-button" value="DAYS">Tage</mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
       </div>
     </div>
-
-    <div *ngIf="timelineData" class="row">
-        <div class="col">
-          <mat-form-field appearance="fill" floatLabel="always">
-            <mat-label>Vorhabensart</mat-label>
-            <mat-select [(value)]="selectedTimelineId" (selectionChange)="changeTimeline($event)">
-              <mat-option *ngFor="let timeline of timelineData"
-                          [value]="timeline.id">
-                {{ timeline.name }}
-              </mat-option>
-            </mat-select>
+    <div class="row justify-content-between">
+      <div class="col">
+        <button (click)="getIcsCalendarFile()"
+                mat-raised-button
+                title="Exportiere Meilensteine im iCal Format"
+                aria-label="Exportiere Meilensteine im iCal Format">
+          <mat-icon>event_note</mat-icon>
+          Export
+        </button>
+      </div>
+      <div class="col mat-form-field--inline">
+        <div class="row justify-content-end">
+          <mat-form-field appearance="fill">
+            <mat-label>Anfang Zeitachse</mat-label>
+            <input matInput [matDatepicker]="picker1" [value]="periodStartDate"
+            (dateChange)="changeStartDate('change', $event)">
+            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+            <mat-datepicker #picker1></mat-datepicker>
+          </mat-form-field>
+  
+          <mat-form-field appearance="fill">
+            <mat-label>Ende Zeitachse</mat-label>
+            <input matInput [matDatepicker]="picker2" [value]="periodEndDate"
+            (dateChange)="changeEndDate('change', $event)">
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
           </mat-form-field>
         </div>
-        <div class="col">
-          <button (click)="getIcsCalendarFile()"
-                  mat-raised-button
-                  title="Exportiere Meilensteine im iCal Format"
-                  aria-label="Exportiere Meilensteine im iCal Format">
-            <mat-icon>event_note</mat-icon>
-            Export
-          </button>
-        </div>
+      </div>
     </div>
 
     <div class="row">

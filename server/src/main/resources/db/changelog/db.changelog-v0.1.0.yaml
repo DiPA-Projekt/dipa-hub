@@ -147,4 +147,3 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: project_type
             validate: true
-

@@ -1,0 +1,61 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-projectApproach-table
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: project_approachPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: iterative
+                  type: BOOLEAN
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_type_id
+                  type: BIGINT
+            tableName: project_approach
+  - changeSet:
+      id: create-planTemplate-table
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: plan_templatePK
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_type_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: true
+                  name: project_approach_id
+                  type: BIGINT
+            tableName: plan_template

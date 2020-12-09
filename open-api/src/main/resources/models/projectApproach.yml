@@ -1,0 +1,20 @@
+ProjectApproach:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the project approach
+      type: integer
+      format: int64
+      example: 2
+    name:
+      description: The name of the project approach
+      type: string
+      example: "VMXT ITZBund agil"
+    projectTypeId:
+      description: Unique identifier of the linked project type
+      type: integer
+      format: int64
+      example: 3
+  required:
+    - id
+    - name
