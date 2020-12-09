@@ -1,0 +1,17 @@
+<h3>Chefansicht</h3>
+
+<div class="container">
+    <ng-container *ngFor="let vm of vmAll$ | async">
+        <h3>{{vm.projectType.name}}</h3>
+        <h3>{{vm.projectApproach.name}}</h3>
+
+        <div id="gantt{{vm.timeline.id}}" class="gantt">
+            <app-chart #cmp
+                    [timelineData]="vm.timeline"
+                    [milestoneData]="vm.milestoneData"
+                    [taskData]="vm.taskData"
+                    id = "{{vm.timeline.id}}"
+            ></app-chart>
+        </div>
+      </ng-container>
+</div>

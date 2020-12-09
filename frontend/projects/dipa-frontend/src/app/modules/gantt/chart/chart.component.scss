@@ -1,4 +1,4 @@
-#gantt {
+.gantt {
 
   .tooltip {
     background-color: rgba(0, 0, 0, 0.78);
@@ -118,3 +118,244 @@
   }
 
 }
+#gantt3 {
+
+  .tooltip {
+    background-color: rgba(0, 0, 0, 0.78);
+    color: #fff;
+    display: none;
+    position: absolute;
+    opacity: 0;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+  }
+
+  div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+
+    svg {
+      defs {
+        mask#dataMask {
+          rect {
+            fill: #fff;
+          }
+        }
+      }
+
+      g.x-group {
+        rect.headerX {
+          fill: #444;
+          opacity: 0.8;
+          rx: 3;
+        }
+
+        text.xAxisLabel {
+          font-size: 10px;
+          fill: #fff;
+        }
+
+        text.outsideXAxisLabel {
+          font-size: 10px;
+          fill: #fff;
+        }
+      }
+
+      g.y-group {
+        text.groupTitle {
+          text-anchor: start;
+        }
+
+        rect.groupBackground {
+          opacity: 0.2;
+        }
+      }
+
+      g.project-group {
+        rect.projectDuration {
+          cursor: move;
+        }
+
+        text {
+          font-size: 10px;
+          opacity: 0.87;
+        }
+
+        line.projectStartDateLine, line.projectEndDateLine {
+          cursor: ew-resize;
+          stroke-width: 2;
+          cursor: ew-resize;
+        }
+      }
+
+      g.current-date-group {
+        circle.currentDateCircle {
+          r: 4;
+          cy: 5;
+          fill: white;
+        }
+        circle.currentDatePoint {
+          r: 1;
+          cy: 5;
+        }
+      }
+
+      g.data-group {
+        path.milestone {
+          cursor: move;
+          width: 50px;
+        }
+
+        text.milestoneLabel {
+          font-size: 11px;
+          pointer-events: none;
+        }
+
+        rect.task {
+          cursor: move;
+          rx: 3;
+        }
+
+        rect.dragBarLeft, rect.dragBarRight {
+          rx: 1;
+          cursor: ew-resize;
+          opacity: 0;
+        }
+
+        text.taskLabel {
+          text-anchor: middle;
+          font-size: 11px;
+          fill: #fff;
+          pointer-events: none;
+        }
+      }
+    }
+  }
+
+}
+#gantt2 {
+
+  .tooltip {
+    background-color: rgba(0, 0, 0, 0.78);
+    color: #fff;
+    display: none;
+    position: absolute;
+    opacity: 0;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+  }
+
+  figure {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+
+    svg {
+      defs {
+        mask#dataMask {
+          rect {
+            fill: #fff;
+          }
+        }
+      }
+
+      g.x-group {
+        rect.headerX {
+          fill: #444;
+          opacity: 0.8;
+          rx: 3;
+        }
+
+        text.xAxisLabel {
+          font-size: 10px;
+          fill: #fff;
+        }
+
+        text.outsideXAxisLabel {
+          font-size: 10px;
+          fill: #fff;
+        }
+      }
+
+      g.y-group {
+        text.groupTitle {
+          text-anchor: start;
+        }
+
+        rect.groupBackground {
+          opacity: 0.2;
+        }
+      }
+
+      g.project-group {
+        rect.projectDuration {
+          cursor: move;
+        }
+
+        text {
+          font-size: 10px;
+          opacity: 0.87;
+        }
+
+        line.projectStartDateLine, line.projectEndDateLine {
+          cursor: ew-resize;
+          stroke-width: 2;
+          cursor: ew-resize;
+        }
+      }
+
+      g.current-date-group {
+        circle.currentDateCircle {
+          r: 4;
+          cy: 5;
+          fill: white;
+        }
+        circle.currentDatePoint {
+          r: 1;
+          cy: 5;
+        }
+      }
+
+      g.data-group {
+        path.milestone {
+          cursor: move;
+          width: 50px;
+        }
+
+        text.milestoneLabel {
+          font-size: 11px;
+          pointer-events: none;
+        }
+
+        rect.task {
+          cursor: move;
+          rx: 3;
+        }
+
+        rect.dragBarLeft, rect.dragBarRight {
+          rx: 1;
+          cursor: ew-resize;
+          opacity: 0;
+        }
+
+        text.taskLabel {
+          text-anchor: middle;
+          font-size: 11px;
+          fill: #fff;
+          pointer-events: none;
+        }
+      }
+    }
+  }
+
+}
+
