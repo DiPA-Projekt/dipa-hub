@@ -141,13 +141,13 @@ public class TimelineService {
             final Long timelineId,
             final int incrementCount) {
 
-        LocalDate firstDatePeriod = initMilestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get();
-        LocalDate lastDatePeriod = initMilestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
-
         List<Increment> incrementsList = loadIncrements(timelineId, incrementCount);
 
         initMilestones.remove(initMilestones.size() - 1);
         initMilestones.remove(0);
+
+        LocalDate firstDatePeriod = initMilestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get();
+        LocalDate lastDatePeriod = initMilestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
 
         long id = initMilestones.stream().map(Milestone::getId).min(Long::compareTo).get();
         long count = 0;
