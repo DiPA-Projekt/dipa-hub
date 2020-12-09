@@ -12,14 +12,12 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.ManyToAny;
 
 @Entity
 @Table(name = "project_approach")
@@ -34,7 +32,7 @@ public class ProjectApproachEntity extends BaseEntity {
     private String name;
 
     @Basic(optional = false)
-    private boolean iterativ;
+    private boolean iterative;
 
     @OneToMany(mappedBy = "projectApproach", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -52,12 +50,12 @@ public class ProjectApproachEntity extends BaseEntity {
         this.name = name;
     }
     
-    public boolean isIterativ() {
-        return iterativ;
+    public boolean isIterative() {
+        return iterative;
     }
 
-    public void setIterativ(final boolean iterativ) {
-        this.iterativ = iterativ;
+    public void setIterative(final boolean iterative) {
+        this.iterative = iterative;
     }
 
     public Set<PlanTemplateEntity> getPlanTemplate() {

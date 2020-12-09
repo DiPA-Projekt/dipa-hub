@@ -34,7 +34,7 @@ export class ProjectDuration {
 
   projectDurationYears;
 
-  timelineName;
+  timelineProjectTypeId;
   tooltip;
 
   riskInformation = [{minVal: 0, maxVal: 1, prob: '85', overtime: 9, color: this.highRiskColor, icon: 'thumb_down', text: 'Hohes Risiko'},
@@ -51,7 +51,7 @@ export class ProjectDuration {
   constructor(svg: any, xScale: any, timelineData: any) {
     this.svg = svg;
     this.xScale = xScale;
-    this.timelineName = timelineData.name;
+    this.timelineProjectTypeId = timelineData.projectTypeId;
     this.svgBbox = this.svg.node().getBBox();
     this.projectGroup = this.svg.select('g.project-group');
 
@@ -421,12 +421,11 @@ export class ProjectDuration {
   }
 
   private riskCalculate(projectDurationYears): void {
-
     const timeText = projectDurationYears < 1 ? 'Monaten' : 'Jahren';
 
     const time = projectDurationYears < 1 ? Math.round(projectDurationYears * 12) : projectDurationYears;
 
-    if (this.timelineName === 'Serveraustausch') {
+    if (this.timelineProjectTypeId === 1) {
       for (const item of this.riskInformation) {
 
         if (item.minVal < projectDurationYears && projectDurationYears < item.maxVal) {

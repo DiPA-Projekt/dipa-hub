@@ -6,10 +6,16 @@ Timeline:
       type: integer
       format: int64
       example: 2
-    name:
-      description: The name of the timeline
-      type: string
-      example: "Beschaffung"
+    projectTypeId:
+      description: Unique identifier of the project type
+      type: integer
+      format: int64
+      example: 1
+    projectApproachId:
+      description: Unique identifier of the project approach
+      type: integer
+      format: int64
+      example: 2
     start:
       description: The start date of the timeline
       type: string

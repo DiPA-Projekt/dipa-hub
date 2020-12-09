@@ -17,8 +17,6 @@ public class TimelineState {
 
     private List<Increment> increments;
 
-    private Long incrementCount;
-
     public Timeline getTimeline() {
         return timeline;
     }
@@ -42,15 +40,7 @@ public class TimelineState {
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
     }
-
-    public Long getIncrementCount() {
-        return incrementCount;
-    }
-
-    public void setIncrementCount(Long incrementCount) {
-        this.incrementCount = incrementCount;
-    }
-
+    
     public List<Increment> getIncrements() {
         return increments;
     }

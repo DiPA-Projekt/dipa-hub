@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import online.dipa.hub.api.model.Milestone;
 import online.dipa.hub.api.model.Timeline;
 import online.dipa.hub.persistence.entities.MilestoneTemplateEntity;
 import online.dipa.hub.persistence.entities.PlanTemplateEntity;
@@ -16,7 +15,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -28,27 +26,28 @@ public class ProjectApproachToTimelineConverter implements Converter<ProjectAppr
     @Override
     public Timeline convert(final ProjectApproachEntity projectApproach) {
 
-        ProjectTypeEntity projectTypeEntity = projectApproach.getProjectType();
+        final ProjectTypeEntity projectTypeEntity = projectApproach.getProjectType();
         
-        Long projectTypeId = projectApproach.getProjectType().getId();    
+        final Long projectTypeId = projectApproach.getProjectType().getId();    
 
         final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
                                                         .filter(template -> template.getProjectTypeEntity().getId().equals(projectTypeId))
                                                         .collect(Collectors.toList());       
         
-        List<MilestoneTemplateEntity> maxMilestoneDateList = new ArrayList<MilestoneTemplateEntity>();
+        final List<MilestoneTemplateEntity> maxMilestoneDateList = new ArrayList<MilestoneTemplateEntity>();
 
         for (PlanTemplateEntity planTemplate: planTemplateList) {
                 maxMilestoneDateList.add(planTemplate.getMilestones().stream()
                     .max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset)).get());
         }
 
-        MilestoneTemplateEntity maxMilestoneDate = maxMilestoneDateList
+        final MilestoneTemplateEntity maxMilestoneDate = maxMilestoneDateList
                 .stream()
                 .max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset)).get();
 
         return new Timeline().id(projectApproach.getId())
-                             .name(projectApproach.getName())
+                             .projectTypeId(projectTypeId)
+                             .projectApproachId(projectApproach.getId())
                              .start(LocalDate.now())
                              .end(LocalDate.now()
                                      .plusDays(maxMilestoneDate.getDateOffset()))

@@ -4,7 +4,8 @@ import {ChartComponent} from './chart/chart.component';
 import {forkJoin, Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 
-import {MilestonesService, TasksService, TimelinesService, TimelinesIncrementService, IncrementsService} from 'dipa-api-client';
+import {MilestonesService, TasksService, TimelinesService, TimelinesIncrementService, IncrementsService,
+        ProjectTypesService, ProjectApproachesService} from 'dipa-api-client';
 
 @Component({
   selector: 'app-gantt',
@@ -28,16 +29,21 @@ export class GanttComponent implements OnInit, OnDestroy {
   timelinesSubscription;
 
   selectedTimelineId: number;
+  selectedProjectApproachId: number;
+  selectedProjectTypeId: number;
   viewTypeSelected: any;
 
-  incrementValue = 0;
+  projectTypesList = [];
+  projectApproachesList = [];
 
   constructor(public ganttControlsService: GanttControlsService,
               private timelinesService: TimelinesService,
               private milestonesService: MilestonesService,
               private tasksService: TasksService,
               private timelinesIncrementService: TimelinesIncrementService,
-              private incrementService: IncrementsService) {  }
+              private incrementService: IncrementsService,
+              private projectTypesService: ProjectTypesService,
+              private projectApproachesService: ProjectApproachesService) {  }
 
   static getMinimumDate(data: Date[]): Date {
     return data.reduce((acc, curr) => {
@@ -57,6 +63,8 @@ export class GanttComponent implements OnInit, OnDestroy {
     .subscribe((data) => {
       this.timelineData = data;
       this.selectedTimelineId = this.timelineData.find(c => c.defaultTimeline === true)?.id;
+      this.selectedProjectTypeId = this.timelineData.filter(item => item.id === this.selectedTimelineId)[0].projectTypeId;
+      this.selectedProjectApproachId = this.timelineData.filter(item => item.id === this.selectedTimelineId)[0].projectApproachId;
       this.setData();
     });
 
@@ -72,6 +80,16 @@ export class GanttComponent implements OnInit, OnDestroy {
       if (this.periodEndDate !== data) {
         this.periodEndDate = data;
       }
+    });
+
+    this.projectTypesService.getProjectTypes()
+    .subscribe((data) => {
+      this.projectTypesList = data;
+    });
+
+    this.projectApproachesService.getProjectApproaches()
+    .subscribe((data) => {
+      this.projectApproachesList = data;
     });
   }
 
@@ -138,19 +156,6 @@ export class GanttComponent implements OnInit, OnDestroy {
     );
   }
 
-  increment($event: any): void {
-    this.incrementValue = this.incrementValue +1;
-
-    console.log(this.incrementValue);
-
-    this.timelinesIncrementService.incrementOperation(this.selectedTimelineId, this.incrementValue).subscribe((data) => {
-      this.incrementService.getIncrementsForTimeline(this.selectedTimelineId).subscribe((data) => console.log(data));
-
-    });;
-    console.log(this.selectedTimelineId);
-    this.setData();
-  }
-
   changeViewType(event): void {
 
     const toggle = event.source;
@@ -167,14 +172,25 @@ export class GanttComponent implements OnInit, OnDestroy {
     }
   }
 
-  changeTimeline(event): void {
+  changeProjectApproach(event): void {
     this.timelinesSubscription = this.timelinesService.getTimelines()
     .subscribe((data) => {
       this.timelineData = data;
     });
+
+    this.selectedTimelineId = this.timelineData.filter(timeline => timeline.projectApproachId === this.selectedProjectApproachId)[0].id;
     this.setData();
     this.viewTypeSelected = undefined;
     this.ganttControlsService.setViewType(null);
+  }
+
+  changeProjectType(event): void {
+    this.selectedProjectApproachId = this.timelineData.filter(timeline => timeline.projectTypeId === this.selectedProjectTypeId)[0].id;
+    this.changeProjectApproach(event);
+  }
+
+  filterProjectApproaches(): any[] {
+    return this.projectApproachesList.filter(projectApproach => projectApproach.projectTypeId === this.selectedProjectTypeId);
   }
 
   changeStartDate(change: string, $event: any): void {
