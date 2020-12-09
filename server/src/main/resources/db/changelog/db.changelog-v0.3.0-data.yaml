@@ -82,7 +82,7 @@ databaseChangeLog:
                   value: 1
               - column:
                   name: name
-                  value: Serveraustausch Vorgehensweise
+                  value: BA Phasenmodell
               - column:
                   name: iterative
                   value: false
@@ -280,7 +280,7 @@ databaseChangeLog:
                   value: 57
               - column:
                   name: name
-                  value: Inkrement geplannt
+                  value: Inkrement geplant
               - column:
                   name: date_offset
                   value: 140
