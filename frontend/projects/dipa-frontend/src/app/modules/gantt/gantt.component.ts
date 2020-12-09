@@ -212,24 +212,6 @@ export class GanttComponent implements OnInit, OnDestroy {
     }
   }
 
-  addIncrement(event): void{
-    this.timelinesIncrementService.addIncrement(this.selectedTimelineId).subscribe((data) => {
-      this.incrementService.getIncrementsForTimeline(this.selectedTimelineId).subscribe((data) => console.log(data));
-
-    });
-    this.setData();
-  }
-
-  deleteIncrement(event): void{
-
-    this.timelinesIncrementService.deleteIncrement(this.selectedTimelineId).subscribe((data) => {
-      this.incrementService.getIncrementsForTimeline(this.selectedTimelineId).subscribe((data) => console.log(data));
-
-    });
-    this.setData();
-
-  }
-
   createDateAtMidnight(date: any): Date {
     const dateAtMidnight = new Date(date);
     dateAtMidnight.setHours(0, 0, 0, 0);
