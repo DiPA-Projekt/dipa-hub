@@ -34,11 +34,11 @@ public class ProjectTypeEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "projectType", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<MilestoneTemplateEntity> milestones = new HashSet<>();
+    private Set<PlanTemplateEntity> planTemplate = new HashSet<>();
 
     @OneToMany(mappedBy = "projectType", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<TaskTemplateEntity> tasks = new HashSet<>();
+    private Set<ProjectApproachEntity> projectApproach = new HashSet<>();
 
     public String getName() {
         return name;
@@ -56,19 +56,19 @@ public class ProjectTypeEntity extends BaseEntity {
         this.defaultType = defaultType;
     }
 
-    public Set<MilestoneTemplateEntity> getMilestones() {
-        return milestones;
+    public Set<ProjectApproachEntity> getProjectApproach() {
+        return projectApproach;
     }
 
-    public void setMilestones(final Set<MilestoneTemplateEntity> milestones) {
-        this.milestones = milestones;
+    public void setProjectApproach(final Set<ProjectApproachEntity> projectApproach) {
+        this.projectApproach = projectApproach;
+    }
+    
+    public Set<PlanTemplateEntity> getPlanTemplate() {
+        return planTemplate;
     }
 
-    public Set<TaskTemplateEntity> getTasks() {
-        return tasks;
-    }
-
-    public void setTask(final Set<TaskTemplateEntity> tasks) {
-        this.tasks = tasks;
+    public void setPlanTemplate(final Set<PlanTemplateEntity> planTemplate) {
+        this.planTemplate = planTemplate;
     }
 }

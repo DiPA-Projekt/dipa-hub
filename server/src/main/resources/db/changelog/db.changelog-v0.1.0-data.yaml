@@ -621,4 +621,3 @@ databaseChangeLog:
                   name: date_offset
                   valueComputed: date_offset+31
             where: id>22 AND project_type_id=2
-
