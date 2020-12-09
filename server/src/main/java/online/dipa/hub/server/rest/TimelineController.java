@@ -113,9 +113,4 @@ public class TimelineController implements TimelinesApi {
         }
     }
 
-    // @Override
-    // public ResponseEntity<List<ProjectType>> getProjectTypes() {
-    //     final List<ProjectType> projectTypesList = timelineService.getProjectTypes();
-    //     return ResponseEntity.ok(projectTypesList);
-    // }
 }

@@ -416,12 +416,12 @@ public class TimelineService {
         IcsCalendar icsCalendar = new IcsCalendar();
         TimeZone timezone = icsCalendar.createTimezoneEurope();
 
-        Timeline timeline = getTimeline(timelineId);
+        final ProjectApproachEntity projectApproach = findProjectApproach(timelineId);
 
         List<Milestone> milestones = getMilestonesForTimeline(timelineId);
         for(Milestone milestone: milestones) {
             LocalDate eventDate = milestone.getDate();
-            String eventTitle = milestone.getName() + " - " + timeline.getProjectApproachId();
+            String eventTitle = milestone.getName() + " - " + projectApproach.getName();
             String eventComment = "Test Comment";
 
             icsCalendar.addEvent(timezone, eventDate, eventTitle, eventComment);
