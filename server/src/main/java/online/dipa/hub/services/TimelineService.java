@@ -146,11 +146,10 @@ public class TimelineService {
 
         List<Increment> incrementsList = loadIncrements(timelineId, incrementCount);
 
-        List<Milestone> templateMilestones = initMilestones;
-        templateMilestones.remove(templateMilestones.size() - 1);
-        templateMilestones.remove(0);
+        initMilestones.remove(initMilestones.size() - 1);
+        initMilestones.remove(0);
 
-        long id = templateMilestones.stream().map(Milestone::getId).min(Long::compareTo).get();
+        long id = initMilestones.stream().map(Milestone::getId).min(Long::compareTo).get();
         long count = 0;
 
         HashMap<Increment, List<Milestone>> hashmapIncrementMilestones = new HashMap<>();
@@ -162,7 +161,7 @@ public class TimelineService {
             long newDaysBetween = DAYS.between(increment.getStart(), increment.getEnd());
             double factor = (double) newDaysBetween / oldDaysBetween;
 
-            for (Milestone m : templateMilestones) {
+            for (Milestone m : initMilestones) {
 
                 long daysFromFirstDate = DAYS.between(firstDatePeriod, increment.getStart());
                 LocalDate newDateBeforeScale = m.getDate().plusDays(daysFromFirstDate);
@@ -307,12 +306,11 @@ public class TimelineService {
     }
 
     private ProjectApproachEntity findProjectApproach(Long timelineId) {
-        final ProjectApproachEntity projectApproach = projectApproachRepository.findById(timelineId)
+        return projectApproachRepository.findById(timelineId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format(
                                 "Project approach with id: %1$s not found.",
                                 timelineId)));
-        return projectApproach;
     }
 
     private TimelineState findTimelineState(Long timelineId) {

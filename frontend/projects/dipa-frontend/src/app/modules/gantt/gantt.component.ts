@@ -22,6 +22,9 @@ export class GanttComponent implements OnInit, OnDestroy {
   periodStartDateSubscription;
   periodEndDateSubscription;
 
+  projectTypesSubscription;
+  projectApproachesSubscription;
+
   vm$: Observable<any>;
 
   timelineData = [];
@@ -82,12 +85,12 @@ export class GanttComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.projectTypesService.getProjectTypes()
+    this.projectTypesSubscription = this.projectTypesService.getProjectTypes()
     .subscribe((data) => {
       this.projectTypesList = data;
     });
 
-    this.projectApproachesService.getProjectApproaches()
+    this.projectApproachesSubscription = this.projectApproachesService.getProjectApproaches()
     .subscribe((data) => {
       this.projectApproachesList = data;
     });
@@ -96,6 +99,8 @@ export class GanttComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.periodStartDateSubscription.unsubscribe();
     this.periodEndDateSubscription.unsubscribe();
+    this.projectTypesSubscription.unsubscribe();
+    this.projectApproachesSubscription.unsubscribe();
   }
 
   getIcsCalendarFile(): void {
@@ -205,6 +210,24 @@ export class GanttComponent implements OnInit, OnDestroy {
       const newEndDate = this.parseGermanDate($event.targetElement.value);
       this.ganttControlsService.setPeriodEndDate(newEndDate);
     }
+  }
+
+  addIncrement(event): void{
+    this.timelinesIncrementService.addIncrement(this.selectedTimelineId).subscribe((data) => {
+      this.incrementService.getIncrementsForTimeline(this.selectedTimelineId).subscribe((data) => console.log(data));
+
+    });
+    this.setData();
+  }
+
+  deleteIncrement(event): void{
+
+    this.timelinesIncrementService.deleteIncrement(this.selectedTimelineId).subscribe((data) => {
+      this.incrementService.getIncrementsForTimeline(this.selectedTimelineId).subscribe((data) => console.log(data));
+
+    });
+    this.setData();
+
   }
 
   createDateAtMidnight(date: any): Date {
