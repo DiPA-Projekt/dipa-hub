@@ -4,7 +4,13 @@
 name: Check Branch or PR
 
 on:
+  push:
+    branches:    
+    - 'feature/**'
+    - '!develop'
   pull_request:
+    branches:
+      - develop
 
 jobs:
   build:
