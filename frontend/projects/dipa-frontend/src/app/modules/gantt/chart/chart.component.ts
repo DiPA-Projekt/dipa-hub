@@ -80,7 +80,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
   private svg;
   private zoomElement;
 
-  private viewBoxHeight = 400;
+  private viewBoxHeight = 300;
   private viewBoxWidth = 750;
 
   private padding = { top: 40, left: 0};
