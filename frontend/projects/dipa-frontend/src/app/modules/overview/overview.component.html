@@ -1,0 +1,32 @@
+<h1>Übersicht über alle Projekte: </h1>
+<div class="container">
+    <div class="row justify-content-center">
+        <mat-spinner *ngIf="loading"></mat-spinner>
+    </div>
+    <ng-container *ngFor="let vm of vmAll$ | async">
+        <div class="row">
+            <div class="col-3">
+                <mat-card>
+                    <mat-card-content>
+                        <p class="mat-body-strong">{{vm.projectType.name}}</p>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <div class="col-3">
+                <mat-card>
+                    <mat-card-content>
+                        <p class="mat-body-strong">{{vm.projectApproach.name}}</p>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+        <div id="gantt{{vm.timeline.id}}" class="gantt">
+            <app-chart #charts
+                    [timelineData]="vm.timeline"
+                    [milestoneData]="vm.milestoneData"
+                    [taskData]="vm.taskData"
+                    id = "overview{{vm.timeline.id}}"
+            ></app-chart>
+        </div>
+    </ng-container>
+</div>
