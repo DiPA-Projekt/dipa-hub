@@ -68,6 +68,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
   viewType: string;
 
+  arrangeLabelTimeout;
+
   periodStartDateSubscription;
   periodEndDateSubscription;
 
@@ -321,8 +323,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
         if (numberTicks > 12){
           this.headerX.tickSetting = null;
-        }
-        else {
+        } else {
           this.headerX.tickSetting = d3.timeDay.every(1);
         }
 
@@ -347,8 +348,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
         if (numberTicks > 12){
           this.headerX.tickSetting = null;
-        }
-        else {
+        } else {
           this.headerX.tickSetting = d3.timeMonday.every(1);
         }
 
@@ -373,8 +373,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
         if (numberTicks > 12){
           this.headerX.tickSetting = null;
-        }
-        else {
+        } else {
           this.headerX.tickSetting = d3.timeMonth.every(1);
         }
         break;
@@ -398,8 +397,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
         if (numberTicks > 12){
           this.headerX.tickSetting = null;
-        }
-        else {
+        } else {
           this.headerX.tickSetting = d3.timeYear.every(1);
         }
         break;
@@ -409,8 +407,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
         if (numberTicks > 12){
           this.headerX.tickSetting = null;
-        }
-        else {
+        } else {
           this.headerX.tickSetting = d3.timeDay.every(1);
         }
         break;
@@ -527,12 +524,14 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     if (event.sourceEvent){
       if (event.sourceEvent.type === 'mousemove'){
         this.redrawChart(0);
-      }
-      else{
+      } else {
         this.redrawChart(200);
+        clearTimeout(this.arrangeLabelTimeout);
+        this.arrangeLabelTimeout = setTimeout(() => {
+          this.milestoneViewItem.arrangeLabels();
+        }, 200);
       }
-    }
-    else{
+    } else {
       this.redrawChart(0);
     }
 

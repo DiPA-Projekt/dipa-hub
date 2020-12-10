@@ -4,16 +4,8 @@ import {ChartComponent} from './chart/chart.component';
 import {forkJoin, Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 
-import {
-  IncrementsService,
-  MilestonesService,
-  ProjectApproachesService,
-  ProjectTypesService,
-  TasksService,
-  TimelinesIncrementService,
-  TimelinesService
-, TimelinesIncrementService, IncrementsService,
-        ProjectTypesService, ProjectApproachesService} from 'dipa-api-client';
+import {MilestonesService, TasksService, TimelinesService, TimelinesIncrementService, IncrementsService,
+  ProjectTypesService, ProjectApproachesService} from 'dipa-api-client';
 
 @Component({
   selector: 'app-gantt',

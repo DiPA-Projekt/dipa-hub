@@ -168,12 +168,9 @@ export class MilestonesArea implements IChartElement {
         return 'translate(' + (offset.left + this.xScale(milestoneDate)) + ','
         + (offset.top + this.elementHeight / 2) + ')';
       });
-
-    this.arrangeLabels();
   }
 
-  private arrangeLabels(): void {
-
+  public arrangeLabels(): void {
     const dataGroup = this.svg.select('g.data-group');
 
     const step = this.elementHeight / 2;
