@@ -531,8 +531,11 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     this.periodStartDate = xScaleTransformed.invert(xScaleTransformed.range()[0]);
     this.periodEndDate = xScaleTransformed.invert(xScaleTransformed.range()[1]);
 
-    // this.ganttControlsService.setPeriodStartDate(this.periodStartDate);
-    // this.ganttControlsService.setPeriodEndDate(this.periodEndDate);
+    if(this.chartElement.id.includes('gantt')){
+      this.ganttControlsService.setPeriodStartDate(this.periodStartDate);
+      this.ganttControlsService.setPeriodEndDate(this.periodEndDate);
+    }
+
   }
 
   // set minimum and maximum zoom levels
