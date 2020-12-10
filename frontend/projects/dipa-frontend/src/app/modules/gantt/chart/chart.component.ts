@@ -3,11 +3,13 @@ import {
   Component,
   ElementRef,
   Input,
+  NgModule,
   OnChanges,
   OnDestroy,
   OnInit,
   SimpleChanges,
   ViewChild,
+  ViewChildren,
   ViewEncapsulation
 } from '@angular/core';
 
@@ -29,12 +31,13 @@ import {switchMap} from 'rxjs/operators';
   encapsulation: ViewEncapsulation.None
 })
 
-export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
+export class ChartComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(public ganttControlsService: GanttControlsService,
               private milestonesService: MilestonesService,
               private tasksService: TasksService,
-              private timelinesService: TimelinesService) {
+              private timelinesService: TimelinesService,
+              private elementRef: ElementRef) {
     d3.timeFormatDefaultLocale({
       // @ts-ignore
       decimal: ',',
@@ -55,9 +58,13 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   @Input() milestoneData = [];
   @Input() taskData = [];
   @Input() timelineData: any = {};
+  @Input() projectStartDate: any;
+  @Input() projectEndDate: any;
 
   @ViewChild('chart')
+
   chartFigure: ElementRef;
+  chartElement = this.elementRef.nativeElement;
 
   periodStartDate: Date;
   periodEndDate: Date;
@@ -73,7 +80,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   private svg;
   private zoomElement;
 
-  private viewBoxHeight = 400;
+  private viewBoxHeight = 300;
   private viewBoxWidth = 750;
 
   private padding = { top: 40, left: 0};
@@ -118,6 +125,12 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
         }
       }
     });
+
+    if(this.chartElement.id.includes('overview')){
+      this.periodStartDate = new Date(this.timelineData.start);
+      this.periodEndDate = new Date(this.timelineData.end);
+
+    }
 
     this.viewTypeSubscription = this.ganttControlsService.getViewType()
     .subscribe((data) => {
@@ -177,7 +190,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     });
 
 
-    d3.select('figure#chart')
+    d3.select(this.chartElement).select('figure')
       .append('div')
       .attr('class', 'tooltip');
 
@@ -204,6 +217,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
   ngAfterViewInit(): void {
     this.resizeChart(this.chartFigure.nativeElement.offsetWidth);
+
   }
 
   onResized(event: ResizedEvent): void {
@@ -216,7 +230,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   private drawChart(): void {
 
     if (!this.svg) {
-      this.svg = this.createSvg();
+      this.svg = this.createSvg(this.chartElement, this.chartElement.id);
       this.initializeSvgGraphElements();
 
       // zoom out a bit to show all data at start
@@ -414,10 +428,11 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.redrawChart(0);
   }
 
-  private createSvg(): any {
+  public createSvg(element, id): any {
 
-    const svg = d3.select('figure#chart')
+    const svg = d3.select(element).select('figure')
       .append('svg')
+      .attr("id", id) 
       .attr('width', '100%')
       // .attr('height', '100vh')
       .attr('viewBox', '0 0 ' + this.viewBoxWidth + ' ' + this.viewBoxHeight);
@@ -474,7 +489,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   }
 
   onZoom(event: d3.D3ZoomEvent<any, any>, minTimeMs): void {
-
     const eventTransform: d3.ZoomTransform = event.transform;
 
     if (eventTransform.k === 1 && eventTransform.x === 0 && eventTransform.y === 0) {
@@ -517,8 +531,11 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.periodStartDate = xScaleTransformed.invert(xScaleTransformed.range()[0]);
     this.periodEndDate = xScaleTransformed.invert(xScaleTransformed.range()[1]);
 
-    this.ganttControlsService.setPeriodStartDate(this.periodStartDate);
-    this.ganttControlsService.setPeriodEndDate(this.periodEndDate);
+    if(this.chartElement.id.includes('gantt')){
+      this.ganttControlsService.setPeriodStartDate(this.periodStartDate);
+      this.ganttControlsService.setPeriodEndDate(this.periodEndDate);
+    }
+
   }
 
   // set minimum and maximum zoom levels

@@ -5,6 +5,7 @@ const routes: Routes = [
   { path: '', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule)},
   { path: 'home', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule)},
   { path: 'gantt', loadChildren: () => import('./modules/gantt/gantt.module').then(m => m.GanttModule)},
+  { path: 'overview', loadChildren: () => import('./modules/overview/overview.module').then(m => m.OverviewModule)}
 ];
 
 @NgModule({
