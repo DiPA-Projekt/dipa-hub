@@ -41,3 +41,5 @@ jobs:
           ${{ runner.os }}-node-
     - name: Build with Maven
       run: mvn clean install
+      env:
+        CI: false
