@@ -3,12 +3,18 @@ package online.dipa.hub.services;
 import net.fortuna.ical4j.model.TimeZone;
 import online.dipa.hub.IcsCalendar;
 import online.dipa.hub.TimelineState;
-import online.dipa.hub.api.model.*;
+import online.dipa.hub.api.model.Increment;
+import online.dipa.hub.api.model.Milestone;
+import online.dipa.hub.api.model.ProjectApproach;
+import online.dipa.hub.api.model.ProjectType;
+import online.dipa.hub.api.model.Timeline;
 import online.dipa.hub.persistence.entities.PlanTemplateEntity;
 import online.dipa.hub.persistence.entities.ProjectApproachEntity;
+import online.dipa.hub.persistence.entities.ProjectTypeEntity;
 import online.dipa.hub.persistence.repositories.PlanTemplateRepository;
 import online.dipa.hub.persistence.repositories.ProjectApproachRepository;
 import online.dipa.hub.persistence.repositories.ProjectTypeRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
@@ -22,6 +28,10 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -169,7 +179,7 @@ public class TimelineService {
             hashmapIncrementMilestones.put(increment, incrementMilestones);
 
         }
-        
+
         return hashmapIncrementMilestones;
     }
 

@@ -12,7 +12,8 @@ import {
   TasksService,
   TimelinesIncrementService,
   TimelinesService
-} from 'dipa-api-client';
+, TimelinesIncrementService, IncrementsService,
+        ProjectTypesService, ProjectApproachesService} from 'dipa-api-client';
 
 @Component({
   selector: 'app-gantt',
