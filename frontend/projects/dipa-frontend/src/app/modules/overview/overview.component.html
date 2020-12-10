@@ -1,15 +1,19 @@
+<h1>Übersicht über alle Projekte: </h1>
 <div class="container">
+    <div class="row justify-content-center">
+        <mat-spinner *ngIf="loading"></mat-spinner>
+    </div>
     <ng-container *ngFor="let vm of vmAll$ | async">
         <div class="row">
-            <div class="col">
+            <div class="col-3">
                 <mat-card>
-                    <mat-card-content >
+                    <mat-card-content>
                         <p>Vorhabensart</p>
                         <p class="mat-body-strong">{{vm.projectType.name}}</p>
                     </mat-card-content>
                 </mat-card>
             </div>
-            <div class="col">
+            <div class="col-3">
                 <mat-card>
                     <mat-card-content>
                         <p>Vorgehensweise</p>

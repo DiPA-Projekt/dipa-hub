@@ -15,11 +15,11 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   @ViewChildren('charts') charts: QueryList<ChartComponent>;
 
-  timelinesSubscription;
-  projectTypesSubscription;
-  projectApproachesSubscription;
+  timelinesSubscription: any;
+  projectTypesSubscription: any;
+  projectApproachesSubscription: any;
 
-  timelineData;
+  timelineData: any;
 
   selectedTimelineId: number;
   selectedProjectTypeId: number;
@@ -29,14 +29,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
   periodStartDateSubscription: any;
 
   observablesList : Array<any> = [];
-  resultList : [];
   
   projectTypesList: Array<any> = [];
   projectApproachesList: Array<any> = [];
-
-  ngAfterViewInit() {
-    console.log(this.charts);
-  }
+  loading: boolean;
 
   periodStartDate = new Date(2020, 0, 1);
   periodEndDate = new Date(2020, 11, 31);
@@ -69,33 +65,29 @@ export class OverviewComponent implements OnInit, OnDestroy {
       this.timelineData = data;
 
       this.timelineData.forEach(timeline => {
-
         this.observablesList.push(this.setData(timeline.id));
-
       });
 
       this.vmAll$ = forkJoin(this.observablesList);
       
-      this.vmAll$.forEach(element => {
-        // @ViewChild(element.timeline.id, { static: true });
-        console.log(element)
-      });
-
       this.selectedTimelineId = this.timelineData.find(c => c.defaultTimeline === true)?.id;
       this.selectedProjectTypeId = this.timelineData.filter(item => item.id === this.selectedTimelineId)[0].projectTypeId;
       this.selectedProjectApproachId = this.timelineData.filter(item => item.id === this.selectedTimelineId)[0].projectApproachId;
 
     });
-    console.log(this.timelineData)
   }
 
   setData(timelineId): Observable<any> {
+    this.loading = true;
+
     return forkJoin([
       this.tasksService.getTasksForTimeline(timelineId),
       this.milestonesService.getMilestonesForTimeline(timelineId)
     ])
     .pipe(
       map(([taskData, milestoneData]) => {
+        this.loading = false;
+
         const milestoneDates = milestoneData.map(x => this.createDateAtMidnight(x.date));
         const taskStartDates = taskData.map(x => this.createDateAtMidnight(x.start));
         const taskEndDates = taskData.map(x => this.createDateAtMidnight(x.end));
@@ -105,25 +97,14 @@ export class OverviewComponent implements OnInit, OnDestroy {
         const timeline = this.timelineData.find(c => c.id === timelineId);
         const projectType = this.projectTypesList.filter(projectType => projectType.id === timeline.projectTypeId)[0];
         const projectApproach = this.projectApproachesList.filter(projectApproach => projectApproach.id === timeline.projectApproachId)[0];
-        const periodStartDate = timeline.start;
-        const periodEndDate = timeline.end;
 
         return {
           milestoneData,
           taskData,
           timeline,
           projectApproach,
-          projectType,
-          periodStartDate,
-          periodEndDate
+          projectType
         };
-      }),
-      tap( data => {
-        this.periodEndDate = data.periodEndDate;
-        this.periodStartDate = data.periodStartDate;
-
-        // this.ganttControlsService.setPeriodStartDate(data.periodStartDate);
-        // this.ganttControlsService.setPeriodEndDate(data.periodEndDate);
       })
     );
   }
