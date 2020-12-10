@@ -23,10 +23,13 @@ export class MilestonesArea implements IChartElement {
 
   public onDragEndMilestone?: (days: number, id: number) => void;
 
-  constructor(svg: any, xScale: any, data: any[]) {
+  modifiable = false;
+
+  constructor(svg: any, xScale: any, data: any[], modifiable: boolean) {
     this.svg = svg;
     this.xScale = xScale;
     this.data = data;
+    this.modifiable = modifiable;
 
     this.tooltip = d3.select('figure#chart .tooltip');
   }
@@ -99,7 +102,6 @@ export class MilestonesArea implements IChartElement {
         const dragOffset: number = Math.floor((milestoneDate - this.initMilestoneDate) / (1000 * 60 * 60 * 24));
 
         this.onDragEndMilestone(dragOffset, event.subject.id);
-
       });
 
     // milestones
@@ -114,16 +116,21 @@ export class MilestonesArea implements IChartElement {
         milestoneDate.setHours(0, 0, 0, 0);
         return 'translate(' + (offset.left + this.xScale(milestoneDate)) + ','
           + (offset.top + this.elementHeight / 2) + ')';
-      })
-      .call(drag);
+      });
 
-    milestone
+    const milestoneIcon = milestone
       .append('path')
       .attr('class', 'milestone')
       .attr('transform', 'scale(1.5 1)')
       .attr('d', d3.symbol().type(d3.symbolDiamond))
       .style('fill', this.elementColor)
       .style('stroke', d3.rgb(this.elementColor).darker());
+
+    if (this.modifiable) {
+      milestone.call(drag);
+    } else {
+      milestoneIcon.classed('inactive', true);
+    }
 
     milestone
       .on('mouseover', (event, d) => {

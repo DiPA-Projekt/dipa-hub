@@ -57,7 +57,7 @@
       }
 
       g.project-group {
-        rect.projectDuration {
+        rect.projectDuration:not(.inactive) {
           cursor: move;
         }
 
@@ -67,8 +67,10 @@
         }
 
         line.projectStartDateLine, line.projectEndDateLine {
-          cursor: ew-resize;
           stroke-width: 2;
+        }
+
+        line.projectStartDateLine:not(.inactive), line.projectEndDateLine:not(.inactive) {
           cursor: ew-resize;
         }
       }
@@ -119,8 +121,11 @@
         g.milestoneEntry {
 
           path.milestone {
-            cursor: move;
             width: 50px;
+          }
+
+          path.milestone:not(.inactive) {
+            cursor: move;
           }
 
           text.milestoneLabel {
@@ -142,8 +147,11 @@
 
         rect.dragBarLeft, rect.dragBarRight {
           rx: 1;
-          cursor: ew-resize;
           opacity: 0;
+        }
+
+        rect.dragBarLeft:not(.inactive), rect.dragBarRight:not(.inactive) {
+          cursor: ew-resize;
         }
 
         text.taskLabel {

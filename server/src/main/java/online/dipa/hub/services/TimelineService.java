@@ -227,7 +227,7 @@ public class TimelineService {
     public List<Increment> getIncrementsForTimeline(final Long timelineId) {
 
         // initializeMilestones(timelineId);
-        // initializeIncrements(timelineId);
+        initializeIncrements(timelineId);
 
         List<Increment> result = this.sessionTimelines
                 .get(timelineId)
