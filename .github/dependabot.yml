@@ -7,6 +7,13 @@ updates:
     schedule:
       # Daily Updates (time can be set via. `time: "02:00"` under `interval`)
       interval: "daily"
+  # Enable dependency updates for Maven
+  - package-ecosystem: "npm"
+    # Look for the package.json in the root folder
+    directory: "/frontend/"
+    schedule:
+      # Daily Updates (time can be set via. `time: "02:00"` under `interval`)
+      interval: "daily"
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
