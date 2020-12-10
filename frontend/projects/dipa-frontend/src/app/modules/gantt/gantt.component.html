@@ -1,4 +1,4 @@
-<div id="gantt" class="gantt">
+<div id="gantt" class="gantt" #gantt>
 
   <div class="container">
     <div class="row justify-content-between">
@@ -69,6 +69,13 @@
         </div>
       </div>
     </div>
+    <div class = "row">
+      <button mat-button color="accent" (click)="addIncrement($event)">Inkrement hinzufügen</button>
+    </div>
+    <div class = "row">
+      <button mat-button color="accent" (click)="deleteIncrement($event)">Inkrement löschen</button>
+    </div>
+
 
     <div class="row">
       <div class="col">
@@ -77,6 +84,7 @@
                      [timelineData]="vm.selectedTimeline"
                      [milestoneData]="vm.milestoneData"
                      [taskData]="vm.taskData"
+                     id = "gantt{{vm.selectedTimeline.id}}"
           ></app-chart>
         </ng-container>
       </div>

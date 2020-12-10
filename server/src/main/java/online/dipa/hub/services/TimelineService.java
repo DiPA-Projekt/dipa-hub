@@ -118,36 +118,79 @@ public class TimelineService {
     private List<Milestone> loadMilestones(final Long timelineId, final int incrementCount) {
 
         List<Milestone> milestones = getMilestonesFromRespository(timelineId);
+        TimelineState sessionTimeline = findTimelineState(timelineId);
 
         if (incrementCount == 0) {
             return milestones;
-        } 
+        }
         else {
             List<Milestone> incrementMilestones = new ArrayList<Milestone>();
 
-            incrementMilestones.add(milestones.get(0));
-            incrementMilestones.add(milestones.get(milestones.size() - 1));
+            if (sessionTimeline.getMilestones() == null ){
+                incrementMilestones.add(milestones.get(0));
+                incrementMilestones.add(milestones.get(milestones.size() - 1));
+            }
+            else {
+                incrementMilestones.add(sessionTimeline.getMilestones().get(0));
+                incrementMilestones.add(sessionTimeline.getMilestones().get(sessionTimeline.getMilestones().size() - 1));
+            }
 
             for (Entry<Increment, List<Milestone>> entry : getIncrementMilestones(milestones, timelineId, incrementCount).entrySet()) {
                 List<Milestone> milestonesList = entry.getValue();
                 incrementMilestones.addAll(milestonesList);
             }
 
-            return incrementMilestones;
+            // System.out.println(incrementMilestones.stream()
+            // .map(m -> conversionService.convert(m, Milestone.class))
+            // .sorted(Comparator.comparing(Milestone::getDate))
+            // .collect(Collectors.toList()));
+
+            return incrementMilestones.stream()
+            .map(m -> conversionService.convert(m, Milestone.class))
+            .sorted(Comparator.comparing(Milestone::getDate))
+            .collect(Collectors.toList());
         }
     }
 
     private HashMap<Increment, List<Milestone>> getIncrementMilestones(List<Milestone> initMilestones,
             final Long timelineId,
             final int incrementCount) {
+        TimelineState sessionTimeline = findTimelineState(timelineId);
+        List<Increment> incrementsList;
+        if(sessionTimeline.getIncrements() == null){
+           incrementsList = loadIncrements(timelineId, incrementCount);
 
-        List<Increment> incrementsList = loadIncrements(timelineId, incrementCount);
+        }
+        else {
+            incrementsList = sessionTimeline.getIncrements();
+        }
+        // List<Increment> incrementsList = loadIncrements(timelineId, incrementCount);
+        LocalDate firstDatePeriod;
+        LocalDate lastDatePeriod;
 
         initMilestones.remove(initMilestones.size() - 1);
         initMilestones.remove(0);
 
-        LocalDate firstDatePeriod = initMilestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get();
-        LocalDate lastDatePeriod = initMilestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
+        if (sessionTimeline.getMilestones() == null ){
+            firstDatePeriod = initMilestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get();
+            lastDatePeriod = initMilestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
+        }
+        else {
+            List<Milestone> currentMilestones = sessionTimeline.getMilestones();
+            // currentMilestones.remove(milestones.size() - 1);
+            // currentMilestones.remove(0);
+            firstDatePeriod = currentMilestones.get(1).getDate();
+            lastDatePeriod = currentMilestones.get(currentMilestones.size()-2).getDate();
+
+            // incrementMilestones.add(sessionTimeline.getMilestones().get(0));
+            // incrementMilestones.add(sessionTimeline.getMilestones().get(sessionTimeline.getMilestones().size() - 1));
+        }
+
+        // initMilestones.remove(initMilestones.size() - 1);
+        // initMilestones.remove(0);
+
+        // LocalDate firstDatePeriod = initMilestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get();
+        // LocalDate lastDatePeriod = initMilestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
 
         long id = initMilestones.stream().map(Milestone::getId).min(Long::compareTo).get();
         long count = 0;
@@ -241,6 +284,7 @@ public class TimelineService {
     }
 
     private List<Increment> loadIncrements(final Long timelineId, final int incrementCount) {
+        TimelineState sessionTimeline = findTimelineState(timelineId);
 
         List<Milestone> milestones = getMilestonesFromRespository(timelineId);
 
@@ -248,16 +292,44 @@ public class TimelineService {
         milestones.remove(milestones.size() - 1);
         milestones.remove(0);
 
-        LocalDate firstMilestoneDate = milestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get().minusDays(14);
-        LocalDate lastMilestoneDate = milestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
-        long daysBetween = DAYS.between(firstMilestoneDate.plusDays(1), lastMilestoneDate.minusDays(1));
+        LocalDate firstMilestoneDate;
+        LocalDate lastMilestoneDate;
+        long daysBetween;
+
+            // firstMilestoneDate = milestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get();
+            // lastMilestoneDate = milestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
+            // daysBetween = DAYS.between(firstMilestoneDate.plusDays(1), lastMilestoneDate.minusDays(1));
+
+        if (sessionTimeline.getMilestones() == null) {
+            firstMilestoneDate = milestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get();
+            lastMilestoneDate = milestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
+            daysBetween = DAYS.between(firstMilestoneDate.plusDays(1), lastMilestoneDate.minusDays(1));
+        }
+        else {
+            List<Milestone> currentMilestones = sessionTimeline.getMilestones();
+            System.out.println(currentMilestones);
+            // currentMilestones.remove(milestones.size() - 1);
+            // currentMilestones.remove(0);
+            firstMilestoneDate = currentMilestones.get(1).getDate();
+            lastMilestoneDate = currentMilestones.get(currentMilestones.size()-2).getDate();
+
+            // firstMilestoneDate = currentMilestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get();
+            // lastMilestoneDate = currentMilestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
+            daysBetween = DAYS.between(firstMilestoneDate.plusDays(1), lastMilestoneDate.minusDays(1));
+        }
+        System.out.println(firstMilestoneDate);
+        System.out.println(lastMilestoneDate);
+
+        // LocalDate firstMilestoneDate = milestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get().minusDays(14);
+        // LocalDate lastMilestoneDate = milestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
+        // long daysBetween = DAYS.between(firstMilestoneDate.plusDays(1), lastMilestoneDate.minusDays(1));
 
         long durationIncrement = daysBetween / incrementCount;
 
         List<Increment> incrementsList = new ArrayList<Increment>();
         long id = 1;
 
-        LocalDate startDateIncrement = firstMilestoneDate.plusDays(1);
+        LocalDate startDateIncrement = firstMilestoneDate;
         LocalDate endDateIncrement = startDateIncrement.plusDays(durationIncrement);
 
         for (int i = 0; i < incrementCount; i++) {
@@ -274,19 +346,21 @@ public class TimelineService {
             startDateIncrement = endDateIncrement.plusDays(1);
 
             if (i == (incrementCount -2)){
-                endDateIncrement = lastMilestoneDate.minusDays(1);
+                endDateIncrement = lastMilestoneDate;
             }
             else {
                 endDateIncrement = endDateIncrement.plusDays(durationIncrement);
             }
         }
+        System.out.println(incrementsList);
         return incrementsList;
 
     }
 
     public void addIncrement(Long timelineId) {
         TimelineState sessionTimeline = findTimelineState(timelineId);
-
+        System.out.println(sessionTimeline.getTimeline().getStart());
+        System.out.println(sessionTimeline.getTimeline().getEnd());
         int incrementCount = sessionTimeline.getIncrements().size();
 
         sessionTimeline.setIncrements(this.loadIncrements(timelineId, incrementCount + 1));
@@ -336,6 +410,20 @@ public class TimelineService {
         for (Milestone m : sessionTimeline.getMilestones()) {
             m.setDate(m.getDate().plusDays(days));
         }
+
+        final ProjectApproachEntity projectApproach = findProjectApproach(timelineId);
+
+        if (projectApproach.isIterative()) {
+            int incrementCount = sessionTimeline.getIncrements().size();
+
+            sessionTimeline.setIncrements(this.loadIncrements(timelineId, incrementCount));
+            // sessionTimeline.setMilestones(this.loadMilestones(timelineId, incrementCount));
+        } 
+        // else {
+        //     for (Milestone m : sessionTimeline.getMilestones()) {
+        //         m.setDate(m.getDate().plusDays(days));
+        //     }
+        // }
     }
 
     public void moveTimelineStartByDays(final Long timelineId, final Long days) {
@@ -352,12 +440,37 @@ public class TimelineService {
         LocalDate newTimelineStart = timelineStart.plusDays(days);
         sessionTimeline.getTimeline().setStart(newTimelineStart);
 
+        final ProjectApproachEntity projectApproach = findProjectApproach(timelineId);
+
         for (Milestone m : sessionTimeline.getMilestones()) {
             long oldMilestoneRelativePosition = DAYS.between(timelineStart, m.getDate());
             long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
 
             m.setDate(newTimelineStart.plusDays(newMilestoneRelativePosition));
         }
+
+        if (projectApproach.isIterative()) {
+            int incrementCount = sessionTimeline.getIncrements().size();
+
+            sessionTimeline.setIncrements(this.loadIncrements(timelineId, incrementCount));
+            // sessionTimeline.setMilestones(this.loadMilestones(timelineId, incrementCount));
+        } 
+        // else {
+        //     for (Milestone m : sessionTimeline.getMilestones()) {
+        //         long oldMilestoneRelativePosition = DAYS.between(timelineStart, m.getDate());
+        //         long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
+    
+        //         m.setDate(newTimelineStart.plusDays(newMilestoneRelativePosition));
+        //     }
+        // }
+
+
+        // for (Milestone m : sessionTimeline.getMilestones()) {
+        //     long oldMilestoneRelativePosition = DAYS.between(timelineStart, m.getDate());
+        //     long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
+
+        //     m.setDate(newTimelineStart.plusDays(newMilestoneRelativePosition));
+        // }
     }
 
     public void moveTimelineEndByDays(final Long timelineId, final Long days) {
@@ -374,12 +487,22 @@ public class TimelineService {
         LocalDate newTimelineEnd = timelineEnd.plusDays(days);
         sessionTimeline.getTimeline().setEnd(newTimelineEnd);
 
+        final ProjectApproachEntity projectApproach = findProjectApproach(timelineId);
+
         for (Milestone m : sessionTimeline.getMilestones()) {
             long oldMilestoneRelativePosition = DAYS.between(timelineStart, m.getDate());
             long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
 
             m.setDate(timelineStart.plusDays(newMilestoneRelativePosition));
         }
+
+        if (projectApproach.isIterative()) {
+            int incrementCount = sessionTimeline.getIncrements().size();
+
+            sessionTimeline.setIncrements(this.loadIncrements(timelineId, incrementCount));
+            // sessionTimeline.setMilestones(this.loadMilestones(timelineId, incrementCount));
+        } 
+       
     }
 
     public void moveMileStoneByDays(final Long timelineId, final Long days, final Long movedMilestoneId) {
@@ -407,6 +530,15 @@ public class TimelineService {
 
         sessionTimeline.getTimeline().setStart(newProjectStart);
         sessionTimeline.getTimeline().setEnd(newProjectEnd);
+
+        final ProjectApproachEntity projectApproach = findProjectApproach(timelineId);
+
+        if (projectApproach.isIterative()) {
+            int incrementCount = sessionTimeline.getIncrements().size();
+
+            sessionTimeline.setIncrements(this.loadIncrements(timelineId, incrementCount));
+            // sessionTimeline.setMilestones(this.loadMilestones(timelineId, incrementCount));
+        } 
     }
 
     public File getCalendarFileForTimeline(final Long timelineId) throws IOException {

@@ -23,7 +23,6 @@ import {ProjectDuration} from './chart-elements/ProjectDuration';
 import {MilestonesService, TasksService, TimelinesService} from 'dipa-api-client';
 import {forkJoin, Observable} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
-import { eventNames } from 'process';
 
 @Component({
   selector: 'app-chart',
@@ -32,13 +31,13 @@ import { eventNames } from 'process';
   encapsulation: ViewEncapsulation.None
 })
 
-export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
+export class ChartComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(public ganttControlsService: GanttControlsService,
               private milestonesService: MilestonesService,
               private tasksService: TasksService,
               private timelinesService: TimelinesService,
-              private eltef: ElementRef) {
+              private elementRef: ElementRef) {
     d3.timeFormatDefaultLocale({
       // @ts-ignore
       decimal: ',',
@@ -59,11 +58,13 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   @Input() milestoneData = [];
   @Input() taskData = [];
   @Input() timelineData: any = {};
+  @Input() projectStartDate: any;
+  @Input() projectEndDate: any;
 
-  @ViewChild('2')
+  @ViewChild('chart')
 
   chartFigure: ElementRef;
-
+  chartElement = this.elementRef.nativeElement;
 
   periodStartDate: Date;
   periodEndDate: Date;
@@ -125,6 +126,12 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       }
     });
 
+    if(this.chartElement.id.includes('overview')){
+      this.periodStartDate = new Date(this.timelineData.start);
+      this.periodEndDate = new Date(this.timelineData.end);
+
+    }
+
     this.viewTypeSubscription = this.ganttControlsService.getViewType()
     .subscribe((data) => {
       if (this.viewType !== data) {
@@ -183,7 +190,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     });
 
 
-    d3.select(this.eltef.nativeElement).select('figure')
+    d3.select(this.chartElement).select('figure')
       .append('div')
       .attr('class', 'tooltip');
 
@@ -209,9 +216,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   }
 
   ngAfterViewInit(): void {
-    // this.resizeChart(this.chartFigure.nativeElement.offsetWidth);
-    let chart = d3.select(this.eltef.nativeElement)
-    console.log(d3.select(this.eltef.nativeElement))
+    this.resizeChart(this.chartFigure.nativeElement.offsetWidth);
 
   }
 
@@ -225,7 +230,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   private drawChart(): void {
 
     if (!this.svg) {
-      this.svg = this.createSvg(this.eltef.nativeElement, this.eltef.nativeElement.id);
+      this.svg = this.createSvg(this.chartElement, this.chartElement.id);
       this.initializeSvgGraphElements();
 
       // zoom out a bit to show all data at start
@@ -423,9 +428,9 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.redrawChart(0);
   }
 
-  public createSvg(place, id): any {
+  public createSvg(element, id): any {
 
-    const svg = d3.select(place).select('figure')
+    const svg = d3.select(element).select('figure')
       .append('svg')
       .attr("id", id) 
       .attr('width', '100%')

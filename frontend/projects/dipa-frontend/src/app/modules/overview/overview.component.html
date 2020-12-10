@@ -1,17 +1,30 @@
-<h3>Chefansicht</h3>
-
 <div class="container">
     <ng-container *ngFor="let vm of vmAll$ | async">
-        <h3>{{vm.projectType.name}}</h3>
-        <h3>{{vm.projectApproach.name}}</h3>
-
+        <div class="row">
+            <div class="col">
+                <mat-card>
+                    <mat-card-content >
+                        <p>Vorhabensart</p>
+                        <p class="mat-body-strong">{{vm.projectType.name}}</p>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+            <div class="col">
+                <mat-card>
+                    <mat-card-content>
+                        <p>Vorgehensweise</p>
+                        <p class="mat-body-strong">{{vm.projectApproach.name}}</p>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
         <div id="gantt{{vm.timeline.id}}" class="gantt">
-            <app-chart #cmp
+            <app-chart #charts
                     [timelineData]="vm.timeline"
                     [milestoneData]="vm.milestoneData"
                     [taskData]="vm.taskData"
-                    id = "{{vm.timeline.id}}"
+                    id = "overview{{vm.timeline.id}}"
             ></app-chart>
         </div>
-      </ng-container>
+    </ng-container>
 </div>
