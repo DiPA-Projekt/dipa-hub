@@ -16,9 +16,10 @@ import {GanttControlsService} from '../gantt-controls.service';
 import {ResizedEvent} from 'angular-resize-event';
 import {MilestonesArea} from './chart-elements/MilestonesArea';
 import {TasksArea} from './chart-elements/TasksArea';
+import {Increments} from './chart-elements/Increments';
 import {XAxis} from './chart-elements/XAxis';
 import {ProjectDuration} from './chart-elements/ProjectDuration';
-import {MilestonesService, TasksService, TimelinesService} from 'dipa-api-client';
+import {IncrementsService, MilestonesService, TasksService, TimelinesIncrementService, TimelinesService} from 'dipa-api-client';
 import {forkJoin, Observable} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 
@@ -34,7 +35,9 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   constructor(public ganttControlsService: GanttControlsService,
               private milestonesService: MilestonesService,
               private tasksService: TasksService,
-              private timelinesService: TimelinesService) {
+              private timelinesService: TimelinesService,
+              private incrementService: IncrementsService,
+              private timelinesIncrementService: TimelinesIncrementService) {
     d3.timeFormatDefaultLocale({
       // @ts-ignore
       decimal: ',',
@@ -52,6 +55,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     });
   }
 
+  @Input() incrementsData = [];
   @Input() milestoneData = [];
   @Input() taskData = [];
   @Input() timelineData: any = {};
@@ -87,9 +91,12 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   projectDuration: ProjectDuration;
   milestoneViewItem: MilestonesArea;
   taskViewItem: TasksArea;
+  incrementsViewItem: Increments;
 
   milestoneSubscription;
   taskSubscription;
+  addIncrementSubscription;
+  deleteIncrementSubscription;
   timelineSubscription;
   timelineStartSubscription;
   timelineEndSubscription;
@@ -197,6 +204,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     this.milestoneSubscription?.unsubscribe();
     this.taskSubscription?.unsubscribe();
+    this.addIncrementSubscription?.unsubscribe();
+    this.deleteIncrementSubscription?.unsubscribe();
     this.timelineSubscription?.unsubscribe();
     this.timelineStartSubscription?.unsubscribe();
     this.timelineEndSubscription?.unsubscribe();
@@ -281,10 +290,22 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
           this.timelineData.id,
         {operation: 'moveMilestone', days: offsetDays, movedMilestoneId: id});
 
-        this.timelineSubscription = this.subscribeForRedraw(moveMilestone$);
+        this.milestoneSubscription = this.subscribeForRedraw(moveMilestone$);
       } else {
         this.milestoneViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()}, 200);
       }
+    };
+
+    this.incrementsViewItem = new Increments(this.svg, this.xScale, this.incrementsData);
+    this.incrementsViewItem.draw({left: 0, top: this.taskViewItem.getAreaHeight()});
+
+    this.incrementsViewItem.onClickAddButton = () => {
+      const addIncrement$ = this.timelinesIncrementService.addIncrement(this.timelineData.id);
+      this.addIncrementSubscription = this.subscribeForReset(addIncrement$);
+    };
+    this.incrementsViewItem.onClickDeleteButton = () => {
+      const deleteIncrement$ = this.timelinesIncrementService.deleteIncrement(this.timelineData.id);
+      this.deleteIncrementSubscription = this.subscribeForReset(deleteIncrement$);
     };
   }
 
@@ -400,6 +421,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     this.taskViewItem.redraw({left: 0, top: 0});
     this.milestoneViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()}, animationDuration);
+    this.incrementsViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()});
   }
 
   private resizeChart(newSize): void {
@@ -463,8 +485,11 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     const projectGroup = this.svg.append('g').attr('class', 'project-group');
     projectGroup.attr('transform', 'translate(' + this.padding.left + ',45)');
 
+    const incrementGroup = this.svg.append('g').attr('class', 'increment-group');
+    incrementGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + 30) + ')');
+
     const dataGroup = this.svg.append('g').attr('class', 'data-group');
-    dataGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + 30) + ')');
+    dataGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + 60) + ')');
 
     const currentDateGroup = this.svg.append('g').attr('class', 'current-date-group');
     currentDateGroup.attr('transform', 'translate(' + this.padding.left + ',0)');
@@ -554,32 +579,62 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       .range([0, newSize - this.padding.left]);
   }
 
-  resizeZoomElement(newSize): void {
+  private resizeZoomElement(newSize): void {
     this.zoomElement
       .attr('width', newSize - this.padding.left);
   }
 
+  // redraw if data was changed but no additional data was added or removed
   private subscribeForRedraw(obs): Observable<any> {
     return obs.pipe(
       switchMap(() => forkJoin([
         this.timelinesService.getTimelines(),
         this.tasksService.getTasksForTimeline(this.timelineData.id),
-        this.milestonesService.getMilestonesForTimeline(this.timelineData.id)
+        this.milestonesService.getMilestonesForTimeline(this.timelineData.id),
+        this.incrementService.getIncrementsForTimeline(this.timelineData.id)
       ]))
-    ).subscribe(([timelinesData, taskData, milestoneData]) => {
+    ).subscribe(([timelinesData, taskData, milestoneData, incrementsData]) => {
 
-      this.timelineData = timelinesData.find(c => c.id === this.timelineData.id);
-      this.projectDuration.setData(this.timelineData);
+      this.setData(timelinesData, taskData, milestoneData, incrementsData);
+
       this.projectDuration.redraw(200);
-
-      this.taskData = taskData;
-      this.taskViewItem.setData(taskData);
       this.taskViewItem.redraw({left: 0, top: 0});
-
-      this.milestoneData = milestoneData;
-      this.milestoneViewItem.setData(milestoneData);
       this.milestoneViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()}, 200);
+      this.incrementsViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()});
     });
   }
 
+  // reset if data was added or removed
+  private subscribeForReset(obs): Observable<any> {
+    return obs.pipe(
+      switchMap(() => forkJoin([
+        this.timelinesService.getTimelines(),
+        this.tasksService.getTasksForTimeline(this.timelineData.id),
+        this.milestonesService.getMilestonesForTimeline(this.timelineData.id),
+        this.incrementService.getIncrementsForTimeline(this.timelineData.id)
+      ]))
+    ).subscribe(([timelinesData, taskData, milestoneData, incrementsData]) => {
+
+      this.setData(timelinesData, taskData, milestoneData, incrementsData);
+
+      this.projectDuration.redraw(200);
+      this.taskViewItem.reset({left: 0, top: 0});
+      this.milestoneViewItem.reset({left: 0, top: this.taskViewItem.getAreaHeight()});
+      this.incrementsViewItem.reset({left: 0, top: this.taskViewItem.getAreaHeight()});
+    });
+  }
+
+  private setData(timelinesData, taskData, milestoneData, incrementsData): void {
+    this.timelineData = timelinesData.find(c => c.id === this.timelineData.id);
+    this.projectDuration.setData(this.timelineData);
+
+    this.taskData = taskData;
+    this.taskViewItem.setData(taskData);
+
+    this.milestoneData = milestoneData;
+    this.milestoneViewItem.setData(milestoneData);
+
+    this.incrementsData = incrementsData;
+    this.incrementsViewItem.setData(incrementsData);
+  }
 }

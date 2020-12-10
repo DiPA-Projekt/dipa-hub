@@ -38,6 +38,13 @@ export class TasksArea implements IChartElement{
       .data(this.data);
   }
 
+  reset(offset): void {
+    const dataGroup = this.svg.select('g.data-group');
+    dataGroup.selectAll('g.taskEntry').remove();
+    this.draw(offset);
+    this.redraw(offset);
+  }
+
   draw(offset): void {
 
     const dataGroup = this.svg.select('g.data-group');

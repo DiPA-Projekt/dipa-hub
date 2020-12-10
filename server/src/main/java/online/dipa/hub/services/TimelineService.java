@@ -3,18 +3,12 @@ package online.dipa.hub.services;
 import net.fortuna.ical4j.model.TimeZone;
 import online.dipa.hub.IcsCalendar;
 import online.dipa.hub.TimelineState;
-import online.dipa.hub.api.model.Increment;
-import online.dipa.hub.api.model.Milestone;
-import online.dipa.hub.api.model.ProjectApproach;
-import online.dipa.hub.api.model.ProjectType;
-import online.dipa.hub.api.model.Timeline;
+import online.dipa.hub.api.model.*;
 import online.dipa.hub.persistence.entities.PlanTemplateEntity;
 import online.dipa.hub.persistence.entities.ProjectApproachEntity;
-import online.dipa.hub.persistence.entities.ProjectTypeEntity;
 import online.dipa.hub.persistence.repositories.PlanTemplateRepository;
 import online.dipa.hub.persistence.repositories.ProjectApproachRepository;
 import online.dipa.hub.persistence.repositories.ProjectTypeRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
@@ -28,10 +22,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -108,8 +98,7 @@ public class TimelineService {
             if (projectApproach.isIterative()) {
                 initializeIncrements(timelineId);
                 sessionTimeline.setMilestones(this.loadMilestones(timelineId, 1));
-            }
-            else {
+            } else {
                 sessionTimeline.setMilestones(this.loadMilestones(timelineId, 0));
             }
         }
@@ -121,8 +110,7 @@ public class TimelineService {
 
         if (incrementCount == 0) {
             return milestones;
-        }
-        else {
+        } else {
             List<Milestone> incrementMilestones = new ArrayList<Milestone>();
 
             incrementMilestones.add(milestones.get(0));
@@ -199,8 +187,7 @@ public class TimelineService {
 
         if (planTemplateList.size() == 1) {
             milestones = convertMilestones(planTemplateList.get(0));
-        }
-        else {
+        } else {
             long masterPlanId = 2;
             PlanTemplateEntity masterPlan = planTemplateList.stream().filter(template -> template.getId().equals(masterPlanId)).findFirst().orElse(null);
 
@@ -229,15 +216,25 @@ public class TimelineService {
 
     public List<Increment> getIncrementsForTimeline(final Long timelineId) {
 
-        return this.sessionTimelines
+        // initializeMilestones(timelineId);
+        // initializeIncrements(timelineId);
+
+        List<Increment> result = this.sessionTimelines
                 .get(timelineId)
                 .getIncrements();
+
+        return Objects.requireNonNullElse(result, Collections.emptyList());
     }
 
     private void initializeIncrements(final Long timelineId) {
         TimelineState sessionTimeline = findTimelineState(timelineId);
 
-        sessionTimeline.setIncrements(this.loadIncrements(timelineId, 1));
+        if (sessionTimeline.getIncrements() == null) {
+            final ProjectApproachEntity projectApproach = findProjectApproach(timelineId);
+            if (projectApproach.isIterative()) {
+                sessionTimeline.setIncrements(this.loadIncrements(timelineId, 1));
+            }
+        }
     }
 
     private List<Increment> loadIncrements(final Long timelineId, final int incrementCount) {
@@ -281,7 +278,6 @@ public class TimelineService {
             }
         }
         return incrementsList;
-
     }
 
     public void addIncrement(Long timelineId) {
@@ -302,7 +298,6 @@ public class TimelineService {
             sessionTimeline.setIncrements(this.loadIncrements(timelineId, incrementCount - 1));
             sessionTimeline.setMilestones(this.loadMilestones(timelineId, incrementCount - 1));
         }
-
     }
 
     private ProjectApproachEntity findProjectApproach(Long timelineId) {
@@ -336,6 +331,15 @@ public class TimelineService {
         for (Milestone m : sessionTimeline.getMilestones()) {
             m.setDate(m.getDate().plusDays(days));
         }
+
+        List<Increment> increments = sessionTimeline.getIncrements();
+        if (increments != null) {
+
+            for (Increment i : increments) {
+                i.setStart(i.getStart().plusDays(days));
+                i.setEnd(i.getEnd().plusDays(days));
+            }
+        }
     }
 
     public void moveTimelineStartByDays(final Long timelineId, final Long days) {
@@ -358,6 +362,21 @@ public class TimelineService {
 
             m.setDate(newTimelineStart.plusDays(newMilestoneRelativePosition));
         }
+
+        List<Increment> increments = sessionTimeline.getIncrements();
+        if (increments != null) {
+
+            for (Increment i : increments) {
+                long oldIncrementStartRelativePosition = DAYS.between(timelineStart, i.getStart());
+                long oldIncrementEndRelativePosition = DAYS.between(timelineStart, i.getEnd());
+
+                long newIncrementStartRelativePosition = Math.round(oldIncrementStartRelativePosition * factor);
+                long newIncrementEndRelativePosition = Math.round(oldIncrementEndRelativePosition * factor);
+
+                i.setStart(newTimelineStart.plusDays(newIncrementStartRelativePosition));
+                i.setEnd(newTimelineStart.plusDays(newIncrementEndRelativePosition));
+            }
+        }
     }
 
     public void moveTimelineEndByDays(final Long timelineId, final Long days) {
@@ -379,6 +398,21 @@ public class TimelineService {
             long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
 
             m.setDate(timelineStart.plusDays(newMilestoneRelativePosition));
+        }
+
+        List<Increment> increments = sessionTimeline.getIncrements();
+        if (increments != null) {
+
+            for (Increment i : increments) {
+                long oldIncrementStartRelativePosition = DAYS.between(timelineStart, i.getStart());
+                long oldIncrementEndRelativePosition = DAYS.between(timelineStart, i.getEnd());
+
+                long newIncrementStartRelativePosition = Math.round(oldIncrementStartRelativePosition * factor);
+                long newIncrementEndRelativePosition = Math.round(oldIncrementEndRelativePosition * factor);
+
+                i.setStart(timelineStart.plusDays(newIncrementStartRelativePosition));
+                i.setEnd(timelineStart.plusDays(newIncrementEndRelativePosition));
+            }
         }
     }
 

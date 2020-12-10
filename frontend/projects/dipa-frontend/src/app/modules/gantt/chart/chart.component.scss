@@ -73,6 +73,35 @@
         }
       }
 
+      g.increment-group {
+
+        rect.incrementHeader {
+          rx: 5;
+        }
+
+        text.incrementActions {
+          tspan.btn {
+            font-size: 1.1rem;
+            cursor: pointer;
+            opacity: 0.6;
+          }
+          tspan.btn:hover {
+            opacity: 1;
+          }
+        }
+        text.incrementName {
+          opacity: 0.6;
+        }
+        rect.increment {
+          rx: 5;
+          opacity: 0.5;
+          pointer-events: none;
+        }
+        text {
+          font-size: 11px;
+        }
+      }
+
       g.current-date-group {
         circle.currentDateCircle {
           r: 4;
@@ -86,14 +115,24 @@
       }
 
       g.data-group {
-        path.milestone {
-          cursor: move;
-          width: 50px;
-        }
 
-        text.milestoneLabel {
-          font-size: 11px;
-          pointer-events: none;
+        g.milestoneEntry {
+
+          path.milestone {
+            cursor: move;
+            width: 50px;
+          }
+
+          text.milestoneLabel {
+            font-size: 11px;
+            pointer-events: none;
+            text-anchor: middle;
+          }
+
+          line.labelLine {
+            stroke: #000;
+            opacity: 0.2;
+          }
         }
 
         rect.task {
