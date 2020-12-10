@@ -1,4 +1,4 @@
-<div id="gantt" #gantt>
+<div id="gantt" class="gantt" #gantt>
 
   <div class="container">
     <div class="row justify-content-between">
@@ -78,6 +78,7 @@
                      [milestoneData]="vm.milestoneData"
                      [taskData]="vm.taskData"
                      [incrementsData]="vm.incrementsData"
+                     id = "gantt{{vm.selectedTimeline.id}}"
           ></app-chart>
         </ng-container>
       </div>
