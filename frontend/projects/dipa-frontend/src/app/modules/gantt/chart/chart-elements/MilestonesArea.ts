@@ -132,9 +132,9 @@ export class MilestonesArea implements IChartElement {
       milestoneIcon.classed('inactive', true);
     }
 
-    milestone
+    milestoneIcon
       .on('mouseover', (event, d) => {
-        this.showTooltip(d, event.layerX, event.layerY);
+        this.showTooltip(d, event.clientX, event.clientY);
       })
       .on('mouseout', () => {
         this.tooltip
@@ -218,7 +218,7 @@ export class MilestonesArea implements IChartElement {
 
   showTooltip(d, x, y): void {
     this.tooltip
-      .style('top', (y + 15) + 'px')
+      .style('top', (y + 20) + 'px')
       .style('left', (x) + 'px')
       .style('display', 'block')
       .attr('font-size', 11)

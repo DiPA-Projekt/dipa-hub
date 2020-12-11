@@ -254,7 +254,7 @@ export class TasksArea implements IChartElement{
           .duration(500)
           .style('opacity', 1);
 
-        this.showTooltip(d, event.layerX, event.layerY);
+        this.showTooltip(d, event.clientX, event.clientY);
       })
       .on('mouseout', (event, d) => {
         const eventTask = dataGroup.select('#taskEntry_' + d.id);
@@ -368,7 +368,7 @@ export class TasksArea implements IChartElement{
 
   showTooltip(d, x, y): void {
     this.tooltip
-      .style('top', (y + 15) + 'px')
+      .style('top', (y + 20) + 'px')
       .style('left', (x) + 'px')
       .style('display', 'block')
       .html(`${d.name}<br>`
