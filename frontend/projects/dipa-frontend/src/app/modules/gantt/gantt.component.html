@@ -58,7 +58,7 @@
             <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
             <mat-datepicker #picker1></mat-datepicker>
           </mat-form-field>
-  
+
           <mat-form-field appearance="fill">
             <mat-label>Ende Zeitachse</mat-label>
             <input matInput [matDatepicker]="picker2" [value]="periodEndDate"
@@ -69,7 +69,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="row">
       <div class="col">
         <ng-container *ngIf="vm$ | async as vm">
@@ -77,6 +77,7 @@
                      [timelineData]="vm.selectedTimeline"
                      [milestoneData]="vm.milestoneData"
                      [taskData]="vm.taskData"
+                     [incrementsData]="vm.incrementsData"
                      id = "gantt{{vm.selectedTimeline.id}}"
           ></app-chart>
         </ng-container>

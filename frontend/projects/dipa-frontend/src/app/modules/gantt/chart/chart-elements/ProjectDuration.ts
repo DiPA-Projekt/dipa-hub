@@ -48,10 +48,13 @@ export class ProjectDuration {
   public onDragEndProjectStart?: (days: number) => void;
   public onDragEndProjectEnd?: (days: number) => void;
 
-  constructor(svg: any, xScale: any, timelineData: any) {
+  modifiable = false;
+
+  constructor(svg: any, xScale: any, timelineData: any, modifiable: boolean) {
     this.svg = svg;
     this.xScale = xScale;
     this.timelineProjectTypeId = timelineData.projectTypeId;
+    this.modifiable = modifiable;
     this.svgBbox = this.svg.node().getBBox();
     this.projectGroup = this.svg.select('g.project-group');
 
@@ -108,15 +111,20 @@ export class ProjectDuration {
       });
 
     // project duration indicator
-    this.projectGroup
+    const projectDurationIndicator = this.projectGroup
       .append('rect')
       .attr('class', 'projectDuration')
       .style('fill', this.elementColor)
       .style('stroke', d3.rgb(this.elementColor).darker())
       .attr('x', Math.min(visibleProjectStartDatePosition, this.xScale.range()[1]))
       .attr('width', Math.min(Math.max(this.xScale(this.projectEndDate) - visibleProjectStartDatePosition, 0), this.xScale.range()[1]))
-      .attr('height', this.height)
-      .call(drag);
+      .attr('height', this.height);
+
+    if (this.modifiable) {
+      projectDurationIndicator.call(drag);
+    } else {
+      projectDurationIndicator.classed('inactive', true);
+    }
 
     const initialStartDatePosition = Math.min(visibleProjectStartDatePosition, this.xScale.range()[1] - 120);
     const initialEndDatePosition = visibleProjectEndDatePosition - 60;
@@ -262,26 +270,36 @@ export class ProjectDuration {
       });
 
     // projectStartDate grid line
-    this.projectGroup
+    const projectStartDateLine = this.projectGroup
       .append('line')
       .attr('class', 'projectStartDateLine')
       .attr('x1', this.xScale(this.projectStartDate))
       .attr('x2', this.xScale(this.projectStartDate))
       .attr('y1', 0)
       .attr('y2', viewBoxHeight)
-      .attr('stroke', d3.rgb(this.elementColor).darker())
-      .call(dragProjectStart);
+      .attr('stroke', d3.rgb(this.elementColor).darker());
+
+    if (this.modifiable) {
+      projectStartDateLine.call(dragProjectStart);
+    } else {
+      projectStartDateLine.classed('inactive', true);
+    }
 
     // projectEndDate grid line
-    this.projectGroup
+    const projectEndDateLine = this.projectGroup
       .append('line')
       .attr('class', 'projectEndDateLine')
       .attr('x1', this.xScale(this.projectEndDate))
       .attr('x2', this.xScale(this.projectEndDate))
       .attr('y1', 0)
       .attr('y2', viewBoxHeight)
-      .attr('stroke', d3.rgb(this.elementColor).darker())
-      .call(dragProjectEnd);
+      .attr('stroke', d3.rgb(this.elementColor).darker());
+
+    if (this.modifiable) {
+      projectEndDateLine.call(dragProjectEnd);
+    } else {
+      projectEndDateLine.classed('inactive', true);
+    }
   }
 
   redraw(animationDuration): void {
