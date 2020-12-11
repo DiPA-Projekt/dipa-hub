@@ -423,7 +423,7 @@ export class ProjectDuration {
 
     this.riskAlarmText
       .on('mouseover', (event) => {
-        this.showLineTooltip(event.layerX, event.layerY, this.riskTooltip);
+        this.showLineTooltip(event.clientX, event.clientY, this.riskTooltip);
       })
       .on('mouseout', () => {
         this.tooltip
