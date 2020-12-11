@@ -141,7 +141,7 @@ databaseChangeLog:
                   value: 4
               - column:
                   name: name
-                  value: Beschaffung Vorgehensweise
+                  value: Linear nach UfAB
               - column:
                   name: iterative
                   value: false

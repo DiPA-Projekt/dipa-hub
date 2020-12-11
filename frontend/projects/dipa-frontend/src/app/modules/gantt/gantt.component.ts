@@ -5,7 +5,7 @@ import {forkJoin, Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 
 import {MilestonesService, TasksService, TimelinesService, TimelinesIncrementService, IncrementsService,
-        ProjectTypesService, ProjectApproachesService} from 'dipa-api-client';
+  ProjectTypesService, ProjectApproachesService} from 'dipa-api-client';
 
 @Component({
   selector: 'app-gantt',
@@ -128,10 +128,11 @@ export class GanttComponent implements OnInit, OnDestroy {
   setData(): void {
     this.vm$ = forkJoin([
       this.tasksService.getTasksForTimeline(this.selectedTimelineId),
-      this.milestonesService.getMilestonesForTimeline(this.selectedTimelineId)
+      this.milestonesService.getMilestonesForTimeline(this.selectedTimelineId),
+      this.incrementService.getIncrementsForTimeline(this.selectedTimelineId)
     ])
     .pipe(
-      map(([taskData, milestoneData]) => {
+      map(([taskData, milestoneData, incrementsData]) => {
         const milestoneDates = milestoneData.map(x => this.createDateAtMidnight(x.date));
         const taskStartDates = taskData.map(x => this.createDateAtMidnight(x.start));
         const taskEndDates = taskData.map(x => this.createDateAtMidnight(x.end));
@@ -146,6 +147,7 @@ export class GanttComponent implements OnInit, OnDestroy {
         return {
           milestoneData,
           taskData,
+          incrementsData,
           selectedTimeline,
           periodStartDate,
           periodEndDate

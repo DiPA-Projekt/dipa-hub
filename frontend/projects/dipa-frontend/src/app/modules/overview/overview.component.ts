@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 
 import {MilestonesService, TasksService, TimelinesService, 
-  ProjectTypesService, ProjectApproachesService} from 'dipa-api-client';
+  ProjectTypesService, ProjectApproachesService, IncrementsService} from 'dipa-api-client';
 import { ChartComponent } from '../gantt/chart/chart.component';
 import { forkJoin, Observable, of } from 'rxjs';
 import { concatMap, map, tap } from 'rxjs/operators';
@@ -41,6 +41,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
               private milestonesService: MilestonesService,
               private tasksService: TasksService,
               private projectTypesService: ProjectTypesService,
+              private incrementsService: IncrementsService,
               private projectApproachesService: ProjectApproachesService) { }
 
   ngOnDestroy(): void {
@@ -82,10 +83,11 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
     return forkJoin([
       this.tasksService.getTasksForTimeline(timelineId),
-      this.milestonesService.getMilestonesForTimeline(timelineId)
+      this.milestonesService.getMilestonesForTimeline(timelineId),
+      this.incrementsService.getIncrementsForTimeline(timelineId)
     ])
     .pipe(
-      map(([taskData, milestoneData]) => {
+      map(([taskData, milestoneData, incrementsData]) => {
         this.loading = false;
 
         const milestoneDates = milestoneData.map(x => this.createDateAtMidnight(x.date));
@@ -102,6 +104,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
           milestoneData,
           taskData,
           timeline,
+          incrementsData,
           projectApproach,
           projectType
         };

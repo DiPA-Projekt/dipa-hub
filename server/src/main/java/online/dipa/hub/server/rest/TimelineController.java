@@ -85,7 +85,7 @@ public class TimelineController implements TimelinesApi {
 
     @Override
     public ResponseEntity<Void> deleteIncrement(final Long timelineId) {
-        
+
         timelineService.deleteIncrement(timelineId);
         return ResponseEntity.noContent().build();
     }
@@ -95,7 +95,7 @@ public class TimelineController implements TimelinesApi {
         final List<Increment> incrementsList = timelineService.getIncrementsForTimeline(timelineId);
         return ResponseEntity.ok(incrementsList);
     }
-    
+
     public ResponseEntity<Resource> getTimelineCalendar(final Long timelineId) {
 
         try {
