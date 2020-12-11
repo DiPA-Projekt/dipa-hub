@@ -180,7 +180,7 @@ export class XAxis {
 
       circle.style('stroke', darkColor);
 
-      this.showLineTooltip(event.layerX, event.layerY);
+      this.showLineTooltip(event.clientX, event.clientY);
     })
     .on('mouseout', () => {
       currentLine.attr('stroke-width', 1);

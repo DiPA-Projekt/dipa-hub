@@ -49,6 +49,7 @@ export class ProjectDuration {
   public onDragEndProjectEnd?: (days: number) => void;
 
   modifiable = false;
+  textTooltip = 'Projekt verschieben, Projektbeginn und -ende ändern ist bei Vorgehensweise "inkrementelle Entwicklung" momentan abgeschaltet.';
 
   constructor(svg: any, xScale: any, timelineData: any, modifiable: boolean) {
     this.svg = svg;
@@ -124,6 +125,7 @@ export class ProjectDuration {
       projectDurationIndicator.call(drag);
     } else {
       projectDurationIndicator.classed('inactive', true);
+      this.tempTooltip(projectDurationIndicator);
     }
 
     const initialStartDatePosition = Math.min(visibleProjectStartDatePosition, this.xScale.range()[1] - 120);
@@ -283,6 +285,7 @@ export class ProjectDuration {
       projectStartDateLine.call(dragProjectStart);
     } else {
       projectStartDateLine.classed('inactive', true);
+      this.tempTooltip(projectStartDateLine);
     }
 
     // projectEndDate grid line
@@ -299,6 +302,7 @@ export class ProjectDuration {
       projectEndDateLine.call(dragProjectEnd);
     } else {
       projectEndDateLine.classed('inactive', true);
+      this.tempTooltip(projectEndDateLine);
     }
   }
 
@@ -419,7 +423,7 @@ export class ProjectDuration {
 
     this.riskAlarmText
       .on('mouseover', (event) => {
-        this.showLineTooltip(event.layerX, event.layerY);
+        this.showLineTooltip(event.clientX, event.clientY, this.riskTooltip);
       })
       .on('mouseout', () => {
         this.tooltip
@@ -461,15 +465,30 @@ export class ProjectDuration {
     }
   }
 
-  showLineTooltip(x, y): void {
+  showLineTooltip(x, y, textTooltip): void {
     // const per = this.riskPercentage * 100;
     this.tooltip
       .style('top', (y + 15) + 'px')
       .style('left', (x + 12) + 'px')
       .style('display', 'block')
-      .html(this.riskTooltip)
+      .html(textTooltip)
       .transition()
       .duration(300)
       .style('opacity', 1);
+  }
+
+  tempTooltip(element): void{
+    element.on('mouseover', (event) => {
+      this.showLineTooltip(event.clientX, event.clientY, this.textTooltip);
+    })
+    .on('mouseout', () => {
+      this.tooltip
+        .transition()
+        .duration(50)
+        .style('opacity', 0)
+        .transition()
+        .delay(50)
+        .style('display', 'none');
+    });
   }
 }
