@@ -3,11 +3,13 @@ import {
   Component,
   ElementRef,
   Input,
+  NgModule,
   OnChanges,
   OnDestroy,
   OnInit,
   SimpleChanges,
   ViewChild,
+  ViewChildren,
   ViewEncapsulation
 } from '@angular/core';
 
@@ -16,9 +18,10 @@ import {GanttControlsService} from '../gantt-controls.service';
 import {ResizedEvent} from 'angular-resize-event';
 import {MilestonesArea} from './chart-elements/MilestonesArea';
 import {TasksArea} from './chart-elements/TasksArea';
+import {Increments} from './chart-elements/Increments';
 import {XAxis} from './chart-elements/XAxis';
 import {ProjectDuration} from './chart-elements/ProjectDuration';
-import {MilestonesService, TasksService, TimelinesService} from 'dipa-api-client';
+import {IncrementsService, MilestonesService, TasksService, TimelinesIncrementService, TimelinesService} from 'dipa-api-client';
 import {forkJoin, Observable} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 
@@ -34,7 +37,10 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   constructor(public ganttControlsService: GanttControlsService,
               private milestonesService: MilestonesService,
               private tasksService: TasksService,
-              private timelinesService: TimelinesService) {
+              private timelinesService: TimelinesService,
+              private incrementService: IncrementsService,
+              private timelinesIncrementService: TimelinesIncrementService,
+              private elementRef: ElementRef) {
     d3.timeFormatDefaultLocale({
       // @ts-ignore
       decimal: ',',
@@ -52,17 +58,24 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     });
   }
 
+  @Input() incrementsData = [];
   @Input() milestoneData = [];
   @Input() taskData = [];
   @Input() timelineData: any = {};
+  @Input() projectStartDate: any;
+  @Input() projectEndDate: any;
 
   @ViewChild('chart')
+
   chartFigure: ElementRef;
+  chartElement = this.elementRef.nativeElement;
 
   periodStartDate: Date;
   periodEndDate: Date;
 
   viewType: string;
+
+  arrangeLabelTimeout;
 
   periodStartDateSubscription;
   periodEndDateSubscription;
@@ -73,7 +86,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   private svg;
   private zoomElement;
 
-  private viewBoxHeight = 400;
+  private viewBoxHeight = 300;
   private viewBoxWidth = 750;
 
   private padding = { top: 40, left: 0};
@@ -87,14 +100,22 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   projectDuration: ProjectDuration;
   milestoneViewItem: MilestonesArea;
   taskViewItem: TasksArea;
+  incrementsViewItem: Increments;
 
   milestoneSubscription;
   taskSubscription;
+  addIncrementSubscription;
+  deleteIncrementSubscription;
   timelineSubscription;
   timelineStartSubscription;
   timelineEndSubscription;
 
+  modifiable: boolean;
+
   ngOnInit(): void {
+    // TODO: this is just temporary
+    this.modifiable = this.timelineData.id !== 3;
+
     this.periodStartDateSubscription = this.ganttControlsService.getPeriodStartDate()
     .subscribe((data) => {
       if (this.periodStartDate !== data) {
@@ -118,6 +139,11 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
         }
       }
     });
+
+    if (this.chartElement.id.includes('overview')){
+      this.periodStartDate = new Date(this.timelineData.start);
+      this.periodEndDate = new Date(this.timelineData.end);
+    }
 
     this.viewTypeSubscription = this.ganttControlsService.getViewType()
     .subscribe((data) => {
@@ -177,7 +203,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     });
 
 
-    d3.select('figure#chart')
+    d3.select(this.chartElement).select('figure')
       .append('div')
       .attr('class', 'tooltip');
 
@@ -197,6 +223,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     this.milestoneSubscription?.unsubscribe();
     this.taskSubscription?.unsubscribe();
+    this.addIncrementSubscription?.unsubscribe();
+    this.deleteIncrementSubscription?.unsubscribe();
     this.timelineSubscription?.unsubscribe();
     this.timelineStartSubscription?.unsubscribe();
     this.timelineEndSubscription?.unsubscribe();
@@ -216,7 +244,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   private drawChart(): void {
 
     if (!this.svg) {
-      this.svg = this.createSvg();
+      this.svg = this.createSvg(this.chartElement, this.chartElement.id);
       this.initializeSvgGraphElements();
 
       // zoom out a bit to show all data at start
@@ -232,46 +260,72 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.headerX = new XAxis(this.svg, this.xScale);
     this.headerX.formatDate = this.headerX.formatDateFull;
     this.headerX.draw();
-    this.projectDuration = new ProjectDuration(this.svg, this.xScale, this.timelineData);
+
+    this.projectDuration = new ProjectDuration(this.svg, this.xScale, this.timelineData, this.modifiable);
     this.projectDuration.draw();
 
     this.projectDuration.onDragEnd = (offsetDays: number) => {
 
-      const moveTimeline$ = this.timelinesService.applyOperation(
-        this.timelineData.id,
-        {operation: 'moveTimeline', days: offsetDays});
-      this.timelineSubscription = this.subscribeForRedraw(moveTimeline$);
+      if (offsetDays !== 0) {
+        const moveTimeline$ = this.timelinesService.applyOperation(
+          this.timelineData.id,
+          {operation: 'moveTimeline', days: offsetDays});
+        this.timelineSubscription = this.subscribeForRedraw(moveTimeline$);
+      } else {
+        this.projectDuration.redraw(200);
+      }
     };
 
     this.projectDuration.onDragEndProjectStart = (offsetDays: number) => {
-
-      const moveTimelineStart$ = this.timelinesService.applyOperation(
-        this.timelineData.id,
-        {operation: 'moveTimelineStart', days: offsetDays});
-      this.timelineStartSubscription = this.subscribeForRedraw(moveTimelineStart$);
+      if (offsetDays !== 0) {
+        const moveTimelineStart$ = this.timelinesService.applyOperation(
+          this.timelineData.id,
+          {operation: 'moveTimelineStart', days: offsetDays});
+        this.timelineStartSubscription = this.subscribeForRedraw(moveTimelineStart$);
+      } else {
+        this.projectDuration.redraw(200);
+      }
     };
 
     this.projectDuration.onDragEndProjectEnd = (offsetDays: number) => {
-
-      const moveTimelineEnd$ = this.timelinesService.applyOperation(
-        this.timelineData.id,
-        {operation: 'moveTimelineEnd', days: offsetDays});
-      this.timelineEndSubscription = this.subscribeForRedraw(moveTimelineEnd$);
+      if (offsetDays !== 0) {
+        const moveTimelineEnd$ = this.timelinesService.applyOperation(
+          this.timelineData.id,
+          {operation: 'moveTimelineEnd', days: offsetDays});
+        this.timelineEndSubscription = this.subscribeForRedraw(moveTimelineEnd$);
+      } else {
+        this.projectDuration.redraw(200);
+      }
     };
 
     this.taskViewItem = new TasksArea(this.svg, this.xScale, this.taskData);
     this.taskViewItem.draw({left: 0, top: 0});
 
-    this.milestoneViewItem = new MilestonesArea(this.svg, this.xScale, this.milestoneData);
+    this.milestoneViewItem = new MilestonesArea(this.svg, this.xScale, this.milestoneData, this.modifiable);
     this.milestoneViewItem.draw({left: 0, top: this.taskViewItem.getAreaHeight()});
 
-    this.milestoneViewItem.onDragProjectEnd = (offsetDays: number, id: number) => {
-
-      const moveMilestone$ = this.timelinesService.applyOperation(
-        this.timelineData.id,
+    this.milestoneViewItem.onDragEndMilestone = (offsetDays: number, id: number) => {
+      if (offsetDays !== 0) {
+        const moveMilestone$ = this.timelinesService.applyOperation(
+          this.timelineData.id,
         {operation: 'moveMilestone', days: offsetDays, movedMilestoneId: id});
-      this.timelineSubscription = this.subscribeForRedraw(moveMilestone$);
 
+        this.milestoneSubscription = this.subscribeForRedraw(moveMilestone$);
+      } else {
+        this.milestoneViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()}, 200);
+      }
+    };
+
+    this.incrementsViewItem = new Increments(this.svg, this.xScale, this.incrementsData);
+    this.incrementsViewItem.draw({left: 0, top: this.taskViewItem.getAreaHeight()});
+
+    this.incrementsViewItem.onClickAddButton = () => {
+      const addIncrement$ = this.timelinesIncrementService.addIncrement(this.timelineData.id);
+      this.addIncrementSubscription = this.subscribeForReset(addIncrement$);
+    };
+    this.incrementsViewItem.onClickDeleteButton = () => {
+      const deleteIncrement$ = this.timelinesIncrementService.deleteIncrement(this.timelineData.id);
+      this.deleteIncrementSubscription = this.subscribeForReset(deleteIncrement$);
     };
   }
 
@@ -287,8 +341,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
         if (numberTicks > 12){
           this.headerX.tickSetting = null;
-        }
-        else {
+        } else {
           this.headerX.tickSetting = d3.timeDay.every(1);
         }
 
@@ -313,8 +366,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
         if (numberTicks > 12){
           this.headerX.tickSetting = null;
-        }
-        else {
+        } else {
           this.headerX.tickSetting = d3.timeMonday.every(1);
         }
 
@@ -339,8 +391,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
         if (numberTicks > 12){
           this.headerX.tickSetting = null;
-        }
-        else {
+        } else {
           this.headerX.tickSetting = d3.timeMonth.every(1);
         }
         break;
@@ -364,8 +415,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
         if (numberTicks > 12){
           this.headerX.tickSetting = null;
-        }
-        else {
+        } else {
           this.headerX.tickSetting = d3.timeYear.every(1);
         }
         break;
@@ -375,8 +425,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
         if (numberTicks > 12){
           this.headerX.tickSetting = null;
-        }
-        else {
+        } else {
           this.headerX.tickSetting = d3.timeDay.every(1);
         }
         break;
@@ -387,6 +436,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     this.taskViewItem.redraw({left: 0, top: 0});
     this.milestoneViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()}, animationDuration);
+    this.incrementsViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()});
   }
 
   private resizeChart(newSize): void {
@@ -401,10 +451,11 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.redrawChart(0);
   }
 
-  private createSvg(): any {
+  public createSvg(element, id): any {
 
-    const svg = d3.select('figure#chart')
+    const svg = d3.select(element).select('figure')
       .append('svg')
+      .attr('id', id)
       .attr('width', '100%')
       // .attr('height', '100vh')
       .attr('viewBox', '0 0 ' + this.viewBoxWidth + ' ' + this.viewBoxHeight);
@@ -450,8 +501,11 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     const projectGroup = this.svg.append('g').attr('class', 'project-group');
     projectGroup.attr('transform', 'translate(' + this.padding.left + ',45)');
 
+    const incrementGroup = this.svg.append('g').attr('class', 'increment-group');
+    incrementGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + 30) + ')');
+
     const dataGroup = this.svg.append('g').attr('class', 'data-group');
-    dataGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + 30) + ')');
+    dataGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + 60) + ')');
 
     const currentDateGroup = this.svg.append('g').attr('class', 'current-date-group');
     currentDateGroup.attr('transform', 'translate(' + this.padding.left + ',0)');
@@ -461,7 +515,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   }
 
   onZoom(event: d3.D3ZoomEvent<any, any>, minTimeMs): void {
-
     const eventTransform: d3.ZoomTransform = event.transform;
 
     if (eventTransform.k === 1 && eventTransform.x === 0 && eventTransform.y === 0) {
@@ -489,12 +542,14 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     if (event.sourceEvent){
       if (event.sourceEvent.type === 'mousemove'){
         this.redrawChart(0);
-      }
-      else{
+      } else {
         this.redrawChart(200);
+        clearTimeout(this.arrangeLabelTimeout);
+        this.arrangeLabelTimeout = setTimeout(() => {
+          this.milestoneViewItem.arrangeLabels();
+        }, 200);
       }
-    }
-    else{
+    } else {
       this.redrawChart(0);
     }
 
@@ -504,8 +559,11 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.periodStartDate = xScaleTransformed.invert(xScaleTransformed.range()[0]);
     this.periodEndDate = xScaleTransformed.invert(xScaleTransformed.range()[1]);
 
-    this.ganttControlsService.setPeriodStartDate(this.periodStartDate);
-    this.ganttControlsService.setPeriodEndDate(this.periodEndDate);
+    if (this.chartElement.id.includes('gantt')){
+      this.ganttControlsService.setPeriodStartDate(this.periodStartDate);
+      this.ganttControlsService.setPeriodEndDate(this.periodEndDate);
+    }
+
   }
 
   // set minimum and maximum zoom levels
@@ -541,32 +599,62 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       .range([0, newSize - this.padding.left]);
   }
 
-  resizeZoomElement(newSize): void {
+  private resizeZoomElement(newSize): void {
     this.zoomElement
       .attr('width', newSize - this.padding.left);
   }
 
+  // redraw if data was changed but no additional data was added or removed
   private subscribeForRedraw(obs): Observable<any> {
     return obs.pipe(
       switchMap(() => forkJoin([
         this.timelinesService.getTimelines(),
         this.tasksService.getTasksForTimeline(this.timelineData.id),
-        this.milestonesService.getMilestonesForTimeline(this.timelineData.id)
+        this.milestonesService.getMilestonesForTimeline(this.timelineData.id),
+        this.incrementService.getIncrementsForTimeline(this.timelineData.id)
       ]))
-    ).subscribe(([timelinesData, taskData, milestoneData]) => {
+    ).subscribe(([timelinesData, taskData, milestoneData, incrementsData]) => {
 
-      this.timelineData = timelinesData.find(c => c.id === this.timelineData.id);
-      this.projectDuration.setData(this.timelineData);
-      this.projectDuration.redraw(0);
+      this.setData(timelinesData, taskData, milestoneData, incrementsData);
 
-      this.taskData = taskData;
-      this.taskViewItem.setData(taskData);
+      this.projectDuration.redraw(200);
       this.taskViewItem.redraw({left: 0, top: 0});
-
-      this.milestoneData = milestoneData;
-      this.milestoneViewItem.setData(milestoneData);
       this.milestoneViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()}, 200);
+      this.incrementsViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()});
     });
   }
 
+  // reset if data was added or removed
+  private subscribeForReset(obs): Observable<any> {
+    return obs.pipe(
+      switchMap(() => forkJoin([
+        this.timelinesService.getTimelines(),
+        this.tasksService.getTasksForTimeline(this.timelineData.id),
+        this.milestonesService.getMilestonesForTimeline(this.timelineData.id),
+        this.incrementService.getIncrementsForTimeline(this.timelineData.id)
+      ]))
+    ).subscribe(([timelinesData, taskData, milestoneData, incrementsData]) => {
+
+      this.setData(timelinesData, taskData, milestoneData, incrementsData);
+
+      this.projectDuration.redraw(200);
+      this.taskViewItem.reset({left: 0, top: 0});
+      this.milestoneViewItem.reset({left: 0, top: this.taskViewItem.getAreaHeight()});
+      this.incrementsViewItem.reset({left: 0, top: this.taskViewItem.getAreaHeight()});
+    });
+  }
+
+  private setData(timelinesData, taskData, milestoneData, incrementsData): void {
+    this.timelineData = timelinesData.find(c => c.id === this.timelineData.id);
+    this.projectDuration.setData(this.timelineData);
+
+    this.taskData = taskData;
+    this.taskViewItem.setData(taskData);
+
+    this.milestoneData = milestoneData;
+    this.milestoneViewItem.setData(milestoneData);
+
+    this.incrementsData = incrementsData;
+    this.incrementsViewItem.setData(incrementsData);
+  }
 }

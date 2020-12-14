@@ -1,5 +1,6 @@
 package online.dipa.hub;
 
+import online.dipa.hub.api.model.Increment;
 import online.dipa.hub.api.model.Milestone;
 import online.dipa.hub.api.model.Task;
 import online.dipa.hub.api.model.Timeline;
@@ -13,6 +14,8 @@ public class TimelineState {
     private List<Milestone> milestones;
 
     private List<Task> tasks;
+
+    private List<Increment> increments;
 
     public Timeline getTimeline() {
         return timeline;
@@ -36,5 +39,13 @@ public class TimelineState {
 
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
+    }
+    
+    public List<Increment> getIncrements() {
+        return increments;
+    }
+
+    public void setIncrements(List<Increment> increments) {
+        this.increments = increments;
     }
 }

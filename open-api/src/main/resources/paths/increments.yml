@@ -1,0 +1,23 @@
+get:
+  tags:
+    - increments
+  summary: Increments List for Timeline
+  description: Retrieves the list of Increments in a timeline.
+  operationId: getIncrementsForTimeline
+  parameters:
+    - in: path
+      name: timelineId
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: Numeric ID of the timeline to get.
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../models/increment.yml#/Increment"

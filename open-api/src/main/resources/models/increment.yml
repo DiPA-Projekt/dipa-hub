@@ -1,0 +1,25 @@
+Increment:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the increment
+      type: integer
+      format: int64
+      example: 2
+    name:
+      description: The name of the increment
+      type: string
+      example: "1"
+    start:
+      description: The start date of the increment
+      type: string
+      format: date
+      example: "2020-08-17"
+    end:
+      description: The end date of the increment
+      type: string
+      format: date
+      example: "2024-8-18"
+  required:
+    - id
+    - name

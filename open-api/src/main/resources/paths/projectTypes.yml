@@ -1,0 +1,17 @@
+get:
+  tags:
+    - projectTypes
+  summary: projectTypes List
+  description: Retrieves the list of projectTypes
+  operationId: getProjectTypes
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../models/projectType.yml#/ProjectType"
+
+              

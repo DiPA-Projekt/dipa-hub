@@ -8,6 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CoreModule } from './core/core.module';
 import { HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './material/material.module';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { MaterialModule } from './material/material.module';
     AppRoutingModule,
     ApiModule.forRoot(AppModule.getApiConfiguration),
     BrowserAnimationsModule,
-    CoreModule
+    CoreModule,
+    SharedModule
   ],
   providers: [ { provide: LOCALE_ID, useValue: 'de-DE' } ],
   bootstrap: [AppComponent]

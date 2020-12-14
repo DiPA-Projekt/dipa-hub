@@ -34,7 +34,7 @@ export class ProjectDuration {
 
   projectDurationYears;
 
-  timelineName;
+  timelineProjectTypeId;
   tooltip;
 
   riskInformation = [{minVal: 0, maxVal: 1, prob: '85', overtime: 9, color: this.highRiskColor, icon: 'thumb_down', text: 'Hohes Risiko'},
@@ -48,26 +48,30 @@ export class ProjectDuration {
   public onDragEndProjectStart?: (days: number) => void;
   public onDragEndProjectEnd?: (days: number) => void;
 
-  constructor(svg: any, xScale: any, timelineData: any) {
+  modifiable = false;
+  textTooltip = 'Projekt verschieben, Projektbeginn und -ende ändern ist bei Vorgehensweise "inkrementelle Entwicklung" momentan abgeschaltet.';
+
+  constructor(svg: any, xScale: any, timelineData: any, modifiable: boolean) {
     this.svg = svg;
     this.xScale = xScale;
-    this.projectStartDate = new Date(timelineData.start);
-    this.projectEndDate = new Date(timelineData.end);
-    this.timelineName = timelineData.name;
+    this.timelineProjectTypeId = timelineData.projectTypeId;
+    this.modifiable = modifiable;
     this.svgBbox = this.svg.node().getBBox();
     this.projectGroup = this.svg.select('g.project-group');
 
-    this.projectStartDate.setHours(0, 0, 0, 0);
-    this.projectEndDate.setHours(0, 0, 0, 0);
     this.tooltip = d3.select('figure#chart .tooltip');
 
-    this.projectStartDate.setHours(0, 0, 0, 0);
-    this.projectEndDate.setHours(0, 0, 0, 0);
+    this.setData(timelineData);
   }
 
   setData(timelineData): void {
     this.projectStartDate = new Date(timelineData.start);
     this.projectEndDate = new Date(timelineData.end);
+    this.projectStartDate.setHours(0, 0, 0, 0);
+    this.projectEndDate.setHours(0, 0, 0, 0);
+
+    this.projectDurationYears = this.calculateProjectDuration(this.projectStartDate, this.projectEndDate);
+    this.riskCalculate(this.projectDurationYears);
   }
 
   draw(): void {
@@ -99,25 +103,30 @@ export class ProjectDuration {
         this.dragStartDate = this.projectStartDate;
       })
       .on('end', (event: d3.D3DragEvent<any, any, any>) => {
-
-        const dragOffset: number = Math.floor((this.projectStartDate - this.dragStartDate ) / (1000 * 60 * 60 * 24));
-
         this.projectStartDate.setHours(0, 0, 0, 0);
         this.projectEndDate.setHours(0, 0, 0, 0);
+
+        const dragOffset: number = Math.floor((this.projectStartDate - this.dragStartDate ) / (1000 * 60 * 60 * 24));
 
         this.onDragEnd(dragOffset);
       });
 
     // project duration indicator
-    this.projectGroup
+    const projectDurationIndicator = this.projectGroup
       .append('rect')
       .attr('class', 'projectDuration')
       .style('fill', this.elementColor)
       .style('stroke', d3.rgb(this.elementColor).darker())
       .attr('x', Math.min(visibleProjectStartDatePosition, this.xScale.range()[1]))
       .attr('width', Math.min(Math.max(this.xScale(this.projectEndDate) - visibleProjectStartDatePosition, 0), this.xScale.range()[1]))
-      .attr('height', this.height)
-      .call(drag);
+      .attr('height', this.height);
+
+    if (this.modifiable) {
+      projectDurationIndicator.call(drag);
+    } else {
+      projectDurationIndicator.classed('inactive', true);
+      this.tempTooltip(projectDurationIndicator);
+    }
 
     const initialStartDatePosition = Math.min(visibleProjectStartDatePosition, this.xScale.range()[1] - 120);
     const initialEndDatePosition = visibleProjectEndDatePosition - 60;
@@ -207,8 +216,6 @@ export class ProjectDuration {
 
         this.projectStartDate = this.xScale.invert(xValueNew);
 
-        this.projectDurationYears = this.calculateProjectDuration(this.projectStartDate, this.projectEndDate);
-        this.riskCalculate(this.projectDurationYears);
 
         this.redraw(0);
       })
@@ -216,12 +223,10 @@ export class ProjectDuration {
         this.dragStartDate = this.projectStartDate;
       })
       .on('end', (event: d3.D3DragEvent<any, any, any>) => {
-
         this.dragDxStack = 0;
+        this.projectStartDate.setHours(0, 0, 0, 0);
 
         const dragOffset: number = Math.floor((this.projectStartDate - this.dragStartDate ) / (1000 * 60 * 60 * 24));
-
-        this.projectStartDate.setHours(0, 0, 0, 0);
 
         this.onDragEndProjectStart(dragOffset);
       });
@@ -251,8 +256,6 @@ export class ProjectDuration {
 
         this.projectEndDate = this.xScale.invert(xValueStart + widthNew);
 
-        this.projectDurationYears = this.calculateProjectDuration(this.projectStartDate, this.projectEndDate);
-        this.riskCalculate(this.projectDurationYears);
 
         this.redraw(0);
       })
@@ -260,37 +263,47 @@ export class ProjectDuration {
         this.dragStartDate = this.projectEndDate;
       })
       .on('end', (event: d3.D3DragEvent<any, any, any>) => {
-
         this.dragDxStack = 0;
+        this.projectEndDate.setHours(0, 0, 0, 0);
 
         const dragOffset: number = Math.floor((this.projectEndDate - this.dragStartDate ) / (1000 * 60 * 60 * 24));
-
-        this.projectEndDate.setHours(0, 0, 0, 0);
 
         this.onDragEndProjectEnd(dragOffset);
       });
 
     // projectStartDate grid line
-    this.projectGroup
+    const projectStartDateLine = this.projectGroup
       .append('line')
       .attr('class', 'projectStartDateLine')
       .attr('x1', this.xScale(this.projectStartDate))
       .attr('x2', this.xScale(this.projectStartDate))
       .attr('y1', 0)
       .attr('y2', viewBoxHeight)
-      .attr('stroke', d3.rgb(this.elementColor).darker())
-      .call(dragProjectStart);
+      .attr('stroke', d3.rgb(this.elementColor).darker());
+
+    if (this.modifiable) {
+      projectStartDateLine.call(dragProjectStart);
+    } else {
+      projectStartDateLine.classed('inactive', true);
+      this.tempTooltip(projectStartDateLine);
+    }
 
     // projectEndDate grid line
-    this.projectGroup
+    const projectEndDateLine = this.projectGroup
       .append('line')
       .attr('class', 'projectEndDateLine')
       .attr('x1', this.xScale(this.projectEndDate))
       .attr('x2', this.xScale(this.projectEndDate))
       .attr('y1', 0)
       .attr('y2', viewBoxHeight)
-      .attr('stroke', d3.rgb(this.elementColor).darker())
-      .call(dragProjectEnd);
+      .attr('stroke', d3.rgb(this.elementColor).darker());
+
+    if (this.modifiable) {
+      projectEndDateLine.call(dragProjectEnd);
+    } else {
+      projectEndDateLine.classed('inactive', true);
+      this.tempTooltip(projectEndDateLine);
+    }
   }
 
   redraw(animationDuration): void {
@@ -410,7 +423,7 @@ export class ProjectDuration {
 
     this.riskAlarmText
       .on('mouseover', (event) => {
-        this.showLineTooltip(event.layerX, event.layerY);
+        this.showLineTooltip(event.clientX, event.clientY, this.riskTooltip);
       })
       .on('mouseout', () => {
         this.tooltip
@@ -430,12 +443,11 @@ export class ProjectDuration {
   }
 
   private riskCalculate(projectDurationYears): void {
-
     const timeText = projectDurationYears < 1 ? 'Monaten' : 'Jahren';
 
     const time = projectDurationYears < 1 ? Math.round(projectDurationYears * 12) : projectDurationYears;
 
-    if (this.timelineName === 'Serveraustausch') {
+    if (this.timelineProjectTypeId === 1) {
       for (const item of this.riskInformation) {
 
         if (item.minVal < projectDurationYears && projectDurationYears < item.maxVal) {
@@ -453,15 +465,30 @@ export class ProjectDuration {
     }
   }
 
-  showLineTooltip(x, y): void {
+  showLineTooltip(x, y, textTooltip): void {
     // const per = this.riskPercentage * 100;
     this.tooltip
       .style('top', (y + 15) + 'px')
       .style('left', (x + 12) + 'px')
       .style('display', 'block')
-      .html(this.riskTooltip)
+      .html(textTooltip)
       .transition()
       .duration(300)
       .style('opacity', 1);
+  }
+
+  tempTooltip(element): void{
+    element.on('mouseover', (event) => {
+      this.showLineTooltip(event.clientX, event.clientY, this.textTooltip);
+    })
+    .on('mouseout', () => {
+      this.tooltip
+        .transition()
+        .duration(50)
+        .style('opacity', 0)
+        .transition()
+        .delay(50)
+        .style('display', 'none');
+    });
   }
 }
