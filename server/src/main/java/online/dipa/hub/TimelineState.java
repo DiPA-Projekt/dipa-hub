@@ -13,6 +13,8 @@ public class TimelineState {
 
     private List<Milestone> milestones;
 
+    private List<Milestone> tempIncrementMilestones;
+
     private List<Task> tasks;
 
     private List<Increment> increments;
@@ -31,6 +33,14 @@ public class TimelineState {
 
     public void setMilestones(List<Milestone> milestones) {
         this.milestones = milestones;
+    }
+
+    public List<Milestone> getTempIncrementMilestones() {
+        return tempIncrementMilestones;
+    }
+
+    public void setTempIncrementMilestones(List<Milestone> tempIncrementMilestones) {
+        this.tempIncrementMilestones = tempIncrementMilestones;
     }
 
     public List<Task> getTasks() {

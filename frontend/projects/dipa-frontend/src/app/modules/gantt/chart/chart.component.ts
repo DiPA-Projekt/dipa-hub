@@ -261,7 +261,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.headerX.formatDate = this.headerX.formatDateFull;
     this.headerX.draw();
 
-    this.projectDuration = new ProjectDuration(this.svg, this.xScale, this.timelineData, this.modifiable);
+    this.projectDuration = new ProjectDuration(this.svg, this.xScale, this.timelineData);
     this.projectDuration.draw();
 
     this.projectDuration.onDragEnd = (offsetDays: number) => {
