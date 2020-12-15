@@ -497,11 +497,15 @@ public class TimelineService {
     }
 
     public File getCalendarFileForTimeline(final Long timelineId) throws IOException {
+        TimelineState sessionTimeline = findTimelineState(timelineId);
 
         IcsCalendar icsCalendar = new IcsCalendar();
         TimeZone timezone = icsCalendar.createTimezoneEurope();
 
         final ProjectApproachEntity projectApproach = findProjectApproach(timelineId);
+
+        String projectEventTitle = "Projektstart" + " - " + projectApproach.getName();
+        icsCalendar.addEvent(timezone, sessionTimeline.getTimeline().getStart(), projectEventTitle, "Test Comment");
 
         List<Milestone> milestones = getMilestonesForTimeline(timelineId);
         for(Milestone milestone: milestones) {
