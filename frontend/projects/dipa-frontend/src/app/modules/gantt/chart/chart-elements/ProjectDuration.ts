@@ -460,4 +460,21 @@ export class ProjectDuration {
       .style('opacity', 1);
   }
 
+<<<<<<< HEAD
+=======
+  tempTooltip(element): void{
+    element.on('mouseover', (event) => {
+      this.showLineTooltip(event.clientX, event.clientY, this.textTooltip);
+    })
+    .on('mouseout', () => {
+      this.tooltip
+        .transition()
+        .duration(50)
+        .style('opacity', 0)
+        .transition()
+        .delay(50)
+        .style('display', 'none');
+    });
+  }
+>>>>>>> d2fff5586d1bd31afe7908f05eba78ce22168369
 }
