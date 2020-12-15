@@ -48,14 +48,11 @@ export class ProjectDuration {
   public onDragEndProjectStart?: (days: number) => void;
   public onDragEndProjectEnd?: (days: number) => void;
 
-  modifiable = false;
-  textTooltip = 'Projekt verschieben, Projektbeginn und -ende ändern ist bei Vorgehensweise "inkrementelle Entwicklung" momentan abgeschaltet.';
-
-  constructor(svg: any, xScale: any, timelineData: any, modifiable: boolean) {
+  
+  constructor(svg: any, xScale: any, timelineData: any) {
     this.svg = svg;
     this.xScale = xScale;
     this.timelineProjectTypeId = timelineData.projectTypeId;
-    this.modifiable = modifiable;
     this.svgBbox = this.svg.node().getBBox();
     this.projectGroup = this.svg.select('g.project-group');
 
@@ -121,12 +118,7 @@ export class ProjectDuration {
       .attr('width', Math.min(Math.max(this.xScale(this.projectEndDate) - visibleProjectStartDatePosition, 0), this.xScale.range()[1]))
       .attr('height', this.height);
 
-    if (this.modifiable) {
-      projectDurationIndicator.call(drag);
-    } else {
-      projectDurationIndicator.classed('inactive', true);
-      this.tempTooltip(projectDurationIndicator);
-    }
+    projectDurationIndicator.call(drag);
 
     const initialStartDatePosition = Math.min(visibleProjectStartDatePosition, this.xScale.range()[1] - 120);
     const initialEndDatePosition = visibleProjectEndDatePosition - 60;
@@ -281,12 +273,7 @@ export class ProjectDuration {
       .attr('y2', viewBoxHeight)
       .attr('stroke', d3.rgb(this.elementColor).darker());
 
-    if (this.modifiable) {
-      projectStartDateLine.call(dragProjectStart);
-    } else {
-      projectStartDateLine.classed('inactive', true);
-      this.tempTooltip(projectStartDateLine);
-    }
+    projectStartDateLine.call(dragProjectStart);
 
     // projectEndDate grid line
     const projectEndDateLine = this.projectGroup
@@ -298,12 +285,8 @@ export class ProjectDuration {
       .attr('y2', viewBoxHeight)
       .attr('stroke', d3.rgb(this.elementColor).darker());
 
-    if (this.modifiable) {
-      projectEndDateLine.call(dragProjectEnd);
-    } else {
-      projectEndDateLine.classed('inactive', true);
-      this.tempTooltip(projectEndDateLine);
-    }
+    projectEndDateLine.call(dragProjectEnd);
+    
   }
 
   redraw(animationDuration): void {
@@ -477,18 +460,4 @@ export class ProjectDuration {
       .style('opacity', 1);
   }
 
-  tempTooltip(element): void{
-    element.on('mouseover', (event) => {
-      this.showLineTooltip(event.clientX, event.clientY, this.textTooltip);
-    })
-    .on('mouseout', () => {
-      this.tooltip
-        .transition()
-        .duration(50)
-        .style('opacity', 0)
-        .transition()
-        .delay(50)
-        .style('display', 'none');
-    });
-  }
 }
