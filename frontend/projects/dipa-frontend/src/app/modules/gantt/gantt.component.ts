@@ -66,8 +66,8 @@ export class GanttComponent implements OnInit, OnDestroy {
     .subscribe((data) => {
       this.timelineData = data;
       this.selectedTimelineId = this.timelineData.find(c => c.defaultTimeline === true)?.id;
-      this.selectedProjectTypeId = this.timelineData.filter(item => item.id === this.selectedTimelineId)[0].projectTypeId;
-      this.selectedProjectApproachId = this.timelineData.filter(item => item.id === this.selectedTimelineId)[0].projectApproachId;
+      this.selectedProjectTypeId = this.timelineData.find(item => item.id === this.selectedTimelineId).projectTypeId;
+      this.selectedProjectApproachId = this.timelineData.find(item => item.id === this.selectedTimelineId).projectApproachId;
       this.setData();
     });
 
@@ -185,14 +185,14 @@ export class GanttComponent implements OnInit, OnDestroy {
       this.timelineData = data;
     });
 
-    this.selectedTimelineId = this.timelineData.filter(timeline => timeline.projectApproachId === this.selectedProjectApproachId)[0].id;
+    this.selectedTimelineId = this.timelineData.find(timeline => timeline.projectApproachId === this.selectedProjectApproachId).id;
     this.setData();
     this.viewTypeSelected = undefined;
     this.ganttControlsService.setViewType(null);
   }
 
   changeProjectType(event): void {
-    this.selectedProjectApproachId = this.timelineData.filter(timeline => timeline.projectTypeId === this.selectedProjectTypeId)[0].id;
+    this.selectedProjectApproachId = this.timelineData.find(timeline => timeline.projectTypeId === this.selectedProjectTypeId).id;
     this.changeProjectApproach(event);
   }
 
