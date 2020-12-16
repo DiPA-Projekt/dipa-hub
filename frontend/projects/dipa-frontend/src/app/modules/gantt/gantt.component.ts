@@ -200,20 +200,6 @@ export class GanttComponent implements OnInit, OnDestroy {
     return this.projectApproachesList.filter(projectApproach => projectApproach.projectTypeId === this.selectedProjectTypeId);
   }
 
-  changeStartDate(change: string, $event: any): void {
-    if ($event.targetElement.value) {
-      const newStartDate = this.parseGermanDate($event.targetElement.value);
-      this.ganttControlsService.setPeriodStartDate(newStartDate);
-    }
-  }
-
-  changeEndDate(change: string, $event: any): void {
-    if ($event.targetElement.value) {
-      const newEndDate = this.parseGermanDate($event.targetElement.value);
-      this.ganttControlsService.setPeriodEndDate(newEndDate);
-    }
-  }
-
   createDateAtMidnight(date: any): Date {
     const dateAtMidnight = new Date(date);
     dateAtMidnight.setHours(0, 0, 0, 0);
