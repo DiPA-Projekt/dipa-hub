@@ -195,7 +195,7 @@ public class TimelineService {
                 Milestone newMilestone = new Milestone();
                 newMilestone.setId(id + count);
                 newMilestone.setName(m.getName());
-                newMilestone.setDate(increment.getStart().plusDays(newDateAfterScale).plusDays(14));
+                newMilestone.setDate(increment.getStart().plusDays(newDateAfterScale + 14));
 
                 incrementMilestones.add(newMilestone);
 
@@ -288,7 +288,7 @@ public class TimelineService {
 
         if (sessionTimeline.getMilestones() == null) {
 
-            //minus 14 days for Inkrement geplant
+            //minus 14 days for "Inkrement geplant"
             firstMilestoneDate = milestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get().minusDays(14);
             lastMilestoneDate = milestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
 
