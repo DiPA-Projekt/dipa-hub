@@ -15,6 +15,7 @@ public class MilestoneTemplateToMilestoneConverter implements Converter<Mileston
         return new Milestone().id(templateEntity.getId())
                               .name(templateEntity.getName())
                               .date(LocalDate.now()
-                                             .plusDays(templateEntity.getDateOffset()));
+                                             .plusDays(templateEntity.getDateOffset()))
+                              .status(templateEntity.getStatus());
     }
 }

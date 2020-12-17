@@ -96,6 +96,12 @@ public class TimelineController implements TimelinesApi {
         return ResponseEntity.ok(incrementsList);
     }
 
+    @Override
+    public ResponseEntity<Void> updateMilestoneStatus(final Long timelineId, final Long milestoneId) {
+        
+        return ResponseEntity.noContent().build();
+    }
+
     public ResponseEntity<Resource> getTimelineCalendar(final Long timelineId) {
 
         try {
