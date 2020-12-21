@@ -125,7 +125,7 @@
           }
 
           path.milestone:not(.inactive) {
-            cursor: move;
+            cursor: pointer;
           }
 
           text.milestoneLabel {
@@ -164,4 +164,27 @@
     }
   }
 
+}
+
+mat-card {
+  display: inline-block;
+  height: 100%;
+}
+
+.mat-card-title {
+  margin: 1%;
+  font-size: 18px;
+}
+
+.mat-card-subtitle {
+  text-align: center;
+}
+
+mat-card-content {
+  margin: 5%;
+}
+
+.button-container {
+  text-align: right;
+  margin: 1%;
 }

@@ -1,1 +1,33 @@
-<figure id="chart" (resized)="onResized($event)" #chart></figure>
+<div class="row clearfix">
+    <div [ngClass]="(!milestoneMenuOn)?'col-12':'col-md-9 col-sm-12'" class="chart">
+        <figure id="chart" (resized)="onResized($event)" #chart></figure>
+    </div>
+    <div *ngIf="milestoneMenuOn" class="col-md-3 col-sm-6">
+        <mat-card>
+            <div class="button-container">
+                <button mat-icon-button color="warn" (click)="closeMenu($event)">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+            <mat-card-content>
+                <mat-card-title>
+                    {{milestoneDataMenu.name}}
+                </mat-card-title>
+                <mat-card-subtitle>
+                    Fällig am {{getDate(milestoneDataMenu.date)}}
+                </mat-card-subtitle>
+                <p>
+                    Status
+                </p>
+                <mat-radio-group [(ngModel)]="milestoneStatusId" *ngFor="let status of statusList">
+                    <div class="row">
+                        <mat-radio-button class="example-radio-button" [value]="status.id" (change)="changeStatus($event)">
+                            {{status.statusName}}
+                        </mat-radio-button>
+                    </div>
+                    <br>
+                </mat-radio-group>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

@@ -128,7 +128,7 @@ export class XAxis {
   }
 
   formatDateWeek(date): any {
-    return (d3.timeFormat('%V')(date) == '01' ? d3.timeFormat('KW %V-%y') : d3.timeFormat('KW %V'))
+    return (d3.timeFormat('%V')(date) === '01' ? d3.timeFormat('KW %V-%y') : d3.timeFormat('KW %V'))
     (date);
   }
 

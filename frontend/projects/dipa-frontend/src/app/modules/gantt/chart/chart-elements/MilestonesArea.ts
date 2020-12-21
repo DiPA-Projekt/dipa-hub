@@ -22,14 +22,18 @@ export class MilestonesArea implements IChartElement {
   initMilestoneDate;
 
   public onDragEndMilestone?: (days: number, id: number) => void;
+  public onClickMilestone?: (data: any) => void;
+  // public onCloseMenu?: () => void;
 
   modifiable = false;
+  showMenu = false;
 
-  constructor(svg: any, xScale: any, data: any[], modifiable: boolean) {
+  constructor(svg: any, xScale: any, data: any[],  modifiable: boolean, showMenu: boolean) {
     this.svg = svg;
     this.xScale = xScale;
     this.data = data;
     this.modifiable = modifiable;
+    this.showMenu = showMenu;
 
     this.tooltip = d3.select('figure#chart .tooltip');
   }
@@ -87,7 +91,7 @@ export class MilestonesArea implements IChartElement {
 
         event.subject.date = this.xScale.invert(xValueNew);
 
-        this.showTooltip(event.subject, event.sourceEvent.layerX, event.sourceEvent.layerY);
+        this.showTooltip(event.subject, event.sourceEvent.clientX, event.sourceEvent.clientY);
       })
       .on('start', (event: d3.D3DragEvent<any, any, any>) => {
 
@@ -126,11 +130,6 @@ export class MilestonesArea implements IChartElement {
       .style('fill', this.elementColor)
       .style('stroke', d3.rgb(this.elementColor).darker());
 
-    if (this.modifiable) {
-      milestone.call(drag);
-    } else {
-      milestoneIcon.classed('inactive', true);
-    }
 
     milestoneIcon
       .on('mouseover', (event, d) => {
@@ -145,6 +144,41 @@ export class MilestonesArea implements IChartElement {
           .delay(500)
           .style('display', 'none');
       });
+
+    if (this.modifiable) {
+      milestone.call(drag);
+    }
+
+    if (this.showMenu) {
+
+      milestoneIcon.on('click', (event, d) => {
+        this.onClickMilestone(d);
+
+        dataGroup
+        .selectAll('g.milestoneEntry')
+        .select('path')
+        .attr('transform', 'scale(1.5 1)')
+        .style('fill', this.elementColor)
+        .style('stroke', d3.rgb(this.elementColor).darker());
+
+        dataGroup
+        .selectAll('g.milestoneEntry')
+        .select('text')
+        .style('fill', d3.rgb(this.elementColor).darker());
+
+        dataGroup
+        .select('#milestoneEntry_' + d.id)
+        .select('path')
+        .attr('transform', 'scale(1.8 1.2)')
+        .style('stroke', d3.rgb('#2b41ff').darker());
+
+        dataGroup
+        .select('#milestoneEntry_' + d.id)
+        .select('text')
+        .style('fill', d3.rgb('#2b41ff').darker());
+      });
+      this.onCloseMenu();
+    }
 
     const maxLabelWidth = 30;
 
@@ -286,6 +320,23 @@ export class MilestonesArea implements IChartElement {
       .ease(d3.easeCubic)
       .duration(this.animationDuration)
       .attr('transform', 'translate(' + xValueNew + ',' + yTransformValue + ')');
+  }
+
+  public onCloseMenu(): void {
+    const dataGroup = this.svg.select('g.data-group');
+
+    dataGroup
+        .selectAll('g.milestoneEntry')
+        .select('path')
+        .attr('transform', 'scale(1.5 1)')
+        .style('fill', this.elementColor)
+        .style('stroke', d3.rgb(this.elementColor).darker());
+
+        dataGroup
+        .selectAll('g.milestoneEntry')
+        .select('text')
+        .style('fill', d3.rgb(this.elementColor).darker());
+
   }
 
 }
