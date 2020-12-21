@@ -27,6 +27,7 @@ export class MilestonesArea implements IChartElement {
 
   modifiable = false;
   showMenu = false;
+  clickedMilestoneId: number;
 
   constructor(svg: any, xScale: any, data: any[],  modifiable: boolean, showMenu: boolean) {
     this.svg = svg;
@@ -70,6 +71,8 @@ export class MilestonesArea implements IChartElement {
     dataGroup.selectAll('g.milestoneEntry').remove();
     this.draw(offset);
     this.redraw(offset, 0);
+
+    this.updateMilestoneColor(this.clickedMilestoneId);
   }
 
   draw(offset): void {
@@ -154,30 +157,14 @@ export class MilestonesArea implements IChartElement {
       milestoneIcon.on('click', (event, d) => {
         this.onClickMilestone(d);
 
-        dataGroup
-        .selectAll('g.milestoneEntry')
-        .select('path')
-        .attr('transform', 'scale(1.5 1)')
-        .style('fill', this.elementColor)
-        .style('stroke', d3.rgb(this.elementColor).darker());
+        this.clickedMilestoneId = d.id;
 
-        dataGroup
-        .selectAll('g.milestoneEntry')
-        .select('text')
-        .style('fill', d3.rgb(this.elementColor).darker());
+        this.resetMilestoneColor();
 
-        dataGroup
-        .select('#milestoneEntry_' + d.id)
-        .select('path')
-        .attr('transform', 'scale(1.8 1.2)')
-        .style('stroke', d3.rgb('#2b41ff').darker());
+        this.updateMilestoneColor(d.id);
 
-        dataGroup
-        .select('#milestoneEntry_' + d.id)
-        .select('text')
-        .style('fill', d3.rgb('#2b41ff').darker());
       });
-      this.onCloseMenu();
+      // this.onCloseMenu();
     }
 
     const maxLabelWidth = 30;
@@ -322,21 +309,39 @@ export class MilestonesArea implements IChartElement {
       .attr('transform', 'translate(' + xValueNew + ',' + yTransformValue + ')');
   }
 
-  public onCloseMenu(): void {
+  private updateMilestoneColor(milestoneId): void {
     const dataGroup = this.svg.select('g.data-group');
 
     dataGroup
-        .selectAll('g.milestoneEntry')
-        .select('path')
-        .attr('transform', 'scale(1.5 1)')
-        .style('fill', this.elementColor)
-        .style('stroke', d3.rgb(this.elementColor).darker());
+    .select('#milestoneEntry_' + milestoneId)
+    .select('path')
+    .attr('transform', 'scale(1.8 1.2)')
+    .style('stroke', d3.rgb('#2b41ff').darker());
 
-        dataGroup
-        .selectAll('g.milestoneEntry')
-        .select('text')
-        .style('fill', d3.rgb(this.elementColor).darker());
+    dataGroup
+    .select('#milestoneEntry_' + milestoneId)
+    .select('text')
+    .style('fill', d3.rgb('#2b41ff').darker());
+  }
 
+  private resetMilestoneColor(): void {
+    const dataGroup = this.svg.select('g.data-group');
+
+    dataGroup
+    .selectAll('g.milestoneEntry')
+    .select('path')
+    .attr('transform', 'scale(1.5 1)')
+    .style('fill', this.elementColor)
+    .style('stroke', d3.rgb(this.elementColor).darker());
+
+    dataGroup
+    .selectAll('g.milestoneEntry')
+    .select('text')
+    .style('fill', d3.rgb(this.elementColor).darker());
+  }
+
+  public onCloseMenu(): void {
+    this.resetMilestoneColor();
   }
 
 }
