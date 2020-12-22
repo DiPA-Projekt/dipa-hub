@@ -155,18 +155,18 @@ public class TimelineService {
         }
     }
 
-    private HashMap<Increment, List<Milestone>> getIncrementMilestones(List<Milestone> initMilestones,
+    private HashMap<Increment, List<Milestone>> getIncrementMilestones(List<Milestone> tempMilestones,
             final Long timelineId, final int incrementCount) {
 
         List<Increment> incrementsList = loadIncrements(timelineId, incrementCount);
 
-        initMilestones.remove(initMilestones.size() - 1);
-        initMilestones.remove(0);
+        tempMilestones.remove(tempMilestones.size() - 1);
+        tempMilestones.remove(0);
 
-        LocalDate firstDatePeriod = initMilestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get();
-        LocalDate lastDatePeriod = initMilestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
+        LocalDate firstDatePeriod = tempMilestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get();
+        LocalDate lastDatePeriod = tempMilestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
 
-        long id = initMilestones.stream().map(Milestone::getId).min(Long::compareTo).get();
+        long id = tempMilestones.stream().map(Milestone::getId).min(Long::compareTo).get();
         long count = 0;
 
         HashMap<Increment, List<Milestone>> hashmapIncrementMilestones = new HashMap<>();
@@ -178,7 +178,7 @@ public class TimelineService {
             long newDaysBetween = DAYS.between(increment.getStart().plusDays(14), increment.getEnd());
             double factor = (double) newDaysBetween / oldDaysBetween;
 
-            for (Milestone m : initMilestones) {
+            for (Milestone m : tempMilestones) {
 
                 long daysFromFirstDate = DAYS.between(firstDatePeriod, increment.getStart().plusDays(14));
                 LocalDate newDateBeforeScale = m.getDate().plusDays(daysFromFirstDate);
