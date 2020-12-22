@@ -181,20 +181,23 @@ public class TimelineService {
         for (Increment increment : incrementsList) {
             List<Milestone> incrementMilestones = new ArrayList<Milestone>();
 
-            long newDaysBetween = DAYS.between(increment.getStart().plusDays(14), increment.getEnd());
+            LocalDate newStartDateIncrement = increment.getStart().plusDays(14);
+
+            long newDaysBetween = DAYS.between(newStartDateIncrement, increment.getEnd());
             double factor = (double) newDaysBetween / oldDaysBetween;
 
             for (Milestone m : initMilestones) {
 
-                long daysFromFirstDate = DAYS.between(firstDatePeriod, increment.getStart().plusDays(14));
+                long daysFromFirstDate = DAYS.between(firstDatePeriod, newStartDateIncrement);
                 LocalDate newDateBeforeScale = m.getDate().plusDays(daysFromFirstDate);
 
-                long relativePositionBeforeScale = DAYS.between(increment.getStart().plusDays(14), newDateBeforeScale);
+                long relativePositionBeforeScale = DAYS.between(newStartDateIncrement, newDateBeforeScale);
                 long newDateAfterScale = (long)(relativePositionBeforeScale * factor);
 
                 Milestone newMilestone = new Milestone();
                 newMilestone.setId(id + count);
                 newMilestone.setName(m.getName());
+                //plus 14 days for planning
                 newMilestone.setDate(increment.getStart().plusDays(newDateAfterScale + 14));
 
                 incrementMilestones.add(newMilestone);
