@@ -1,0 +1,86 @@
+databaseChangeLog:
+  - changeSet:
+        id: insert-project-serveraustausch-erlangen
+        author: nguyen
+        context: ba
+        changes:
+          - insert:
+              tableName: project
+              columns:
+                - column:
+                    name: id
+                    value: 1
+                - column:
+                    name: name
+                    value: Serveraustausch Erlangen
+                - column:
+                    name: project_approach_id
+                    value: 1
+  - changeSet:
+        id: insert-project-cisco-router-nürnberg
+        author: nguyen
+        context: ba
+        changes:
+          - insert:
+              tableName: project
+              columns:
+                - column:
+                    name: id
+                    value: 2
+                - column:
+                    name: name
+                    value: Cisco Router Nürnberg
+                - column:
+                    name: project_approach_id
+                    value: 4
+  - changeSet:
+        id: insert-project-feldberg-swe
+        author: nguyen
+        context: itzbund
+        changes:
+          - insert:
+              tableName: project
+              columns:
+                - column:
+                    name: id
+                    value: 3
+                - column:
+                    name: name
+                    value: Feldberg
+                - column:
+                    name: project_approach_id
+                    value: 2
+  - changeSet:
+        id: insert-project-zugspitze-swe
+        author: nguyen
+        context: itzbund
+        changes:
+          - insert:
+              tableName: project
+              columns:
+                - column:
+                    name: id
+                    value: 4
+                - column:
+                    name: name
+                    value: Zugspitze
+                - column:
+                    name: project_approach_id
+                    value: 3
+  - changeSet:
+        id: insert-project-bergsteigerausrüstung
+        author: nguyen
+        context: itzbund
+        changes:
+          - insert:
+              tableName: project
+              columns:
+                - column:
+                    name: id
+                    value: 5
+                - column:
+                    name: name
+                    value: Bergsteigerausrüstung 
+                - column:
+                    name: project_approach_id
+                    value: 4

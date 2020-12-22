@@ -6,6 +6,10 @@ Timeline:
       type: integer
       format: int64
       example: 2
+    name:
+      description: Name of the project
+      type: string
+      example: "Feldberg"
     projectTypeId:
       description: Unique identifier of the project type
       type: integer
