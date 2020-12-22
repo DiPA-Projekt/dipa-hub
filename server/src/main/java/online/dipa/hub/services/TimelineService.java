@@ -150,8 +150,10 @@ public class TimelineService {
                 incrementMilestones.addAll(milestonesList);
             }
 
-            return incrementMilestones.stream().map(m -> conversionService.convert(m, Milestone.class))
-                    .sorted(Comparator.comparing(Milestone::getDate)).collect(Collectors.toList());
+            return incrementMilestones.stream()
+            .map(m -> conversionService.convert(m, Milestone.class))
+            .sorted(Comparator.comparing(Milestone::getDate))
+            .collect(Collectors.toList());
         }
     }
 
@@ -168,7 +170,7 @@ public class TimelineService {
 
         long id = tempMilestones.stream().map(Milestone::getId).min(Long::compareTo).get();
         long count = 0;
-
+        
         HashMap<Increment, List<Milestone>> hashmapIncrementMilestones = new HashMap<>();
         long oldDaysBetween = DAYS.between(firstDatePeriod, lastDatePeriod);
 
@@ -268,10 +270,10 @@ public class TimelineService {
 
         List<Milestone> milestones = getMilestonesFromRespository(timelineId);
 
-        // delete masterplan from milestones list
+        //delete masterplan from milestones list
         milestones.remove(milestones.size() - 1);
         milestones.remove(0);
-
+       
         LocalDate firstMilestoneDate;
         LocalDate lastMilestoneDate;
         long daysBetween;
@@ -279,22 +281,21 @@ public class TimelineService {
 
         if (sessionTimeline.getMilestones() == null) {
 
-            // minus 14 days for Inkrement geplant
-            firstMilestoneDate = milestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get()
-                    .minusDays(14);
+            firstMilestoneDate = milestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get();
             lastMilestoneDate = milestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
 
             daysBetween = DAYS.between(firstMilestoneDate, lastMilestoneDate);
-
-        } else {
+            
+        }
+        else {
 
             List<Milestone> currentMilestones = sessionTimeline.getMilestones();
 
-            firstMilestoneDate = currentMilestones.get(1).getDate().minusDays(14);
-            lastMilestoneDate = currentMilestones.get(currentMilestones.size() - 2).getDate();
+            firstMilestoneDate = currentMilestones.get(1).getDate();
+            lastMilestoneDate = currentMilestones.get(currentMilestones.size()-2).getDate();
 
             daysBetween = DAYS.between(firstMilestoneDate, lastMilestoneDate);
-
+        
         }
 
         long durationIncrement = daysBetween / incrementCount;
@@ -317,9 +318,10 @@ public class TimelineService {
             id++;
             startDateIncrement = endDateIncrement.plusDays(1);
 
-            if (i == (incrementCount - 2)) {
+            if (i == (incrementCount -2)){
                 endDateIncrement = lastMilestoneDate;
-            } else {
+            }
+            else {
                 endDateIncrement = endDateIncrement.plusDays(durationIncrement);
             }
 
@@ -385,7 +387,7 @@ public class TimelineService {
         }
 
         updateIncrements(timelineId);
-
+     
     }
 
     public void moveTimelineStartByDays(final Long timelineId, final Long days) {
@@ -393,7 +395,7 @@ public class TimelineService {
         TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
 
         updateTempMilestones(timelineId);
-
+        
         LocalDate timelineStart = sessionTimeline.getTimeline().getStart();
         LocalDate timelineEnd = sessionTimeline.getTimeline().getEnd();
 
@@ -441,7 +443,7 @@ public class TimelineService {
         for (Milestone m : sessionTimeline.getMilestones()) {
             long oldMilestoneRelativePosition = DAYS.between(timelineStart, m.getDate());
             long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
-
+     
             m.setDate(timelineStart.plusDays(newMilestoneRelativePosition));
         }
 
