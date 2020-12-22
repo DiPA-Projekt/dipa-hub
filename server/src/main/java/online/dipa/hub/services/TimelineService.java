@@ -169,8 +169,8 @@ public class TimelineService {
         initMilestones.remove(initMilestones.size() - 1);
         initMilestones.remove(0);
 
-        LocalDate firstDatePeriod =  initMilestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get();
-        LocalDate lastDatePeriod = initMilestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
+        LocalDate firstDatePeriod = incrementsList.get(0).getStart();
+        LocalDate lastDatePeriod = incrementsList.get(incrementsList.size()-1).getEnd();
 
         long id = initMilestones.stream().map(Milestone::getId).min(Long::compareTo).get();
         long count = 0;
@@ -181,21 +181,21 @@ public class TimelineService {
         for (Increment increment : incrementsList) {
             List<Milestone> incrementMilestones = new ArrayList<Milestone>();
 
-            long newDaysBetween = DAYS.between(increment.getStart().plusDays(14), increment.getEnd());
+            long newDaysBetween = DAYS.between(increment.getStart(), increment.getEnd());
             double factor = (double) newDaysBetween / oldDaysBetween;
 
             for (Milestone m : initMilestones) {
 
-                long daysFromFirstDate = DAYS.between(firstDatePeriod, increment.getStart().plusDays(14));
+                long daysFromFirstDate = DAYS.between(firstDatePeriod, increment.getStart());
                 LocalDate newDateBeforeScale = m.getDate().plusDays(daysFromFirstDate);
 
-                long relativePositionBeforeScale = DAYS.between(increment.getStart().plusDays(14), newDateBeforeScale);
+                long relativePositionBeforeScale = DAYS.between(increment.getStart(), newDateBeforeScale);
                 long newDateAfterScale = (long)(relativePositionBeforeScale * factor);
 
                 Milestone newMilestone = new Milestone();
                 newMilestone.setId(id + count);
                 newMilestone.setName(m.getName());
-                newMilestone.setDate(increment.getStart().plusDays(newDateAfterScale + 14));
+                newMilestone.setDate(increment.getStart().plusDays(newDateAfterScale));
 
                 incrementMilestones.add(newMilestone);
 
@@ -288,8 +288,7 @@ public class TimelineService {
 
         if (sessionTimeline.getMilestones() == null) {
 
-            //minus 14 days for "Inkrement geplant"
-            firstMilestoneDate = milestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get().minusDays(14);
+            firstMilestoneDate = milestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get();
             lastMilestoneDate = milestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
 
             daysBetween = DAYS.between(firstMilestoneDate, lastMilestoneDate);
@@ -299,7 +298,7 @@ public class TimelineService {
 
             List<Milestone> currentMilestones = sessionTimeline.getMilestones();
 
-            firstMilestoneDate = currentMilestones.get(1).getDate().minusDays(14);
+            firstMilestoneDate = currentMilestones.get(1).getDate();
             lastMilestoneDate = currentMilestones.get(currentMilestones.size()-2).getDate();
 
             daysBetween = DAYS.between(firstMilestoneDate, lastMilestoneDate);
@@ -497,15 +496,11 @@ public class TimelineService {
     }
 
     public File getCalendarFileForTimeline(final Long timelineId) throws IOException {
-        TimelineState sessionTimeline = findTimelineState(timelineId);
 
         IcsCalendar icsCalendar = new IcsCalendar();
         TimeZone timezone = icsCalendar.createTimezoneEurope();
 
         final ProjectApproachEntity projectApproach = findProjectApproach(timelineId);
-
-        String projectEventTitle = "Projektstart" + " - " + projectApproach.getName();
-        icsCalendar.addEvent(timezone, sessionTimeline.getTimeline().getStart(), projectEventTitle, "Test Comment");
 
         List<Milestone> milestones = getMilestonesForTimeline(timelineId);
         for(Milestone milestone: milestones) {
