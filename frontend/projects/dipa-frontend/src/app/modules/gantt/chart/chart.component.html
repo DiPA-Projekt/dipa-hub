@@ -1,8 +1,8 @@
 <div class="row clearfix">
-    <div [ngClass]="(!milestoneMenuOn)?'col-12':'col-md-9 col-sm-12'" class="chart">
+    <div [ngClass]="(!milestoneMenuOn)?'col-12':'col-lg-9 col-md-12 col-sm-12'" class="chart">
         <figure id="chart" (resized)="onResized($event)" #chart></figure>
     </div>
-    <div *ngIf="milestoneMenuOn" class="col-md-3 col-sm-6">
+    <div *ngIf="milestoneMenuOn" class="col-lg-3 col-md-4 col-sm-5">
         <mat-card>
             <mat-card-header class="header">
               <div class="subheading-1 title">Meilenstein</div>
@@ -11,7 +11,7 @@
               </div>
             </mat-card-header>
             <mat-card-content class="content">
-                <p style="font-weight: bold; font-size: medium;">{{milestoneDataMenu.name}}</p>
+                <p style="font-weight: 500; font-size: medium;">{{milestoneDataMenu.name}}</p>
                 <mat-card-subtitle>
                     Fällig am {{getDate(milestoneDataMenu.date)}}
                 </mat-card-subtitle>
