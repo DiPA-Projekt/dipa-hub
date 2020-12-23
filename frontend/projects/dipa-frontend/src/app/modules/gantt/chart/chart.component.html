@@ -1,15 +1,15 @@
 <mat-sidenav-container class="container" autosize>
     <mat-sidenav #drawer *ngIf="milestoneMenuOn" mode="side" opened position="end">
         <div class="card-container">
-            <mat-card-header class="header">
+            <div class="card-header">
                 <div class="subheading-1 title">Meilenstein</div>
                 <button mat-icon-button color="warn" (click)="closeMenu($event)"><mat-icon>close</mat-icon></button>
-            </mat-card-header>
-            <mat-card-content class="content">
-                <p style="font-weight: 500; font-size: medium;">{{milestoneDataMenu.name}}</p>
-                <mat-card-subtitle>
+            </div>
+            <div class="card-content">
+                <p style="font-weight: 500; font-size: medium; text-align: center;">{{milestoneDataMenu.name}}</p>
+                <p style="font-weight: 200; font-size: small; text-align: center; color: grey;">
                       Fällig am {{getDate(milestoneDataMenu.date)}}
-                </mat-card-subtitle>
+                </p>
                 <p>Status</p>
                 <mat-radio-group [(ngModel)]="milestoneStatusId" *ngFor="let status of statusList">
                     <div class="row">
@@ -19,7 +19,7 @@
                     </div>
                     <br>
                 </mat-radio-group>
-            </mat-card-content>
+            </div>
         </div>
     </mat-sidenav>
     <mat-sidenav-content>
