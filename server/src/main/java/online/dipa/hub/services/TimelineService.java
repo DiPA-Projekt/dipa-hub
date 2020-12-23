@@ -556,4 +556,25 @@ public class TimelineService {
             updatedMilestone.setStatus("erledigt");;
         }
     }
+
+    public void updateProjectApproach(final Long timelineId, final Long projectTypeId, final Long projectApproachId) {
+
+        TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+        sessionTimeline.getTimeline().setProjectTypeId(projectTypeId);
+        sessionTimeline.getTimeline().setProjectApproachId(projectApproachId);
+        // sessionTimeline.setMilestones(milestones);
+        final ProjectApproachEntity projectApproach = findProjectApproach(timelineId);
+
+        if (sessionTimeline.getMilestones() == null) {
+            if (projectApproach.isIterative()) {
+                initializeIncrements(timelineId);
+                sessionTimeline.setMilestones(this.loadMilestones(timelineId, 1));
+            } else {
+                sessionTimeline.setMilestones(this.loadMilestones(timelineId, 0));
+            }
+        }
+
+        System.out.println(sessionTimeline);
+        
+    }
 }

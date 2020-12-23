@@ -1,0 +1,31 @@
+patch:
+  tags:
+    - timelines
+  summary: Update project type and project approach for a timeline
+  description: Update project type and project approach for a timeline
+  operationId: updateProjectApproach
+  parameters:
+    - in: path
+      name: timelineId
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: Numeric ID of the timeline.
+  requestBody:
+    description: projectApproachId and projectTypeId as parameters
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            projectTypeId:
+              type: integer
+              format: int64
+            projectApproachId:
+              type: integer
+              format: int64
+  responses:
+    204:
+      description: The operation was applied successfully.
