@@ -1,30 +1,30 @@
-<div class="row clearfix">
-    <div [ngClass]="(!milestoneMenuOn)?'col-12':'col-md-9 col-sm-12'" class="chart">
-        <figure id="chart" (resized)="onResized($event)" #chart></figure>
-    </div>
-    <div *ngIf="milestoneMenuOn" class="col-md-3 col-sm-6">
-        <mat-card>
+<mat-sidenav-container class="container" autosize>
+    <mat-sidenav #drawer *ngIf="milestoneMenuOn" mode="side" opened position="end">
+        <div class="card-container">
             <mat-card-header class="header">
-              <div class="subheading-1 title">Meilenstein</div>
-              <div class="header-actions">
+                <div class="subheading-1 title">Meilenstein</div>
                 <button mat-icon-button color="warn" (click)="closeMenu($event)"><mat-icon>close</mat-icon></button>
-              </div>
             </mat-card-header>
             <mat-card-content class="content">
-                <p style="font-weight: bold; font-size: medium;">{{milestoneDataMenu.name}}</p>
+                <p style="font-weight: 500; font-size: medium;">{{milestoneDataMenu.name}}</p>
                 <mat-card-subtitle>
-                    Fällig am {{getDate(milestoneDataMenu.date)}}
+                      Fällig am {{getDate(milestoneDataMenu.date)}}
                 </mat-card-subtitle>
                 <p>Status</p>
                 <mat-radio-group [(ngModel)]="milestoneStatusId" *ngFor="let status of statusList">
                     <div class="row">
-                        <mat-radio-button class="example-radio-button" [value]="status.id" (change)="changeStatus($event)">
+                        <mat-radio-button [value]="status.id" (change)="changeStatus($event)">
                             {{status.statusName}}
                         </mat-radio-button>
                     </div>
                     <br>
                 </mat-radio-group>
             </mat-card-content>
-        </mat-card>
-    </div>
-</div>
+        </div>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <div class="chart">
+            <figure id="chart" (resized)="onResized($event)" #chart></figure>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

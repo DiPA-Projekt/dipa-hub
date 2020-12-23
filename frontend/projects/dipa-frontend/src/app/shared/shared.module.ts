@@ -14,7 +14,7 @@ import {AngularResizedEventModule} from 'angular-resize-event';
 import {MatButtonModule} from '@angular/material/button';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatToolbarModule} from '@angular/material/toolbar';
-
+import {MatSidenavModule} from '@angular/material/sidenav';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 
@@ -35,6 +35,7 @@ import {CommonModule} from '@angular/common';
     MatButtonModule,
     MatRadioModule,
     MatToolbarModule,
+    MatSidenavModule,
     FormsModule,
     CommonModule
   ],
