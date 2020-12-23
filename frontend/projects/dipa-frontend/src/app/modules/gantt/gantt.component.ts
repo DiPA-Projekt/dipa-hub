@@ -211,4 +211,8 @@ export class GanttComponent implements OnInit, OnDestroy {
     return new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
   }
 
+  getTimelineName(): any {
+    return this.timelineData.find(t => t.id === this.selectedTimelineId);
+  }
+
 }
