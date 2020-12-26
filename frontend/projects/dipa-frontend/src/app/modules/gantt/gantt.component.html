@@ -39,7 +39,7 @@
         </div>
       </div>
     </div>
-    <div class="row justify-content-between">
+    <div class="row">
       <div class="col">
         <button (click)="getIcsCalendarFile()"
                 mat-raised-button
@@ -48,25 +48,6 @@
           <mat-icon>event_note</mat-icon>
           Export
         </button>
-      </div>
-      <div class="col mat-form-field--inline">
-        <div class="row justify-content-end">
-          <mat-form-field appearance="fill">
-            <mat-label>Anfang Zeitachse</mat-label>
-            <input matInput [matDatepicker]="picker1" [value]="periodStartDate"
-            (dateChange)="changeStartDate('change', $event)">
-            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-            <mat-datepicker #picker1></mat-datepicker>
-          </mat-form-field>
-
-          <mat-form-field appearance="fill">
-            <mat-label>Ende Zeitachse</mat-label>
-            <input matInput [matDatepicker]="picker2" [value]="periodEndDate"
-            (dateChange)="changeEndDate('change', $event)">
-            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-            <mat-datepicker #picker2></mat-datepicker>
-          </mat-form-field>
-        </div>
       </div>
     </div>
 
