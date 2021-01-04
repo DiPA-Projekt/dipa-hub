@@ -41,9 +41,6 @@ public class ProjectApproachEntity extends BaseEntity {
     @OneToMany(mappedBy = "projectApproach", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<ProjectEntity> project = new HashSet<>();
-    // @NotNull
-    // @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    // private ProjectEntity project;
 
     @NotNull
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
