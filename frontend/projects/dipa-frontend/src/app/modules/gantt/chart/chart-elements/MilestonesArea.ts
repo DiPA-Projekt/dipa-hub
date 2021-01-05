@@ -150,22 +150,21 @@ export class MilestonesArea implements IChartElement {
 
     if (this.modifiable) {
       milestone.call(drag);
+      if (this.showMenu) {
+
+        milestoneIcon.on('click', (event, d) => {
+          this.onClickMilestone(d);
+
+          this.clickedMilestoneId = d.id;
+
+          this.resetMilestoneColor();
+
+          this.updateMilestoneColor(d.id);
+
+        });
+      }
     }
 
-    if (this.showMenu) {
-
-      milestoneIcon.on('click', (event, d) => {
-        this.onClickMilestone(d);
-
-        this.clickedMilestoneId = d.id;
-
-        this.resetMilestoneColor();
-
-        this.updateMilestoneColor(d.id);
-
-      });
-      // this.onCloseMenu();
-    }
 
     const maxLabelWidth = 30;
 

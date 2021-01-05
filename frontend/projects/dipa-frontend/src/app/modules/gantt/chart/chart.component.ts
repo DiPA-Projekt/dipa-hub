@@ -681,7 +681,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       {statusId: event.value});
 
     this.milestoneSubscription = this.subscribeForReset(changeMilestoneStatus$);
-
   }
 
   closeMenu(event): void {
