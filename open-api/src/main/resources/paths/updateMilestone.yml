@@ -25,11 +25,12 @@ patch:
     content:
       application/json:
         schema:
-          type: object
-          properties:
-            statusId:
-              type: integer
-              format: int64
+          $ref: "../models/milestones.yml#/Milestone"
+          # type: object
+          # properties:
+          #   statusId:
+          #     type: integer
+          #     format: int64
   responses:
     204:
       description: The update was applied successfully.

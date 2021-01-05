@@ -677,10 +677,13 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   }
 
   changeStatus(event): void {
-    const changeMilestoneStatus$ = this.milestonesService.updateMilestoneStatus(this.timelineData.id, this.milestoneDataMenu.id,
-      {statusId: event.value});
+    //TODO milestoneData: 
+    // const changeMilestoneStatus$ = this.milestonesService.updateMilestoneStatus(this.timelineData.id, this.milestoneDataMenu.id,
+    //   {
+    //     ...this.milestoneData,
+    //     statusId: event.value});
 
-    this.milestoneSubscription = this.subscribeForReset(changeMilestoneStatus$);
+    // this.milestoneSubscription = this.subscribeForReset(changeMilestoneStatus$);
   }
 
   closeMenu(event): void {
