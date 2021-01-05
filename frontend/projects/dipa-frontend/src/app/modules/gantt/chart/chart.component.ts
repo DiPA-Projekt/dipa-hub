@@ -267,11 +267,11 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     this.initializeXScale();
 
-    this.headerX = new XAxis(this.svg, this.xScale);
+    this.headerX = new XAxis(this.svg, this.chartElement, this.xScale);
     this.headerX.formatDate = this.headerX.formatDateFull;
     this.headerX.draw();
 
-    this.projectDuration = new ProjectDuration(this.svg, this.xScale, this.timelineData);
+    this.projectDuration = new ProjectDuration(this.svg, this.chartElement, this.xScale, this.timelineData);
     this.projectDuration.draw();
 
     this.projectDuration.onDragEnd = (offsetDays: number) => {
@@ -311,7 +311,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.taskViewItem = new TasksArea(this.svg, this.xScale, this.taskData);
     this.taskViewItem.draw({left: 0, top: 0});
 
-    this.milestoneViewItem = new MilestonesArea(this.svg, this.xScale, this.milestoneData, this.modifiable, this.showMenu);
+    this.milestoneViewItem = new MilestonesArea(this.svg, this.chartElement, this.xScale,
+                                                this.milestoneData, this.modifiable, this.showMenu);
     this.milestoneViewItem.draw({left: 0, top: this.taskViewItem.getAreaHeight()});
 
     this.milestoneViewItem.onDragEndMilestone = (offsetDays: number, id: number) => {

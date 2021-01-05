@@ -30,14 +30,14 @@ export class MilestonesArea implements IChartElement {
   showMenu = false;
   clickedMilestoneId: number;
 
-  constructor(svg: any, xScale: any, data: any[],  modifiable: boolean, showMenu: boolean) {
+  constructor(svg: any, chartElement: any, xScale: any, data: any[],  modifiable: boolean, showMenu: boolean) {
     this.svg = svg;
     this.xScale = xScale;
     this.data = data;
     this.modifiable = modifiable;
     this.showMenu = showMenu;
 
-    this.tooltip = d3.select('figure#chart .tooltip');
+    this.tooltip = d3.select(chartElement).select('figure#chart .tooltip');
   }
 
   static intersectArray(r1, arr): boolean {
