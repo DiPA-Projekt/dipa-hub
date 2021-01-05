@@ -163,6 +163,8 @@ export class MilestonesArea implements IChartElement {
 
         });
       }
+    } else {
+      milestoneIcon.classed('inactive', true);
     }
 
 
