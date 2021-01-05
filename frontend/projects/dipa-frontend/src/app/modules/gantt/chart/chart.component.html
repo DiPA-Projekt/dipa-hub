@@ -11,10 +11,10 @@
                       Fällig am {{getDate(milestoneDataMenu.date)}}
                 </p>
                 <p>Status</p>
-                <mat-radio-group [(ngModel)]="milestoneStatusId" *ngFor="let status of statusList">
+                <mat-radio-group [(ngModel)]="milestoneStatus" *ngFor="let status of statusList">
                     <div class="row">
-                        <mat-radio-button [value]="status.id" (change)="changeStatus($event)">
-                            {{status.statusName}}
+                        <mat-radio-button [value]="status" (change)="changeStatus($event)">
+                            {{status}}
                         </mat-radio-button>
                     </div>
                     <br>
