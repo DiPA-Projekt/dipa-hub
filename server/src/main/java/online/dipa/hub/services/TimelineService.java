@@ -160,18 +160,18 @@ public class TimelineService {
         }
     }
 
-    private HashMap<Increment, List<Milestone>> getIncrementMilestones(List<Milestone> tempMilestones,
+    private HashMap<Increment, List<Milestone>> getIncrementMilestones(List<Milestone> initMilestones,
             final Long timelineId, final int incrementCount) {
 
         List<Increment> incrementsList = loadIncrements(timelineId, incrementCount);
 
-        tempMilestones.remove(tempMilestones.size() - 1);
-        tempMilestones.remove(0);
+        initMilestones.remove(initMilestones.size() - 1);
+        initMilestones.remove(0);
 
-        LocalDate firstDatePeriod = tempMilestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get();
-        LocalDate lastDatePeriod = tempMilestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
+        LocalDate firstDatePeriod =  initMilestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get();
+        LocalDate lastDatePeriod = initMilestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
 
-        long id = tempMilestones.stream().map(Milestone::getId).min(Long::compareTo).get();
+        long id = initMilestones.stream().map(Milestone::getId).min(Long::compareTo).get();
         long count = 0;
         
         HashMap<Increment, List<Milestone>> hashmapIncrementMilestones = new HashMap<>();
@@ -180,23 +180,24 @@ public class TimelineService {
         for (Increment increment : incrementsList) {
             List<Milestone> incrementMilestones = new ArrayList<Milestone>();
 
-            long newDaysBetween = DAYS.between(increment.getStart().plusDays(14), increment.getEnd());
+            LocalDate newStartDateIncrement = increment.getStart().plusDays(14);
+
+            long newDaysBetween = DAYS.between(newStartDateIncrement, increment.getEnd());
             double factor = (double) newDaysBetween / oldDaysBetween;
 
-            for (Milestone m : tempMilestones) {
+            for (Milestone m : initMilestones) {
 
-                long daysFromFirstDate = DAYS.between(firstDatePeriod, increment.getStart().plusDays(14));
+                long daysFromFirstDate = DAYS.between(firstDatePeriod, newStartDateIncrement);
                 LocalDate newDateBeforeScale = m.getDate().plusDays(daysFromFirstDate);
 
-                long relativePositionBeforeScale = DAYS.between(increment.getStart().plusDays(14), newDateBeforeScale);
-                long newDateAfterScale = (long) (relativePositionBeforeScale * factor);
+                long relativePositionBeforeScale = DAYS.between(newStartDateIncrement, newDateBeforeScale);
+                long newDateAfterScale = (long)(relativePositionBeforeScale * factor);
 
                 Milestone newMilestone = new Milestone();
                 newMilestone.setId(id + count);
                 newMilestone.setName(m.getName());
-                newMilestone.setDate(increment.getStart().plusDays(newDateAfterScale).plusDays(14));
-                newMilestone.setStatus("offen");
-
+                //plus 14 days for planning
+                newMilestone.setDate(increment.getStart().plusDays(newDateAfterScale + 14));
 
                 incrementMilestones.add(newMilestone);
 
@@ -284,7 +285,8 @@ public class TimelineService {
 
         if (sessionTimeline.getMilestones() == null) {
 
-            firstMilestoneDate = milestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get();
+            //minus 14 days for "Inkrement geplant"
+            firstMilestoneDate = milestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get().minusDays(14);
             lastMilestoneDate = milestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
 
             daysBetween = DAYS.between(firstMilestoneDate, lastMilestoneDate);
@@ -294,7 +296,7 @@ public class TimelineService {
 
             List<Milestone> currentMilestones = sessionTimeline.getMilestones();
 
-            firstMilestoneDate = currentMilestones.get(1).getDate();
+            firstMilestoneDate = currentMilestones.get(1).getDate().minusDays(14);
             lastMilestoneDate = currentMilestones.get(currentMilestones.size()-2).getDate();
 
             daysBetween = DAYS.between(firstMilestoneDate, lastMilestoneDate);
