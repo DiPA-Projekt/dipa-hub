@@ -196,7 +196,7 @@ public class TimelineService {
                 newMilestone.setId(id + count);
                 newMilestone.setName(m.getName());
                 newMilestone.setDate(increment.getStart().plusDays(newDateAfterScale).plusDays(14));
-                newMilestone.setStatus("offen");
+                newMilestone.setStatus(Milestone.StatusEnum.OFFEN);
 
 
                 incrementMilestones.add(newMilestone);
@@ -545,17 +545,9 @@ public class TimelineService {
         }
     }
 
-    public void updateMilestoneStatus(final Long timelineId, final Long milestoneId, final Long statusId) {
-
-        TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
-
-        Milestone updatedMilestone = sessionTimeline.getMilestones().stream().filter(m -> m.getId() == milestoneId).findFirst().orElse(null);
-        
-        if (statusId == 0) {
-            updatedMilestone.setStatus("offen");
-        }
-        else if (statusId == 1) {
-            updatedMilestone.setStatus("erledigt");;
-        }
+    public void updateMilestoneStatus(final Long timelineId, final Long milestoneId, final Milestone.StatusEnum status) {
+        final TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+        final Milestone updatedMilestone = sessionTimeline.getMilestones().stream().filter(m -> m.getId() == milestoneId).findFirst().orElse(null);
+        updatedMilestone.setStatus(status);
     }
 }

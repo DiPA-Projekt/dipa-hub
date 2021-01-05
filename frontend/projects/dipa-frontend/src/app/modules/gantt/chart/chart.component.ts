@@ -1,27 +1,22 @@
+import { ResizedEvent } from 'angular-resize-event';
+import * as d3 from 'd3';
 import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  SimpleChanges,
-  ViewChild,
-  ViewEncapsulation
+    IncrementsService, MilestonesService, TasksService, TimelinesIncrementService, TimelinesService
+} from 'dipa-api-client';
+import { forkJoin, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+
+import {
+    AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges,
+    ViewChild, ViewEncapsulation
 } from '@angular/core';
 
-import * as d3 from 'd3';
-import {GanttControlsService} from '../gantt-controls.service';
-import {ResizedEvent} from 'angular-resize-event';
-import {MilestonesArea} from './chart-elements/MilestonesArea';
-import {TasksArea} from './chart-elements/TasksArea';
-import {Increments} from './chart-elements/Increments';
-import {XAxis} from './chart-elements/XAxis';
-import {ProjectDuration} from './chart-elements/ProjectDuration';
-import {IncrementsService, MilestonesService, TasksService, TimelinesIncrementService, TimelinesService} from 'dipa-api-client';
-import {forkJoin, Observable} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import { GanttControlsService } from '../gantt-controls.service';
+import { Increments } from './chart-elements/Increments';
+import { MilestonesArea } from './chart-elements/MilestonesArea';
+import { ProjectDuration } from './chart-elements/ProjectDuration';
+import { TasksArea } from './chart-elements/TasksArea';
+import { XAxis } from './chart-elements/XAxis';
 
 @Component({
   selector: 'app-chart',
@@ -677,13 +672,15 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   }
 
   changeStatus(event): void {
-    //TODO milestoneData: 
-    // const changeMilestoneStatus$ = this.milestonesService.updateMilestoneStatus(this.timelineData.id, this.milestoneDataMenu.id,
-    //   {
-    //     ...this.milestoneData,
-    //     statusId: event.value});
+    const changeMilestoneStatus$ = this.milestonesService.updateMilestoneStatus(
+      this.timelineData.id,
+      this.milestoneDataMenu.id,
+      {
+        status: event.value,
+      }
+    );
 
-    // this.milestoneSubscription = this.subscribeForReset(changeMilestoneStatus$);
+    this.milestoneSubscription = this.subscribeForReset(changeMilestoneStatus$);
   }
 
   closeMenu(event): void {
