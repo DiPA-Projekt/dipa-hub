@@ -549,16 +549,18 @@ public class TimelineService {
         }
     }
 
-    public void updateProjectApproach(final Long timelineId, final Long projectTypeId, final Long projectApproachId) {
+    public void updateProject(final Timeline timeline) {
 
-        TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
-        sessionTimeline.getTimeline().setProjectTypeId(projectTypeId);
-        sessionTimeline.getTimeline().setProjectApproachId(projectApproachId);
+        TimelineState sessionTimeline = getSessionTimelines().get(timeline.getId());
+        sessionTimeline.getTimeline().setProjectTypeId(timeline.getProjectTypeId());
+        sessionTimeline.getTimeline().setProjectApproachId(timeline.getProjectApproachId());
+
+        sessionTimeline.getTimeline().setStart(LocalDate.now());
 
         final List<MilestoneTemplateEntity> maxMilestoneDateList = new ArrayList<MilestoneTemplateEntity>();
         final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
-                                                        .filter(template -> template.getProjectTypeEntity().getId().equals(projectTypeId))
-                                                        .collect(Collectors.toList());  
+                                                        .filter(template -> template.getProjectTypeEntity().getId().equals(timeline.getProjectTypeId()))
+                                                        .collect(Collectors.toList());
 
         for (PlanTemplateEntity planTemplate: planTemplateList) {
                 maxMilestoneDateList.add(planTemplate.getMilestones().stream()
@@ -573,8 +575,9 @@ public class TimelineService {
 
         sessionTimeline.setMilestones(null);
         sessionTimeline.setIncrements(null);
+        sessionTimeline.setTempIncrementMilestones(null);
 
-        this.initializeMilestones(timelineId);
+        this.initializeMilestones(timeline.getId());
 
     }
 }

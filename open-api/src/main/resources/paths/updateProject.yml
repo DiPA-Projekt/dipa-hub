@@ -3,7 +3,7 @@ patch:
     - timelines
   summary: Update project type and project approach for a timeline
   description: Update project type and project approach for a timeline
-  operationId: updateProjectApproach
+  operationId: updateProject
   parameters:
     - in: path
       name: timelineId
@@ -13,19 +13,12 @@ patch:
       required: true
       description: Numeric ID of the timeline.
   requestBody:
-    description: projectApproachId and projectTypeId as parameters
+    description: timeline as requestBody
     required: true
     content:
       application/json:
         schema:
-          type: object
-          properties:
-            projectTypeId:
-              type: integer
-              format: int64
-            projectApproachId:
-              type: integer
-              format: int64
+          $ref: "../models/timeline.yml#/Timeline"
   responses:
     204:
       description: The operation was applied successfully.

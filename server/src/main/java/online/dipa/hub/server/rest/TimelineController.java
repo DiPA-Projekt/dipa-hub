@@ -5,7 +5,6 @@ import java.util.List;
 
 import online.dipa.hub.api.model.Increment;
 import online.dipa.hub.api.model.InlineObject;
-import online.dipa.hub.api.model.InlineObject1;
 
 import online.dipa.hub.services.TimelineService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,11 +98,9 @@ public class TimelineController implements TimelinesApi {
     }
 
     @Override
-    public ResponseEntity<Void> updateProjectApproach(final Long timelineId, InlineObject1 inlineObject1 ) {
-        final Long projectTypeId = inlineObject1.getProjectTypeId();
-        final Long projectApproachId = inlineObject1.getProjectApproachId();
+    public ResponseEntity<Void> updateProject(final Long timelineId, Timeline timeline) {
 
-        timelineService.updateProjectApproach(timelineId, projectTypeId, projectApproachId);
+        timelineService.updateProject(timeline);
         return ResponseEntity.noContent().build();
     }
 

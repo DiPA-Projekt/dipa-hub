@@ -96,11 +96,11 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   changeProjectApproach(event, timelineId): void {
 
-    const selectedProjectTypeId = this.timelineData.find(item => item.id === timelineId).projectTypeId;
+    const selectedTimeline = this.timelineData.find(item => item.id === timelineId);
+    selectedTimeline.projectApproachId = event.value;
 
-    this.timelinesService.updateProjectApproach(timelineId, {projectTypeId: selectedProjectTypeId, projectApproachId: event.value})
+    this.timelinesService.updateProject(selectedTimeline.id, selectedTimeline)
       .subscribe((d) => {
-
       this.loadTimelines();
       });
 }
