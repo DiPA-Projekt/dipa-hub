@@ -175,6 +175,14 @@ export class MilestonesArea implements IChartElement {
         return 'translate(' + (offset.left + this.xScale(milestoneDate)) + ','
         + (offset.top + this.elementHeight / 2) + ')';
       });
+
+    // update tooltip
+    dataGroup.selectAll('g.milestoneEntry')
+      .select('path')
+      .on('mouseover', (event, d) => {
+        this.showTooltip(d, event.clientX, event.clientY);
+      });
+
   }
 
   public arrangeLabels(): void {
