@@ -48,15 +48,15 @@ export class ProjectDuration {
   public onDragEndProjectStart?: (days: number) => void;
   public onDragEndProjectEnd?: (days: number) => void;
 
-  
-  constructor(svg: any, chartElement: any, xScale: any, timelineData: any) {
+
+  constructor(svg: any, xScale: any, timelineData: any) {
     this.svg = svg;
     this.xScale = xScale;
     this.timelineProjectTypeId = timelineData.projectTypeId;
     this.svgBbox = this.svg.node().getBBox();
     this.projectGroup = this.svg.select('g.project-group');
 
-    this.tooltip = d3.select(chartElement).select('figure#chart .tooltip');
+    this.tooltip = d3.select('figure#chart .tooltip');
 
     this.setData(timelineData);
   }

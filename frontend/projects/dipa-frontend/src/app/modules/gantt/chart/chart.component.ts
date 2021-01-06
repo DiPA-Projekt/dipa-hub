@@ -3,11 +3,13 @@ import {
   Component,
   ElementRef,
   Input,
+  NgModule,
   OnChanges,
   OnDestroy,
   OnInit,
   SimpleChanges,
   ViewChild,
+  ViewChildren,
   ViewEncapsulation
 } from '@angular/core';
 
@@ -109,21 +111,10 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   timelineEndSubscription;
 
   modifiable: boolean;
-  showMenu: boolean;
-
-  milestoneMenuOn: boolean;
-
-  milestoneDataMenu: any;
-
-  statusList: any[] = [{id: 0, statusName: 'offen'}, {id: 1, statusName: 'erledigt'}];
-  milestoneStatusId: number;
 
   ngOnInit(): void {
-    this.milestoneMenuOn = false;
-    this.showMenu = true;
-
     // TODO: this is just temporary
-    this.modifiable = this.timelineData.id !== 3;
+    this.modifiable = this.timelineData.id !== 4;
 
     this.periodStartDateSubscription = this.ganttControlsService.getPeriodStartDate()
     .subscribe((data) => {
@@ -152,7 +143,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     if (this.chartElement.id.includes('overview')){
       this.periodStartDate = new Date(this.timelineData.start);
       this.periodEndDate = new Date(this.timelineData.end);
-      this.showMenu = false;
     }
 
     this.viewTypeSubscription = this.ganttControlsService.getViewType()
@@ -267,11 +257,11 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     this.initializeXScale();
 
-    this.headerX = new XAxis(this.svg, this.chartElement, this.xScale);
+    this.headerX = new XAxis(this.svg, this.xScale);
     this.headerX.formatDate = this.headerX.formatDateFull;
     this.headerX.draw();
 
-    this.projectDuration = new ProjectDuration(this.svg, this.chartElement, this.xScale, this.timelineData);
+    this.projectDuration = new ProjectDuration(this.svg, this.xScale, this.timelineData);
     this.projectDuration.draw();
 
     this.projectDuration.onDragEnd = (offsetDays: number) => {
@@ -311,8 +301,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.taskViewItem = new TasksArea(this.svg, this.xScale, this.taskData);
     this.taskViewItem.draw({left: 0, top: 0});
 
-    this.milestoneViewItem = new MilestonesArea(this.svg, this.chartElement, this.xScale,
-                                                this.milestoneData, this.modifiable, this.showMenu);
+    this.milestoneViewItem = new MilestonesArea(this.svg, this.xScale, this.milestoneData, this.modifiable);
     this.milestoneViewItem.draw({left: 0, top: this.taskViewItem.getAreaHeight()});
 
     this.milestoneViewItem.onDragEndMilestone = (offsetDays: number, id: number) => {
@@ -325,14 +314,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       } else {
         this.milestoneViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()}, 200);
       }
-    };
-
-    this.milestoneViewItem.onClickMilestone = (data: any) => {
-
-      this.milestoneMenuOn = true;
-      this.milestoneDataMenu = data;
-
-      this.milestoneStatusId = this.statusList.find((s) => s.statusName === data.status).id;
     };
 
     this.incrementsViewItem = new Increments(this.svg, this.xScale, this.incrementsData);
@@ -676,24 +657,4 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.incrementsData = incrementsData;
     this.incrementsViewItem.setData(incrementsData);
   }
-
-  changeStatus(event): void {
-    const changeMilestoneStatus$ = this.milestonesService.updateMilestoneStatus(this.timelineData.id, this.milestoneDataMenu.id,
-      {statusId: event.value});
-
-    this.milestoneSubscription = this.subscribeForReset(changeMilestoneStatus$);
-
-  }
-
-  closeMenu(event): void {
-    this.milestoneMenuOn = !this.milestoneMenuOn;
-    this.milestoneViewItem.onCloseMenu();
-  }
-
-  getDate(date): any {
-    const dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
-
-    return new Date(date).toLocaleDateString('de-DE', dateOptions);
-  }
-
 }

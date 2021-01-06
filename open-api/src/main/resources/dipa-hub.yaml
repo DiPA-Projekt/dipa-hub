@@ -30,7 +30,5 @@ paths:
     $ref: "paths/ical.yml"
   /timelines/{timelineId}/milestones:
     $ref: "paths/milestones.yml"
-  /timelines/{timelineId}/milestones/{milestoneId}:
-    $ref: "paths/updateMilestone.yml"
   /timelines/{timelineId}/tasks:
     $ref: "paths/tasks.yml"
