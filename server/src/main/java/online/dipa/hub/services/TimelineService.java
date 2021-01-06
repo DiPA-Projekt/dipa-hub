@@ -545,17 +545,4 @@ public class TimelineService {
         }
     }
 
-    public void updateMilestoneStatus(final Long timelineId, final Long milestoneId, final Long statusId) {
-
-        TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
-
-        Milestone updatedMilestone = sessionTimeline.getMilestones().stream().filter(m -> m.getId() == milestoneId).findFirst().orElse(null);
-        
-        if (statusId == 0) {
-            updatedMilestone.setStatus("offen");
-        }
-        else if (statusId == 1) {
-            updatedMilestone.setStatus("erledigt");;
-        }
-    }
 }

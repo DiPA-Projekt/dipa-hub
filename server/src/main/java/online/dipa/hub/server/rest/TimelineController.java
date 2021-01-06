@@ -5,7 +5,6 @@ import java.util.List;
 
 import online.dipa.hub.api.model.Increment;
 import online.dipa.hub.api.model.InlineObject;
-import online.dipa.hub.api.model.InlineObject1;
 import online.dipa.hub.services.TimelineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -95,14 +94,6 @@ public class TimelineController implements TimelinesApi {
     public ResponseEntity<List<Increment>> getIncrementsForTimeline(final Long timelineId) {
         final List<Increment> incrementsList = timelineService.getIncrementsForTimeline(timelineId);
         return ResponseEntity.ok(incrementsList);
-    }
-
-    @Override
-    public ResponseEntity<Void> updateMilestoneStatus(final Long timelineId, final Long milestoneId, InlineObject1 inlineObject1 ) {
-        final Long statusId = inlineObject1.getStatusId();
-
-        timelineService.updateMilestoneStatus(timelineId, milestoneId, statusId);
-        return ResponseEntity.noContent().build();
     }
 
     public ResponseEntity<Resource> getTimelineCalendar(final Long timelineId) {
