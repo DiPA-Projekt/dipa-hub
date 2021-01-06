@@ -87,7 +87,7 @@ export class MilestonesArea implements IChartElement {
 
         event.subject.date = this.xScale.invert(xValueNew);
 
-        this.showTooltip(event.subject, event.sourceEvent.layerX, event.sourceEvent.layerY);
+        this.showTooltip(event.subject, event.sourceEvent.clientX, event.sourceEvent.clientY);
       })
       .on('start', (event: d3.D3DragEvent<any, any, any>) => {
 
