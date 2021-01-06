@@ -114,7 +114,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
   ngOnInit(): void {
     // TODO: this is just temporary
-    this.modifiable = this.timelineData.id !== 3;
+    this.modifiable = this.timelineData.id !== 4;
 
     this.periodStartDateSubscription = this.ganttControlsService.getPeriodStartDate()
     .subscribe((data) => {
