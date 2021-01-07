@@ -18,13 +18,12 @@ import {AngularResizedEventModule} from 'angular-resize-event';
 import {FormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import { SharedModule } from '../../shared/shared.module';
+import {MatMenuModule} from '@angular/material/menu';
 
 
 @NgModule({
   declarations: [
     GanttComponent,
-    // ChartComponent,
-    // TooltipComponent
   ],
     imports: [
         FormsModule,
@@ -41,6 +40,7 @@ import { SharedModule } from '../../shared/shared.module';
         MatSelectModule,
         AngularResizedEventModule,
         MatButtonModule,
+        MatMenuModule,
         SharedModule
     ]
 })
