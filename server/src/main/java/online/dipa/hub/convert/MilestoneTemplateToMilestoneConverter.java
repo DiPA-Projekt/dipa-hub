@@ -12,9 +12,13 @@ import online.dipa.hub.persistence.entities.MilestoneTemplateEntity;
 public class MilestoneTemplateToMilestoneConverter implements Converter<MilestoneTemplateEntity, Milestone> {
     @Override
     public Milestone convert(final MilestoneTemplateEntity templateEntity) {
-        return new Milestone().id(templateEntity.getId())
-                              .name(templateEntity.getName())
-                              .date(LocalDate.now()
-                                             .plusDays(templateEntity.getDateOffset()));
+        final Milestone milestone = new Milestone().id(templateEntity.getId())
+                                                   .name(templateEntity.getName())
+                                                   .date(LocalDate.now()
+                                                                  .plusDays(templateEntity.getDateOffset()))
+                                                    .status(Milestone.StatusEnum.fromValue(templateEntity.getStatus()));
+
+        return milestone;
     }
 }
+

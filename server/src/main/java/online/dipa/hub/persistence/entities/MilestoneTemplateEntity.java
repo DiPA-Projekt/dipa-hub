@@ -27,6 +27,10 @@ public class MilestoneTemplateEntity extends BaseEntity {
     @Basic(optional = false)
     private int dateOffset;
 
+    @NotEmpty
+    @Basic(optional = false)
+    private String status;
+
     @NotNull
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private PlanTemplateEntity planTemplate;
@@ -45,6 +49,14 @@ public class MilestoneTemplateEntity extends BaseEntity {
 
     public void setDateOffset(final int dateOffset) {
         this.dateOffset = dateOffset;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(final String status) {
+        this.status = status;
     }
 
     public PlanTemplateEntity getPlanTemplate() {

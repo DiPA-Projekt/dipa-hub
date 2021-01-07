@@ -196,8 +196,9 @@ public class TimelineService {
                 Milestone newMilestone = new Milestone();
                 newMilestone.setId(id + count);
                 newMilestone.setName(m.getName());
-                //plus 14 days for planning
-                newMilestone.setDate(increment.getStart().plusDays(newDateAfterScale + 14));
+                newMilestone.setDate(increment.getStart().plusDays(newDateAfterScale).plusDays(14));
+                newMilestone.setStatus(Milestone.StatusEnum.OFFEN);
+
 
                 incrementMilestones.add(newMilestone);
 
@@ -545,4 +546,9 @@ public class TimelineService {
         }
     }
 
+    public void updateMilestoneStatus(final Long timelineId, final Long milestoneId, final Milestone.StatusEnum status) {
+        final TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+        final Milestone updatedMilestone = sessionTimeline.getMilestones().stream().filter(m -> m.getId() == milestoneId).findFirst().orElse(null);
+        updatedMilestone.setStatus(status);
+    }
 }
