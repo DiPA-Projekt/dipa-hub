@@ -133,6 +133,11 @@ export class MilestonesArea implements IChartElement {
       .style('fill', this.elementColor)
       .style('stroke', d3.rgb(this.elementColor).darker());
 
+    if (this.modifiable) {
+      milestone.call(drag);
+    } else {
+      milestoneIcon.classed('inactive', true);
+    }
 
     milestoneIcon
       .on('mouseover', (event, d) => {
