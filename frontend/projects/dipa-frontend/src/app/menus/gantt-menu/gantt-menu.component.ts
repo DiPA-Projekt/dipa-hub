@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {MatMenu} from '@angular/material/menu';
 import { TimelinesService } from 'dipa-api-client';
 
@@ -8,7 +8,7 @@ import { TimelinesService } from 'dipa-api-client';
   styleUrls: ['./gantt-menu.component.scss'],
   exportAs: 'menuComponent'
 })
-export class GanttMenuComponent implements OnInit {
+export class GanttMenuComponent implements OnInit, OnDestroy {
   @ViewChild(MatMenu, {static: true}) menu: MatMenu;
 
   constructor(private timelinesService: TimelinesService) { }
@@ -20,6 +20,10 @@ export class GanttMenuComponent implements OnInit {
     .subscribe((data) => {
       this.timelineData = data;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.timelinesSubscription.unsubscribe();
   }
 
 }
