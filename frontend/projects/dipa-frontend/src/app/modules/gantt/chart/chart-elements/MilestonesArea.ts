@@ -87,7 +87,7 @@ export class MilestonesArea implements IChartElement {
 
         event.subject.date = this.xScale.invert(xValueNew);
 
-        this.showTooltip(event.subject, event.sourceEvent.layerX, event.sourceEvent.layerY);
+        this.showTooltip(event.subject, event.sourceEvent.clientX, event.sourceEvent.clientY);
       })
       .on('start', (event: d3.D3DragEvent<any, any, any>) => {
 
@@ -175,6 +175,14 @@ export class MilestonesArea implements IChartElement {
         return 'translate(' + (offset.left + this.xScale(milestoneDate)) + ','
         + (offset.top + this.elementHeight / 2) + ')';
       });
+
+    // update tooltip
+    dataGroup.selectAll('g.milestoneEntry')
+      .select('path.milestone')
+      .on('mouseover', (event, d) => {
+        this.showTooltip(d, event.clientX, event.clientY);
+      });
+
   }
 
   public arrangeLabels(): void {
