@@ -22,12 +22,12 @@ export class MilestonesArea implements IChartElement {
   initMilestoneDate;
 
   public onDragEndMilestone?: (days: number, id: number) => void;
-  public onClickMilestone?: (data: any) => void;
+  public onSelectMilestone?: (data: any) => void;
   // public onCloseMenu?: () => void;
 
   modifiable = false;
   showMenu = false;
-  clickedMilestoneId: number;
+  selectedMilestoneId: number;
 
   constructor(svg: any, chartElement: any, xScale: any, data: any[],  modifiable: boolean, showMenu: boolean) {
     this.svg = svg;
@@ -72,7 +72,7 @@ export class MilestonesArea implements IChartElement {
     this.draw(offset);
     this.redraw(offset, 0);
 
-    this.updateMilestoneColor(this.clickedMilestoneId);
+    this.updateMilestoneStyle(this.selectedMilestoneId);
   }
 
   draw(offset): void {
@@ -153,13 +153,18 @@ export class MilestonesArea implements IChartElement {
       if (this.showMenu) {
 
         milestoneIcon.on('click', (event, d) => {
-          this.onClickMilestone(d);
 
-          this.clickedMilestoneId = d.id;
+          if (d.id !== this.selectedMilestoneId) {
 
-          this.resetMilestoneColor();
+            this.selectedMilestoneId = d.id;
 
-          this.updateMilestoneColor(d.id);
+            this.resetMilestoneColor();
+
+            this.updateMilestoneStyle(d.id);
+
+            this.onSelectMilestone(d);
+
+          }
 
         });
       }
@@ -310,7 +315,7 @@ export class MilestonesArea implements IChartElement {
       .attr('transform', 'translate(' + xValueNew + ',' + yTransformValue + ')');
   }
 
-  private updateMilestoneColor(milestoneId): void {
+  private updateMilestoneStyle(milestoneId): void {
     const dataGroup = this.svg.select('g.data-group');
 
     dataGroup

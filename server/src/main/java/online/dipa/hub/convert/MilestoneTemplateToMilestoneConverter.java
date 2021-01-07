@@ -15,15 +15,8 @@ public class MilestoneTemplateToMilestoneConverter implements Converter<Mileston
         final Milestone milestone = new Milestone().id(templateEntity.getId())
                                                    .name(templateEntity.getName())
                                                    .date(LocalDate.now()
-                                                                  .plusDays(templateEntity.getDateOffset()));
-        switch (templateEntity.getStatus()) {
-        case "offen":
-            milestone.status(Milestone.StatusEnum.OFFEN);
-            break;
-        case "erledigt":
-            milestone.status(Milestone.StatusEnum.ERLEDIGT);
-            break;
-        }
+                                                                  .plusDays(templateEntity.getDateOffset()))
+                                                    .status(Milestone.StatusEnum.fromValue(templateEntity.getStatus()));
 
         return milestone;
     }

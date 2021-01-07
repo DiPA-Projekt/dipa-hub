@@ -106,7 +106,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   modifiable: boolean;
   showMenu: boolean;
 
-  milestoneMenuOn: boolean;
+  showMilestoneMenu: boolean;
 
   selectedMilestoneDataMenu: any;
   selectedMilestoneId: number;
@@ -114,7 +114,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   statusList: any[] = ['offen', 'erledigt'];
 
   ngOnInit(): void {
-    this.milestoneMenuOn = false;
+    this.showMilestoneMenu = false;
     this.showMenu = true;
 
     // TODO: this is just temporary
@@ -322,9 +322,9 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       }
     };
 
-    this.milestoneViewItem.onClickMilestone = (data: any) => {
+    this.milestoneViewItem.onSelectMilestone = (data: any) => {
 
-      this.milestoneMenuOn = true;
+      this.showMilestoneMenu = true;
       this.selectedMilestoneDataMenu = data;
 
       this.selectedMilestoneId = data.id;
@@ -687,7 +687,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   }
 
   closeMenu(event): void {
-    this.milestoneMenuOn = !this.milestoneMenuOn;
+    this.showMilestoneMenu = !this.showMilestoneMenu;
     this.milestoneViewItem.onCloseMenu();
   }
 
