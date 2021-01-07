@@ -178,7 +178,7 @@ export class MilestonesArea implements IChartElement {
 
     // update tooltip
     dataGroup.selectAll('g.milestoneEntry')
-      .select('path')
+      .select('path.milestone')
       .on('mouseover', (event, d) => {
         this.showTooltip(d, event.clientX, event.clientY);
       });
