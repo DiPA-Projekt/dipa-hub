@@ -18,11 +18,11 @@ export class XAxis {
 
   today = new Date();
 
-  constructor(svg: any, xScale: any) {
+  constructor(svg: any, chartElement: any, xScale: any) {
     this.svg = svg;
     this.xScale = xScale;
     this.svgBbox = this.svg.node().getBBox();
-    this.tooltip = d3.select('figure#chart .tooltip');
+    this.tooltip = d3.select(chartElement).select('figure#chart .tooltip');
   }
 
   draw(): void {
@@ -128,7 +128,7 @@ export class XAxis {
   }
 
   formatDateWeek(date): any {
-    return (d3.timeFormat('%V')(date) == '01' ? d3.timeFormat('KW %V-%y') : d3.timeFormat('KW %V'))
+    return (d3.timeFormat('%V')(date) === '01' ? d3.timeFormat('KW %V-%y') : d3.timeFormat('KW %V'))
     (date);
   }
 

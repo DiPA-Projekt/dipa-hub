@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: addColumn-milestone-template
+      author: nguyen
+      changes:
+        - addColumn:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+                  defaultValue: offen
