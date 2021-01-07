@@ -108,10 +108,10 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
   milestoneMenuOn: boolean;
 
-  milestoneDataMenu: any;
+  selectedMilestoneDataMenu: any;
+  selectedMilestoneId: number;
 
   statusList: any[] = ['offen', 'erledigt'];
-  milestoneStatus: string;
 
   ngOnInit(): void {
     this.milestoneMenuOn = false;
@@ -306,7 +306,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.taskViewItem = new TasksArea(this.svg, this.xScale, this.taskData);
     this.taskViewItem.draw({left: 0, top: 0});
 
-    this.milestoneViewItem = new MilestonesArea(this.svg, this.chartElement, this.xScale, this.milestoneData, this.modifiable, this.showMenu);
+    this.milestoneViewItem = new MilestonesArea(this.svg, this.chartElement, this.xScale,
+                                                this.milestoneData, this.modifiable, this.showMenu);
     this.milestoneViewItem.draw({left: 0, top: this.taskViewItem.getAreaHeight()});
 
     this.milestoneViewItem.onDragEndMilestone = (offsetDays: number, id: number) => {
@@ -324,9 +325,9 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.milestoneViewItem.onClickMilestone = (data: any) => {
 
       this.milestoneMenuOn = true;
-      this.milestoneDataMenu = data;
+      this.selectedMilestoneDataMenu = data;
 
-      this.milestoneStatus = data.status;
+      this.selectedMilestoneId = data.id;
     };
 
     this.incrementsViewItem = new Increments(this.svg, this.xScale, this.incrementsData);
@@ -667,14 +668,16 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.milestoneData = milestoneData;
     this.milestoneViewItem.setData(milestoneData);
 
+    this.selectedMilestoneDataMenu = milestoneData.find(m => m.id === this.selectedMilestoneId);
+
     this.incrementsData = incrementsData;
     this.incrementsViewItem.setData(incrementsData);
   }
 
   changeStatus(event): void {
-    const changeMilestoneStatus$ = this.milestonesService.updateMilestoneStatus(
+    const changeMilestoneStatus$ = this.milestonesService.updateMilestoneData(
       this.timelineData.id,
-      this.milestoneDataMenu.id,
+      this.selectedMilestoneDataMenu.id,
       {
         status: event.value,
       }

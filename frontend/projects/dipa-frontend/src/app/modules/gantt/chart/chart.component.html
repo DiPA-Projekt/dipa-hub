@@ -3,15 +3,17 @@
         <div class="card-container">
             <div class="card-header">
                 <div class="subheading-1 title">Meilenstein</div>
-                <button mat-icon-button color="warn" (click)="closeMenu($event)"><mat-icon>close</mat-icon></button>
+                <button mat-icon-button color="warn" (click)="closeMenu($event)">
+                    <mat-icon>close</mat-icon>
+                </button>
             </div>
             <div class="card-content">
-                <p style="font-weight: 500; font-size: medium; text-align: center;">{{milestoneDataMenu.name}}</p>
+                <p style="font-weight: 500; font-size: medium; text-align: center;">{{selectedMilestoneDataMenu.name}}</p>
                 <p style="font-weight: 200; font-size: small; text-align: center; color: grey;">
-                      Fällig am {{getDate(milestoneDataMenu.date)}}
+                    Fällig am {{getDate(selectedMilestoneDataMenu.date)}}
                 </p>
                 <p>Status</p>
-                <mat-radio-group [(ngModel)]="milestoneStatus" *ngFor="let status of statusList">
+                <mat-radio-group [(ngModel)]="selectedMilestoneDataMenu.status" *ngFor="let status of statusList" color="primary">
                     <div class="row">
                         <mat-radio-button [value]="status" (change)="changeStatus($event)">
                             {{status}}

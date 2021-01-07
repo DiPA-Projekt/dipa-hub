@@ -98,7 +98,7 @@ public class TimelineController implements TimelinesApi {
     }
 
     @Override
-    public ResponseEntity<Void> updateMilestoneStatus(final Long timelineId, final Long milestoneId, final Milestone milestone ) {
+    public ResponseEntity<Void> updateMilestoneData(final Long timelineId, final Long milestoneId, final Milestone milestone ) {
         if (Optional.ofNullable(milestone.getStatus()).isPresent()) {
             timelineService.updateMilestoneStatus(timelineId, milestoneId, milestone.getStatus());
         }

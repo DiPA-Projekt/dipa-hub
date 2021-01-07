@@ -3,7 +3,7 @@ patch:
     - milestones
   summary: Update status for a milestone
   description: Apply an operation for a milestone
-  operationId: updateMilestoneStatus
+  operationId: updateMilestoneData
   parameters:
     - in: path
       name: timelineId
