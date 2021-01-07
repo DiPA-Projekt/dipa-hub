@@ -36,6 +36,8 @@ export class GanttComponent implements OnInit, OnDestroy {
   selectedTimelineId: number;
   selectedProjectApproachId: number;
   selectedProjectTypeId: number;
+  selectedProjectTypeName: string;
+
   viewTypeSelected: any;
 
   projectTypesList = [];
@@ -72,6 +74,13 @@ export class GanttComponent implements OnInit, OnDestroy {
 
           this.selectedProjectTypeId = this.timelineData.find(item => item.id === Number(this.selectedTimelineId)).projectTypeId;
           this.selectedProjectApproachId = this.timelineData.find(item => item.id === Number(this.selectedTimelineId)).projectApproachId;
+
+          this.projectTypesSubscription = this.projectTypesService.getProjectTypes()
+          .subscribe((res) => {
+
+            this.selectedProjectTypeName = res.find(item => item.id === Number(this.selectedProjectTypeId)).name;
+          });
+
           this.setData();
         });
     });
@@ -88,11 +97,6 @@ export class GanttComponent implements OnInit, OnDestroy {
       if (this.periodEndDate !== data) {
         this.periodEndDate = data;
       }
-    });
-
-    this.projectTypesSubscription = this.projectTypesService.getProjectTypes()
-    .subscribe((data) => {
-      this.projectTypesList = data;
     });
 
     this.projectApproachesSubscription = this.projectApproachesService.getProjectApproaches()
@@ -186,20 +190,15 @@ export class GanttComponent implements OnInit, OnDestroy {
   }
 
   changeProjectApproach(event): void {
-    this.timelinesSubscription = this.timelinesService.getTimelines()
-    .subscribe((data) => {
-      this.timelineData = data;
-    });
 
-    this.selectedTimelineId = this.timelineData.find(timeline => timeline.projectApproachId === this.selectedProjectApproachId).id;
-    this.setData();
-    this.viewTypeSelected = undefined;
-    this.ganttControlsService.setViewType(null);
-  }
+    const selectedTimeline = this.timelineData.find(item => item.id === Number(this.selectedTimelineId));
 
-  changeProjectType(event): void {
-    this.selectedProjectApproachId = this.timelineData.find(timeline => timeline.projectTypeId === this.selectedProjectTypeId).id;
-    this.changeProjectApproach(event);
+    selectedTimeline.projectApproachId = event.value;
+
+    this.timelinesService.updateProject(selectedTimeline.id, selectedTimeline)
+      .subscribe((d) => {
+      this.setData();
+      });
   }
 
   filterProjectApproaches(): any[] {

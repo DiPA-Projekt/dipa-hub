@@ -103,7 +103,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
       .subscribe((d) => {
       this.loadTimelines();
       });
-}
+  }
 
   changeProjectType(event, timelineId): void {
     this.timelineData.find(timeline => timeline.id === timelineId).projectTypeId = event.value;
