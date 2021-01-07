@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { GanttMenuComponent } from './modules/gantt/gantt-menu/gantt-menu.component';
+import { GanttMenuComponent } from './menus/gantt-menu/gantt-menu.component';
 
 @Component({
   selector: 'app-root',

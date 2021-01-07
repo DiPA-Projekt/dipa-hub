@@ -197,8 +197,8 @@ public class TimelineService {
                 Milestone newMilestone = new Milestone();
                 newMilestone.setId(id + count);
                 newMilestone.setName(m.getName());
-                newMilestone.setDate(increment.getStart().plusDays(newDateAfterScale + 14));
-
+                newMilestone.setDate(increment.getStart().plusDays(newDateAfterScale).plusDays(14));
+                newMilestone.setStatus(Milestone.StatusEnum.OFFEN);
 
                 incrementMilestones.add(newMilestone);
 
@@ -215,7 +215,7 @@ public class TimelineService {
         TimelineState sessionTimeline = findTimelineState(timelineId);
 
         final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
-      
+
         Long projectTypeId = projectApproach.getProjectType().getId();
 
         final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
@@ -266,7 +266,7 @@ public class TimelineService {
         if (sessionTimeline.getIncrements() == null) {
             final ProjectApproachEntity projectApproach = projectRespository.findAll().stream()
             .filter(p -> p.getProjectApproach().getId() == sessionTimeline.getTimeline().getProjectApproachId()).findFirst().orElse(null).getProjectApproach();
-    
+
             if (projectApproach.isIterative()) {
                 sessionTimeline.setIncrements(this.loadIncrements(timelineId, 1));
             }
@@ -547,6 +547,12 @@ public class TimelineService {
             List<Milestone> tempMilestonesList = new ArrayList<Milestone>(getMilestonesFromRespository(timelineId));
             sessionTimeline.setTempIncrementMilestones(tempMilestonesList);
         }
+    }
+
+    public void updateMilestoneStatus(final Long timelineId, final Long milestoneId, final Milestone.StatusEnum status) {
+        final TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+        final Milestone updatedMilestone = sessionTimeline.getMilestones().stream().filter(m -> m.getId() == milestoneId).findFirst().orElse(null);
+        updatedMilestone.setStatus(status);
     }
 
     public void updateProject(final Timeline timeline) {
