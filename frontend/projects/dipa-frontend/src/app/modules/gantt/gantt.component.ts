@@ -197,7 +197,13 @@ export class GanttComponent implements OnInit, OnDestroy {
 
     this.timelinesService.updateProject(selectedTimeline.id, selectedTimeline)
       .subscribe((d) => {
-      this.setData();
+        this.timelinesSubscription = this.timelinesService.getTimelines().subscribe((data) => {
+          this.timelineData = data;
+
+          this.selectedProjectApproachId = this.timelineData.find(item => item.id === Number(this.selectedTimelineId)).projectApproachId;
+
+          this.setData();
+        });
       });
   }
 
