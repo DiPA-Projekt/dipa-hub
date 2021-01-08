@@ -48,10 +48,13 @@ export class ProjectDuration {
   public onDragEndProjectStart?: (days: number) => void;
   public onDragEndProjectEnd?: (days: number) => void;
 
-  constructor(svg: any, chartElement: any, xScale: any, timelineData: any) {
+  modifiable = false;
+
+  constructor(svg: any, chartElement: any, xScale: any, timelineData: any, modifiable: boolean) {
     this.svg = svg;
     this.xScale = xScale;
     this.timelineProjectTypeId = timelineData.projectTypeId;
+    this.modifiable = modifiable;
     this.svgBbox = this.svg.node().getBBox();
     this.projectGroup = this.svg.select('g.project-group');
 
@@ -117,7 +120,11 @@ export class ProjectDuration {
       .attr('width', Math.min(Math.max(this.xScale(this.projectEndDate) - visibleProjectStartDatePosition, 0), this.xScale.range()[1]))
       .attr('height', this.height);
 
-    projectDurationIndicator.call(drag);
+    if (this.modifiable) {
+      projectDurationIndicator.call(drag);
+    } else {
+      projectDurationIndicator.classed('inactive', true);
+    }
 
     const initialStartDatePosition = Math.min(visibleProjectStartDatePosition, this.xScale.range()[1] - 120);
     const initialEndDatePosition = visibleProjectEndDatePosition - 60;
@@ -272,7 +279,11 @@ export class ProjectDuration {
       .attr('y2', viewBoxHeight)
       .attr('stroke', d3.rgb(this.elementColor).darker());
 
-    projectStartDateLine.call(dragProjectStart);
+    if (this.modifiable) {
+      projectStartDateLine.call(dragProjectStart);
+    } else {
+      projectStartDateLine.classed('inactive', true);
+    }
 
     // projectEndDate grid line
     const projectEndDateLine = this.projectGroup
@@ -284,7 +295,11 @@ export class ProjectDuration {
       .attr('y2', viewBoxHeight)
       .attr('stroke', d3.rgb(this.elementColor).darker());
 
-    projectEndDateLine.call(dragProjectEnd);
+    if (this.modifiable) {
+      projectEndDateLine.call(dragProjectEnd);
+    } else {
+      projectEndDateLine.classed('inactive', true);
+    }
   }
 
   redraw(animationDuration): void {

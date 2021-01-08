@@ -1,6 +1,7 @@
 import * as d3 from 'd3';
 import {parseSvg} from 'd3-interpolate/src/transform/parse';
 import {IChartElement} from './IChartElement';
+import {Milestone} from '../../../../../../../dipa-api-client/src';
 
 export class MilestonesArea implements IChartElement {
 
@@ -35,7 +36,7 @@ export class MilestonesArea implements IChartElement {
     this.data = data;
     this.modifiable = modifiable;
     this.showMenu = showMenu;
-    console.log(data)
+
     this.tooltip = d3.select(chartElement).select('figure#chart .tooltip');
   }
 
@@ -128,16 +129,10 @@ export class MilestonesArea implements IChartElement {
     const milestoneIcon = milestone
       .append('path')
       .attr('class', 'milestone')
-      .attr('transform', 'scale(1.5 1)')
+      .attr('transform', 'scale(1.75 1.2)')
       .attr('d', d3.symbol().type(d3.symbolDiamond))
       .style('fill', this.elementColor)
       .style('stroke', d3.rgb(this.elementColor).darker());
-
-    if (this.modifiable) {
-      milestone.call(drag);
-    } else {
-      milestoneIcon.classed('inactive', true);
-    }
 
     milestoneIcon
       .on('mouseover', (event, d) => {
@@ -155,31 +150,37 @@ export class MilestonesArea implements IChartElement {
 
     if (this.modifiable) {
       milestone.call(drag);
-      if (this.showMenu) {
-
-        milestoneIcon.on('click', (event, d) => {
-
-          if (d.id !== this.selectedMilestoneId) {
-
-            this.resetMilestoneStyle();
-
-            this.selectedMilestoneId = d.id;
-
-            this.updateMilestoneStyle(d.id);
-
-            this.onSelectMilestone(d);
-
-          }
-          else {
-            this.onSelectMilestone(d);
-          }
-
-        });
-      }
-    } else {
-      milestoneIcon.classed('inactive', true);
     }
 
+    if (this.showMenu) {
+
+      milestoneIcon.on('click', (event, d) => {
+
+        if (d.id !== this.selectedMilestoneId) {
+
+          this.resetMilestoneStyle();
+
+          this.selectedMilestoneId = d.id;
+
+          this.updateMilestoneStyle(d.id);
+
+        }
+
+        this.onSelectMilestone(d);
+
+      });
+    }
+
+    // milestone status icon
+    milestone
+      .append('text')
+      .text('done')
+      .attr('class', 'material-icons milestoneStatusIcon')
+      .attr('x', 0)
+      .attr('y', 6)
+      .style('opacity', d => {
+        return d.status === Milestone.StatusEnum.Offen ? 0 : 1;
+    });
 
     const maxLabelWidth = 30;
 
@@ -235,7 +236,7 @@ export class MilestonesArea implements IChartElement {
       while (MilestonesArea.intersectArray(x, lastBBoxes)) {
         const currentY = parseFloat(x.getAttribute('y'));
 
-        dataGroup.select('#' + x.parentElement.id + ' text')
+        dataGroup.select('#' + x.parentElement.id + ' text.milestoneLabel')
           .attr('y', currentY + step);
 
         x.setAttribute('y', currentY + step);
@@ -336,7 +337,7 @@ export class MilestonesArea implements IChartElement {
     dataGroup
     .select('#milestoneEntry_' + milestoneId)
     .select('path.milestone')
-    .attr('transform', 'scale(1.8 1.2)')
+    .attr('transform', 'scale(1.85 1.25)')
     .style('stroke', d3.rgb('#2b41ff').darker());
 
     dataGroup
@@ -351,16 +352,16 @@ export class MilestonesArea implements IChartElement {
     if (this.selectedMilestoneId !== null) {
 
       dataGroup
-    .select('#milestoneEntry_' + this.selectedMilestoneId)
-    .select('path.milestone')
-    .attr('transform', 'scale(1.5 1)')
-    .style('fill', this.elementColor)
-    .style('stroke', d3.rgb(this.elementColor).darker());
+      .select('#milestoneEntry_' + this.selectedMilestoneId)
+      .select('path.milestone')
+      .attr('transform', 'scale(1.75 1.2)')
+      .style('fill', this.elementColor)
+      .style('stroke', d3.rgb(this.elementColor).darker());
 
       dataGroup
-    .selectAll('g.milestoneEntry')
-    .select('text.milestoneLabel')
-    .style('fill', d3.rgb(this.elementColor).darker());
+      .selectAll('g.milestoneEntry')
+      .select('text.milestoneLabel')
+      .style('fill', d3.rgb(this.elementColor).darker());
 
     }
 

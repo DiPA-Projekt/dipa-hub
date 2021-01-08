@@ -1,22 +1,28 @@
-import { ResizedEvent } from 'angular-resize-event';
+import {ResizedEvent} from 'angular-resize-event';
 import * as d3 from 'd3';
-import {
-    IncrementsService, MilestonesService, TasksService, TimelinesIncrementService, TimelinesService
-} from 'dipa-api-client';
-import { forkJoin, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import {IncrementsService, MilestonesService, TasksService, TimelinesIncrementService, TimelinesService} from 'dipa-api-client';
+import {forkJoin, Observable} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
 
 import {
-    AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges,
-    ViewChild, ViewEncapsulation
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+  ViewEncapsulation
 } from '@angular/core';
 
-import { GanttControlsService } from '../gantt-controls.service';
-import { Increments } from './chart-elements/Increments';
-import { MilestonesArea } from './chart-elements/MilestonesArea';
-import { ProjectDuration } from './chart-elements/ProjectDuration';
-import { TasksArea } from './chart-elements/TasksArea';
-import { XAxis } from './chart-elements/XAxis';
+import {GanttControlsService} from '../gantt-controls.service';
+import {Increments} from './chart-elements/Increments';
+import {MilestonesArea} from './chart-elements/MilestonesArea';
+import {ProjectDuration} from './chart-elements/ProjectDuration';
+import {TasksArea} from './chart-elements/TasksArea';
+import {XAxis} from './chart-elements/XAxis';
 
 @Component({
   selector: 'app-chart',
@@ -266,7 +272,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.headerX.formatDate = this.headerX.formatDateFull;
     this.headerX.draw();
 
-    this.projectDuration = new ProjectDuration(this.svg, this.chartElement, this.xScale, this.timelineData);
+    this.projectDuration = new ProjectDuration(this.svg, this.chartElement, this.xScale, this.timelineData, true);
     this.projectDuration.draw();
 
     this.projectDuration.onDragEnd = (offsetDays: number) => {
