@@ -160,6 +160,8 @@ public class TimelineService {
     private HashMap<Increment, List<Milestone>> getIncrementMilestones(List<Milestone> tempMilestones,
             final Long timelineId, final int incrementCount) {
 
+        TimelineState sessionTimeline = findTimelineState(timelineId);
+
         List<Increment> incrementsList = loadIncrements(timelineId, incrementCount);
 
         tempMilestones.remove(tempMilestones.size() - 1);
@@ -189,12 +191,26 @@ public class TimelineService {
 
                 long relativePositionBeforeScale = DAYS.between(newStartDateIncrement, newDateBeforeScale);
                 long newDateAfterScale = (long)(relativePositionBeforeScale * factor);
+                long milestoneId = id + count;
 
                 Milestone newMilestone = new Milestone();
-                newMilestone.setId(id + count);
+                newMilestone.setId(milestoneId);
                 newMilestone.setName(m.getName());
                 newMilestone.setDate(increment.getStart().plusDays(newDateAfterScale).plusDays(14));
-                newMilestone.setStatus(Milestone.StatusEnum.OFFEN);
+
+                if (sessionTimeline.getMilestones() != null) {
+                    Milestone oldMilestone =  sessionTimeline.getMilestones().stream().filter(milestone -> milestone.getId().equals(milestoneId)).findFirst().orElse(null);
+
+                    if (oldMilestone != null) {
+                        newMilestone.setStatus(oldMilestone.getStatus());
+                    }
+                    else {
+                        newMilestone.setStatus(Milestone.StatusEnum.OFFEN);
+                    }
+                }
+                else {
+                    newMilestone.setStatus(Milestone.StatusEnum.OFFEN);
+                }
 
                 incrementMilestones.add(newMilestone);
 

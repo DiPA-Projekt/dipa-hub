@@ -331,10 +331,14 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     this.milestoneViewItem.onSelectMilestone = (data: any) => {
 
-      this.showMilestoneMenu = true;
-      this.selectedMilestoneDataMenu = data;
-
-      this.selectedMilestoneId = data.id;
+      if (data.id !== this.selectedMilestoneId) {
+        this.showMilestoneMenu = true;
+        this.selectedMilestoneDataMenu = data;
+        this.selectedMilestoneId = data.id;
+      }
+      else {
+        this.closeMenu();
+      }
     };
 
     this.incrementsViewItem = new Increments(this.svg, this.xScale, this.incrementsData);
@@ -693,9 +697,10 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.milestoneSubscription = this.subscribeForReset(changeMilestoneStatus$);
   }
 
-  closeMenu(event): void {
-    this.showMilestoneMenu = !this.showMilestoneMenu;
+  closeMenu(): void {
+    this.showMilestoneMenu = false;
     this.milestoneViewItem.onCloseMenu();
+    this.selectedMilestoneId = null;
   }
 
   getDate(date): any {
