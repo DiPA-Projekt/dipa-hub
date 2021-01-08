@@ -158,6 +158,7 @@ export class MilestonesArea implements IChartElement {
       if (this.showMenu) {
 
         milestoneIcon.on('click', (event, d) => {
+          console.log('click')
 
           if (d.id !== this.selectedMilestoneId) {
 
