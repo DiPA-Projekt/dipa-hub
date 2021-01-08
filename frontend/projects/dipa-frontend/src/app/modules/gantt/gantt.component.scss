@@ -1,3 +1,69 @@
 .mat-form-field--inline .mat-form-field {
   margin-right: 10px;
 }
+
+.gantt {
+  margin: 5px;
+}
+
+.content-container {
+  margin: 10px;
+  padding-left: 10px;
+  width: 90%;
+}
+
+.mat-sidenav-container {
+  padding: 10px;
+  width: 100%;
+  background-color: white;
+  margin-top: 5px;
+}
+
+mat-sidenav-content {
+  background-color: white;
+  align-items: center;
+  justify-content: center;
+}
+
+mat-sidenav {
+  width: 15%;
+  background-color: white;
+  height: 100%;
+}
+
+h1 {
+  color: rgb(97, 27, 114);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  overflow: hidden;
+  max-height: 3.2em;
+  line-height: 1.3em;
+}
+
+.projectType-container {
+  display: inline-block;
+  width: 100%;
+  padding: 6px 9px 9px 9px;
+  background-color: rgba(0, 0, 0, 0.04);
+  width: 190.5px;
+  height: 51.326px;
+  border-bottom: 0.5px solid grey;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.label {
+  width: 100%;
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.6);
+  padding: 0px;
+  margin: 0px;
+}
+
+.name {
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

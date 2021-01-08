@@ -1,30 +1,32 @@
-<div class="row clearfix">
-    <div [ngClass]="(!milestoneMenuOn)?'col-12':'col-lg-9 col-md-12 col-sm-12'" class="chart">
-        <figure id="chart" (resized)="onResized($event)" #chart></figure>
-    </div>
-    <div *ngIf="milestoneMenuOn" class="col-lg-3 col-md-4 col-sm-5">
-        <mat-card>
-            <mat-card-header class="header">
-              <div class="subheading-1 title">Meilenstein</div>
-              <div class="header-actions">
-                <button mat-icon-button color="warn" (click)="closeMenu($event)"><mat-icon>close</mat-icon></button>
-              </div>
-            </mat-card-header>
-            <mat-card-content class="content">
-                <p style="font-weight: 500; font-size: medium;">{{milestoneDataMenu.name}}</p>
-                <mat-card-subtitle>
-                    Fällig am {{getDate(milestoneDataMenu.date)}}
-                </mat-card-subtitle>
+<mat-sidenav-container class="mat-sidenav-container" autosize>
+    <mat-sidenav #drawer *ngIf="showMilestoneMenu" mode="side" opened position="end">
+        <div class="card-container">
+            <div class="card-header">
+                <div class="subheading-1 title">Meilenstein</div>
+                <button mat-icon-button color="warn" (click)="closeMenu($event)">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+            <div class="card-content">
+                <p style="font-weight: 500; font-size: medium; text-align: center;">{{selectedMilestoneDataMenu.name}}</p>
+                <p style="font-weight: 200; font-size: small; text-align: center; color: grey;">
+                    Fällig am {{getDate(selectedMilestoneDataMenu.date)}}
+                </p>
                 <p>Status</p>
-                <mat-radio-group [(ngModel)]="milestoneStatusId" *ngFor="let status of statusList">
+                <mat-radio-group [(ngModel)]="selectedMilestoneDataMenu.status" *ngFor="let status of statusList" color="primary">
                     <div class="row">
-                        <mat-radio-button class="example-radio-button" [value]="status.id" (change)="changeStatus($event)">
-                            {{status.statusName}}
+                        <mat-radio-button [value]="status" (change)="changeStatus($event)">
+                            {{status}}
                         </mat-radio-button>
                     </div>
                     <br>
                 </mat-radio-group>
-            </mat-card-content>
-        </mat-card>
-    </div>
-</div>
+            </div>
+        </div>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <div class="chart">
+            <figure id="chart" (resized)="onResized($event)" #chart></figure>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

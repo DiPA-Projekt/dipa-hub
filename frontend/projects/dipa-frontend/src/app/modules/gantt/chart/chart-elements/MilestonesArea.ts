@@ -17,27 +17,26 @@ export class MilestonesArea implements IChartElement {
   elementMargin = 8;
   elementHeightWithMargin = this.elementHeight + 2 * this.elementMargin;
 
-  doneColor = '#cc0000';
-  openColor = '#27b500';
+  elementColor = '#62a9f9';
 
   initMilestoneDate;
 
   public onDragEndMilestone?: (days: number, id: number) => void;
-  public onClickMilestone?: (data: any) => void;
+  public onSelectMilestone?: (data: any) => void;
   // public onCloseMenu?: () => void;
 
   modifiable = false;
   showMenu = false;
-  clickedMilestoneId: number;
+  selectedMilestoneId: number;
 
-  constructor(svg: any, xScale: any, data: any[],  modifiable: boolean, showMenu: boolean) {
+  constructor(svg: any, chartElement: any, xScale: any, data: any[],  modifiable: boolean, showMenu: boolean) {
     this.svg = svg;
     this.xScale = xScale;
     this.data = data;
     this.modifiable = modifiable;
     this.showMenu = showMenu;
 
-    this.tooltip = d3.select('figure#chart .tooltip');
+    this.tooltip = d3.select(chartElement).select('figure#chart .tooltip');
   }
 
   static intersectArray(r1, arr): boolean {
@@ -73,7 +72,7 @@ export class MilestonesArea implements IChartElement {
     this.draw(offset);
     this.redraw(offset, 0);
 
-    this.updateMilestoneStyle(this.clickedMilestoneId);
+    this.updateMilestoneStyle(this.selectedMilestoneId);
   }
 
   draw(offset): void {
@@ -131,11 +130,14 @@ export class MilestonesArea implements IChartElement {
       .attr('class', 'milestone')
       .attr('transform', 'scale(1.5 1)')
       .attr('d', d3.symbol().type(d3.symbolDiamond))
-      .style('fill', d => {
-        return d.status === 'offen' ? this.openColor : this.doneColor;
-      })
-      .style('stroke', d => this.changeStatusColor(d));
+      .style('fill', this.elementColor)
+      .style('stroke', d3.rgb(this.elementColor).darker());
 
+    if (this.modifiable) {
+      milestone.call(drag);
+    } else {
+      milestoneIcon.classed('inactive', true);
+    }
 
     milestoneIcon
       .on('mouseover', (event, d) => {
@@ -153,22 +155,28 @@ export class MilestonesArea implements IChartElement {
 
     if (this.modifiable) {
       milestone.call(drag);
+      if (this.showMenu) {
+
+        milestoneIcon.on('click', (event, d) => {
+
+          if (d.id !== this.selectedMilestoneId) {
+
+            this.resetMilestoneStyle();
+
+            this.selectedMilestoneId = d.id;
+
+            this.updateMilestoneStyle(d.id);
+
+            this.onSelectMilestone(d);
+
+          }
+
+        });
+      }
+    } else {
+      milestoneIcon.classed('inactive', true);
     }
 
-    if (this.showMenu) {
-
-      milestoneIcon.on('click', (event, d) => {
-        this.onClickMilestone(d);
-
-        this.clickedMilestoneId = d.id;
-
-        this.resetMilestoneStyle();
-
-        this.updateMilestoneStyle(d.id);
-
-      });
-      // this.onCloseMenu();
-    }
 
     const maxLabelWidth = 30;
 
@@ -179,11 +187,7 @@ export class MilestonesArea implements IChartElement {
       .attr('class', 'milestoneLabel')
       .attr('x', 0)
       .attr('y', this.elementHeight)
-      .style('fill',  d => this.changeStatusColor(d))
-      .style('text-decoration', d => {
-        return d.status === 'offen' ? '' : 'line-through';
-      })
-      .attr('aria-label', d => `Der Meilenstein ${d.name} ist ${d.status}`)
+      .style('fill', d3.rgb(this.elementColor).darker())
       .call(this.wrapLabel, maxLabelWidth);
 
     this.arrangeLabels();
@@ -203,6 +207,14 @@ export class MilestonesArea implements IChartElement {
         return 'translate(' + (offset.left + this.xScale(milestoneDate)) + ','
         + (offset.top + this.elementHeight / 2) + ')';
       });
+
+    // update tooltip
+    dataGroup.selectAll('g.milestoneEntry')
+      .select('path.milestone')
+      .on('mouseover', (event, d) => {
+        this.showTooltip(d, event.clientX, event.clientY);
+      });
+
   }
 
   public arrangeLabels(): void {
@@ -321,43 +333,40 @@ export class MilestonesArea implements IChartElement {
 
     dataGroup
     .select('#milestoneEntry_' + milestoneId)
-    .select('path')
+    .select('path.milestone')
     .attr('transform', 'scale(1.8 1.2)')
-    .style('fill', d => this.changeStatusColor(d))
-    .style('stroke', d => this.changeStatusColor(d));
+    .style('stroke', d3.rgb('#2b41ff').darker());
 
     dataGroup
     .select('#milestoneEntry_' + milestoneId)
-    .select('text')
-    .style('fill', d => this.changeStatusColor(d));
-
+    .select('text.milestoneLabel')
+    .style('fill', d3.rgb('#2b41ff').darker());
   }
 
   private resetMilestoneStyle(): void {
     const dataGroup = this.svg.select('g.data-group');
 
-    dataGroup
-    .selectAll('g.milestoneEntry')
-    .select('path')
+    if (this.selectedMilestoneId !== null) {
+
+      dataGroup
+    .select('#milestoneEntry_' + this.selectedMilestoneId)
+    .select('path.milestone')
     .attr('transform', 'scale(1.5 1)')
-    .style('fill', d => {
-      return d.status === 'offen' ? this.openColor : this.doneColor;
-    })
-    .style('stroke', d => this.changeStatusColor(d));
+    .style('fill', this.elementColor)
+    .style('stroke', d3.rgb(this.elementColor).darker());
 
-    dataGroup
+      dataGroup
     .selectAll('g.milestoneEntry')
-    .select('text')
-    .style('fill', d => this.changeStatusColor(d));
-  }
+    .select('text.milestoneLabel')
+    .style('fill', d3.rgb(this.elementColor).darker());
 
-  private changeStatusColor(data): any {
-    return data.status === 'offen' ? d3.rgb(this.openColor).darker() : d3.rgb(this.doneColor).darker();
+    }
+
   }
 
   public onCloseMenu(): void {
-    this.clickedMilestoneId = null;
     this.resetMilestoneStyle();
+    this.selectedMilestoneId = null;
   }
 
 }

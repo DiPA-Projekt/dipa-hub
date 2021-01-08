@@ -3,7 +3,7 @@ patch:
     - milestones
   summary: Update status for a milestone
   description: Apply an operation for a milestone
-  operationId: updateMilestoneStatus
+  operationId: updateMilestoneData
   parameters:
     - in: path
       name: timelineId
@@ -25,11 +25,7 @@ patch:
     content:
       application/json:
         schema:
-          type: object
-          properties:
-            statusId:
-              type: integer
-              format: int64
+          $ref: "../models/milestone.yml#/Milestone"
   responses:
     204:
       description: The update was applied successfully.

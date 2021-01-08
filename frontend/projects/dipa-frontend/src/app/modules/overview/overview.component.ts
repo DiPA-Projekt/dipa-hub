@@ -21,10 +21,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   timelineData: any;
 
-  selectedTimelineId: number;
-  selectedProjectTypeId: number;
-  selectedProjectApproachId: number;
-
   vmAll$: Observable<any>;
   periodStartDateSubscription: any;
 
@@ -61,21 +57,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
       this.projectApproachesList = data;
     });
 
-    this.timelinesSubscription = this.timelinesService.getTimelines()
-    .subscribe((data) => {
-      this.timelineData = data;
+    this.loadTimelines();
 
-      this.timelineData.forEach(timeline => {
-        this.observablesList.push(this.setData(timeline.id));
-      });
-
-      this.vmAll$ = forkJoin(this.observablesList);
-
-      this.selectedTimelineId = this.timelineData.find(c => c.defaultTimeline === true)?.id;
-      this.selectedProjectTypeId = this.timelineData.find(item => item.id === this.selectedTimelineId).projectTypeId;
-      this.selectedProjectApproachId = this.timelineData.find(item => item.id === this.selectedTimelineId).projectApproachId;
-
-    });
   }
 
   setData(timelineId): Observable<any> {
@@ -93,7 +76,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
         const timeline = this.timelineData.find(t => t.id === timelineId);
         const projectType = this.projectTypesList.find(type => type.id === timeline.projectTypeId);
         const projectApproach = this.projectApproachesList.find(approach => approach.id === timeline.projectApproachId);
-
         return {
           milestoneData,
           taskData,
@@ -110,6 +92,39 @@ export class OverviewComponent implements OnInit, OnDestroy {
     const dateAtMidnight = new Date(date);
     dateAtMidnight.setHours(0, 0, 0, 0);
     return dateAtMidnight;
+  }
+
+  changeProjectApproach(event, timelineId): void {
+
+    const selectedTimeline = this.timelineData.find(item => item.id === timelineId);
+    selectedTimeline.projectApproachId = event.value;
+
+    this.timelinesService.updateProject(selectedTimeline.id, selectedTimeline)
+      .subscribe((d) => {
+      this.loadTimelines();
+      });
+}
+
+  changeProjectType(event, timelineId): void {
+    this.timelineData.find(timeline => timeline.id === timelineId).projectTypeId = event.value;
+  }
+
+  filterProjectApproaches(projectTypeId): any[] {
+    return this.projectApproachesList.filter(projectApproach => projectApproach.projectTypeId === projectTypeId);
+  }
+
+  loadTimelines(): void {
+    this.observablesList = [];
+    this.timelinesSubscription = this.timelinesService.getTimelines()
+    .subscribe((data) => {
+      this.timelineData = data;
+
+      this.timelineData.forEach(timeline => {
+        this.observablesList.push(this.setData(timeline.id));
+      });
+
+      this.vmAll$ = forkJoin(this.observablesList);
+    });
   }
 
 }

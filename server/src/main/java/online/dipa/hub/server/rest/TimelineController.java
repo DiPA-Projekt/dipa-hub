@@ -25,6 +25,7 @@ import org.springframework.http.MediaType;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 @RestApiController
 public class TimelineController implements TimelinesApi {
@@ -102,6 +103,20 @@ public class TimelineController implements TimelinesApi {
         final Long statusId = inlineObject1.getStatusId();
 
         timelineService.updateMilestoneStatus(timelineId, milestoneId, statusId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> updateProject(final Long timelineId, Timeline timeline) {
+
+        timelineService.updateProject(timeline);
+        return ResponseEntity.noContent().build();
+    }
+
+    public ResponseEntity<Void> updateMilestoneData(final Long timelineId, final Long milestoneId, final Milestone milestone ) {
+        if (Optional.ofNullable(milestone.getStatus()).isPresent()) {
+            timelineService.updateMilestoneStatus(timelineId, milestoneId, milestone.getStatus());
+        }
         return ResponseEntity.noContent().build();
     }
 

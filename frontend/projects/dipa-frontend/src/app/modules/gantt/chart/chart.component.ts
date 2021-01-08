@@ -1,27 +1,22 @@
+import { ResizedEvent } from 'angular-resize-event';
+import * as d3 from 'd3';
 import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  SimpleChanges,
-  ViewChild,
-  ViewEncapsulation
+    IncrementsService, MilestonesService, TasksService, TimelinesIncrementService, TimelinesService
+} from 'dipa-api-client';
+import { forkJoin, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+
+import {
+    AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges,
+    ViewChild, ViewEncapsulation
 } from '@angular/core';
 
-import * as d3 from 'd3';
-import {GanttControlsService} from '../gantt-controls.service';
-import {ResizedEvent} from 'angular-resize-event';
-import {MilestonesArea} from './chart-elements/MilestonesArea';
-import {TasksArea} from './chart-elements/TasksArea';
-import {Increments} from './chart-elements/Increments';
-import {XAxis} from './chart-elements/XAxis';
-import {ProjectDuration} from './chart-elements/ProjectDuration';
-import {IncrementsService, MilestonesService, TasksService, TimelinesIncrementService, TimelinesService} from 'dipa-api-client';
-import {forkJoin, Observable} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import { GanttControlsService } from '../gantt-controls.service';
+import { Increments } from './chart-elements/Increments';
+import { MilestonesArea } from './chart-elements/MilestonesArea';
+import { ProjectDuration } from './chart-elements/ProjectDuration';
+import { TasksArea } from './chart-elements/TasksArea';
+import { XAxis } from './chart-elements/XAxis';
 
 @Component({
   selector: 'app-chart',
@@ -111,19 +106,20 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   modifiable: boolean;
   showMenu: boolean;
 
-  milestoneMenuOn: boolean;
+  showMilestoneMenu: boolean;
 
-  milestoneDataMenu: any;
+  selectedMilestoneDataMenu: any;
+  selectedMilestoneId: number;
 
-  statusList: any[] = [{id: 0, statusName: 'offen'}, {id: 1, statusName: 'erledigt'}];
-  milestoneStatusId: number;
+  statusList: any[] = ['offen', 'erledigt'];
+  // statusList: any[] = [{id: 0, statusName: 'offen'}, {id: 1, statusName: 'erledigt'}];
 
   ngOnInit(): void {
-    this.milestoneMenuOn = false;
+    this.showMilestoneMenu = false;
     this.showMenu = true;
 
     // TODO: this is just temporary
-    this.modifiable = this.timelineData.id !== 3;
+    this.modifiable = this.timelineData.projectApproachId !== 3;
 
     this.periodStartDateSubscription = this.ganttControlsService.getPeriodStartDate()
     .subscribe((data) => {
@@ -267,11 +263,11 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     this.initializeXScale();
 
-    this.headerX = new XAxis(this.svg, this.xScale);
+    this.headerX = new XAxis(this.svg, this.chartElement, this.xScale);
     this.headerX.formatDate = this.headerX.formatDateFull;
     this.headerX.draw();
 
-    this.projectDuration = new ProjectDuration(this.svg, this.xScale, this.timelineData);
+    this.projectDuration = new ProjectDuration(this.svg, this.chartElement, this.xScale, this.timelineData);
     this.projectDuration.draw();
 
     this.projectDuration.onDragEnd = (offsetDays: number) => {
@@ -311,7 +307,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.taskViewItem = new TasksArea(this.svg, this.xScale, this.taskData);
     this.taskViewItem.draw({left: 0, top: 0});
 
-    this.milestoneViewItem = new MilestonesArea(this.svg, this.xScale, this.milestoneData, this.modifiable, this.showMenu);
+    this.milestoneViewItem = new MilestonesArea(this.svg, this.chartElement, this.xScale,
+                                                this.milestoneData, this.modifiable, this.showMenu);
     this.milestoneViewItem.draw({left: 0, top: this.taskViewItem.getAreaHeight()});
 
     this.milestoneViewItem.onDragEndMilestone = (offsetDays: number, id: number) => {
@@ -326,12 +323,12 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       }
     };
 
-    this.milestoneViewItem.onClickMilestone = (data: any) => {
+    this.milestoneViewItem.onSelectMilestone = (data: any) => {
 
-      this.milestoneMenuOn = true;
-      this.milestoneDataMenu = data;
+      this.showMilestoneMenu = true;
+      this.selectedMilestoneDataMenu = data;
 
-      this.milestoneStatusId = this.statusList.find((s) => s.statusName === data.status).id;
+      this.selectedMilestoneId = data.id;
     };
 
     this.incrementsViewItem = new Increments(this.svg, this.xScale, this.incrementsData);
@@ -672,20 +669,26 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.milestoneData = milestoneData;
     this.milestoneViewItem.setData(milestoneData);
 
+    this.selectedMilestoneDataMenu = milestoneData.find(m => m.id === this.selectedMilestoneId);
+
     this.incrementsData = incrementsData;
     this.incrementsViewItem.setData(incrementsData);
   }
 
   changeStatus(event): void {
-    const changeMilestoneStatus$ = this.milestonesService.updateMilestoneStatus(this.timelineData.id, this.milestoneDataMenu.id,
-      {statusId: event.value});
+    const changeMilestoneStatus$ = this.milestonesService.updateMilestoneData(
+      this.timelineData.id,
+      this.selectedMilestoneDataMenu.id,
+      {
+        status: event.value,
+      }
+    );
 
     this.milestoneSubscription = this.subscribeForReset(changeMilestoneStatus$);
-
   }
 
   closeMenu(event): void {
-    this.milestoneMenuOn = !this.milestoneMenuOn;
+    this.showMilestoneMenu = !this.showMilestoneMenu;
     this.milestoneViewItem.onCloseMenu();
   }
 

@@ -1,15 +1,13 @@
-mat-card{
-    border-radius: 10px;
-    border: 2px solid rgb(197, 13, 151);
-    box-shadow: 5px 20px;
-    padding: 3px;
-    text-align:center;
-}
 
 h1 {
     text-align: center;
 }
 
-mat-spinner {
-    text-align: center;
+h2 {
+    color: rgb(97, 27, 114);
+}
+
+.row {
+    align-items: center;
+    display: flex;
 }
