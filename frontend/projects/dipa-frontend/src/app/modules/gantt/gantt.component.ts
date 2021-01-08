@@ -4,8 +4,14 @@ import {ChartComponent} from './chart/chart.component';
 import {forkJoin, Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 
-import {MilestonesService, TasksService, TimelinesService, TimelinesIncrementService, IncrementsService,
-  ProjectTypesService, ProjectApproachesService} from 'dipa-api-client';
+import {
+  IncrementsService,
+  MilestonesService,
+  ProjectApproachesService,
+  ProjectTypesService,
+  TasksService,
+  TimelinesIncrementService,
+  TimelinesService} from 'dipa-api-client';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -198,7 +204,8 @@ export class GanttComponent implements OnInit, OnDestroy {
   }
 
   changeProjectType(event): void {
-    this.selectedProjectApproachId = this.timelineData.find(timeline => timeline.projectTypeId === this.selectedProjectTypeId).id;
+    this.selectedProjectApproachId = this.timelineData
+      .find(timeline => timeline.projectTypeId === this.selectedProjectTypeId).projectApproachId;
     this.changeProjectApproach(event);
   }
 

@@ -8,14 +8,11 @@ import online.dipa.hub.api.model.Milestone;
 import online.dipa.hub.api.model.ProjectApproach;
 import online.dipa.hub.api.model.ProjectType;
 import online.dipa.hub.api.model.Timeline;
-import online.dipa.hub.persistence.entities.MilestoneTemplateEntity;
 import online.dipa.hub.persistence.entities.PlanTemplateEntity;
 import online.dipa.hub.persistence.entities.ProjectApproachEntity;
-import online.dipa.hub.persistence.entities.ProjectEntity;
-import online.dipa.hub.persistence.entities.ProjectTypeEntity;
+
 import online.dipa.hub.persistence.repositories.PlanTemplateRepository;
 import online.dipa.hub.persistence.repositories.ProjectApproachRepository;
-import online.dipa.hub.persistence.repositories.ProjectRepository;
 import online.dipa.hub.persistence.repositories.ProjectTypeRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -197,8 +194,8 @@ public class TimelineService {
                 Milestone newMilestone = new Milestone();
                 newMilestone.setId(id + count);
                 newMilestone.setName(m.getName());
-                newMilestone.setDate(increment.getStart().plusDays(newDateAfterScale + 14));
-
+                newMilestone.setDate(increment.getStart().plusDays(newDateAfterScale).plusDays(14));
+                newMilestone.setStatus(Milestone.StatusEnum.OFFEN);
 
                 incrementMilestones.add(newMilestone);
 
@@ -215,7 +212,7 @@ public class TimelineService {
         TimelineState sessionTimeline = findTimelineState(timelineId);
 
         final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
-      
+
         Long projectTypeId = projectApproach.getProjectType().getId();
 
         final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
@@ -265,8 +262,8 @@ public class TimelineService {
 
         if (sessionTimeline.getIncrements() == null) {
             final ProjectApproachEntity projectApproach = projectRespository.findAll().stream()
-            .filter(p -> p.getProjectApproach().getId() == sessionTimeline.getTimeline().getProjectApproachId()).findFirst().orElse(null).getProjectApproach();
-    
+            .filter(p -> p.getProjectApproach().getId().equals(sessionTimeline.getTimeline().getProjectApproachId())).findFirst().orElse(null).getProjectApproach();
+
             if (projectApproach.isIterative()) {
                 sessionTimeline.setIncrements(this.loadIncrements(timelineId, 1));
             }
@@ -361,7 +358,7 @@ public class TimelineService {
 
     private ProjectApproachEntity findProjectApproach(Long projectApproachId) {
         return projectRespository.findAll().stream()
-        .filter(p -> p.getProjectApproach().getId() == projectApproachId).findFirst().orElse(null).getProjectApproach();
+        .filter(p -> p.getProjectApproach().getId().equals(projectApproachId)).findFirst().orElse(null).getProjectApproach();
     }
 
     private TimelineState findTimelineState(Long timelineId) {
@@ -549,35 +546,57 @@ public class TimelineService {
         }
     }
 
+    public void updateMilestoneStatus(final Long timelineId, final Long milestoneId, final Milestone.StatusEnum status) {
+        final TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+        final Milestone updatedMilestone = sessionTimeline.getMilestones().stream().filter(m -> m.getId().equals(milestoneId)).findFirst().orElse(null);
+        updatedMilestone.setStatus(status);
+    }
+
     public void updateProject(final Timeline timeline) {
 
         TimelineState sessionTimeline = getSessionTimelines().get(timeline.getId());
         sessionTimeline.getTimeline().setProjectTypeId(timeline.getProjectTypeId());
         sessionTimeline.getTimeline().setProjectApproachId(timeline.getProjectApproachId());
 
-        sessionTimeline.getTimeline().setStart(LocalDate.now());
-
-        final List<MilestoneTemplateEntity> maxMilestoneDateList = new ArrayList<MilestoneTemplateEntity>();
-        final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
-                                                        .filter(template -> template.getProjectTypeEntity().getId().equals(timeline.getProjectTypeId()))
-                                                        .collect(Collectors.toList());
-
-        for (PlanTemplateEntity planTemplate: planTemplateList) {
-                maxMilestoneDateList.add(planTemplate.getMilestones().stream()
-                    .max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset)).get());
-        }
-
-        final MilestoneTemplateEntity maxMilestoneDate = maxMilestoneDateList
-                .stream()
-                .max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset)).get();
-
-        sessionTimeline.getTimeline().setEnd(LocalDate.now().plusDays(maxMilestoneDate.getDateOffset()));;
-
         sessionTimeline.setMilestones(null);
         sessionTimeline.setIncrements(null);
         sessionTimeline.setTempIncrementMilestones(null);
 
         this.initializeMilestones(timeline.getId());
+        this.updateMilestonesAndIncrement(timeline);
+    }
+
+    public void updateMilestonesAndIncrement(final Timeline timeline) {
+
+        TimelineState sessionTimeline = getSessionTimelines().get(timeline.getId());
+
+        updateTempMilestones(timeline.getId());
+
+        LocalDate initTimelineStart = LocalDate.now();
+        LocalDate initTimelineEnd = sessionTimeline.getMilestones().stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
+
+        LocalDate currentTimelineStart = sessionTimeline.getTimeline().getStart();
+        LocalDate currentTimelineEnd = sessionTimeline.getTimeline().getEnd();
+
+        long oldDaysBetween = DAYS.between(initTimelineStart, initTimelineEnd);
+        long newDaysBetween = DAYS.between(currentTimelineStart, currentTimelineEnd);
+        double factor = (double) newDaysBetween / oldDaysBetween;
+
+        for (Milestone m : sessionTimeline.getMilestones()) {
+            long oldMilestoneRelativePosition = DAYS.between(initTimelineStart, m.getDate());
+            long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
+
+            m.setDate(currentTimelineStart.plusDays(newMilestoneRelativePosition));
+        }
+
+        for (Milestone temp : sessionTimeline.getTempIncrementMilestones()) {
+            long oldMilestoneRelativePosition = DAYS.between(initTimelineStart, temp.getDate());
+            long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
+
+            temp.setDate(currentTimelineStart.plusDays(newMilestoneRelativePosition));
+        }
+
+        updateIncrements(timeline.getId());
 
     }
 }

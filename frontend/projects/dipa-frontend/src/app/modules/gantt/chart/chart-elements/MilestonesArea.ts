@@ -22,16 +22,21 @@ export class MilestonesArea implements IChartElement {
   initMilestoneDate;
 
   public onDragEndMilestone?: (days: number, id: number) => void;
+  public onSelectMilestone?: (data: any) => void;
+  // public onCloseMenu?: () => void;
 
   modifiable = false;
+  showMenu = false;
+  selectedMilestoneId: number;
 
-  constructor(svg: any, xScale: any, data: any[], modifiable: boolean) {
+  constructor(svg: any, chartElement: any, xScale: any, data: any[],  modifiable: boolean, showMenu: boolean) {
     this.svg = svg;
     this.xScale = xScale;
     this.data = data;
     this.modifiable = modifiable;
+    this.showMenu = showMenu;
 
-    this.tooltip = d3.select('figure#chart .tooltip');
+    this.tooltip = d3.select(chartElement).select('figure#chart .tooltip');
   }
 
   static intersectArray(r1, arr): boolean {
@@ -66,6 +71,8 @@ export class MilestonesArea implements IChartElement {
     dataGroup.selectAll('g.milestoneEntry').remove();
     this.draw(offset);
     this.redraw(offset, 0);
+
+    this.updateMilestoneStyle(this.selectedMilestoneId);
   }
 
   draw(offset): void {
@@ -145,6 +152,31 @@ export class MilestonesArea implements IChartElement {
           .delay(500)
           .style('display', 'none');
       });
+
+    if (this.modifiable) {
+      milestone.call(drag);
+      if (this.showMenu) {
+
+        milestoneIcon.on('click', (event, d) => {
+
+          if (d.id !== this.selectedMilestoneId) {
+
+            this.resetMilestoneStyle();
+
+            this.selectedMilestoneId = d.id;
+
+            this.updateMilestoneStyle(d.id);
+
+            this.onSelectMilestone(d);
+
+          }
+
+        });
+      }
+    } else {
+      milestoneIcon.classed('inactive', true);
+    }
+
 
     const maxLabelWidth = 30;
 
@@ -294,6 +326,47 @@ export class MilestonesArea implements IChartElement {
       .ease(d3.easeCubic)
       .duration(this.animationDuration)
       .attr('transform', 'translate(' + xValueNew + ',' + yTransformValue + ')');
+  }
+
+  private updateMilestoneStyle(milestoneId): void {
+    const dataGroup = this.svg.select('g.data-group');
+
+    dataGroup
+    .select('#milestoneEntry_' + milestoneId)
+    .select('path.milestone')
+    .attr('transform', 'scale(1.8 1.2)')
+    .style('stroke', d3.rgb('#2b41ff').darker());
+
+    dataGroup
+    .select('#milestoneEntry_' + milestoneId)
+    .select('text.milestoneLabel')
+    .style('fill', d3.rgb('#2b41ff').darker());
+  }
+
+  private resetMilestoneStyle(): void {
+    const dataGroup = this.svg.select('g.data-group');
+
+    if (this.selectedMilestoneId !== null) {
+
+      dataGroup
+    .select('#milestoneEntry_' + this.selectedMilestoneId)
+    .select('path.milestone')
+    .attr('transform', 'scale(1.5 1)')
+    .style('fill', this.elementColor)
+    .style('stroke', d3.rgb(this.elementColor).darker());
+
+      dataGroup
+    .selectAll('g.milestoneEntry')
+    .select('text.milestoneLabel')
+    .style('fill', d3.rgb(this.elementColor).darker());
+
+    }
+
+  }
+
+  public onCloseMenu(): void {
+    this.resetMilestoneStyle();
+    this.selectedMilestoneId = null;
   }
 
 }
