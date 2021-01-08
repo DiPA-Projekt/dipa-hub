@@ -44,5 +44,4 @@ public class ProjectEntity extends BaseEntity {
     public void setProjectApproach(final ProjectApproachEntity projectApproach) {
         this.projectApproach = projectApproach;
     }
-
 }
