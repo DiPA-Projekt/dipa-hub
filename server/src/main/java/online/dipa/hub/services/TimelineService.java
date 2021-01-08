@@ -198,8 +198,6 @@ public class TimelineService {
                 newMilestone.setDate(increment.getStart().plusDays(newDateAfterScale).plusDays(14));
                 newMilestone.setStatus(Milestone.StatusEnum.OFFEN);
 
-
-
                 incrementMilestones.add(newMilestone);
 
                 count++;
@@ -215,7 +213,6 @@ public class TimelineService {
         TimelineState sessionTimeline = findTimelineState(timelineId);
 
         final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
-      
         Long projectTypeId = projectApproach.getProjectType().getId();
 
         final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
@@ -265,8 +262,8 @@ public class TimelineService {
 
         if (sessionTimeline.getIncrements() == null) {
             final ProjectApproachEntity projectApproach = projectRespository.findAll().stream()
-            .filter(p -> p.getProjectApproach().getId() == sessionTimeline.getTimeline().getProjectApproachId()).findFirst().orElse(null).getProjectApproach();
-    
+            .filter(p -> p.getProjectApproach().getId().equals(sessionTimeline.getTimeline().getProjectApproachId())).findFirst().orElse(null).getProjectApproach();
+
             if (projectApproach.isIterative()) {
                 sessionTimeline.setIncrements(this.loadIncrements(timelineId, 1));
             }
@@ -361,7 +358,7 @@ public class TimelineService {
 
     private ProjectApproachEntity findProjectApproach(Long projectApproachId) {
         return projectRespository.findAll().stream()
-        .filter(p -> p.getProjectApproach().getId() == projectApproachId).findFirst().orElse(null).getProjectApproach();
+        .filter(p -> p.getProjectApproach().getId().equals(projectApproachId)).findFirst().orElse(null).getProjectApproach();
     }
 
     private TimelineState findTimelineState(Long timelineId) {
@@ -598,7 +595,8 @@ public class TimelineService {
 
     public void updateMilestoneStatus(final Long timelineId, final Long milestoneId, final Milestone.StatusEnum status) {
         final TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
-        final Milestone updatedMilestone = sessionTimeline.getMilestones().stream().filter(m -> m.getId() == milestoneId).findFirst().orElse(null);
+        final Milestone updatedMilestone = sessionTimeline.getMilestones().stream().filter(m -> m.getId().equals(milestoneId)).findFirst().orElse(null);
         updatedMilestone.setStatus(status);
     }
+
 }
