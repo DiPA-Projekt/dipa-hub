@@ -4,30 +4,41 @@
         <mat-spinner *ngIf="loading"></mat-spinner>
     </div>
     <ng-container *ngFor="let vm of vmAll$ | async">
-        <div class="row">
-            <div class="col-3">
-                <mat-card>
-                    <mat-card-content>
-                        <p class="mat-body-strong">{{vm.projectType.name}}</p>
-                    </mat-card-content>
-                </mat-card>
-            </div>
-            <div class="col-3">
-                <mat-card>
-                    <mat-card-content>
-                        <p class="mat-body-strong">{{vm.projectApproach.name}}</p>
-                    </mat-card-content>
-                </mat-card>
-            </div>
+      <div class="row">
+        <div class="col col-md-auto">
+          <h2>{{vm.timeline.name}}</h2>
         </div>
-        <div id="gantt{{vm.timeline.id}}" class="gantt">
-            <app-chart #charts
-                    [timelineData]="vm.timeline"
-                    [milestoneData]="vm.milestoneData"
-                    [taskData]="vm.taskData"
-                    [incrementsData]="vm.incrementsData"
-                    id = "overview{{vm.timeline.id}}"
-            ></app-chart>
+        <div *ngIf="timelineData" class="col col-md-auto">
+          <mat-form-field appearance="fill" floatLabel="always" id="projectType-{{vm.timeline.id}}">
+            <mat-label>Vorhabensart</mat-label>
+            <mat-select [(value)]="vm.timeline.projectTypeId" (selectionChange)="changeProjectType($event, vm.timeline.id)">
+              <mat-option *ngFor="let projectType of projectTypesList" 
+                          [value]="projectType.id">
+                {{ projectType.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
+        <div *ngIf="timelineData" class="col col-md-auto">
+          <mat-form-field appearance="fill" floatLabel="always" id="projectApproach-{{vm.timeline.id}}">
+            <mat-label>Vorgehensweise</mat-label>
+            <mat-select [(value)]="vm.timeline.projectApproachId" (selectionChange)="changeProjectApproach($event, vm.timeline.id)">
+              <mat-option *ngFor="let projectApproach of filterProjectApproaches(vm.timeline.projectTypeId)"
+                          [value]="projectApproach.id">
+                {{ projectApproach.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div id="gantt{{vm.timeline.id}}" class="gantt">
+          <app-chart #charts
+                  [timelineData]="vm.timeline"
+                  [milestoneData]="vm.milestoneData"
+                  [taskData]="vm.taskData"
+                  [incrementsData]="vm.incrementsData"
+                  id = "overview{{vm.timeline.id}}"
+          ></app-chart>
+      </div>
     </ng-container>
 </div>
