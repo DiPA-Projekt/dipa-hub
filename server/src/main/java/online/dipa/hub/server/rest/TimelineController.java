@@ -112,13 +112,6 @@ public class TimelineController implements TimelinesApi {
         return ResponseEntity.noContent().build();
     }
 
-    @Override
-    public ResponseEntity<Void> updateProject(final Long timelineId, Timeline timeline) {
-
-        timelineService.updateProject(timeline);
-        return ResponseEntity.noContent().build();
-    }
-
     public ResponseEntity<Resource> getTimelineCalendar(final Long timelineId) {
 
         try {
