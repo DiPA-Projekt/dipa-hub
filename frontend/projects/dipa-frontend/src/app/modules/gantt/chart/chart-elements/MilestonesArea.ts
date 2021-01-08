@@ -133,12 +133,6 @@ export class MilestonesArea implements IChartElement {
       .style('fill', this.elementColor)
       .style('stroke', d3.rgb(this.elementColor).darker());
 
-    if (this.modifiable) {
-      milestone.call(drag);
-    } else {
-      milestoneIcon.classed('inactive', true);
-    }
-
     milestoneIcon
       .on('mouseover', (event, d) => {
         this.showTooltip(d, event.clientX, event.clientY);
@@ -155,28 +149,26 @@ export class MilestonesArea implements IChartElement {
 
     if (this.modifiable) {
       milestone.call(drag);
-      if (this.showMenu) {
-
-        milestoneIcon.on('click', (event, d) => {
-
-          if (d.id !== this.selectedMilestoneId) {
-
-            this.resetMilestoneStyle();
-
-            this.selectedMilestoneId = d.id;
-
-            this.updateMilestoneStyle(d.id);
-
-            this.onSelectMilestone(d);
-
-          }
-
-        });
-      }
-    } else {
-      milestoneIcon.classed('inactive', true);
     }
 
+    if (this.showMenu) {
+
+      milestoneIcon.on('click', (event, d) => {
+
+        if (d.id !== this.selectedMilestoneId) {
+
+          this.resetMilestoneStyle();
+
+          this.selectedMilestoneId = d.id;
+
+          this.updateMilestoneStyle(d.id);
+
+          this.onSelectMilestone(d);
+
+        }
+
+      });
+    }
 
     const maxLabelWidth = 30;
 
