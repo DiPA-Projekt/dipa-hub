@@ -118,7 +118,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   selectedMilestoneId: number;
 
   statusList: any[] = ['offen', 'erledigt'];
-  // statusList: any[] = [{id: 0, statusName: 'offen'}, {id: 1, statusName: 'erledigt'}];
 
   ngOnInit(): void {
     this.showMilestoneMenu = false;
@@ -273,7 +272,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.headerX.formatDate = this.headerX.formatDateFull;
     this.headerX.draw();
 
-    this.projectDuration = new ProjectDuration(this.svg, this.chartElement, this.xScale, this.timelineData, this.modifiable);
+    this.projectDuration = new ProjectDuration(this.svg, this.chartElement, this.xScale, this.timelineData, true);
     this.projectDuration.draw();
 
     this.projectDuration.onDragEnd = (offsetDays: number) => {
