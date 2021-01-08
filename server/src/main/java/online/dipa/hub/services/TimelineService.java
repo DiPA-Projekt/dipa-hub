@@ -180,7 +180,6 @@ public class TimelineService {
             long newDaysBetween = DAYS.between(increment.getStart().plusDays(14), increment.getEnd());
             LocalDate newStartDateIncrement = increment.getStart().plusDays(14);
 
-            long newDaysBetween = DAYS.between(newStartDateIncrement, increment.getEnd());
             double factor = (double) newDaysBetween / oldDaysBetween;
 
             for (Milestone m : tempMilestones) {
