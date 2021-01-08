@@ -170,6 +170,9 @@ export class MilestonesArea implements IChartElement {
             this.onSelectMilestone(d);
 
           }
+          else {
+            this.onSelectMilestone(d);
+          }
 
         });
       }
