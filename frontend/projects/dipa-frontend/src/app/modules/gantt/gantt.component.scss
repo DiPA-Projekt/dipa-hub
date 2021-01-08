@@ -8,7 +8,7 @@
 
 .content-container {
   margin: 10px;
-  margin-left: 20px;
+  padding-left: 10px;
   width: 90%;
 }
 
@@ -17,7 +17,6 @@
   width: 100%;
   background-color: white;
   margin-top: 5px;
-  
 }
 
 mat-sidenav-content {
@@ -41,4 +40,30 @@ h1 {
   overflow: hidden;
   max-height: 3.2em;
   line-height: 1.3em;
+}
+
+.projectType-container {
+  display: inline-block;
+  width: 100%;
+  padding: 6px 9px 9px 9px;
+  background-color: rgba(0, 0, 0, 0.04);
+  width: 190.5px;
+  height: 51.326px;
+  border-bottom: 0.5px solid grey;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.label {
+  width: 100%;
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.6);
+  padding: 0px;
+  margin: 0px;
+}
+
+.name {
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
