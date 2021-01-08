@@ -5,6 +5,7 @@ import java.util.List;
 
 import online.dipa.hub.api.model.Increment;
 import online.dipa.hub.api.model.InlineObject;
+
 import online.dipa.hub.services.TimelineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -98,17 +99,16 @@ public class TimelineController implements TimelinesApi {
     }
 
     @Override
+    public ResponseEntity<Void> updateProject(final Long timelineId, Timeline timeline) {
+
+        timelineService.updateProject(timeline);
+        return ResponseEntity.noContent().build();
+    }
+    
     public ResponseEntity<Void> updateMilestoneData(final Long timelineId, final Long milestoneId, final Milestone milestone ) {
         if (Optional.ofNullable(milestone.getStatus()).isPresent()) {
             timelineService.updateMilestoneStatus(timelineId, milestoneId, milestone.getStatus());
         }
-        return ResponseEntity.noContent().build();
-    }
-
-    @Override
-    public ResponseEntity<Void> updateProject(final Long timelineId, Timeline timeline) {
-
-        timelineService.updateProject(timeline);
         return ResponseEntity.noContent().build();
     }
 
