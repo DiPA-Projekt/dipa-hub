@@ -21,4 +21,3 @@ public class MilestoneTemplateToMilestoneConverter implements Converter<Mileston
         return milestone;
     }
 }
-
