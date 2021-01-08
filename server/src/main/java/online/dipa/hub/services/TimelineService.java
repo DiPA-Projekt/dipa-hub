@@ -201,10 +201,10 @@ public class TimelineService {
                 newMilestone.setDate(increment.getStart().plusDays(newDateAfterScale).plusDays(14));
 
                 if (sessionTimeline.getMilestones() != null) {
-                    Milestone oldMilstone =  sessionTimeline.getMilestones().stream().filter(milestone -> milestone.getId().equals(milestoneId)).findFirst().orElse(null);
+                    Milestone oldMilestone =  sessionTimeline.getMilestones().stream().filter(milestone -> milestone.getId().equals(milestoneId)).findFirst().orElse(null);
 
-                    if (oldMilstone != null) {
-                        newMilestone.setStatus(oldMilstone.getStatus());
+                    if (oldMilestone != null) {
+                        newMilestone.setStatus(oldMilestone.getStatus());
                     }
                     else {
                         newMilestone.setStatus(Milestone.StatusEnum.OFFEN);
