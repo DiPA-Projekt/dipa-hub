@@ -18,7 +18,7 @@ Milestone:
     status:
       description: The status of the milestone
       type: string
-      enum: 
+      enum:
         - "offen"
         - "erledigt"
       example: "offen"

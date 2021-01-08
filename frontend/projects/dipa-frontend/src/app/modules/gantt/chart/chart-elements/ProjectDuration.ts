@@ -48,7 +48,6 @@ export class ProjectDuration {
   public onDragEndProjectStart?: (days: number) => void;
   public onDragEndProjectEnd?: (days: number) => void;
 
-  
   constructor(svg: any, chartElement: any, xScale: any, timelineData: any) {
     this.svg = svg;
     this.xScale = xScale;
@@ -286,7 +285,6 @@ export class ProjectDuration {
       .attr('stroke', d3.rgb(this.elementColor).darker());
 
     projectEndDateLine.call(dragProjectEnd);
-    
   }
 
   redraw(animationDuration): void {
