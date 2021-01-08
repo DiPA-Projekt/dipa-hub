@@ -13,6 +13,7 @@ import online.dipa.hub.persistence.entities.ProjectApproachEntity;
 
 import online.dipa.hub.persistence.repositories.PlanTemplateRepository;
 import online.dipa.hub.persistence.repositories.ProjectApproachRepository;
+import online.dipa.hub.persistence.repositories.ProjectRepository;
 import online.dipa.hub.persistence.repositories.ProjectTypeRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
