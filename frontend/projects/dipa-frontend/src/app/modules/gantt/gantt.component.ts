@@ -11,9 +11,8 @@ import {
   ProjectTypesService,
   TasksService,
   TimelinesIncrementService,
-  TimelinesService
-} from 'dipa-api-client';
-import {ActivatedRoute} from '@angular/router';
+  TimelinesService} from 'dipa-api-client';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-gantt',
