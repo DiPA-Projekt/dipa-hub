@@ -10,6 +10,16 @@ export class MilestonesArea implements IChartElement {
   data: any[];
   tooltip;
 
+  agileTooltipSupplement = `<br>zugeordnete Entscheidungspunkte<br>
+      - V-Modell XT Version: ITZBund 2.3<br>
+      - Projekttyp: AN-Projekt SWE<br>
+      - Entwicklungsstrategie: agil<br><br>
+      * Sprint gestartet<br>
+      * Sprint abgeschlossen<br>
+      * Lieferung durchgeführt<br>
+      * Abnahme durchgeführt<br>
+      * Systembetrieb freigegeben<br>`;
+
   animationDuration;
 
   dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
@@ -36,7 +46,6 @@ export class MilestonesArea implements IChartElement {
     this.data = data;
     this.modifiable = modifiable;
     this.showMenu = showMenu;
-
     this.tooltip = d3.select(chartElement).select('figure#chart .tooltip');
   }
 
@@ -373,28 +382,12 @@ export class MilestonesArea implements IChartElement {
   }
 
   public tooltipContent(data): any {
-    const tooltip = `${data.name}<br>` + `Fällig: ${new Date(data.date).toLocaleDateString('de-DE', this.dateOptions)}<br>`;
+    let tooltip = `${data.name}<br>` + `Fällig: ${new Date(data.date).toLocaleDateString('de-DE', this.dateOptions)}<br>`;
+    // alle Meilensteine der agilen Softwareentwicklung im ITZBund
     if (data.id >= 22 && data.id <= 27) {
-      const agilTooltip = `<br>zugeordnete Entscheidungspunkte<br>
-      - V-Modell XT Version: ITZBund 2.3<br>
-      - Projekttyp: AN-Projekt SWE<br>
-      - Entwicklungsstrategie: agil<br><br>
-      * Sprint gestartet<br>
-      * Sprint abgeschlossen<br>
-      * Lieferung durchgeführt<br>
-      * Abnahme durchgeführt<br>
-      * Systembetrieb freigegeben<br>`;
-      return tooltip + `${agilTooltip}<br>`;
+      tooltip += `${this.agileTooltipSupplement}<br>`;
     }
-    else {
-      return tooltip;
-    }
-    // else {
-    //   agilTooltip = '';
-    // }
-
-      return `${data.name}<br>` + `Fällig: ${new Date(data.date).toLocaleDateString('de-DE', this.dateOptions)}<br><br>`;
+    return tooltip;
   }
-
 
 }
