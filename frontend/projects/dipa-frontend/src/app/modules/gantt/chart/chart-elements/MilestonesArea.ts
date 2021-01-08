@@ -163,9 +163,9 @@ export class MilestonesArea implements IChartElement {
 
           this.updateMilestoneStyle(d.id);
 
-          this.onSelectMilestone(d);
-
         }
+
+        this.onSelectMilestone(d);
 
       });
     }
