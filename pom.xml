@@ -11,7 +11,7 @@
     <groupId>online.dipa.hub</groupId>
     <artifactId>dipa-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.3.1-SNAPSHOT</version>
+    <version>0.4.0</version>
     <name>DiPA :: Parent</name>
     <description>DiPA Hub</description>
 
