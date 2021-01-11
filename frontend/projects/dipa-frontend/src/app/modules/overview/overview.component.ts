@@ -1,10 +1,10 @@
-import { Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 
-import {MilestonesService, TasksService, TimelinesService, 
+import {MilestonesService, TasksService, TimelinesService,
   ProjectTypesService, ProjectApproachesService, IncrementsService} from 'dipa-api-client';
 import { ChartComponent } from '../gantt/chart/chart.component';
-import { forkJoin, Observable, of } from 'rxjs';
-import { concatMap, map, tap } from 'rxjs/operators';
+import { forkJoin, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-overview',
@@ -21,15 +21,11 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   timelineData: any;
 
-  selectedTimelineId: number;
-  selectedProjectTypeId: number;
-  selectedProjectApproachId: number;
-
   vmAll$: Observable<any>;
   periodStartDateSubscription: any;
 
-  observablesList : Array<any> = [];
-  
+  observablesList: Array<any> = [];
+
   projectTypesList: Array<any> = [];
   projectApproachesList: Array<any> = [];
   loading: boolean;
@@ -60,22 +56,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
     .subscribe((data) => {
       this.projectApproachesList = data;
     });
-    
-    this.timelinesSubscription = this.timelinesService.getTimelines()
-    .subscribe((data) => {
-      this.timelineData = data;
 
-      this.timelineData.forEach(timeline => {
-        this.observablesList.push(this.setData(timeline.id));
-      });
+    this.loadTimelines();
 
-      this.vmAll$ = forkJoin(this.observablesList);
-      
-      this.selectedTimelineId = this.timelineData.find(c => c.defaultTimeline === true)?.id;
-      this.selectedProjectTypeId = this.timelineData.filter(item => item.id === this.selectedTimelineId)[0].projectTypeId;
-      this.selectedProjectApproachId = this.timelineData.filter(item => item.id === this.selectedTimelineId)[0].projectApproachId;
-
-    });
   }
 
   setData(timelineId): Observable<any> {
@@ -90,16 +73,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
       map(([taskData, milestoneData, incrementsData]) => {
         this.loading = false;
 
-        const milestoneDates = milestoneData.map(x => this.createDateAtMidnight(x.date));
-        const taskStartDates = taskData.map(x => this.createDateAtMidnight(x.start));
-        const taskEndDates = taskData.map(x => this.createDateAtMidnight(x.end));
-
-        const datesArray: Date[] = [...milestoneDates, ...taskStartDates, ...taskEndDates];
-
-        const timeline = this.timelineData.find(c => c.id === timelineId);
-        const projectType = this.projectTypesList.filter(projectType => projectType.id === timeline.projectTypeId)[0];
-        const projectApproach = this.projectApproachesList.filter(projectApproach => projectApproach.id === timeline.projectApproachId)[0];
-
+        const timeline = this.timelineData.find(t => t.id === timelineId);
+        const projectType = this.projectTypesList.find(type => type.id === timeline.projectTypeId);
+        const projectApproach = this.projectApproachesList.find(approach => approach.id === timeline.projectApproachId);
         return {
           milestoneData,
           taskData,
@@ -116,6 +92,39 @@ export class OverviewComponent implements OnInit, OnDestroy {
     const dateAtMidnight = new Date(date);
     dateAtMidnight.setHours(0, 0, 0, 0);
     return dateAtMidnight;
+  }
+
+  changeProjectApproach(event, timelineId): void {
+
+    const selectedTimeline = this.timelineData.find(item => item.id === timelineId);
+    selectedTimeline.projectApproachId = event.value;
+
+    this.timelinesService.updateProject(selectedTimeline.id, selectedTimeline)
+      .subscribe((d) => {
+      this.loadTimelines();
+      });
+}
+
+  changeProjectType(event, timelineId): void {
+    this.timelineData.find(timeline => timeline.id === timelineId).projectTypeId = event.value;
+  }
+
+  filterProjectApproaches(projectTypeId): any[] {
+    return this.projectApproachesList.filter(projectApproach => projectApproach.projectTypeId === projectTypeId);
+  }
+
+  loadTimelines(): void {
+    this.observablesList = [];
+    this.timelinesSubscription = this.timelinesService.getTimelines()
+    .subscribe((data) => {
+      this.timelineData = data;
+
+      this.timelineData.forEach(timeline => {
+        this.observablesList.push(this.setData(timeline.id));
+      });
+
+      this.vmAll$ = forkJoin(this.observablesList);
+    });
   }
 
 }

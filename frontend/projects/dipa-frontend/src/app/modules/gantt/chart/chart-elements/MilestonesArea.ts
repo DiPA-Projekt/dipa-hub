@@ -1,6 +1,7 @@
 import * as d3 from 'd3';
 import {parseSvg} from 'd3-interpolate/src/transform/parse';
 import {IChartElement} from './IChartElement';
+import {Milestone} from '../../../../../../../dipa-api-client/src';
 
 export class MilestonesArea implements IChartElement {
 
@@ -8,6 +9,16 @@ export class MilestonesArea implements IChartElement {
   readonly xScale;
   data: any[];
   tooltip;
+
+  agileTooltipSupplement = `<br>zugeordnete Entscheidungspunkte<br>
+      - V-Modell XT Version: ITZBund 2.3<br>
+      - Projekttyp: AN-Projekt SWE<br>
+      - Entwicklungsstrategie: agil<br><br>
+      * Sprint gestartet<br>
+      * Sprint abgeschlossen<br>
+      * Lieferung durchgeführt<br>
+      * Abnahme durchgeführt<br>
+      * Systembetrieb freigegeben<br>`;
 
   animationDuration;
 
@@ -22,16 +33,20 @@ export class MilestonesArea implements IChartElement {
   initMilestoneDate;
 
   public onDragEndMilestone?: (days: number, id: number) => void;
+  public onSelectMilestone?: (data: any) => void;
+  // public onCloseMenu?: () => void;
 
   modifiable = false;
+  showMenu = false;
+  selectedMilestoneId: number;
 
-  constructor(svg: any, xScale: any, data: any[], modifiable: boolean) {
+  constructor(svg: any, chartElement: any, xScale: any, data: any[],  modifiable: boolean, showMenu: boolean) {
     this.svg = svg;
     this.xScale = xScale;
     this.data = data;
     this.modifiable = modifiable;
-
-    this.tooltip = d3.select('figure#chart .tooltip');
+    this.showMenu = showMenu;
+    this.tooltip = d3.select(chartElement).select('figure#chart .tooltip');
   }
 
   static intersectArray(r1, arr): boolean {
@@ -66,6 +81,8 @@ export class MilestonesArea implements IChartElement {
     dataGroup.selectAll('g.milestoneEntry').remove();
     this.draw(offset);
     this.redraw(offset, 0);
+
+    this.updateMilestoneStyle(this.selectedMilestoneId);
   }
 
   draw(offset): void {
@@ -87,7 +104,7 @@ export class MilestonesArea implements IChartElement {
 
         event.subject.date = this.xScale.invert(xValueNew);
 
-        this.showTooltip(event.subject, event.sourceEvent.layerX, event.sourceEvent.layerY);
+        this.showTooltip(event.subject, event.sourceEvent.clientX, event.sourceEvent.clientY);
       })
       .on('start', (event: d3.D3DragEvent<any, any, any>) => {
 
@@ -121,16 +138,10 @@ export class MilestonesArea implements IChartElement {
     const milestoneIcon = milestone
       .append('path')
       .attr('class', 'milestone')
-      .attr('transform', 'scale(1.5 1)')
+      .attr('transform', 'scale(1.75 1.2)')
       .attr('d', d3.symbol().type(d3.symbolDiamond))
       .style('fill', this.elementColor)
       .style('stroke', d3.rgb(this.elementColor).darker());
-
-    if (this.modifiable) {
-      milestone.call(drag);
-    } else {
-      milestoneIcon.classed('inactive', true);
-    }
 
     milestoneIcon
       .on('mouseover', (event, d) => {
@@ -145,6 +156,40 @@ export class MilestonesArea implements IChartElement {
           .delay(500)
           .style('display', 'none');
       });
+
+    if (this.modifiable) {
+      milestone.call(drag);
+    }
+
+    if (this.showMenu) {
+
+      milestoneIcon.on('click', (event, d) => {
+
+        if (d.id !== this.selectedMilestoneId) {
+
+          this.resetMilestoneStyle();
+
+          this.selectedMilestoneId = d.id;
+
+          this.updateMilestoneStyle(d.id);
+
+        }
+
+        this.onSelectMilestone(d);
+
+      });
+    }
+
+    // milestone status icon
+    milestone
+      .append('text')
+      .text('done')
+      .attr('class', 'material-icons milestoneStatusIcon')
+      .attr('x', 0)
+      .attr('y', 6)
+      .style('opacity', d => {
+        return d.status === Milestone.StatusEnum.Offen ? 0 : 1;
+    });
 
     const maxLabelWidth = 30;
 
@@ -175,6 +220,14 @@ export class MilestonesArea implements IChartElement {
         return 'translate(' + (offset.left + this.xScale(milestoneDate)) + ','
         + (offset.top + this.elementHeight / 2) + ')';
       });
+
+    // update tooltip
+    dataGroup.selectAll('g.milestoneEntry')
+      .select('path.milestone')
+      .on('mouseover', (event, d) => {
+        this.showTooltip(d, event.clientX, event.clientY);
+      });
+
   }
 
   public arrangeLabels(): void {
@@ -192,7 +245,7 @@ export class MilestonesArea implements IChartElement {
       while (MilestonesArea.intersectArray(x, lastBBoxes)) {
         const currentY = parseFloat(x.getAttribute('y'));
 
-        dataGroup.select('#' + x.parentElement.id + ' text')
+        dataGroup.select('#' + x.parentElement.id + ' text.milestoneLabel')
           .attr('y', currentY + step);
 
         x.setAttribute('y', currentY + step);
@@ -222,8 +275,7 @@ export class MilestonesArea implements IChartElement {
       .style('left', (x) + 'px')
       .style('display', 'block')
       .attr('font-size', 11)
-      .html(`${d.name}<br>`
-        + `Fällig: ${new Date(d.date).toLocaleDateString('de-DE', this.dateOptions)}<br>`)
+      .html(this.tooltipContent(d) )
       .transition()
       .duration(500)
       .style('opacity', 1);
@@ -286,6 +338,56 @@ export class MilestonesArea implements IChartElement {
       .ease(d3.easeCubic)
       .duration(this.animationDuration)
       .attr('transform', 'translate(' + xValueNew + ',' + yTransformValue + ')');
+  }
+
+  private updateMilestoneStyle(milestoneId): void {
+    const dataGroup = this.svg.select('g.data-group');
+
+    dataGroup
+    .select('#milestoneEntry_' + milestoneId)
+    .select('path.milestone')
+    .attr('transform', 'scale(1.85 1.25)')
+    .style('stroke', d3.rgb('#2b41ff').darker());
+
+    dataGroup
+    .select('#milestoneEntry_' + milestoneId)
+    .select('text.milestoneLabel')
+    .style('fill', d3.rgb('#2b41ff').darker());
+  }
+
+  private resetMilestoneStyle(): void {
+    const dataGroup = this.svg.select('g.data-group');
+
+    if (this.selectedMilestoneId !== null) {
+
+      dataGroup
+      .select('#milestoneEntry_' + this.selectedMilestoneId)
+      .select('path.milestone')
+      .attr('transform', 'scale(1.75 1.2)')
+      .style('fill', this.elementColor)
+      .style('stroke', d3.rgb(this.elementColor).darker());
+
+      dataGroup
+      .selectAll('g.milestoneEntry')
+      .select('text.milestoneLabel')
+      .style('fill', d3.rgb(this.elementColor).darker());
+
+    }
+
+  }
+
+  public onCloseMenu(): void {
+    this.resetMilestoneStyle();
+    this.selectedMilestoneId = null;
+  }
+
+  public tooltipContent(data): any {
+    let tooltip = `${data.name}<br>` + `Fällig: ${new Date(data.date).toLocaleDateString('de-DE', this.dateOptions)}<br>`;
+    // alle Meilensteine der agilen Softwareentwicklung im ITZBund
+    if (data.id >= 22 && data.id <= 27) {
+      tooltip += `${this.agileTooltipSupplement}<br>`;
+    }
+    return tooltip;
   }
 
 }

@@ -5,7 +5,7 @@ import {ChartComponent} from './chart/chart.component';
 import {GanttComponent} from './gantt.component';
 
 const routes: Routes = [
-  { path: '', component: GanttComponent },
+  { path: ':id', component: GanttComponent },
   { path: 'chart', component: ChartComponent },
 ];
 

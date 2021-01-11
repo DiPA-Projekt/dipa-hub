@@ -4,8 +4,15 @@ import {ChartComponent} from './chart/chart.component';
 import {forkJoin, Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 
-import {MilestonesService, TasksService, TimelinesService, TimelinesIncrementService, IncrementsService,
-  ProjectTypesService, ProjectApproachesService} from 'dipa-api-client';
+import {
+  IncrementsService,
+  MilestonesService,
+  ProjectApproachesService,
+  ProjectTypesService,
+  TasksService,
+  TimelinesIncrementService,
+  TimelinesService} from 'dipa-api-client';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-gantt',
@@ -30,10 +37,13 @@ export class GanttComponent implements OnInit, OnDestroy {
   timelineData = [];
 
   timelinesSubscription;
+  activatedRouteSubscription;
 
   selectedTimelineId: number;
   selectedProjectApproachId: number;
   selectedProjectTypeId: number;
+  selectedProjectTypeName: string;
+
   viewTypeSelected: any;
 
   projectTypesList = [];
@@ -46,7 +56,8 @@ export class GanttComponent implements OnInit, OnDestroy {
               private timelinesIncrementService: TimelinesIncrementService,
               private incrementService: IncrementsService,
               private projectTypesService: ProjectTypesService,
-              private projectApproachesService: ProjectApproachesService) {  }
+              private projectApproachesService: ProjectApproachesService,
+              public activatedRoute: ActivatedRoute) {  }
 
   static getMinimumDate(data: Date[]): Date {
     return data.reduce((acc, curr) => {
@@ -61,14 +72,23 @@ export class GanttComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.activatedRouteSubscription = this.activatedRoute.params.subscribe(param => {
+      this.selectedTimelineId = param.id;
+      this.timelinesSubscription = this.timelinesService.getTimelines()
+        .subscribe((data) => {
+          this.timelineData = data;
 
-    this.timelinesSubscription = this.timelinesService.getTimelines()
-    .subscribe((data) => {
-      this.timelineData = data;
-      this.selectedTimelineId = this.timelineData.find(c => c.defaultTimeline === true)?.id;
-      this.selectedProjectTypeId = this.timelineData.filter(item => item.id === this.selectedTimelineId)[0].projectTypeId;
-      this.selectedProjectApproachId = this.timelineData.filter(item => item.id === this.selectedTimelineId)[0].projectApproachId;
-      this.setData();
+          this.selectedProjectTypeId = this.timelineData.find(item => item.id === Number(this.selectedTimelineId)).projectTypeId;
+          this.selectedProjectApproachId = this.timelineData.find(item => item.id === Number(this.selectedTimelineId)).projectApproachId;
+
+          this.projectTypesSubscription = this.projectTypesService.getProjectTypes()
+          .subscribe((res) => {
+
+            this.selectedProjectTypeName = res.find(item => item.id === Number(this.selectedProjectTypeId)).name;
+          });
+
+          this.setData();
+        });
     });
 
     this.periodStartDateSubscription = this.ganttControlsService.getPeriodStartDate()
@@ -85,11 +105,6 @@ export class GanttComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.projectTypesSubscription = this.projectTypesService.getProjectTypes()
-    .subscribe((data) => {
-      this.projectTypesList = data;
-    });
-
     this.projectApproachesSubscription = this.projectApproachesService.getProjectApproaches()
     .subscribe((data) => {
       this.projectApproachesList = data;
@@ -97,6 +112,7 @@ export class GanttComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.activatedRouteSubscription.unsubscribe();
     this.periodStartDateSubscription.unsubscribe();
     this.periodEndDateSubscription.unsubscribe();
     this.projectTypesSubscription.unsubscribe();
@@ -142,7 +158,7 @@ export class GanttComponent implements OnInit, OnDestroy {
         const periodStartDate = GanttComponent.getMinimumDate(datesArray);
         const periodEndDate = GanttComponent.getMaximumDate(datesArray);
 
-        const selectedTimeline = this.timelineData.find(c => c.id === this.selectedTimelineId);
+        const selectedTimeline = this.timelineData.find(c => c.id === Number(this.selectedTimelineId));
 
         return {
           milestoneData,
@@ -180,38 +196,25 @@ export class GanttComponent implements OnInit, OnDestroy {
   }
 
   changeProjectApproach(event): void {
-    this.timelinesSubscription = this.timelinesService.getTimelines()
-    .subscribe((data) => {
-      this.timelineData = data;
-    });
 
-    this.selectedTimelineId = this.timelineData.filter(timeline => timeline.projectApproachId === this.selectedProjectApproachId)[0].id;
-    this.setData();
-    this.viewTypeSelected = undefined;
-    this.ganttControlsService.setViewType(null);
-  }
+    const selectedTimeline = this.timelineData.find(item => item.id === Number(this.selectedTimelineId));
 
-  changeProjectType(event): void {
-    this.selectedProjectApproachId = this.timelineData.filter(timeline => timeline.projectTypeId === this.selectedProjectTypeId)[0].id;
-    this.changeProjectApproach(event);
+    selectedTimeline.projectApproachId = event.value;
+
+    this.timelinesService.updateProject(selectedTimeline.id, selectedTimeline)
+      .subscribe((d) => {
+        this.timelinesSubscription = this.timelinesService.getTimelines().subscribe((data) => {
+          this.timelineData = data;
+
+          this.selectedProjectApproachId = this.timelineData.find(item => item.id === Number(this.selectedTimelineId)).projectApproachId;
+
+          this.setData();
+        });
+      });
   }
 
   filterProjectApproaches(): any[] {
     return this.projectApproachesList.filter(projectApproach => projectApproach.projectTypeId === this.selectedProjectTypeId);
-  }
-
-  changeStartDate(change: string, $event: any): void {
-    if ($event.targetElement.value) {
-      const newStartDate = this.parseGermanDate($event.targetElement.value);
-      this.ganttControlsService.setPeriodStartDate(newStartDate);
-    }
-  }
-
-  changeEndDate(change: string, $event: any): void {
-    if ($event.targetElement.value) {
-      const newEndDate = this.parseGermanDate($event.targetElement.value);
-      this.ganttControlsService.setPeriodEndDate(newEndDate);
-    }
   }
 
   createDateAtMidnight(date: any): Date {
@@ -223,6 +226,10 @@ export class GanttComponent implements OnInit, OnDestroy {
   parseGermanDate(input: string): Date {
     const parts = input.match(/(\d+)/g);
     return new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
+  }
+
+  getTimelineName(): any {
+    return this.timelineData.find(t => t.id === this.selectedTimelineId);
   }
 
 }

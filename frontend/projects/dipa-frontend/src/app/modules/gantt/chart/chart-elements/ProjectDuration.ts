@@ -49,9 +49,8 @@ export class ProjectDuration {
   public onDragEndProjectEnd?: (days: number) => void;
 
   modifiable = false;
-  textTooltip = 'Projekt verschieben, Projektbeginn und -ende ändern ist bei Vorgehensweise "inkrementelle Entwicklung" momentan abgeschaltet.';
 
-  constructor(svg: any, xScale: any, timelineData: any, modifiable: boolean) {
+  constructor(svg: any, chartElement: any, xScale: any, timelineData: any, modifiable: boolean) {
     this.svg = svg;
     this.xScale = xScale;
     this.timelineProjectTypeId = timelineData.projectTypeId;
@@ -59,7 +58,7 @@ export class ProjectDuration {
     this.svgBbox = this.svg.node().getBBox();
     this.projectGroup = this.svg.select('g.project-group');
 
-    this.tooltip = d3.select('figure#chart .tooltip');
+    this.tooltip = d3.select(chartElement).select('figure#chart .tooltip');
 
     this.setData(timelineData);
   }
@@ -125,7 +124,6 @@ export class ProjectDuration {
       projectDurationIndicator.call(drag);
     } else {
       projectDurationIndicator.classed('inactive', true);
-      this.tempTooltip(projectDurationIndicator);
     }
 
     const initialStartDatePosition = Math.min(visibleProjectStartDatePosition, this.xScale.range()[1] - 120);
@@ -285,7 +283,6 @@ export class ProjectDuration {
       projectStartDateLine.call(dragProjectStart);
     } else {
       projectStartDateLine.classed('inactive', true);
-      this.tempTooltip(projectStartDateLine);
     }
 
     // projectEndDate grid line
@@ -302,7 +299,6 @@ export class ProjectDuration {
       projectEndDateLine.call(dragProjectEnd);
     } else {
       projectEndDateLine.classed('inactive', true);
-      this.tempTooltip(projectEndDateLine);
     }
   }
 
@@ -477,18 +473,4 @@ export class ProjectDuration {
       .style('opacity', 1);
   }
 
-  tempTooltip(element): void{
-    element.on('mouseover', (event) => {
-      this.showLineTooltip(event.clientX, event.clientY, this.textTooltip);
-    })
-    .on('mouseout', () => {
-      this.tooltip
-        .transition()
-        .duration(50)
-        .style('opacity', 0)
-        .transition()
-        .delay(50)
-        .style('display', 'none');
-    });
-  }
 }

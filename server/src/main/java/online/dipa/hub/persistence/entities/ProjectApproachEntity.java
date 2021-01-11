@@ -38,6 +38,10 @@ public class ProjectApproachEntity extends BaseEntity {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<PlanTemplateEntity> planTemplate = new HashSet<>();
 
+    @OneToMany(mappedBy = "projectApproach", cascade = { ALL })
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<ProjectEntity> project = new HashSet<>();
+
     @NotNull
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private ProjectTypeEntity projectType;
@@ -66,12 +70,19 @@ public class ProjectApproachEntity extends BaseEntity {
         this.planTemplate = planTemplate;
     }
 
-    
     public ProjectTypeEntity getProjectType() {
         return projectType;
     }
 
     public void setProjectType(final ProjectTypeEntity projectType) {
         this.projectType = projectType;
+    }
+
+    public Set<ProjectEntity> getProject() {
+        return project;
+    }
+
+    public void setProject(final Set<ProjectEntity> project) {
+        this.project = project;
     }
 }

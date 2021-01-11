@@ -1,0 +1,37 @@
+databaseChangeLog:
+  - changeSet:
+      id: addColumn-milestone-template
+      author: nguyen
+      changes:
+        - addColumn:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+                  defaultValue: offen
+  - changeSet:
+      id: create-project-table
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: projectPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_approach_id
+                  type: BIGINT
+            tableName: project

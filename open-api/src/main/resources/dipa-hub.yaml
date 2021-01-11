@@ -18,6 +18,8 @@ paths:
     $ref: "paths/projectApproaches.yml"
   /timelines/{timelineId}:
     $ref: "paths/timeline-ops.yml"
+  /timelines/{timelineId}/project:
+    $ref: "paths/updateProject.yml"
   /timelines/{timelineId}/increments:
     $ref: "paths/increments.yml"
   /timelines/{timelineId}/increments/add:
@@ -28,5 +30,7 @@ paths:
     $ref: "paths/ical.yml"
   /timelines/{timelineId}/milestones:
     $ref: "paths/milestones.yml"
+  /timelines/{timelineId}/milestones/{milestoneId}:
+    $ref: "paths/updateMilestone.yml"
   /timelines/{timelineId}/tasks:
     $ref: "paths/tasks.yml"
