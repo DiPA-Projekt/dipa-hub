@@ -1,3 +1,8 @@
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=DiPA-Projekt_dipa-hub&metric=alert_status)](https://sonarcloud.io/dashboard?id=DiPA-Projekt_dipa-hub) 
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=DiPA-Projekt_dipa-hub&metric=ncloc)](https://sonarcloud.io/dashboard?id=DiPA-Projekt_dipa-hub)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=DiPA-Projekt_dipa-hub&metric=bugs)](https://sonarcloud.io/dashboard?id=DiPA-Projekt_dipa-hub)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=DiPA-Projekt_dipa-hub&metric=code_smells)](https://sonarcloud.io/dashboard?id=DiPA-Projekt_dipa-hub)
+
 # DiPA Hub
 
 Dies ist das Full Stack Repository für den DiPA Hub (the core module)

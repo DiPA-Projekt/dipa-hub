@@ -50,6 +50,10 @@
 
         <!-- build profile defaults -->
         <dockerfile.skip>true</dockerfile.skip>
+        <sonar.projectKey>DiPA-Projekt_dipa-hub</sonar.projectKey>
+        <sonar.organization>dipa-projekt</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
     </properties>
 
     <modules>

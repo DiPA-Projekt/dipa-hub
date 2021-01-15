@@ -13,6 +13,10 @@
   <name>DiPA :: Frontend</name>
   <description>Weit e.V. DiPA Frontend</description>
 
+  <properties>
+    <sonar.sources>projects/dipa-frontend/src</sonar.sources>
+  </properties>
+
   <build>
     <defaultGoal>install</defaultGoal>
     <resources>
