@@ -30,7 +30,7 @@ describe('GanttComponent', () => {
   });
 
   it('should create', () => {
-    // ERROR: 'Error during cleanup of component'
     expect(component).toBeTruthy();
+    fixture.detectChanges();
   });
 });
