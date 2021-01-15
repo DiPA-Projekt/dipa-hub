@@ -6,6 +6,9 @@
         <h1>
           {{vm.selectedTimeline.name}}
         </h1>
+        <h3>
+          {{vm.selectedTimeline.projectType}}
+        </h3>
       </ng-container>
     </mat-sidenav>
     <mat-sidenav-content class="content-container">
@@ -13,9 +16,9 @@
         <div class="row justify-content-between">
           <div class="col-6">
             <div class="row justify-content-start">
-              <div class="projectType-container">
+              <div class="operationType-container">
                 <p class="label">Vorhabensart</p>
-                <p class="name">{{selectedProjectTypeName}}</p>
+                <p class="name">{{selectedOperationTypeName}}</p>
               </div>
               <div *ngIf="timelineData" class="col">
                 <mat-form-field appearance="fill" floatLabel="always">

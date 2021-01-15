@@ -45,7 +45,7 @@ public class PlanTemplateEntity extends BaseEntity {
 
     @NotNull
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    private ProjectTypeEntity projectType;
+    private OperationTypeEntity operationType;
 
     public String getName() {
         return name;
@@ -71,12 +71,12 @@ public class PlanTemplateEntity extends BaseEntity {
         this.tasks = tasks;
     }
 
-    public ProjectTypeEntity getProjectTypeEntity() {
-        return projectType;
+    public OperationTypeEntity getOperationTypeEntity() {
+        return operationType;
     }
 
-    public void setProjectTypeEntity(final ProjectTypeEntity projectType) {
-        this.projectType = projectType;
+    public void setOperationTypeEntity(final OperationTypeEntity operationType) {
+        this.operationType = operationType;
     }
 
     public ProjectApproachEntity getProjectApproach() {
