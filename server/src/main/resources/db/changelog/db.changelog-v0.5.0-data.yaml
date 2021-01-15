@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:  
+        id:  renameTable-projectType-to-operationType
+        author: nguyen 
+        changes:  
+        -  renameTable:  
+            newTableName: operation_type
+            oldTableName: project_type
+  - changeSet:
+        id: rename-column-projectApproach-table-projectType-to-operationType
+        author: nguyen
+        changes:
+            - renameColumn:
+                catalogName: cat
+                columnData: BIGINT
+                newColumnName: operation_type_id
+                oldColumnName: project_type_id
+                tableName: project_approach
+  - changeSet:
+        id: rename-column-planTemplate-table-projectType-to-operationType
+        author: nguyen
+        changes:
+            - renameColumn:
+                catalogName: cat
+                columnData: BIGINT
+                newColumnName: operation_type_id
+                oldColumnName: project_type_id
+                tableName: plan_template
+  - changeSet:
+      id: update-project-projectType-internes
+      author: nguyen
+      changes:
+        - update:
+            tableName: project
+            columns:
+              - column:
+                  name: project_type
+                  value: "internes Projekt"
+            where: id=3
+  - changeSet:
+      id: update-project-projectType-AN
+      author: nguyen
+      changes:
+        - update:
+            tableName: project
+            columns:
+              - column:
+                  name: project_type
+                  value: "AN-Projekt"
+            where: id=4

@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 
 import online.dipa.hub.api.model.Milestone;
 import online.dipa.hub.api.model.ProjectApproach;
-import online.dipa.hub.api.model.ProjectType;
+import online.dipa.hub.api.model.OperationType;
 import online.dipa.hub.api.model.Task;
 import online.dipa.hub.api.model.Timeline;
 import online.dipa.hub.api.rest.TimelinesApi;
@@ -39,9 +39,9 @@ public class TimelineController implements TimelinesApi {
     }
 
     @Override
-    public ResponseEntity<List<ProjectType>> getProjectTypes() {
-        final List<ProjectType> projectTypesList = timelineService.getProjectTypes();
-        return ResponseEntity.ok(projectTypesList);
+    public ResponseEntity<List<OperationType>> getOperationTypes() {
+        final List<OperationType> operationTypesList = timelineService.getOperationTypes();
+        return ResponseEntity.ok(operationTypesList);
     }
 
     @Override
