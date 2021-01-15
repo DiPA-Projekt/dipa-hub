@@ -7,7 +7,6 @@ import online.dipa.hub.api.model.Increment;
 import online.dipa.hub.api.model.InlineObject;
 import online.dipa.hub.services.TimelineService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 
 import online.dipa.hub.api.model.Milestone;
 import online.dipa.hub.api.model.ProjectApproach;

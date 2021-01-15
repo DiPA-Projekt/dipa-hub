@@ -60,10 +60,8 @@ public class ProjectToTimelineConverter implements Converter<ProjectEntity, Time
                              
         if (project.getProjectType() != null) {
                 timeline.projectType(ProjectTypeEnum.fromValue(project.getProjectType()));
-                return timeline;
-        } 
-        else {
-                return timeline;
         }
+        
+        return timeline;
     }
 }
