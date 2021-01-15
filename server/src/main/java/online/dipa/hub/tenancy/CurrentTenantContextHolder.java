@@ -6,7 +6,7 @@ public class CurrentTenantContextHolder {
 
     private static final ThreadLocal<String> contextHolder = new InheritableThreadLocal<>();
 
-    public CurrentTenantContextHolder() {
+    private CurrentTenantContextHolder() {
         throw new IllegalStateException("not meant to be instantiated");
     }
 

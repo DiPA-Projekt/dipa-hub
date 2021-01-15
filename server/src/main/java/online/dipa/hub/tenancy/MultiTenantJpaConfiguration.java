@@ -1,12 +1,9 @@
 package online.dipa.hub.tenancy;
 
-import java.util.Map;
-
-import javax.persistence.EntityManagerFactory;
-
+import online.dipa.hub.persistence.entities.OperationTypeEntity;
+import online.dipa.hub.persistence.repositories.Repositories;
 import org.hibernate.MultiTenancyStrategy;
 import org.hibernate.cfg.AvailableSettings;
-import org.hibernate.cfg.Environment;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +24,8 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import online.dipa.hub.persistence.entities.OperationTypeEntity;
-import online.dipa.hub.persistence.repositories.Repositories;
+import javax.persistence.EntityManagerFactory;
+import java.util.Map;
 
 @EnableJpaRepositories(basePackageClasses = { Repositories.class })
 @EnableTransactionManagement
