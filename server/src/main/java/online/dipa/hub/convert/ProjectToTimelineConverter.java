@@ -57,7 +57,7 @@ public class ProjectToTimelineConverter implements Converter<ProjectEntity, Time
                              .end(LocalDate.now()
                                      .plusDays(maxMilestoneDate.getDateOffset()))
                              .defaultTimeline(operationType.isDefaultType());
-                             
+
         if (project.getProjectType() != null) {
                 timeline.projectType(ProjectTypeEnum.fromValue(project.getProjectType()));
         }

@@ -7,6 +7,8 @@ import online.dipa.hub.api.model.Increment;
 import online.dipa.hub.api.model.InlineObject;
 import online.dipa.hub.services.TimelineService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
 
 import online.dipa.hub.api.model.Milestone;
 import online.dipa.hub.api.model.ProjectApproach;
@@ -25,7 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
-@RestApiController
+@RestController
 public class TimelineController implements TimelinesApi {
 
     @Autowired
