@@ -238,19 +238,23 @@ public class TimelineService {
 
         if (planTemplateList.size() == 1) {
             milestones = convertMilestones(planTemplateList.get(0));
-        } else {
+        } 
+        else {
+
             long masterPlanId = 2;
-            PlanTemplateEntity masterPlan = planTemplateList.stream()
+            PlanTemplateEntity masterPlanTemplate = planTemplateList.stream()
                     .filter(template -> template.getId().equals(masterPlanId)).findFirst().orElse(null);
+    
+            if (masterPlanTemplate != null) {
+                milestones.addAll(convertMilestones(masterPlanTemplate));
+            }
 
-            milestones.addAll(convertMilestones(masterPlan));
-
-            PlanTemplateEntity iterativePlan = planTemplateList.stream()
+            PlanTemplateEntity planTemplate = planTemplateList.stream()
                     .filter(template -> template.getProjectApproach() != null)
                     .filter(template -> template.getProjectApproach().getId().equals(projectApproach.getId()))
                     .findFirst().orElse(null);
-
-            milestones.addAll(convertMilestones(iterativePlan));
+            milestones.addAll(convertMilestones(planTemplate));
+            
         }
 
         return milestones.stream().map(m -> conversionService.convert(m, Milestone.class))
@@ -276,8 +280,7 @@ public class TimelineService {
         TimelineState sessionTimeline = findTimelineState(timelineId);
 
         if (sessionTimeline.getIncrements() == null) {
-            final ProjectApproachEntity projectApproach = projectRespository.findAll().stream()
-            .filter(p -> p.getProjectApproach().getId().equals(sessionTimeline.getTimeline().getProjectApproachId())).findFirst().orElse(null).getProjectApproach();
+            final ProjectApproachEntity projectApproach = this.findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
 
             if (projectApproach.isIterative()) {
                 sessionTimeline.setIncrements(this.loadIncrements(timelineId, 1));
@@ -371,8 +374,8 @@ public class TimelineService {
     }
 
     private ProjectApproachEntity findProjectApproach(Long projectApproachId) {
-        return projectRespository.findAll().stream()
-        .filter(p -> p.getProjectApproach().getId().equals(projectApproachId)).findFirst().orElse(null).getProjectApproach();
+        return projectApproachRepository.findAll().stream()
+        .filter(p -> p.getId().equals(projectApproachId)).findFirst().orElse(null);
     }
 
     private TimelineState findTimelineState(Long timelineId) {
@@ -562,9 +565,14 @@ public class TimelineService {
 
     public void updateProject(final Timeline timeline) {
 
+        System.out.println(timeline.getProjectApproachId());
+
         TimelineState sessionTimeline = getSessionTimelines().get(timeline.getId());
         sessionTimeline.getTimeline().setOperationTypeId(timeline.getOperationTypeId());
         sessionTimeline.getTimeline().setProjectApproachId(timeline.getProjectApproachId());
+
+        System.out.println(timeline.getOperationTypeId());
+        System.out.println(timeline.getProjectApproachId());
 
         sessionTimeline.setMilestones(null);
         sessionTimeline.setIncrements(null);
