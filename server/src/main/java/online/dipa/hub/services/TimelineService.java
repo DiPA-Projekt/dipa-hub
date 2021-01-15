@@ -117,7 +117,7 @@ public class TimelineService {
     private List<Milestone> loadMilestones(final Long timelineId, final int incrementCount) {
         TimelineState sessionTimeline = findTimelineState(timelineId);
 
-        List<Milestone> milestones = new ArrayList<>();
+        List<Milestone> milestones;
 
         // get template Milestones
         if (sessionTimeline.getTempIncrementMilestones() == null) {
@@ -132,7 +132,7 @@ public class TimelineService {
             return milestones;
         } else {
 
-            List<Milestone> incrementMilestones = new ArrayList<Milestone>();
+            List<Milestone> incrementMilestones = new ArrayList<>();
 
             // add master plan into milestones list
             if (sessionTimeline.getMilestones() == null) {
@@ -178,7 +178,7 @@ public class TimelineService {
         long oldDaysBetween = DAYS.between(firstDatePeriod, lastDatePeriod);
 
         for (Increment increment : incrementsList) {
-            List<Milestone> incrementMilestones = new ArrayList<Milestone>();
+            List<Milestone> incrementMilestones = new ArrayList<>();
 
             long newDaysBetween = DAYS.between(increment.getStart().plusDays(14), increment.getEnd());
             LocalDate newStartDateIncrement = increment.getStart().plusDays(14);
@@ -234,7 +234,7 @@ public class TimelineService {
                 .filter(template -> template.getOperationTypeEntity().getId().equals(operationTypeId))
                 .collect(Collectors.toList());
 
-        List<Milestone> milestones = new ArrayList<Milestone>();
+        List<Milestone> milestones = new ArrayList<>();
 
         if (planTemplateList.size() == 1) {
             milestones = convertMilestones(planTemplateList.get(0));
@@ -264,7 +264,6 @@ public class TimelineService {
 
     public List<Increment> getIncrementsForTimeline(final Long timelineId) {
 
-        // initializeMilestones(timelineId);
         initializeIncrements(timelineId);
 
         List<Increment> result = this.sessionTimelines.get(timelineId).getIncrements();
@@ -297,7 +296,7 @@ public class TimelineService {
         LocalDate firstMilestoneDate;
         LocalDate lastMilestoneDate;
         long daysBetween;
-        List<Increment> incrementsList = new ArrayList<Increment>();
+        List<Increment> incrementsList = new ArrayList<>();
 
         if (sessionTimeline.getMilestones() == null) {
 
@@ -555,7 +554,7 @@ public class TimelineService {
 
         if (sessionTimeline.getTempIncrementMilestones() == null) {
 
-            List<Milestone> tempMilestonesList = new ArrayList<Milestone>(getMilestonesFromRespository(timelineId));
+            List<Milestone> tempMilestonesList = new ArrayList<>(getMilestonesFromRespository(timelineId));
             sessionTimeline.setTempIncrementMilestones(tempMilestonesList);
         }
     }
