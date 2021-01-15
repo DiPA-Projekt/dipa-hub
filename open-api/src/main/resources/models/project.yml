@@ -15,6 +15,14 @@ Project:
       type: integer
       format: int64
       example: 3
+    projectType:
+      description: project type of this project
+      type: string
+      enum:
+        - "internes Projekt"
+        - "AN-Projekt"
+      default: null
+      example: "internes Projekt"
   required:
     - id
     - name

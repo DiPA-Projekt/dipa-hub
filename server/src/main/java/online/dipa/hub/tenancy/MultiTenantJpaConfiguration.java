@@ -26,7 +26,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import online.dipa.hub.persistence.entities.ProjectTypeEntity;
+import online.dipa.hub.persistence.entities.OperationTypeEntity;
 import online.dipa.hub.persistence.repositories.Repositories;
 
 @EnableJpaRepositories(basePackageClasses = { Repositories.class })
@@ -83,7 +83,7 @@ public class MultiTenantJpaConfiguration {
             final MultiTenantConnectionProvider multiTenantConnectionProvider) {
         final LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
 
-        entityManagerFactoryBean.setPackagesToScan(ProjectTypeEntity.class.getPackageName());
+        entityManagerFactoryBean.setPackagesToScan(OperationTypeEntity.class.getPackageName());
         entityManagerFactoryBean.setJpaVendorAdapter(jpaVendorAdapter);
 
         final Map<String, Object> jpaProperties = entityManagerFactoryBean.getJpaPropertyMap();

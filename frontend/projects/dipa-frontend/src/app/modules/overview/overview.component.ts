@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 
 import {MilestonesService, TasksService, TimelinesService,
-  ProjectTypesService, ProjectApproachesService, IncrementsService} from 'dipa-api-client';
+  OperationTypesService, ProjectApproachesService, IncrementsService} from 'dipa-api-client';
 import { ChartComponent } from '../gantt/chart/chart.component';
 import { forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -16,7 +16,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   @ViewChildren('charts') charts: QueryList<ChartComponent>;
 
   timelinesSubscription: any;
-  projectTypesSubscription: any;
+  operationTypesSubscription: any;
   projectApproachesSubscription: any;
 
   timelineData: any;
@@ -26,7 +26,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   observablesList: Array<any> = [];
 
-  projectTypesList: Array<any> = [];
+  operationTypesList: Array<any> = [];
   projectApproachesList: Array<any> = [];
   loading: boolean;
 
@@ -36,20 +36,20 @@ export class OverviewComponent implements OnInit, OnDestroy {
   constructor(private timelinesService: TimelinesService,
               private milestonesService: MilestonesService,
               private tasksService: TasksService,
-              private projectTypesService: ProjectTypesService,
+              private operationTypesService: OperationTypesService,
               private incrementsService: IncrementsService,
               private projectApproachesService: ProjectApproachesService) { }
 
   ngOnDestroy(): void {
     this.timelinesSubscription.unsubscribe();
     this.projectApproachesSubscription.unsubscribe();
-    this.projectTypesSubscription.unsubscribe();
+    this.operationTypesSubscription.unsubscribe();
   }
 
   ngOnInit(): void {
-    this.projectTypesSubscription = this.projectTypesService.getProjectTypes()
+    this.operationTypesSubscription = this.operationTypesService.getOperationTypes()
     .subscribe((data) => {
-      this.projectTypesList = data;
+      this.operationTypesList = data;
     });
 
     this.projectApproachesSubscription = this.projectApproachesService.getProjectApproaches()
@@ -74,7 +74,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.loading = false;
 
         const timeline = this.timelineData.find(t => t.id === timelineId);
-        const projectType = this.projectTypesList.find(type => type.id === timeline.projectTypeId);
+        const operationType = this.operationTypesList.find(type => type.id === timeline.operationTypeId);
         const projectApproach = this.projectApproachesList.find(approach => approach.id === timeline.projectApproachId);
         return {
           milestoneData,
@@ -82,7 +82,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
           timeline,
           incrementsData,
           projectApproach,
-          projectType
+          operationType
         };
       })
     );
@@ -105,12 +105,12 @@ export class OverviewComponent implements OnInit, OnDestroy {
       });
 }
 
-  changeProjectType(event, timelineId): void {
-    this.timelineData.find(timeline => timeline.id === timelineId).projectTypeId = event.value;
+  changeOperationType(event, timelineId): void {
+    this.timelineData.find(timeline => timeline.id === timelineId).operationTypeId = event.value;
   }
 
-  filterProjectApproaches(projectTypeId): any[] {
-    return this.projectApproachesList.filter(projectApproach => projectApproach.projectTypeId === projectTypeId);
+  filterProjectApproaches(operationTypeId): any[] {
+    return this.projectApproachesList.filter(projectApproach => projectApproach.operationTypeId === operationTypeId);
   }
 
   loadTimelines(): void {

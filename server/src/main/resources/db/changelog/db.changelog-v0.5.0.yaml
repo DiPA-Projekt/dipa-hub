@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: addColumn-project-projectType
+      author: nguyen
+      changes:
+        - addColumn:
+            tableName: project
+            columns:
+              - column:
+                  name: project_type
+                  type: VARCHAR(255)
+                  defaultValue: null

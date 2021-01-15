@@ -1,0 +1,17 @@
+get:
+  tags:
+    - operationTypes
+  summary: operationTypes List
+  description: Retrieves the list of operationTypes
+  operationId: getOperationTypes
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../models/operationType.yml#/OperationType"
+
+              
