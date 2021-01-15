@@ -1,6 +1,5 @@
 package online.dipa.hub.convert;
 
-import org.openapitools.jackson.nullable.JsonNullableModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
@@ -19,8 +18,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 @Component
 public class ProjectToTimelineConverter implements Converter<ProjectEntity, Timeline> {

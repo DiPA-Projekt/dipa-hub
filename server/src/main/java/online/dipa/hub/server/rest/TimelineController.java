@@ -8,7 +8,6 @@ import online.dipa.hub.api.model.InlineObject;
 import online.dipa.hub.services.TimelineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.cbor.MappingJackson2CborHttpMessageConverter;
 
 import online.dipa.hub.api.model.Milestone;
 import online.dipa.hub.api.model.ProjectApproach;
@@ -22,8 +21,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,11 +34,7 @@ public class TimelineController implements TimelinesApi {
 
     @Override
     public ResponseEntity<List<Timeline>> getTimelines() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setSerializationInclusion(Include.NON_NULL);
         final List<Timeline> timelines = timelineService.getTimelines();
-        System.out.println(timelines);
-        // String json = mapper.writeValueAsString(timelines);
         return ResponseEntity.ok(timelines);
     }
 
