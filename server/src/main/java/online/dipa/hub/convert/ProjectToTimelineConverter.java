@@ -1,15 +1,17 @@
 package online.dipa.hub.convert;
 
+import org.openapitools.jackson.nullable.JsonNullableModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import online.dipa.hub.api.model.Timeline;
+import online.dipa.hub.api.model.Timeline.ProjectTypeEnum;
 import online.dipa.hub.persistence.entities.MilestoneTemplateEntity;
 import online.dipa.hub.persistence.entities.PlanTemplateEntity;
 import online.dipa.hub.persistence.entities.ProjectApproachEntity;
 import online.dipa.hub.persistence.entities.ProjectEntity;
-import online.dipa.hub.persistence.entities.ProjectTypeEntity;
+import online.dipa.hub.persistence.entities.OperationTypeEntity;
 import online.dipa.hub.persistence.repositories.PlanTemplateRepository;
 
 import java.time.LocalDate;
@@ -17,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 @Component
 public class ProjectToTimelineConverter implements Converter<ProjectEntity, Timeline> {
@@ -29,12 +33,12 @@ public class ProjectToTimelineConverter implements Converter<ProjectEntity, Time
 
         final ProjectApproachEntity projectApproach = project.getProjectApproach();
 
-        final ProjectTypeEntity projectType = projectApproach.getProjectType();
-        
-        final Long projectTypeId = projectApproach.getProjectType().getId();    
+        final OperationTypeEntity operationType = projectApproach.getOperationType();
+
+        final Long operationTypeId = projectApproach.getOperationType().getId();    
 
         final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
-                                                        .filter(template -> template.getProjectTypeEntity().getId().equals(projectTypeId))
+                                                        .filter(template -> template.getOperationTypeEntity().getId().equals(operationTypeId))
                                                         .collect(Collectors.toList());       
         
         final List<MilestoneTemplateEntity> maxMilestoneDateList = new ArrayList<MilestoneTemplateEntity>();
@@ -47,14 +51,22 @@ public class ProjectToTimelineConverter implements Converter<ProjectEntity, Time
         final MilestoneTemplateEntity maxMilestoneDate = maxMilestoneDateList
                 .stream()
                 .max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset)).get();
-
-        return new Timeline().id(project.getId())
+        
+        Timeline timeline = new Timeline().id(project.getId())
                              .name(project.getName())
-                             .projectTypeId(projectTypeId)
+                             .operationTypeId(operationTypeId)
                              .projectApproachId(projectApproach.getId())
                              .start(LocalDate.now())
                              .end(LocalDate.now()
                                      .plusDays(maxMilestoneDate.getDateOffset()))
-                             .defaultTimeline(projectType.isDefaultType());
+                             .defaultTimeline(operationType.isDefaultType());
+                             
+        if (project.getProjectType() != null) {
+                timeline.projectType(ProjectTypeEnum.fromValue(project.getProjectType()));
+                return timeline;
+        } 
+        else {
+                return timeline;
+        }
     }
 }

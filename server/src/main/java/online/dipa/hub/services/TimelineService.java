@@ -6,7 +6,7 @@ import online.dipa.hub.TimelineState;
 import online.dipa.hub.api.model.Increment;
 import online.dipa.hub.api.model.Milestone;
 import online.dipa.hub.api.model.ProjectApproach;
-import online.dipa.hub.api.model.ProjectType;
+import online.dipa.hub.api.model.OperationType;
 import online.dipa.hub.api.model.Timeline;
 import online.dipa.hub.persistence.entities.PlanTemplateEntity;
 import online.dipa.hub.persistence.entities.ProjectApproachEntity;
@@ -14,13 +14,14 @@ import online.dipa.hub.persistence.entities.ProjectApproachEntity;
 import online.dipa.hub.persistence.repositories.PlanTemplateRepository;
 import online.dipa.hub.persistence.repositories.ProjectApproachRepository;
 import online.dipa.hub.persistence.repositories.ProjectRepository;
-import online.dipa.hub.persistence.repositories.ProjectTypeRepository;
+import online.dipa.hub.persistence.repositories.OperationTypeRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.SessionScope;
+
 
 import javax.persistence.EntityNotFoundException;
 import java.io.File;
@@ -50,7 +51,7 @@ public class TimelineService {
     private ProjectApproachRepository projectApproachRepository;
 
     @Autowired
-    private ProjectTypeRepository projectTypeRepository;
+    private OperationTypeRepository operationTypeRepository;
 
     @Autowired
     private PlanTemplateRepository planTemplateRepository;
@@ -80,9 +81,9 @@ public class TimelineService {
                 });
     }
 
-    public List<ProjectType> getProjectTypes() {
+    public List<OperationType> getOperationTypes() {
 
-        return projectTypeRepository.findAll().stream().map(p -> conversionService.convert(p, ProjectType.class))
+        return operationTypeRepository.findAll().stream().map(p -> conversionService.convert(p, OperationType.class))
                 .collect(Collectors.toList());
     }
 
@@ -227,10 +228,10 @@ public class TimelineService {
         TimelineState sessionTimeline = findTimelineState(timelineId);
 
         final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
-        Long projectTypeId = projectApproach.getProjectType().getId();
+        Long operationTypeId = projectApproach.getOperationType().getId();
 
         final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
-                .filter(template -> template.getProjectTypeEntity().getId().equals(projectTypeId))
+                .filter(template -> template.getOperationTypeEntity().getId().equals(operationTypeId))
                 .collect(Collectors.toList());
 
         List<Milestone> milestones = new ArrayList<Milestone>();
@@ -562,7 +563,7 @@ public class TimelineService {
     public void updateProject(final Timeline timeline) {
 
         TimelineState sessionTimeline = getSessionTimelines().get(timeline.getId());
-        sessionTimeline.getTimeline().setProjectTypeId(timeline.getProjectTypeId());
+        sessionTimeline.getTimeline().setOperationTypeId(timeline.getOperationTypeId());
         sessionTimeline.getTimeline().setProjectApproachId(timeline.getProjectApproachId());
 
         sessionTimeline.setMilestones(null);

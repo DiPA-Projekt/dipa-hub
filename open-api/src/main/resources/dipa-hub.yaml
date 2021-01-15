@@ -12,8 +12,8 @@ paths:
     $ref: "paths/status.yml"
   /timelines:
     $ref: "paths/timelines.yml"
-  /timelines/projectTypes:
-    $ref: "paths/projectTypes.yml"
+  /timelines/operationTypes:
+    $ref: "paths/operationTypes.yml"
   /timelines/projectApproaches:
     $ref: "paths/projectApproaches.yml"
   /timelines/{timelineId}:

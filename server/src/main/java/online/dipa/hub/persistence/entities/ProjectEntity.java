@@ -10,6 +10,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -28,6 +30,8 @@ public class ProjectEntity extends BaseEntity {
     @NotNull
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private ProjectApproachEntity projectApproach;
+
+    private String projectType;
     
     public String getName() {
         return name;
@@ -43,5 +47,14 @@ public class ProjectEntity extends BaseEntity {
 
     public void setProjectApproach(final ProjectApproachEntity projectApproach) {
         this.projectApproach = projectApproach;
+    }
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public String getProjectType() {
+        return projectType;
+    }
+
+    public void setProjectType(final String projectType) {
+        this.projectType = projectType;
     }
 }
