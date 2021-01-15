@@ -41,7 +41,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
     - name: Build with Maven
-      run: mvn -P develop-ci -B clean install dockerfile:push --file pom.xml
+      run: mvn -P develop-ci -Ddockerfile.skip=true -B clean install --file pom.xml
       env:
         DOCKER_REGISTRY_USERNAME: dipa
         DOCKER_REGISTRY_TOKEN: ${{ secrets.DOCKER_REGISTRY_TOKEN }}
@@ -52,5 +52,6 @@ jobs:
         echo -e "${{ secrets.DEPLOYMENT_SSH_KEY }}" > ~/.ssh/id_rsa
         echo -e "${{ secrets.DEPLOYMENT_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
         chmod 600 ~/.ssh/id_rsa
+        mvn -P develop-ci -B dockerfile:build dockerfile:push --file pom.xml
         scp server/target/deployment/*.yaml dipa-deployment@dipa.rz-housing.tu-clausthal.de:deployment/develop
         ssh dipa-deployment@dipa.rz-housing.tu-clausthal.de kubectl apply -k deployment/develop
