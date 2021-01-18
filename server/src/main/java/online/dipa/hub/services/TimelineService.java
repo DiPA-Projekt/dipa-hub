@@ -104,7 +104,7 @@ public class TimelineService {
 
         final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
 
-        if (sessionTimeline.getMilestones() == null) {
+        if (projectApproach != null && sessionTimeline.getMilestones() == null) {
             if (projectApproach.isIterative()) {
                 initializeIncrements(timelineId);
                 sessionTimeline.setMilestones(this.loadMilestones(timelineId, 1));
@@ -228,31 +228,41 @@ public class TimelineService {
         TimelineState sessionTimeline = findTimelineState(timelineId);
 
         final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
-        Long operationTypeId = projectApproach.getOperationType().getId();
-
-        final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
-                .filter(template -> template.getOperationTypeEntity().getId().equals(operationTypeId))
-                .collect(Collectors.toList());
 
         List<Milestone> milestones = new ArrayList<>();
 
-        if (planTemplateList.size() == 1) {
-            milestones = convertMilestones(planTemplateList.get(0));
-        } else {
-            long masterPlanId = 2;
-            PlanTemplateEntity masterPlan = planTemplateList.stream()
-                    .filter(template -> template.getId().equals(masterPlanId)).findFirst().orElse(null);
+        if (projectApproach != null) {
 
-            milestones.addAll(convertMilestones(masterPlan));
+            Long operationTypeId = projectApproach.getOperationType().getId();
 
-            PlanTemplateEntity iterativePlan = planTemplateList.stream()
-                    .filter(template -> template.getProjectApproach() != null)
-                    .filter(template -> template.getProjectApproach().getId().equals(projectApproach.getId()))
-                    .findFirst().orElse(null);
+            final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
+                .filter(template -> template.getOperationTypeEntity().getId().equals(operationTypeId))
+                .collect(Collectors.toList());
 
-            milestones.addAll(convertMilestones(iterativePlan));
+                if (planTemplateList.size() == 1) {
+                    milestones = convertMilestones(planTemplateList.get(0));
+                } 
+                else {
+
+                    long masterPlanId = 2;
+
+                    PlanTemplateEntity masterPlanTemplate = planTemplateList.stream()
+                            .filter(template -> template.getId().equals(masterPlanId)).findFirst().orElse(null);
+                
+                    if (masterPlanTemplate != null) {
+                        milestones.addAll(convertMilestones(masterPlanTemplate));
+                    }
+        
+                    PlanTemplateEntity planTemplate = planTemplateList.stream()
+                            .filter(template -> template.getProjectApproach() != null)
+                            .filter(template -> template.getProjectApproach().getId().equals(projectApproach.getId()))
+                            .findFirst().orElse(null);
+        
+                    milestones.addAll(convertMilestones(planTemplate));
+                }
+
         }
-
+ 
         return milestones.stream().map(m -> conversionService.convert(m, Milestone.class))
                 .sorted(Comparator.comparing(Milestone::getDate)).collect(Collectors.toList());
     }
@@ -275,10 +285,9 @@ public class TimelineService {
         TimelineState sessionTimeline = findTimelineState(timelineId);
 
         if (sessionTimeline.getIncrements() == null) {
-            final ProjectApproachEntity projectApproach = projectRespository.findAll().stream()
-            .filter(p -> p.getProjectApproach().getId().equals(sessionTimeline.getTimeline().getProjectApproachId())).findFirst().orElse(null).getProjectApproach();
+            final ProjectApproachEntity projectApproach = this.findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
 
-            if (projectApproach.isIterative()) {
+            if (projectApproach != null && projectApproach.isIterative()) {
                 sessionTimeline.setIncrements(this.loadIncrements(timelineId, 1));
             }
         }
@@ -370,8 +379,8 @@ public class TimelineService {
     }
 
     private ProjectApproachEntity findProjectApproach(Long projectApproachId) {
-        return projectRespository.findAll().stream()
-        .filter(p -> p.getProjectApproach().getId().equals(projectApproachId)).findFirst().orElse(null).getProjectApproach();
+        return projectApproachRepository.findAll().stream()
+        .filter(p -> p.getId().equals(projectApproachId)).findFirst().orElse(null);
     }
 
     private TimelineState findTimelineState(Long timelineId) {
@@ -519,16 +528,19 @@ public class TimelineService {
 
         final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
 
-        String projectEventTitle = "Projektstart" + " - " + projectApproach.getName();
-        icsCalendar.addEvent(timezone, sessionTimeline.getTimeline().getStart(), projectEventTitle, "Test Comment");
+        if (projectApproach != null) {
 
-        List<Milestone> milestones = getMilestonesForTimeline(timelineId);
-        for (Milestone milestone : milestones) {
-            LocalDate eventDate = milestone.getDate();
-            String eventTitle = milestone.getName() + " - " + projectApproach.getName();
-            String eventComment = "Test Comment";
-
-            icsCalendar.addEvent(timezone, eventDate, eventTitle, eventComment);
+            String projectEventTitle = "Projektstart" + " - " + projectApproach.getName();
+            icsCalendar.addEvent(timezone, sessionTimeline.getTimeline().getStart(), projectEventTitle, "Test Comment");
+    
+            List<Milestone> milestones = getMilestonesForTimeline(timelineId);
+            for (Milestone milestone : milestones) {
+                LocalDate eventDate = milestone.getDate();
+                String eventTitle = milestone.getName() + " - " + projectApproach.getName();
+                String eventComment = "Test Comment";
+    
+                icsCalendar.addEvent(timezone, eventDate, eventTitle, eventComment);
+            }
         }
 
         return icsCalendar.getCalendarFile("Meilensteine");
