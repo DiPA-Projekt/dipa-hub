@@ -104,14 +104,12 @@ public class TimelineService {
 
         final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
 
-        if (projectApproach != null) {
-            if (sessionTimeline.getMilestones() == null) {
-                if (projectApproach.isIterative()) {
-                    initializeIncrements(timelineId);
-                    sessionTimeline.setMilestones(this.loadMilestones(timelineId, 1));
-                } else {
-                    sessionTimeline.setMilestones(this.loadMilestones(timelineId, 0));
-                }
+        if (projectApproach != null && sessionTimeline.getMilestones() == null) {
+            if (projectApproach.isIterative()) {
+                initializeIncrements(timelineId);
+                sessionTimeline.setMilestones(this.loadMilestones(timelineId, 1));
+            } else {
+                sessionTimeline.setMilestones(this.loadMilestones(timelineId, 0));
             }
         }
     
