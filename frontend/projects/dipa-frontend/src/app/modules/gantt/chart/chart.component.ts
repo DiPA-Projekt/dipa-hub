@@ -360,17 +360,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.svg.select('g.x-group').selectAll('text.outsideXAxisLabel').remove();
 
     switch (this.viewType){
-      case 'DAYS' : {
-        const numberTicks = d3.timeDay.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
-
-        if (numberTicks > 12){
-          this.headerX.tickSetting = null;
-        } else {
-          this.headerX.tickSetting = d3.timeDay.every(1);
-        }
-
-        break;
-      }
       case 'WEEKS' : {
         const numberTicks = d3.timeWeek.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
 
@@ -444,7 +433,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
         }
         break;
       }
-      case null : {
+      // case 'DAYS' :
+      default : {
         const numberTicks = d3.timeDay.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
 
         if (numberTicks > 12){
@@ -454,6 +444,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
         }
         break;
       }
+
     }
     this.headerX.redraw();
     this.projectDuration.redraw(animationDuration);

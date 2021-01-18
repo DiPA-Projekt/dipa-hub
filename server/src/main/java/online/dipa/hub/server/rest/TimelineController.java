@@ -73,6 +73,8 @@ public class TimelineController implements TimelinesApi {
                 break;
             case "moveMilestone": timelineService.moveMileStoneByDays(timelineId, inlineObject.getDays(), inlineObject.getMovedMilestoneId());
                 break;
+            default:
+                return ResponseEntity.notFound().build();
         }
 
         return ResponseEntity.noContent().build();
@@ -104,6 +106,7 @@ public class TimelineController implements TimelinesApi {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     public ResponseEntity<Void> updateMilestoneData(final Long timelineId, final Long milestoneId, final Milestone milestone ) {
         if (Optional.ofNullable(milestone.getStatus()).isPresent()) {
             timelineService.updateMilestoneStatus(timelineId, milestoneId, milestone.getStatus());
@@ -111,12 +114,13 @@ public class TimelineController implements TimelinesApi {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     public ResponseEntity<Resource> getTimelineCalendar(final Long timelineId) {
 
         try {
             File icsFile = timelineService.getCalendarFileForTimeline(timelineId);
             FileUrlResource icsFileResource = new FileUrlResource(icsFile.getPath());
-// Access-Control-Expose-Headers
+            // Access-Control-Expose-Headers
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType("application/octet-stream"))
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + icsFile.getName() + "\"")

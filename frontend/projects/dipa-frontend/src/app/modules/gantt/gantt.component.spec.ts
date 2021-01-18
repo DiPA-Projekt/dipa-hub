@@ -1,6 +1,12 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {GanttComponent} from './gantt.component';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {RouterTestingModule} from '@angular/router/testing';
+import {MatMenuModule} from '@angular/material/menu';
+import {MaterialModule} from '../../material/material.module';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {FormsModule} from '@angular/forms';
 
 describe('GanttComponent', () => {
   let component: GanttComponent;
@@ -8,7 +14,11 @@ describe('GanttComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ GanttComponent ]
+      declarations: [ GanttComponent ],
+      imports: [ RouterTestingModule,
+        HttpClientTestingModule,
+        MatMenuModule, MaterialModule,
+        BrowserAnimationsModule, FormsModule ]
     })
     .compileComponents();
   });
@@ -21,5 +31,6 @@ describe('GanttComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    fixture.detectChanges();
   });
 });

@@ -77,7 +77,6 @@ export class GanttComponent implements OnInit, OnDestroy {
       this.timelinesSubscription = this.timelinesService.getTimelines()
         .subscribe((data) => {
           this.timelineData = data;
-          console.log(data)
 
           this.selectedOperationTypeId = this.timelineData.find(item => item.id === Number(this.selectedTimelineId)).operationTypeId;
           this.selectedProjectApproachId = this.timelineData.find(item => item.id === Number(this.selectedTimelineId)).projectApproachId;
