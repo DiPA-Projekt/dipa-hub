@@ -6,6 +6,10 @@ public class CurrentTenantContextHolder {
 
     private static final ThreadLocal<String> contextHolder = new InheritableThreadLocal<>();
 
+    private CurrentTenantContextHolder() {
+        throw new IllegalStateException("not meant to be instantiated");
+    }
+
     public static void clearTenantId() {
         contextHolder.remove();
     }
