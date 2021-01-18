@@ -8,6 +8,10 @@ servers:
 paths:
   /adresse:
     $ref: "paths/adresse.yml"
+  /externalLinks:
+    $ref: "paths/externalLinks.yml"
+  /externalLinks/favorites:
+    $ref: "paths/favoriteLinks.yml"
   /status:
     $ref: "paths/status.yml"
   /timelines:

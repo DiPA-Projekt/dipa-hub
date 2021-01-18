@@ -1,0 +1,15 @@
+get:
+  tags:
+    - externalLinks-user
+  summary: Favorite external Links List
+  description: Retrieves the list of favorite external links.
+  operationId: getFavoriteLinks
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../models/externalLink.yml#/ExternalLink"

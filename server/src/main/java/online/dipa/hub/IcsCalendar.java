@@ -21,7 +21,7 @@ public class IcsCalendar {
 
     private Calendar calendar;
 
-    private final String productId = "-//DiPA//www.dipa.online 1.0//DE";
+    private static final String productId = "-//DiPA//www.dipa.online 1.0//DE";
 
     private static final UidGenerator uidGenerator = new RandomUidGenerator();
 

@@ -1,0 +1,50 @@
+@import '../../../styles';
+
+:host {
+  display: flex;
+  flex-direction: column;
+  outline: none;
+  width: 100%;
+
+  .mat-list-item {
+    color: rgba(0, 0, 0, .65);
+  }
+
+  .mat-list-item.active {
+    background: rgba(63, 81, 181, .15);
+    color: #3f51b5;
+  }
+
+  &:hover,
+  &:focus {
+    >.mat-list-item.active:hover {
+      background: rgba(63, 81, 181, 0.3);
+    }
+    >.mat-list-item {
+      background: rgba(0, 0, 0, .04);
+    }
+  }
+}
+
+.mat-list-item {
+  display: flex;
+  width: auto;
+
+  .routeIcon {
+    margin-right: 10px;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .mat-list-item-content {
+    flex: 1 1 100% !important;
+  }
+
+  mat-icon.icon-small {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+  }
+}
