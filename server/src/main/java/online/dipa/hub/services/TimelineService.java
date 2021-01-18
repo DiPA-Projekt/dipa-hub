@@ -258,7 +258,9 @@ public class TimelineService {
                             .filter(template -> template.getProjectApproach().getId().equals(projectApproach.getId()))
                             .findFirst().orElse(null);
         
-                    milestones.addAll(convertMilestones(planTemplate));
+                    if (planTemplate != null) {
+                        milestones.addAll(convertMilestones(planTemplate));
+                    }
                 }
 
         }
