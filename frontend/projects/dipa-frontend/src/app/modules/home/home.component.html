@@ -20,7 +20,7 @@
                   <mat-icon *ngIf="!link.favorite" role="img" class="mat-icon notranslate material-icons mat-icon-no-color" aria-hidden="true" data-mat-icon-type="font">star_outline</mat-icon>
                   <mat-icon *ngIf="link.favorite" role="img" class="mat-icon notranslate material-icons mat-icon-no-color" aria-hidden="true" data-mat-icon-type="font">star</mat-icon>
                 </button>
-                <a href="{{ link.url }}" target="_blank" mat-button>
+                <a href="{{ link.url }}" target="_blank" rel="noopener" mat-button>
                   <mat-icon role="img" class="mat-icon notranslate material-icons mat-icon-no-color" aria-hidden="true" data-mat-icon-type="font">open_in_new</mat-icon>
                 </a>
               </div>

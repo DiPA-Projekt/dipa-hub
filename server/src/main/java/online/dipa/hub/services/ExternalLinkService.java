@@ -24,22 +24,18 @@ public class ExternalLinkService {
 
     public List<ExternalLink> getExternalLinks() {
 
-        final List<ExternalLink> externalLinks = externalLinkRepository.findAll()
+        return externalLinkRepository.findAll()
                 .stream()
                 .map(p -> conversionService.convert(p, ExternalLink.class))
                 .collect(Collectors.toList());
-
-        return externalLinks;
     }
 
     public List<ExternalLink> getFavoriteLinks() {
 
-        final List<ExternalLink> favoriteLinks = externalLinkRepository.findAll()
+        return externalLinkRepository.findAll()
                 .stream()
                 .map(p -> conversionService.convert(p, ExternalLink.class))
                 .filter(p -> p.getFavorite().equals(true))
                 .collect(Collectors.toList());
-
-        return favoriteLinks;
     }
 }
