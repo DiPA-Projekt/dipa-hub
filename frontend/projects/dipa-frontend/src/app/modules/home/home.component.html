@@ -1,14 +1,9 @@
 <div *ngIf="externalLinks$ | async as externalLinks" class="container">
     <div class="row">
-        <div class="col">
-            <h3>If you can see this, backend is working...</h3>
-        </div>
-    </div>
-    <div class="row">
         <div class="col-6" *ngFor="let link of externalLinks">
           <mat-card class="card-container">
             <mat-card-header>
-              <div mat-card-avatar class="example-header-image">
+              <div mat-card-avatar>
                 <img *ngIf="link.img" src="{{ link.img }}"
                      width="40px"
                      alt="Icon {{ link.name }}">
