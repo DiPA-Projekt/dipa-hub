@@ -10,28 +10,15 @@
 
 .mat-sidenav-container {
   width: 100%;
-  background-color: white;
-  margin-top: 5px;
+  height: calc(100vh - 84px);
+  background-color: transparent;
+  margin-top: 15px;
 }
 
 mat-sidenav-content {
   background-color: white;
   align-items: center;
   justify-content: center;
-}
-
-mat-sidenav {
-  width: 240px;
-  background-color: white;
-  height: 100%;
-}
-
-.sidenav-header {
-  padding: 16px 16px 0;
-}
-
-.favorite-links-list {
-  margin-top: 20px;
 }
 
 .operationType-container {

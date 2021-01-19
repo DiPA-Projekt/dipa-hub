@@ -37,20 +37,25 @@ public class ProjectApproachToTimelineConverter implements Converter<ProjectAppr
         final List<MilestoneTemplateEntity> maxMilestoneDateList = new ArrayList<>();
 
         for (PlanTemplateEntity planTemplate: planTemplateList) {
-                maxMilestoneDateList.add(planTemplate.getMilestones().stream()
-                    .max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset)).get());
+            planTemplate.getMilestones().stream()
+                    .max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset)).ifPresent(maxMilestoneDateList::add);
         }
 
         final MilestoneTemplateEntity maxMilestoneDate = maxMilestoneDateList
                 .stream()
-                .max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset)).get();
+                .max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset)).orElse(null);
+
+        int maxMilestoneDateOffset = 0;
+        if (maxMilestoneDate != null) {
+            maxMilestoneDateOffset = maxMilestoneDate.getDateOffset();
+        }
 
         return new Timeline().id(projectApproach.getId())
                              .operationTypeId(operationTypeId)
                              .projectApproachId(projectApproach.getId())
                              .start(LocalDate.now())
                              .end(LocalDate.now()
-                                     .plusDays(maxMilestoneDate.getDateOffset()))
+                                     .plusDays(maxMilestoneDateOffset))
                              .defaultTimeline(operationTypeEntity.isDefaultType());
     }
 }
