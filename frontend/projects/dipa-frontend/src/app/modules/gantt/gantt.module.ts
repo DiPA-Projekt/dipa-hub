@@ -18,6 +18,8 @@ import {MatButtonModule} from '@angular/material/button';
 import { SharedModule } from '../../shared/shared.module';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatSidenavModule} from '@angular/material/sidenav';
+import { TemplatesViewComponent } from './templates-view/templates-view.component';
+import { TemplatesViewModule } from './templates-view/templates-view.module';
 
 
 @NgModule({
@@ -41,7 +43,8 @@ import {MatSidenavModule} from '@angular/material/sidenav';
         MatButtonModule,
         MatMenuModule,
         SharedModule,
-        MatSidenavModule
+        MatSidenavModule,
+        TemplatesViewModule
     ]
 })
 export class GanttModule { }

@@ -213,7 +213,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       }
     });
 
-
     d3.select(this.chartElement).select('figure')
       .append('div')
       .attr('class', 'tooltip');
@@ -256,7 +255,9 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     if (!this.svg) {
       this.svg = this.createSvg(this.chartElement, this.chartElement.id);
+
       this.initializeSvgGraphElements();
+      console.log(this.svg)
 
       // zoom out a bit to show all data at start
       this.svg
@@ -467,6 +468,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   }
 
   public createSvg(element, id): any {
+    console.log(d3.select(element))
 
     const svg = d3.select(element).select('figure')
       .append('svg')
@@ -601,6 +603,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       .domain([this.periodStartDate, this.periodEndDate])
       .range([0, this.viewBoxWidth - this.padding.left]);
     this.setZoomScaleExtent(this.oneDayTick);
+
   }
 
   private refreshXScale(): void {

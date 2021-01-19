@@ -1,0 +1,12 @@
+<p>templates-view works!</p>
+<div >
+    <ng-container *ngIf="vm$ | async as vm">
+        <app-templates #templateChart
+                  [timelineData]="vm.selectedTimeline"
+                  [milestoneData]="vm.milestoneData"
+                  [taskData]="vm.taskData"
+                  [incrementsData]="vm.incrementsData"
+                  id = "template{{vm.selectedTimeline.id}}"
+        ></app-templates>
+    </ng-container>
+</div>

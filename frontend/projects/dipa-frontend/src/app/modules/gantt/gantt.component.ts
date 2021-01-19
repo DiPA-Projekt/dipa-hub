@@ -3,6 +3,7 @@ import {GanttControlsService} from './gantt-controls.service';
 import {ChartComponent} from './chart/chart.component';
 import {forkJoin, Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 import {
   IncrementsService,
@@ -57,7 +58,8 @@ export class GanttComponent implements OnInit, OnDestroy {
               private incrementService: IncrementsService,
               private operationTypesService: OperationTypesService,
               private projectApproachesService: ProjectApproachesService,
-              public activatedRoute: ActivatedRoute) {  }
+              public activatedRoute: ActivatedRoute,
+              private router: Router) {  }
 
   static getMinimumDate(data: Date[]): Date {
     return data.reduce((acc, curr) => {
@@ -230,6 +232,12 @@ export class GanttComponent implements OnInit, OnDestroy {
 
   getTimelineName(): any {
     return this.timelineData.find(t => t.id === this.selectedTimelineId);
+  }
+
+  onClick(event): any {
+    this.router.navigate(['/templates'])
+      .then(success => console.log('navigation success?' , success))
+      .catch(console.error);
   }
 
 }
