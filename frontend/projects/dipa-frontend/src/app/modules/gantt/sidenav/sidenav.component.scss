@@ -15,3 +15,10 @@ mat-sidenav {
 .mat-card-subtitle {
   margin-bottom: 0;
 }
+
+.mat-card-title {
+  text-overflow: ellipsis;
+  line-height: 1.2;
+  overflow: hidden;
+  width: 220px;
+}
