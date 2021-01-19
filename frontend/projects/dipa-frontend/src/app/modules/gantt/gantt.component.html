@@ -1,14 +1,24 @@
 <div id="gantt" class="gantt" #gantt>
   <mat-sidenav-container autosize>
-    <mat-sidenav #drawer mode="side" opened>
+    <mat-sidenav mode="side" opened="true" class="sidenav">
+
       <ng-container *ngIf="vm$ | async as vm">
-        <br>
-        <h1>
-          {{vm.selectedTimeline.name}}
-        </h1>
-        <h3>
-          {{vm.selectedTimeline.projectType}}
-        </h3>
+        <div class="sidenav-header">
+          <div class="mat-card-title">
+            {{vm.selectedTimeline.name}}
+          </div>
+          <div class="mat-card-subtitle">
+            {{vm.selectedTimeline.projectType}}
+          </div>
+        </div>
+
+        <mat-nav-list>
+          <app-nav-menu-list-item *ngFor="let item of navMenuItems" [item]="item"></app-nav-menu-list-item>
+        </mat-nav-list>
+        <mat-nav-list class="favorite-links-list">
+          <app-nav-menu-list-item *ngFor="let item of favoriteLinkItems" [item]="item"></app-nav-menu-list-item>
+        </mat-nav-list>
+
       </ng-container>
     </mat-sidenav>
     <mat-sidenav-content class="content-container">

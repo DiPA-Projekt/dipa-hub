@@ -10,3 +10,38 @@ databaseChangeLog:
                   name: project_type
                   type: VARCHAR(255)
                   defaultValue: null
+  - changeSet:
+      id: create-external-link-table
+      author: bock
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: externalLinkPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: description
+                  type: VARCHAR(1000)
+              - column:
+                  name: url
+                  type: VARCHAR(2000)
+              - column:
+                  name: img
+                  type: VARCHAR(255)
+              - column:
+                  name: category
+                  type: VARCHAR(255)
+              - column:
+                  name: sort_order
+                  type: INTEGER
+            tableName: external_link
