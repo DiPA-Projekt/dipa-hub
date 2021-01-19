@@ -19,6 +19,9 @@
 $d3-in-angular-primary: mat-palette($mat-indigo);
 $d3-in-angular-accent: mat-palette($mat-pink, A200, A100, A400);
 
+$app-primary: mat-palette($mat-indigo);
+$app-accent: mat-palette($mat-green);
+
 // The warn palette is optional (defaults to red).
 $d3-in-angular-warn: mat-palette($mat-red);
 
@@ -33,3 +36,15 @@ $d3-in-angular-theme: mat-light-theme($d3-in-angular-primary, $d3-in-angular-acc
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.menu-list-item.mat-list-item {
+  .mat-list-item-content {
+    flex: 1 1 100%;
+  }
+}
+
+
+.docs-component-viewer-nav-content a:hover {
+  color: rgba(0,0,0,.87);
+}
+

@@ -1,0 +1,41 @@
+ExternalLink:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the external link
+      type: integer
+      format: int64
+      example: 1
+    name:
+      description: Name of the external link
+      type: string
+      example: "Jira"
+    description:
+      description: Short description text for the target page
+      type: string
+      example: "Projektaufgaben verwalten mit Jira"
+    url:
+      description: Absolute url path to external page
+      type: string
+      example: "https://***REMOVED***/secure/Dashboard.jspa"
+    img:
+      description: Path to preview image
+      type: string
+      example: "/assets/img/dipa-logo-weiss.svg"
+    category:
+      description: Category of the external link
+      type: string
+      example: "Kategorie"
+    sortOrder:
+      description: Sort order in category
+      type: integer
+      format: int32
+      example: 2
+    favorite:
+      description: Show in favorite link list
+      type: boolean
+      example: true
+  required:
+    - id
+    - name
+    - url

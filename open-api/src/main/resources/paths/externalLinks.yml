@@ -1,0 +1,15 @@
+get:
+  tags:
+    - externalLinks
+  summary: External Links List
+  description: Retrieves the list of external links.
+  operationId: getExternalLinks
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../models/externalLink.yml#/ExternalLink"

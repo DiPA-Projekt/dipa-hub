@@ -2,10 +2,6 @@
   margin-right: 10px;
 }
 
-.gantt {
-  margin: 5px;
-}
-
 .content-container {
   margin: 10px;
   padding-left: 10px;
@@ -13,7 +9,6 @@
 }
 
 .mat-sidenav-container {
-  padding: 10px;
   width: 100%;
   background-color: white;
   margin-top: 5px;
@@ -26,30 +21,19 @@ mat-sidenav-content {
 }
 
 mat-sidenav {
-  width: 15%;
+  width: 240px;
   background-color: white;
   height: 100%;
 }
 
-h1 {
-  font-weight: 500;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  word-wrap: break-word;
-  max-height: 3.2em;
-  line-height: 1.3em;
-  color: #3f51b5;
+.sidenav-header {
+  padding: 16px 16px 0;
 }
 
-h3 {
-  font-weight: 500;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  word-wrap: break-word;
-  max-height: 3.2em;
-  line-height: 1.3em;
-  color: #3f51b5;
+.favorite-links-list {
+  margin-top: 20px;
 }
+
 .operationType-container {
   display: inline-block;
   padding: 6px 9px 9px 9px;

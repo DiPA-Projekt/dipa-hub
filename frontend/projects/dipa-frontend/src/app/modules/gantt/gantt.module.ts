@@ -15,33 +15,37 @@ import {MatSelectModule} from '@angular/material/select';
 import {AngularResizedEventModule} from 'angular-resize-event';
 import {FormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
-import { SharedModule } from '../../shared/shared.module';
+import {SharedModule} from '../../shared/shared.module';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatListModule} from '@angular/material/list';
+import {NavMenuListItemComponent} from '../../shared/nav-menu-list-item/nav-menu-list-item.component';
 
 
 @NgModule({
   declarations: [
     GanttComponent,
+    NavMenuListItemComponent
   ],
-    imports: [
-        FormsModule,
-        CommonModule,
-        GanttRoutingModule,
-        MatCardModule,
-        MatIconModule,
-        MatSlideToggleModule,
-        MatTableModule,
-        MatFormFieldModule,
-        MatDatepickerModule,
-        MatButtonToggleModule,
-        MatInputModule,
-        MatSelectModule,
-        AngularResizedEventModule,
-        MatButtonModule,
-        MatMenuModule,
-        SharedModule,
-        MatSidenavModule
-    ]
+  imports: [
+    FormsModule,
+    CommonModule,
+    GanttRoutingModule,
+    MatCardModule,
+    MatIconModule,
+    MatSlideToggleModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatButtonToggleModule,
+    MatInputModule,
+    MatSelectModule,
+    AngularResizedEventModule,
+    MatButtonModule,
+    MatMenuModule,
+    SharedModule,
+    MatSidenavModule,
+    MatListModule
+  ]
 })
 export class GanttModule { }

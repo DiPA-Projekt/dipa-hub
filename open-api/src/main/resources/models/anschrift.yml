@@ -1,7 +1,0 @@
-Anschrift:
-  type: object
-  properties:
-    ansprache:
-      $ref: "./Ansprache.yml#/Ansprache"
-    adresse:
-      $ref: "./Adresse.yml#/Adresse"

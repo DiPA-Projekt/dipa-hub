@@ -1,15 +1,32 @@
-<div *ngIf="adressen$ | async as adressen" class="container">
+<div *ngIf="externalLinks$ | async as externalLinks" class="container">
     <div class="row">
-        <div class="col">
-            <h3>If you can see this, backend is working...</h3>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-6" *ngFor="let addresse of adressen">
-            <mat-card>
-                {{ addresse.strasse }} {{ addresse.hausnummer }} <br>
-                {{ addresse.plz }} - {{ addresse.ort }} <br>
-            </mat-card>
+        <div class="col-md-6 mt-3" *ngFor="let link of externalLinks">
+          <mat-card class="card-container">
+            <mat-card-header>
+              <div mat-card-avatar>
+                <img *ngIf="link.img" src="{{ link.img }}"
+                     width="40px"
+                     alt="Icon {{ link.name }}">
+              </div>
+              <mat-card-title>{{ link.name }}</mat-card-title>
+              <mat-card-subtitle>{{ link.category }}</mat-card-subtitle>
+              <div class="mat-card-header-actions">
+                <button mat-button>
+                  <mat-icon *ngIf="!link.favorite" role="img" class="mat-icon notranslate material-icons mat-icon-no-color" aria-hidden="true" data-mat-icon-type="font">star_outline</mat-icon>
+                  <mat-icon *ngIf="link.favorite" role="img" class="mat-icon notranslate material-icons mat-icon-no-color" aria-hidden="true" data-mat-icon-type="font">star</mat-icon>
+                </button>
+                <a href="{{ link.url }}" target="_blank" rel="noopener" mat-button>
+                  <mat-icon role="img" class="mat-icon notranslate material-icons mat-icon-no-color" aria-hidden="true" data-mat-icon-type="font">open_in_new</mat-icon>
+                </a>
+              </div>
+            </mat-card-header>
+            <mat-card-content>
+              <p>
+                {{ link.description }}
+              </p>
+            </mat-card-content>
+
+          </mat-card>
         </div>
     </div>
 </div>
