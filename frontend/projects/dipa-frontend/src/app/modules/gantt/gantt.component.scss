@@ -36,15 +36,22 @@ h1 {
   overflow: hidden;
   text-overflow: ellipsis;
   word-wrap: break-word;
-  overflow: hidden;
   max-height: 3.2em;
   line-height: 1.3em;
   color: #3f51b5;
 }
 
-.projectType-container {
+h3 {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  max-height: 3.2em;
+  line-height: 1.3em;
+  color: #3f51b5;
+}
+.operationType-container {
   display: inline-block;
-  width: 100%;
   padding: 6px 9px 9px 9px;
   background-color: rgba(0, 0, 0, 0.04);
   width: 190.5px;
@@ -58,8 +65,8 @@ h1 {
   width: 100%;
   font-size: 11px;
   color: rgba(0, 0, 0, 0.6);
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
 }
 
 .name {

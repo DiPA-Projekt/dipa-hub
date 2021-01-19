@@ -6,51 +6,59 @@ name: Java CI with Maven
 on:
   push:
     branches:
-      - develop
+      - '**'
+      - '!main'
   pull_request:
-    branches:
-      - develop
+    types: [ opened, synchronize, reopened ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 11.0.2
-      uses: actions/setup-java@v1
-      with:
-        java-version: '11.0.2'
-        architecture: x64
-        server-id: docker.dipa.online
-        server-username: DOCKER_REGISTRY_USERNAME
-        server-password: DOCKER_REGISTRY_TOKEN
-    - name: Cache local Maven repository
-      uses: actions/cache@v2
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-maven-
-    - name: Cache Frontend Build Node Modules
-      uses: actions/cache@v2
-      with:
-        path: frontend/node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-    - name: Build with Maven
-      run: mvn -P develop-ci -B clean install dockerfile:push --file pom.xml
-      env:
-        DOCKER_REGISTRY_USERNAME: dipa
-        DOCKER_REGISTRY_TOKEN: ${{ secrets.DOCKER_REGISTRY_TOKEN }}
-    - name: Deployment to Kubernetes
-      if: github.ref == 'refs/heads/develop'
-      run: |
-        mkdir -p ~/.ssh
-        echo -e "${{ secrets.DEPLOYMENT_SSH_KEY }}" > ~/.ssh/id_rsa
-        echo -e "${{ secrets.DEPLOYMENT_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
-        chmod 600 ~/.ssh/id_rsa
-        scp server/target/deployment/*.yaml dipa-deployment@dipa.rz-housing.tu-clausthal.de:deployment/develop
-        ssh dipa-deployment@dipa.rz-housing.tu-clausthal.de kubectl apply -k deployment/develop
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11.0.2
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11.0.2'
+          architecture: x64
+          server-id: docker.dipa.online
+          server-username: DOCKER_REGISTRY_USERNAME
+          server-password: DOCKER_REGISTRY_TOKEN
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Cache Frontend Build Node Modules
+        uses: actions/cache@v2
+        with:
+          path: frontend/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Build & Analyze with Maven
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -P develop-ci -Ddockerfile.build.skip=true -B clean install org.sonarsource.scanner.maven:sonar-maven-plugin:sonar --file pom.xml
+      - name: Deployment to Kubernetes
+        if: github.ref == 'refs/heads/develop'
+        run: |
+          mkdir -p ~/.ssh
+          echo -e "${{ secrets.DEPLOYMENT_SSH_KEY }}" > ~/.ssh/id_rsa
+          echo -e "${{ secrets.DEPLOYMENT_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_rsa
+          mvn -P develop-ci -B -DskipTests install dockerfile:push --file pom.xml
+          scp server/target/deployment/*.yaml dipa-deployment@dipa.rz-housing.tu-clausthal.de:deployment/develop
+          ssh dipa-deployment@dipa.rz-housing.tu-clausthal.de kubectl apply -k deployment/develop
+        env:
+          DOCKER_REGISTRY_USERNAME: dipa
+          DOCKER_REGISTRY_TOKEN: ${{ secrets.DOCKER_REGISTRY_TOKEN }}

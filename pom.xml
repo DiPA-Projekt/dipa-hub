@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.4.1</version>
+        <version>2.4.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>online.dipa.hub</groupId>
@@ -50,6 +50,10 @@
 
         <!-- build profile defaults -->
         <dockerfile.skip>true</dockerfile.skip>
+        <sonar.projectKey>DiPA-Projekt_dipa-hub</sonar.projectKey>
+        <sonar.organization>dipa-projekt</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
     </properties>
 
     <modules>
@@ -148,7 +152,7 @@
                 <plugin>
                     <groupId>com.amashchenko.maven.plugin</groupId>
                     <artifactId>gitflow-maven-plugin</artifactId>
-                    <version>1.15.0</version>
+                    <version>1.15.1</version>
                     <configuration>
                         <argLine>-s .mvn/release.settings.xml -DskipTests -P production-ci</argLine>
                         <gitFlowConfig>

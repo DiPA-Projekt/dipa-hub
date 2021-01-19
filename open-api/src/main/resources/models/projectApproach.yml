@@ -10,8 +10,8 @@ ProjectApproach:
       description: The name of the project approach
       type: string
       example: "VMXT ITZBund agil"
-    projectTypeId:
-      description: Unique identifier of the linked project type
+    operationTypeId:
+      description: Unique identifier of the linked operation type
       type: integer
       format: int64
       example: 3

@@ -10,10 +10,10 @@ import online.dipa.hub.persistence.entities.ProjectApproachEntity;
 public class ProjectApproachTemplateToProjectApproach implements Converter<ProjectApproachEntity, ProjectApproach> {
     @Override
     public ProjectApproach convert(final ProjectApproachEntity templateEntity) {
-        final Long projectTypeId = templateEntity.getProjectType().getId();
+        final Long operationTypeId = templateEntity.getOperationType().getId();
 
         return new ProjectApproach().id(templateEntity.getId())
                               .name(templateEntity.getName())
-                              .projectTypeId(projectTypeId);
+                              .operationTypeId(operationTypeId);
     }
 }

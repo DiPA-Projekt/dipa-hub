@@ -34,7 +34,7 @@ export class ProjectDuration {
 
   projectDurationYears;
 
-  timelineProjectTypeId;
+  timelineOperationTypeId;
   tooltip;
 
   riskInformation = [{minVal: 0, maxVal: 1, prob: '85', overtime: 9, color: this.highRiskColor, icon: 'thumb_down', text: 'Hohes Risiko'},
@@ -53,7 +53,7 @@ export class ProjectDuration {
   constructor(svg: any, chartElement: any, xScale: any, timelineData: any, modifiable: boolean) {
     this.svg = svg;
     this.xScale = xScale;
-    this.timelineProjectTypeId = timelineData.projectTypeId;
+    this.timelineOperationTypeId = timelineData.operationTypeId;
     this.modifiable = modifiable;
     this.svgBbox = this.svg.node().getBBox();
     this.projectGroup = this.svg.select('g.project-group');
@@ -443,7 +443,7 @@ export class ProjectDuration {
 
     const time = projectDurationYears < 1 ? Math.round(projectDurationYears * 12) : projectDurationYears;
 
-    if (this.timelineProjectTypeId === 1) {
+    if (this.timelineOperationTypeId === 1) {
       for (const item of this.riskInformation) {
 
         if (item.minVal < projectDurationYears && projectDurationYears < item.maxVal) {

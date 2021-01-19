@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 
 import online.dipa.hub.api.model.Milestone;
 import online.dipa.hub.api.model.ProjectApproach;
-import online.dipa.hub.api.model.ProjectType;
+import online.dipa.hub.api.model.OperationType;
 import online.dipa.hub.api.model.Task;
 import online.dipa.hub.api.model.Timeline;
 import online.dipa.hub.api.rest.TimelinesApi;
@@ -39,9 +39,9 @@ public class TimelineController implements TimelinesApi {
     }
 
     @Override
-    public ResponseEntity<List<ProjectType>> getProjectTypes() {
-        final List<ProjectType> projectTypesList = timelineService.getProjectTypes();
-        return ResponseEntity.ok(projectTypesList);
+    public ResponseEntity<List<OperationType>> getOperationTypes() {
+        final List<OperationType> operationTypesList = timelineService.getOperationTypes();
+        return ResponseEntity.ok(operationTypesList);
     }
 
     @Override
@@ -73,6 +73,8 @@ public class TimelineController implements TimelinesApi {
                 break;
             case "moveMilestone": timelineService.moveMileStoneByDays(timelineId, inlineObject.getDays(), inlineObject.getMovedMilestoneId());
                 break;
+            default:
+                return ResponseEntity.notFound().build();
         }
 
         return ResponseEntity.noContent().build();
@@ -104,6 +106,7 @@ public class TimelineController implements TimelinesApi {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     public ResponseEntity<Void> updateMilestoneData(final Long timelineId, final Long milestoneId, final Milestone milestone ) {
         if (Optional.ofNullable(milestone.getStatus()).isPresent()) {
             timelineService.updateMilestoneStatus(timelineId, milestoneId, milestone.getStatus());
@@ -111,12 +114,13 @@ public class TimelineController implements TimelinesApi {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     public ResponseEntity<Resource> getTimelineCalendar(final Long timelineId) {
 
         try {
             File icsFile = timelineService.getCalendarFileForTimeline(timelineId);
             FileUrlResource icsFileResource = new FileUrlResource(icsFile.getPath());
-// Access-Control-Expose-Headers
+            // Access-Control-Expose-Headers
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType("application/octet-stream"))
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + icsFile.getName() + "\"")
