@@ -1,9 +1,9 @@
 databaseChangeLog:
-  - changeSet:  
+  - changeSet:
         id:  renameTable-projectType-to-operationType
-        author: nguyen 
-        changes:  
-        -  renameTable:  
+        author: nguyen
+        changes:
+        -  renameTable:
             newTableName: operation_type
             oldTableName: project_type
   - changeSet:
@@ -48,3 +48,61 @@ databaseChangeLog:
                   name: project_type
                   value: "AN-Projekt"
             where: id=4
+  - changeSet:
+      id: insert-external-link-jira
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: name
+                  value: Jira
+              - column:
+                  name: description
+                  value: Projektaufgaben verwalten mit Jira
+              - column:
+                  name: url
+                  value: https://jira.swlm.zd.in.bund.de/secure/Dashboard.jspa
+              - column:
+                  name: img
+                  value: /assets/img/mark-gradient-blue-jira.svg
+              - column:
+                  name: category
+                  value: Verwaltung
+              - column:
+                  name: sort_order
+                  value: 1
+  - changeSet:
+      id: insert-external-link-pm-bib
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: name
+                  value: PM Bibliothek
+              - column:
+                  name: description
+                  value: PM Bibliothek
+              - column:
+                  name: url
+                  value: https://sp.vzd.zivb.net/sites/pm/Projektdokumente/Forms/AllItems.aspx
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Wissen
+              - column:
+                  name: sort_order
+                  value: 2

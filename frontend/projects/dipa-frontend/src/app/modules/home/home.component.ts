@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { AdresseService } from 'dipa-api-client';
+import {Component, OnInit} from '@angular/core';
+import {ExternalLinksService} from 'dipa-api-client';
 
 @Component({
   selector: 'app-home',
@@ -8,9 +8,9 @@ import { AdresseService } from 'dipa-api-client';
 })
 export class HomeComponent implements OnInit {
 
-  adressen$ = this.adresseService.adresseGet();
+  externalLinks$ = this.externalLinksService.getExternalLinks();
 
-  constructor(private adresseService: AdresseService) { }
+  constructor(private externalLinksService: ExternalLinksService) { }
 
   ngOnInit(): void {
   }

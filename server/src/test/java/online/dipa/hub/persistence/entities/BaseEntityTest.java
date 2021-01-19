@@ -4,7 +4,7 @@
 
  import org.junit.jupiter.api.Test;
 
- public class BaseEntityTest {
+ class BaseEntityTest {
 
      @Test
      void noEqualityForNewlyConstructedEntities() {

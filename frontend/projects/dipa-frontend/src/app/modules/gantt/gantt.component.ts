@@ -6,14 +6,17 @@ import {map, tap} from 'rxjs/operators';
 import { Router } from '@angular/router';
 
 import {
+  ExternalLinksUserService,
   IncrementsService,
   MilestonesService,
-  ProjectApproachesService,
   OperationTypesService,
+  ProjectApproachesService,
   TasksService,
   TimelinesIncrementService,
-  TimelinesService} from 'dipa-api-client';
-import { ActivatedRoute } from '@angular/router';
+  TimelinesService
+} from 'dipa-api-client';
+import {ActivatedRoute} from '@angular/router';
+import {NavItem} from '../../nav-item';
 
 @Component({
   selector: 'app-gantt',
@@ -40,6 +43,8 @@ export class GanttComponent implements OnInit, OnDestroy {
   timelinesSubscription;
   activatedRouteSubscription;
 
+  favoriteLinksSubscription;
+
   selectedTimelineId: number;
   selectedProjectApproachId: number;
   selectedOperationTypeId: number;
@@ -50,6 +55,9 @@ export class GanttComponent implements OnInit, OnDestroy {
   operationTypesList = [];
   projectApproachesList = [];
 
+  navMenuItems: NavItem[] = [];
+  favoriteLinkItems: NavItem[] = [];
+
   constructor(public ganttControlsService: GanttControlsService,
               private timelinesService: TimelinesService,
               private milestonesService: MilestonesService,
@@ -59,7 +67,9 @@ export class GanttComponent implements OnInit, OnDestroy {
               private operationTypesService: OperationTypesService,
               private projectApproachesService: ProjectApproachesService,
               public activatedRoute: ActivatedRoute,
-              private router: Router) {  }
+              private router: Router,
+              private externalLinksUserService: ExternalLinksUserService,
+              ) {  }
 
   static getMinimumDate(data: Date[]): Date {
     return data.reduce((acc, curr) => {
@@ -90,6 +100,7 @@ export class GanttComponent implements OnInit, OnDestroy {
           });
 
           this.setData();
+          this.setSideNavMenu();
         });
     });
 
@@ -119,6 +130,7 @@ export class GanttComponent implements OnInit, OnDestroy {
     this.periodEndDateSubscription.unsubscribe();
     this.operationTypesSubscription.unsubscribe();
     this.projectApproachesSubscription.unsubscribe();
+    this.favoriteLinksSubscription.unsubscribe();
   }
 
   getIcsCalendarFile(): void {
@@ -179,6 +191,40 @@ export class GanttComponent implements OnInit, OnDestroy {
         this.ganttControlsService.setPeriodEndDate(data.periodEndDate);
       })
     );
+  }
+
+  setSideNavMenu(): void {
+
+    this.navMenuItems = [{
+        name: 'Zeitplan',
+        icon: 'event_note',
+        route: 'gantt/' + this.selectedTimelineId
+      }, {
+        name: 'Stöbern & Vergleichen',
+        icon: 'find_replace'
+      }, {
+        name: 'Werkzeugkit',
+        icon: 'construction'
+      }
+    ];
+
+    this.favoriteLinksSubscription = this.externalLinksUserService.getFavoriteLinks()
+    .subscribe((data) => {
+
+      this.favoriteLinkItems = [
+        {
+          name: 'Favoriten-Links',
+          icon: 'bookmarks',
+          children: data.map(x => {
+            return {
+              name: x.name,
+              icon: 'star',
+              url: x.url
+            };
+          })
+        }
+      ];
+    });
   }
 
   changeViewType(event): void {

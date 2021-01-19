@@ -21,7 +21,7 @@ public class IcsCalendar {
 
     private Calendar calendar;
 
-    private final String productId = "-//DiPA//www.dipa.online 1.0//DE";
+    private static final String PRODUCT_ID = "-//DiPA//www.dipa.online 1.0//DE";
 
     private static final UidGenerator uidGenerator = new RandomUidGenerator();
 
@@ -31,7 +31,7 @@ public class IcsCalendar {
 
     public Calendar createCalendar() {
         calendar = new Calendar();
-        calendar.getProperties().add(new ProdId(productId));
+        calendar.getProperties().add(new ProdId(PRODUCT_ID));
         calendar.getProperties().add(Version.VERSION_2_0);
         calendar.getProperties().add(CalScale.GREGORIAN);
 
