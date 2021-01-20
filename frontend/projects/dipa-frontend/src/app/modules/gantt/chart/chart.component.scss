@@ -173,9 +173,9 @@
 
 .mat-sidenav-container {
   width: 100%;
-  height: 100%;
-  background: transparent;
-  margin-top: 5px;
+  height: calc(100vh - 84px);
+  background-color: transparent;
+  margin-top: 15px;
 }
 
 mat-sidenav-content {
@@ -183,13 +183,6 @@ mat-sidenav-content {
   height: 100%;
   align-items: center;
   justify-content: center;
-}
-
-mat-sidenav {
-  width: 22%;
-  background-color: white;
-  height: 100%;
-  position: relative;
 }
 
 .mat-drawer:not(.mat-drawer-side) {
