@@ -10,7 +10,6 @@ const routes: Routes = [
   { path: ':id', component: GanttComponent },
   { path: 'chart', component: ChartComponent },
   { path: ':id/templates', loadChildren: () => import('./templates-view/templates-view.module').then(m => m.TemplatesViewModule)},
-    // { path: ':id/templates', component: TemplatesViewComponent},
 ];
 
 @NgModule({

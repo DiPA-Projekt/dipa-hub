@@ -18,16 +18,15 @@ import {MatButtonModule} from '@angular/material/button';
 import {SharedModule} from '../../shared/shared.module';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatSidenavModule} from '@angular/material/sidenav';
-import { TemplatesViewComponent } from './templates-view/templates-view.component';
-import { TemplatesViewModule } from './templates-view/templates-view.module';
+import {TemplatesViewModule} from './templates-view/templates-view.module';
 import {MatListModule} from '@angular/material/list';
 import {NavMenuListItemComponent} from '../../shared/nav-menu-list-item/nav-menu-list-item.component';
-
+import {NavMenuListItemComponentModule} from '../../shared/nav-menu-list-item/nav-menu-list-item.module'; 
 
 @NgModule({
   declarations: [
     GanttComponent,
-    NavMenuListItemComponent
+    // NavMenuListItemComponent
   ],
   imports: [
     FormsModule,
@@ -48,7 +47,7 @@ import {NavMenuListItemComponent} from '../../shared/nav-menu-list-item/nav-menu
     SharedModule,
     MatSidenavModule,
     MatListModule,
-    TemplatesViewModule
+    NavMenuListItemComponentModule
   ]
 })
 export class GanttModule { }

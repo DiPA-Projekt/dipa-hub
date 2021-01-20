@@ -9,7 +9,9 @@ import {
   OperationTypesService,
   TasksService,
   TimelinesIncrementService,
-  TimelinesService} from 'dipa-api-client';
+  TimelinesService,
+  ExternalLinksUserService,
+  TemplatesService} from 'dipa-api-client';
 
 import { forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
@@ -50,6 +52,10 @@ export class TemplatesViewComponent implements OnInit {
 
   operationTypesList = [];
   projectApproachesList = [];
+  
+  navMenuItems: ({ name: string; icon: string; route: string; } | { name: string; icon: string; route?: undefined; })[];
+  favoriteLinksSubscription: any;
+  favoriteLinkItems: { name: string; icon: string; children: any; }[];
 
   constructor(public ganttControlsService: GanttControlsService,
               private timelinesService: TimelinesService,
@@ -60,9 +66,12 @@ export class TemplatesViewComponent implements OnInit {
               private operationTypesService: OperationTypesService,
               private projectApproachesService: ProjectApproachesService,
               public activatedRoute: ActivatedRoute,
+              private templateService: TemplatesService,
+              private externalLinksUserService: ExternalLinksUserService,
               private router: Router) {  }
 
   ngOnInit(): void {
+
     this.activatedRouteSubscription = this.activatedRoute.params.subscribe(param => {
       this.selectedTimelineId = param.id;
       this.timelinesSubscription = this.timelinesService.getTimelines()
@@ -70,6 +79,8 @@ export class TemplatesViewComponent implements OnInit {
           this.timelineData = data;
 
           this.setData();
+          this.setSideNavMenu();
+
         });
     });
 
@@ -81,36 +92,38 @@ export class TemplatesViewComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.activatedRouteSubscription.unsubscribe();
-    this.periodStartDateSubscription.unsubscribe();
-    this.periodEndDateSubscription.unsubscribe();
-    this.operationTypesSubscription.unsubscribe();
+
     this.projectApproachesSubscription.unsubscribe();
   }
 
 
   setData(): void {
     this.vm$ = forkJoin([
-      this.tasksService.getTasksForTimeline(this.selectedTimelineId),
-      this.milestonesService.getMilestonesForTimeline(this.selectedTimelineId),
-      this.incrementService.getIncrementsForTimeline(this.selectedTimelineId)
+      // this.tasksService.getTasksForTimeline(this.selectedTimelineId),
+      // this.milestonesService.getMilestonesForTimeline(this.selectedTimelineId),
+      // this.incrementService.getIncrementsForTimeline(this.selectedTimelineId)
+      this.templateService.getTemplatesForTimeline(this.selectedTimelineId)
     ])
     .pipe(
-      map(([taskData, milestoneData, incrementsData]) => {
-        const milestoneDates = milestoneData.map(x => this.createDateAtMidnight(x.date));
-        const taskStartDates = taskData.map(x => this.createDateAtMidnight(x.start));
-        const taskEndDates = taskData.map(x => this.createDateAtMidnight(x.end));
+      map(([templatesData]) => {
 
-        const datesArray: Date[] = [...milestoneDates, ...taskStartDates, ...taskEndDates];
+        // const milestoneDates = milestoneData.map(x => this.createDateAtMidnight(x.date));
+        // const taskStartDates = taskData.map(x => this.createDateAtMidnight(x.start));
+        // const taskEndDates = taskData.map(x => this.createDateAtMidnight(x.end));
+
+        // const datesArray: Date[] = [...milestoneDates, ...taskStartDates, ...taskEndDates];
 
         // const periodStartDate = TemplatesComponent.getMinimumDate(datesArray);
         // const periodEndDate = GanttComponent.getMaximumDate(datesArray);
-
+        const templateData = templatesData;
+        console.log(this.timelineData)
+        console.log(templatesData)
         const selectedTimeline = this.timelineData.find(c => c.id === Number(this.selectedTimelineId));
 
         return {
-          milestoneData,
-          taskData,
-          incrementsData,
+          templateData,
+          // taskData,
+          // incrementsData,
           selectedTimeline,
           // periodStartDate,
           // periodEndDate
@@ -129,6 +142,41 @@ export class TemplatesViewComponent implements OnInit {
   parseGermanDate(input: string): Date {
     const parts = input.match(/(\d+)/g);
     return new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
+  }
+
+  setSideNavMenu(): void {
+
+    this.navMenuItems = [{
+        name: 'Zeitplan',
+        icon: 'event_note',
+        route: 'gantt/' + this.selectedTimelineId
+      }, {
+        name: 'Stöbern & Vergleichen',
+        icon: 'find_replace',
+        route: 'gantt/' + this.selectedTimelineId + '/templates'
+      }, {
+        name: 'Werkzeugkit',
+        icon: 'construction'
+      }
+    ];
+
+    this.favoriteLinksSubscription = this.externalLinksUserService.getFavoriteLinks()
+    .subscribe((data) => {
+
+      this.favoriteLinkItems = [
+        {
+          name: 'Favoriten-Links',
+          icon: 'bookmarks',
+          children: data.map(x => {
+            return {
+              name: x.name,
+              icon: 'star',
+              url: x.url
+            };
+          })
+        }
+      ];
+    });
   }
 
 

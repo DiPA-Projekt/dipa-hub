@@ -201,7 +201,8 @@ export class GanttComponent implements OnInit, OnDestroy {
         route: 'gantt/' + this.selectedTimelineId
       }, {
         name: 'Stöbern & Vergleichen',
-        icon: 'find_replace'
+        icon: 'find_replace',
+        route: 'gantt/' + this.selectedTimelineId + '/templates'
       }, {
         name: 'Werkzeugkit',
         icon: 'construction'

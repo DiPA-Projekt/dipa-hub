@@ -314,7 +314,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.taskViewItem.draw({left: 0, top: 0});
 
     this.milestoneViewItem = new MilestonesArea(this.svg, this.chartElement, this.xScale,
-                                                this.milestoneData, this.modifiable, this.showMenu);
+                                                this.milestoneData, this.modifiable, this.showMenu, this.timelineData.id);
     this.milestoneViewItem.draw({left: 0, top: this.taskViewItem.getAreaHeight()});
 
     this.milestoneViewItem.onDragEndMilestone = (offsetDays: number, id: number) => {
@@ -521,7 +521,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     const incrementGroup = this.svg.append('g').attr('class', 'increment-group');
     incrementGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + 30) + ')');
 
-    const dataGroup = this.svg.append('g').attr('class', 'data-group');
+    const dataGroup = this.svg.append('g').attr('class', 'data-group' + this.timelineData.id);
     dataGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + 60) + ')');
 
     const currentDateGroup = this.svg.append('g').attr('class', 'current-date-group');
