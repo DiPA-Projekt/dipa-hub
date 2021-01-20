@@ -20,12 +20,16 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatListModule} from '@angular/material/list';
 import {NavMenuListItemComponent} from '../../shared/nav-menu-list-item/nav-menu-list-item.component';
+import {ToolkitComponent} from './toolkit/toolkit.component';
+import {SidenavComponent} from './sidenav/sidenav.component';
 
 
 @NgModule({
   declarations: [
     GanttComponent,
-    NavMenuListItemComponent
+    NavMenuListItemComponent,
+    ToolkitComponent,
+    SidenavComponent
   ],
   imports: [
     FormsModule,
