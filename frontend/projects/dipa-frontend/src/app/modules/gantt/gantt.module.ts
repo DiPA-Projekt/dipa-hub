@@ -22,11 +22,17 @@ import {TemplatesViewModule} from './templates-view/templates-view.module';
 import {MatListModule} from '@angular/material/list';
 import {NavMenuListItemComponent} from '../../shared/nav-menu-list-item/nav-menu-list-item.component';
 import {NavMenuListItemComponentModule} from '../../shared/nav-menu-list-item/nav-menu-list-item.module'; 
+import {ToolkitComponent} from './toolkit/toolkit.component';
+import {SidenavComponent} from './sidenav/sidenav.component';
+
 
 @NgModule({
   declarations: [
     GanttComponent,
     // NavMenuListItemComponent
+    NavMenuListItemComponent,
+    ToolkitComponent,
+    SidenavComponent
   ],
   imports: [
     FormsModule,
@@ -47,7 +53,7 @@ import {NavMenuListItemComponentModule} from '../../shared/nav-menu-list-item/na
     SharedModule,
     MatSidenavModule,
     MatListModule,
-    NavMenuListItemComponentModule
+    // NavMenuListItemComponentModule
   ]
 })
 export class GanttModule { }
