@@ -3,18 +3,25 @@ package online.dipa.hub.services;
 import net.fortuna.ical4j.model.TimeZone;
 import online.dipa.hub.IcsCalendar;
 import online.dipa.hub.TimelineState;
-import online.dipa.hub.api.model.*;
+import online.dipa.hub.api.model.Increment;
+import online.dipa.hub.api.model.Milestone;
+import online.dipa.hub.api.model.ProjectApproach;
+import online.dipa.hub.api.model.OperationType;
+import online.dipa.hub.api.model.Timeline;
 import online.dipa.hub.persistence.entities.PlanTemplateEntity;
 import online.dipa.hub.persistence.entities.ProjectApproachEntity;
-import online.dipa.hub.persistence.repositories.OperationTypeRepository;
+
 import online.dipa.hub.persistence.repositories.PlanTemplateRepository;
 import online.dipa.hub.persistence.repositories.ProjectApproachRepository;
 import online.dipa.hub.persistence.repositories.ProjectRepository;
+import online.dipa.hub.persistence.repositories.OperationTypeRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.SessionScope;
+
 
 import javax.persistence.EntityNotFoundException;
 import java.io.File;
@@ -193,25 +200,10 @@ public class TimelineService {
                     long newDateAfterScale = (long)(relativePositionBeforeScale * factor);
                     long milestoneId = id + count;
 
-                    Milestone newMilestone = new Milestone();
-                    newMilestone.setId(milestoneId);
-                    newMilestone.setName(m.getName());
-                    newMilestone.setDate(increment.getStart().plusDays(newDateAfterScale).plusDays(14));
+                    String milestoneName = m.getName();
+                    LocalDate milestoneDate = increment.getStart().plusDays(newDateAfterScale).plusDays(14);
 
-                    if (sessionTimeline.getMilestones() != null) {
-                        Milestone oldMilestone =  sessionTimeline.getMilestones().stream().filter(milestone -> milestone.getId().equals(milestoneId)).findFirst().orElse(null);
-
-                        if (oldMilestone != null) {
-                            newMilestone.setStatus(oldMilestone.getStatus());
-                        }
-                        else {
-                            newMilestone.setStatus(Milestone.StatusEnum.OFFEN);
-                        }
-                    }
-                    else {
-                        newMilestone.setStatus(Milestone.StatusEnum.OFFEN);
-                    }
-
+                    Milestone newMilestone = createMilestone(sessionTimeline, milestoneId, milestoneName, milestoneDate);
                     incrementMilestones.add(newMilestone);
 
                     count++;
@@ -222,6 +214,28 @@ public class TimelineService {
 
         }
         return hashmapIncrementMilestones;
+    }
+
+    private Milestone createMilestone(TimelineState sessionTimeline, long milestoneId, String milestoneName, LocalDate milestoneDate) {
+        Milestone newMilestone = new Milestone();
+        newMilestone.setId(milestoneId);
+        newMilestone.setName(milestoneName);
+        newMilestone.setDate(milestoneDate);
+
+        if (sessionTimeline.getMilestones() != null) {
+            Milestone oldMilestone = sessionTimeline.getMilestones().stream().filter(milestone -> milestone.getId().equals(milestoneId)).findFirst().orElse(null);
+
+            if (oldMilestone != null) {
+                newMilestone.setStatus(oldMilestone.getStatus());
+            } else {
+                newMilestone.setStatus(Milestone.StatusEnum.OFFEN);
+            }
+        }
+        else {
+            newMilestone.setStatus(Milestone.StatusEnum.OFFEN);
+        }
+
+        return newMilestone;
     }
 
     private List<Milestone> getMilestonesFromRespository(final Long timelineId) {

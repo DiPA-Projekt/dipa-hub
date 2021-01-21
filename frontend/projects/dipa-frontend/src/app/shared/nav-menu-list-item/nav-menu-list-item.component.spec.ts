@@ -1,9 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {NavMenuListItemComponent} from './nav-menu-list-item.component';
-import {MatSidenavModule} from '@angular/material/sidenav';
 import {NavService} from '../../nav.service';
-import {SidenavComponent} from '../../modules/gantt/sidenav/sidenav.component';
 import {RouterModule} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {MatIcon} from '@angular/material/icon';
