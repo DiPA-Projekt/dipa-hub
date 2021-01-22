@@ -45,8 +45,13 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
 
   selectedTemplatesList = [];
   selectedTemplatesIdList: any[];
+
   standardTemplatesList = [];
   selectedStandardTemplateIndex: number;
+
+  nonStandardTemplatesList = [];
+  selectedNonStandardTemplateIndex: number;
+
   projectApproachesList: any;
 
   standardName;
@@ -123,6 +128,18 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
           this.selectedTemplatesList.push(templatesData.filter(t => t.standard === true)[this.selectedStandardTemplateIndex]);
         }
 
+        this.nonStandardTemplatesList = templatesData.filter(t => t.standard === false);
+
+        this.selectedTemplatesList.push(this.nonStandardTemplatesList[0])
+        // if (this.selectedNonStandardTemplateIndex === null) {
+        //   this.selectedTemplatesList.push(templatesData.filter(t => t.standard === false)[0]);
+        //   this.selectedNonStandardTemplateIndex = 0;
+        // }
+        // else {
+        //   this.selectedTemplatesList.push(templatesData.filter(t => t.standard === false)[this.selectedNonStandardTemplateIndex]);
+        // }
+
+        console.log(this.selectedTemplatesList)
         // this.standardName = this.standardTemplatesList[this.selectedStandardTemplateIndex].name;
 
         const selectedTemplates = this.selectedTemplatesList;
@@ -157,11 +174,39 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
   onNextStandard(event): void {
 
     if (this.standardTemplatesList.length > 0) {
-      
+
       this.selectedStandardTemplateIndex = this.getNexItemList(this.standardTemplatesList, this.selectedStandardTemplateIndex);
 
       const id = this.standardTemplatesList[this.selectedStandardTemplateIndex].id;
       this.selectedTemplatesIdList[1] = id;
+
+      this.templatesViewControlsService.setTemplatesList(this.selectedTemplatesIdList);
+    }
+
+  }
+
+  onPrevNonStandard(event): void {
+
+    if (this.nonStandardTemplatesList.length > 0) {
+
+      this.selectedNonStandardTemplateIndex = this.getPrevItemList(this.nonStandardTemplatesList, this.selectedNonStandardTemplateIndex);
+
+      const id = this.nonStandardTemplatesList[this.selectedNonStandardTemplateIndex].id;
+      this.selectedTemplatesIdList[2] = id;
+
+      this.templatesViewControlsService.setTemplatesList(this.selectedTemplatesIdList);
+    }
+
+  }
+
+  onNextNonStandard(event): void {
+
+    if (this.nonStandardTemplatesList.length > 0) {
+
+      this.selectedNonStandardTemplateIndex = this.getNexItemList(this.nonStandardTemplatesList, this.selectedNonStandardTemplateIndex);
+
+      const id = this.nonStandardTemplatesList[this.selectedNonStandardTemplateIndex].id;
+      this.selectedTemplatesIdList[2] = id;
 
       this.templatesViewControlsService.setTemplatesList(this.selectedTemplatesIdList);
     }

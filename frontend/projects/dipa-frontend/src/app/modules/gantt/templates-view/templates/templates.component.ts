@@ -124,6 +124,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       d3.select(this.chartElement).select('figure')
       .append('div')
       .attr('class', 'tooltip');
+      console.log(this.allTemplates)
 
       this.selectedTemplatesIdList = this.templateData.map(t => t.id);
 

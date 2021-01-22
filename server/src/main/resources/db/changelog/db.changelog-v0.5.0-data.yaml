@@ -324,7 +324,7 @@ databaseChangeLog:
                   value: Fachliche Abnahme, Release 3 in den Betrieb übergeben
               - column:
                   name: date_offset
-                  value: 350
+                  value: 450
               - column:
                   name: plan_template_id
                   value: 7
