@@ -34,11 +34,7 @@ jobs:
         run: npx ng lint dipa-frontend
         working-directory: frontend
       - name: Run ESLint
-        run: |
-          ls -la
-          ls -la projects
-          ls -la projects/dipa-frontend
-          npx eslint projects/dipa-frontend/{e2e,src}/**/*.{html,js,json,jsx,ts,tsx,gql,graphql}
+        run: npx eslint projects/dipa-frontend/src/**/*.{html,js,json,ts}
         working-directory: frontend
       - name: Set up JDK
         uses: actions/setup-java@v1
