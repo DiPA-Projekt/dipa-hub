@@ -14,7 +14,6 @@ export class GanttControlsService {
   private periodEndDate = new BehaviorSubject<Date>(new Date(2020, 11, 31));
 
   private viewType = new BehaviorSubject<string>(null);
-  private templatesList = new BehaviorSubject<any[]>(null);
 
   constructor() { }
 
@@ -48,14 +47,4 @@ export class GanttControlsService {
     this.viewType.next(viewType);
   }
 
-  
-  getTemplatesList(): Observable<any[]> {
-    console.log(this.templatesList)
-    return this.templatesList.asObservable();
-  }
-
-  setTemplatesList(templatesList: any[]): void {
-    console.log(templatesList)
-    this.templatesList.next(templatesList);
-  }
 }

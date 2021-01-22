@@ -1,20 +1,13 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { GanttControlsService } from '../gantt-controls.service';
-import { TemplatesComponent } from './templates/templates.component';
-import { TemplateItems } from './template-item';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {GanttControlsService} from '../gantt-controls.service';
+import {TemplatesComponent} from './templates/templates.component';
 
 import {
-  IncrementsService,
-  MilestonesService,
   ProjectApproachesService,
   OperationTypesService,
-  TasksService,
-  TimelinesIncrementService,
   TimelinesService,
-  ExternalLinksUserService,
-  TemplatesService,
-  Template} from 'dipa-api-client';
+  TemplatesService} from 'dipa-api-client';
 
 import { forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
@@ -42,6 +35,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
 
   timelinesSubscription;
   activatedRouteSubscription;
+  updateTemplateSubscription;
 
   selectedTimelineId: number;
   selectedProjectApproachId: number;
@@ -49,10 +43,8 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
   selectedOperationTypeName: string;
   selectedProjectApproachName: string;
 
-  viewTypeSelected: any;
-
-  templatesList = [];
-  selectedTemplatesList: any[];
+  selectedTemplatesList = [];
+  selectedTemplatesIdList: any[];
   standardTemplatesList = [];
   selectedStandardTemplateIndex: number;
   projectApproachesList: any;
@@ -65,8 +57,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
               private operationTypesService: OperationTypesService,
               private projectApproachesService: ProjectApproachesService,
               public activatedRoute: ActivatedRoute,
-              private templateService: TemplatesService,
-              private router: Router) {  }
+              private templateService: TemplatesService) {  }
 
   ngOnInit(): void {
     this.selectedStandardTemplateIndex = null;
@@ -94,21 +85,20 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
             this.selectedOperationTypeName = resOperation.find(item => item.id === Number(this.selectedOperationTypeId)).name;
           });
 
-          this.selectedProjectApproachName =  this.projectApproachesList
-                .find(item => item.id === Number(this.selectedProjectApproachId)).name;
+          // this.selectedProjectApproachName =  this.projectApproachesList
+          //       .find(item => item.id === Number(this.selectedProjectApproachId)).name;
 
         });
     });
 
-
-
   }
 
-
   ngOnDestroy(): void {
-    this.activatedRouteSubscription.unsubscribe();
-    this.timelinesSubscription.unsubscribe();
-    this.projectApproachesSubscription.unsubscribe();
+    this.activatedRouteSubscription?.unsubscribe();
+    this.timelinesSubscription?.unsubscribe();
+    this.projectApproachesSubscription?.unsubscribe();
+    this.operationTypesSubscription?.unsubscribe();
+    this.updateTemplateSubscription?.unsubscribe();
   }
 
   setData(): void {
@@ -118,77 +108,88 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
     ])
     .pipe(
       map(([timelinesData, templatesData]) => {
-        console.log(templatesData)
 
-        this.templatesList = [];
+        this.selectedTemplatesList = [];
 
-        this.templatesList.push(templatesData.find(t => t.name === 'aktuell'));
+        this.selectedTemplatesList.push(templatesData.find(t => t.name === 'aktuell'));
 
         this.standardTemplatesList = templatesData.filter(t => t.standard === true);
 
         if (this.selectedStandardTemplateIndex === null) {
-          this.templatesList.push(templatesData.filter(t => t.standard === true)[0]);
+          this.selectedTemplatesList.push(templatesData.filter(t => t.standard === true)[0]);
           this.selectedStandardTemplateIndex = 0;
         }
         else {
-          this.templatesList.push(templatesData.filter(t => t.standard === true)[this.selectedStandardTemplateIndex]);
+          this.selectedTemplatesList.push(templatesData.filter(t => t.standard === true)[this.selectedStandardTemplateIndex]);
         }
 
         // this.standardName = this.standardTemplatesList[this.selectedStandardTemplateIndex].name;
 
-        const templateData = this.templatesList;
-        this.selectedTemplatesList = this.templatesList.map(t => t.id);
+        const templateData = this.selectedTemplatesList;
+        this.selectedTemplatesIdList = this.selectedTemplatesList.map(t => t.id);
 
         const selectedTimeline = timelinesData.find(c => c.id === Number(this.selectedTimelineId));
 
         return {
           selectedTimeline,
-          templateData,
+          templateData
         };
       })
     );
   }
 
 
-  onPrevStandard(event): any{
+  onPrevStandard(event): void {
 
     if (this.standardTemplatesList.length > 0) {
-      if (this.selectedStandardTemplateIndex - 1 >= 0) {
-        this.selectedStandardTemplateIndex--;
-      }
-      else {
-        this.selectedStandardTemplateIndex = this.standardTemplatesList.length - 1;
-      }
+
+      this.selectedStandardTemplateIndex = this.getPrevItemList(this.standardTemplatesList, this.selectedStandardTemplateIndex);
 
       const id = this.standardTemplatesList[this.selectedStandardTemplateIndex].id;
-      this.selectedTemplatesList[1] = id;
+      this.selectedTemplatesIdList[1] = id;
 
-      this.templatesViewControlsService.setTemplatesList(this.selectedTemplatesList);
+      this.templatesViewControlsService.setTemplatesList(this.selectedTemplatesIdList);
     }
 
   }
 
-  onNextStandard(event): any{
+  onNextStandard(event): void {
 
     if (this.standardTemplatesList.length > 0) {
-      if (this.selectedStandardTemplateIndex + 1 < this.standardTemplatesList.length ) {
+      
+      this.selectedStandardTemplateIndex = this.getNexItemList(this.standardTemplatesList, this.selectedStandardTemplateIndex);
 
-        this.selectedStandardTemplateIndex++;
-        this.templatesList[1] = this.selectedStandardTemplateIndex;
-
-      }
-      else {
-        this.selectedStandardTemplateIndex = 0;
-
-      }
       const id = this.standardTemplatesList[this.selectedStandardTemplateIndex].id;
-      this.selectedTemplatesList[1] = id;
+      this.selectedTemplatesIdList[1] = id;
 
-      this.templatesViewControlsService.setTemplatesList(this.selectedTemplatesList);
+      this.templatesViewControlsService.setTemplatesList(this.selectedTemplatesIdList);
     }
 
   }
 
+  getNexItemList(listItems, currentIndex): number {
+
+    if (currentIndex + 1 < listItems.length ) {
+      currentIndex++;
+    }
+    else {
+      currentIndex = 0;
+    }
+
+    return currentIndex;
+  }
+
+  getPrevItemList(listItems, currentIndex): number {
+
+    if (currentIndex - 1 >= 0) {
+      currentIndex--;
+    }
+    else {
+      currentIndex = listItems.length - 1;
+    }
+
+    return currentIndex;
+  }
 
   createDateAtMidnight(date: any): Date {
     const dateAtMidnight = new Date(date);
@@ -241,7 +242,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
   updateTemplateStandard(event): void {
     const templateId = this.standardTemplatesList[this.selectedStandardTemplateIndex].id;
 
-    this.templateService.updateTemplate(this.selectedTimelineId, templateId).subscribe(data => {
+    this.updateTemplateSubscription = this.templateService.updateTemplate(this.selectedTimelineId, templateId).subscribe(data => {
       this.setData();
     });
   }

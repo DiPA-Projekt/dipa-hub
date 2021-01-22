@@ -39,15 +39,15 @@ export class MilestonesArea implements IChartElement {
   modifiable = false;
   showMenu = false;
   selectedMilestoneId: number;
-  milestoneAreaId: number;
+  milestonesAreaId: number;
 
-  constructor(svg: any, chartElement: any, xScale: any, data: any[],  modifiable: boolean, showMenu: boolean, milestoneAreaId: any) {
+  constructor(svg: any, chartElement: any, xScale: any, data: any[],  modifiable: boolean, showMenu: boolean, milestonesAreaId: any) {
     this.svg = svg;
     this.xScale = xScale;
     this.data = data;
     this.modifiable = modifiable;
     this.showMenu = showMenu;
-    this.milestoneAreaId = milestoneAreaId;
+    this.milestonesAreaId = milestonesAreaId;
     this.tooltip = d3.select(chartElement).select('figure#chart .tooltip');
   }
 
@@ -73,13 +73,13 @@ export class MilestonesArea implements IChartElement {
   setData(data): void {
     this.data = data;
 
-    const dataGroup = this.svg.select('g' + '#milestoneArea' + this.milestoneAreaId + '.data-group');
+    const dataGroup = this.svg.select('g' + '#milestonesArea' + this.milestonesAreaId + '.data-group');
     dataGroup.selectAll('g.milestoneEntry')
       .data(this.data);
   }
 
   reset(offset): void {
-    const dataGroup = this.svg.select('g' + '#milestoneArea' + this.milestoneAreaId + '.data-group');
+    const dataGroup = this.svg.select('g' + '#milestonesArea' + this.milestonesAreaId + '.data-group');
     dataGroup.selectAll('g.milestoneEntry').remove();
     this.draw(offset);
     this.redraw(offset, 0);
@@ -89,7 +89,7 @@ export class MilestonesArea implements IChartElement {
 
   draw(offset): void {
 
-    const dataGroup = this.svg.select('g' + '#milestoneArea' + this.milestoneAreaId + '.data-group');
+    const dataGroup = this.svg.select('g' + '#milestonesArea' + this.milestonesAreaId + '.data-group');
 
     const drag = d3.drag()
       .on('drag', (event: d3.D3DragEvent<any, any, any>) => {
@@ -210,7 +210,7 @@ export class MilestonesArea implements IChartElement {
 
   redraw(offset, animationDuration): void {
     // milestones
-    const dataGroup = this.svg.select('g' + '#milestoneArea' + this.milestoneAreaId + '.data-group');
+    const dataGroup = this.svg.select('g' + '#milestonesArea' + this.milestonesAreaId + '.data-group');
 
     dataGroup.selectAll('g.milestoneEntry')
       .transition()
@@ -233,7 +233,7 @@ export class MilestonesArea implements IChartElement {
   }
 
   public arrangeLabels(): void {
-    const dataGroup = this.svg.select('g' + '#milestoneArea' + this.milestoneAreaId + '.data-group');
+    const dataGroup = this.svg.select('g' + '#milestonesArea' + this.milestonesAreaId + '.data-group');
 
     const step = this.elementHeight / 2;
     const lastBBoxes = [];
@@ -325,7 +325,7 @@ export class MilestonesArea implements IChartElement {
   }
 
   private adjustMilestonePosition(milestoneData): void {
-    const dataGroup = this.svg.select('g' + '#milestoneArea' + this.milestoneAreaId + '.data-group');
+    const dataGroup = this.svg.select('g' + '#milestonesArea' + this.milestonesAreaId + '.data-group');
 
     const milestone = dataGroup.select('#milestoneEntry_' + milestoneData.id);
 
@@ -343,7 +343,7 @@ export class MilestonesArea implements IChartElement {
   }
 
   private updateMilestoneStyle(milestoneId): void {
-    const dataGroup = this.svg.select('g' + '#milestoneArea' + this.milestoneAreaId + '.data-group');
+    const dataGroup = this.svg.select('g' + '#milestonesArea' + this.milestonesAreaId + '.data-group');
 
     dataGroup
     .select('#milestoneEntry_' + milestoneId)
@@ -358,7 +358,7 @@ export class MilestonesArea implements IChartElement {
   }
 
   private resetMilestoneStyle(): void {
-    const dataGroup = this.svg.select('g' + '#milestoneArea' + this.milestoneAreaId + '.data-group');
+    const dataGroup = this.svg.select('g' + '#milestonesArea' + this.milestonesAreaId + '.data-group');
 
     if (this.selectedMilestoneId !== null) {
 

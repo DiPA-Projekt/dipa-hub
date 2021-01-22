@@ -53,7 +53,7 @@ import {TemplatesViewComponent} from './templates-view/templates-view.component'
     MatMenuModule,
     SharedModule,
     MatSidenavModule,
-    MatListModule,
+    MatListModule
   ]
 })
 export class GanttModule { }

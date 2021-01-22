@@ -242,6 +242,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   }
 
   ngAfterViewInit(): void {
+    console.log(this.chartFigure.nativeElement)
     this.resizeChart(this.chartFigure.nativeElement.offsetWidth);
   }
 
@@ -516,10 +517,10 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     const projectGroup = this.svg.append('g').attr('class', 'project-group');
     projectGroup.attr('transform', 'translate(' + this.padding.left + ',45)');
 
-    const incrementGroup = this.svg.append('g').attr('class', 'increment-group').attr('id', 'incrementArea' + this.timelineData.id);
+    const incrementGroup = this.svg.append('g').attr('class', 'increment-group').attr('id', 'incrementsArea' + this.timelineData.id);
     incrementGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + 30) + ')');
 
-    const dataGroup = this.svg.append('g').attr('class', 'data-group').attr('id', 'milestoneArea' + this.timelineData.id);
+    const dataGroup = this.svg.append('g').attr('class', 'data-group').attr('id', 'milestonesArea' + this.timelineData.id);
     dataGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + 60) + ')');
 
     const currentDateGroup = this.svg.append('g').attr('class', 'current-date-group');

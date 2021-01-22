@@ -3,7 +3,6 @@ import {GanttControlsService} from './gantt-controls.service';
 import {ChartComponent} from './chart/chart.component';
 import {forkJoin, Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
-import { Router } from '@angular/router';
 
 import {
   IncrementsService,

@@ -12,7 +12,7 @@
                 <p class="label">Vorhabensart</p>
                 <p class="name">{{selectedOperationTypeName}}</p>
               </div>
-              <div *ngIf="timelineData" class="col">
+              <div *ngIf="projectApproachesList" class="col">
                 <mat-form-field appearance="fill" floatLabel="always">
                   <mat-label>Vorgehensweise</mat-label>
                   <mat-select [(value)]="selectedProjectApproachId" (selectionChange)="changeProjectApproach($event)">
@@ -27,7 +27,7 @@
           </div>
           <div class="col">
             <div class="row justify-content-end">
-              <mat-button-toggle-group name="chartMetric" #group="matButtonToggleGroup" multiple aria-label="Chart Metric" [(ngModel)]="viewTypeSelected" (change)="changeViewType($event)">
+              <mat-button-toggle-group name="chartMetric" #group="matButtonToggleGroup" multiple aria-label="Chart Metric" (change)="changeViewType($event)">
                 <mat-button-toggle class="md-button" value="YEARS">Jahre</mat-button-toggle>
                 <mat-button-toggle class="md-button" value="MONTHS">Monate</mat-button-toggle>
                 <mat-button-toggle class="md-button" value="WEEKS">Wochen</mat-button-toggle>
@@ -43,7 +43,7 @@
             <h2>Aktuell</h2>
           </div>
           <div class="template-controller">
-            <img class="logo" *ngIf="selectedOperationTypeId===2" src="/assets/img/17-12-_2020_17-41-16.png" alt="VMXT">
+            <img class="logo" *ngIf="selectedOperationTypeId===2" src="/assets/img/VMXT-logo.png" alt="VMXT">
             <img class="logo" *ngIf="selectedOperationTypeId===3" src="/assets/img/UfAB-logo.png" alt="UfAB">
             <h2 class="text-template">Standard</h2>
             <button mat-stroked-button color="primary" (click)="updateTemplateStandard($event)">Übernehmen</button>

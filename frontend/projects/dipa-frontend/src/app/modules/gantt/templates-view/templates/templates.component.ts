@@ -1,6 +1,6 @@
 import {ResizedEvent} from 'angular-resize-event';
 import * as d3 from 'd3';
-import {IncrementsService, MilestonesService, TasksService, TemplatesService, TimelinesIncrementService, TimelinesService} from 'dipa-api-client';
+import {TemplatesService, TimelinesService} from 'dipa-api-client';
 import {forkJoin, Observable} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 
@@ -56,16 +56,14 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     });
     }
 
-    // @Input() templateData = [];
     @Input() timelineData: any = {};
     @Input() templateData = [];
+
+    @ViewChild('templateChart') templateChart:ElementRef;
+
     standardTemplatesList = null;
     allTemplates = null;
-    templatesIdList = [];
-
-    milestonesData: any;
-
-    @ViewChild('templateChart')
+    selectedTemplatesIdList = [];
 
     chartFigure: ElementRef;
     chartElement = this.elementRef.nativeElement;
@@ -79,6 +77,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
     viewTypeSubscription;
     templateSubscription;
+    templatesListSubscription;
 
     // element for chart
     private svg;
@@ -110,17 +109,8 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     timelineEndSubscription;
 
     modifiable: boolean;
-    showMenu: boolean;
 
-    showMilestoneMenu: boolean;
-
-    selectedMilestoneDataMenu: any;
-    selectedMilestoneId: number;
-
-    statusList: any[] = ['offen', 'erledigt'];
-
-    standardTemplateSubscription;
-
+    listAreasId = [1, 2, 3];
 
     ngOnInit(): void {
 
@@ -129,25 +119,28 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
       this.periodStartDate = new Date(this.timelineData.start);
       this.periodEndDate = new Date(this.timelineData.end);
-      this.showMenu = false;
 
       d3.select(this.chartElement).select('figure')
       .append('div')
       .attr('class', 'tooltip');
 
-      this.templatesIdList = this.templateData.map(t => t.id);
+      this.selectedTemplatesIdList = this.templateData.map(t => t.id);
 
       this.drawChart();
-      this.templateService.getTemplatesForTimeline(this.timelineData.id)
+
+      if (this.timelineData.length === 0) {
+        this.templateSubscription = this.templateService.getTemplatesForTimeline(this.timelineData.id)
         .subscribe((data) => {
           this.allTemplates = data;
         });
+      }
 
-      this.templateSubscription = this.templatesViewControlsService.getTemplatesList()
+      this.templatesListSubscription = this.templatesViewControlsService.getTemplatesList()
         .subscribe((data) => {
 
           if (this.allTemplates !== null) {
-            this.templatesIdList = data;
+            
+            this.selectedTemplatesIdList = data;
             const newTemplates = this.allTemplates.filter(t => data.includes(t.id));
 
             this.setDataReset(this.timelineData, newTemplates);
@@ -223,12 +216,17 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       this.addIncrementSubscription?.unsubscribe();
       this.deleteIncrementSubscription?.unsubscribe();
       this.timelineSubscription?.unsubscribe();
-      this.standardTemplateSubscription?.unsubscribe();
+      this.templatesListSubscription?.unsubscribe();
       this.templateSubscription?.unsubscribe();
+      this.viewTypeSubscription?.unsubscribe();
+      this.timelineStartSubscription?.unsubscribe();
+      this.timelineEndSubscription?.unsubscribe();
     }
 
     ngAfterViewInit(): void {
-      this.resizeChart(this.chartFigure.nativeElement.offsetWidth);
+      console.log(this.elementRef.nativeElement)
+
+      this.resizeChart(this.templateChart.nativeElement.offsetWidth);
     }
 
     onResized(event: ResizedEvent): void {
@@ -308,7 +306,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       for (const template of this.templateData) {
 
         const milestoneViewItem = new MilestonesArea(this.svg, this.chartElement, this.xScale,
-          template.milestones, this.modifiable, this.showMenu, countId);
+          template.milestones, this.modifiable, false, countId);
 
         milestoneViewItem.draw({left: this.padding.left, top: 0});
         this.milestonesArea.push(milestoneViewItem);
@@ -318,8 +316,8 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
           incrementsViewItem.draw({left: 0, top: 0});
           this.incrementsArea.push(incrementsViewItem);
         }
-        countId++;
 
+        countId++;
       }
 
     }
@@ -421,13 +419,12 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       this.headerX.redraw();
       this.projectDuration.redraw(animationDuration);
 
-      this.milestonesArea.forEach((milestoneViewItem, index) => {
+      this.milestonesArea.forEach((milestoneViewItem) => {
         milestoneViewItem.redraw({left: 0, top: 0}, animationDuration);
       });
 
-      this.incrementsArea.forEach((incrementsViewItem, index) => {
+      this.incrementsArea.forEach((incrementsViewItem) => {
         incrementsViewItem.redraw({left: 0, top: 0});
-
       });
 
     }
@@ -497,15 +494,13 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       let milestoneHeight = 120;
       let incrementHeight = 80;
 
-      const list = [1, 2, 3];
-      for (const t of list) {
+      for (const id of this.listAreasId) {
 
-        const incrementGroup = this.svg.append('g').attr('class', 'increment-group').attr('id', 'incrementArea' + t);
+        const incrementGroup = this.svg.append('g').attr('class', 'increment-group').attr('id', 'incrementsArea' + id);
         incrementGroup.attr('transform', 'translate(' + this.padding.left + ',' + incrementHeight + ')');
 
-        const dataGroup = this.svg.append('g').attr('class', 'data-group').attr('id', 'milestoneArea' + t);
+        const dataGroup = this.svg.append('g').attr('class', 'data-group').attr('id', 'milestonesArea' + id);
         dataGroup.attr('transform', 'translate(' + this.padding.left + ',' +  milestoneHeight + ')');
-
 
         milestoneHeight = milestoneHeight + 240;
         incrementHeight = incrementHeight + 240;
@@ -618,23 +613,21 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       }
     }
 
-    // redraw if data was changed but no additional data was added or removed
     private subscribeForRedraw(obs): Observable<any> {
         return obs.pipe(
         switchMap(() => forkJoin([
-        this.timelinesService.getTimelines(),
-        this.templateService.getTemplatesForTimeline(this.timelineData.id)
+          this.timelinesService.getTimelines(),
+          this.templateService.getTemplatesForTimeline(this.timelineData.id)
         ]))
         ).subscribe(([timelinesData, templatesData]) => {
 
           this.timelineData = timelinesData.find(t => t.id === this.timelineData.id);
           this.allTemplates = templatesData;
-          const newTemplates = this.allTemplates.filter(t => this.templatesIdList.includes(t.id));
+
+          const newTemplates = this.allTemplates.filter(t => this.selectedTemplatesIdList.includes(t.id));
 
           this.projectDuration.setData(this.timelineData);
           this.projectDuration.redraw(200);
-          console.log(newTemplates)
-          console.log(this.incrementsArea)
 
           newTemplates.forEach((temp, i) => {
             this.milestonesArea[i].setData(temp.milestones);
@@ -647,23 +640,6 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
           });
 
-      });
-    }
-
-    // reset if data was added or removed
-    private subscribeForReset(obs): Observable<any> {
-      return obs.pipe(
-      switchMap(() => forkJoin([
-      this.timelinesService.getTimelines(),
-        ]))
-      ).subscribe(([timelinesData, taskData, milestoneData, incrementsData]) => {
-
-
-      this.projectDuration.redraw(200);
-      // this.taskViewItem.reset({left: 0, top: 0});
-      for (const milestoneViewItem of this.milestonesArea) {
-        milestoneViewItem.reset({left: 0, top: 0});
-      }
       });
     }
 

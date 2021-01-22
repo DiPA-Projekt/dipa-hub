@@ -116,12 +116,6 @@ public class TimelineController implements TimelinesApi {
     }
 
     @Override
-    public ResponseEntity<Void> updateTemplate(final Long timelineId, final Long templateId) {
-        timelineService.updateTemplateForProject(timelineId, templateId);
-        return ResponseEntity.noContent().build();
-    }
-
-    @Override
     public ResponseEntity<Resource> getTimelineCalendar(final Long timelineId) {
 
         try {
@@ -143,6 +137,12 @@ public class TimelineController implements TimelinesApi {
     public ResponseEntity<List<Template>> getTemplatesForTimeline(final Long timelineId) {
         final List<Template> templateList = timelineService.getTemplatesForTimeline(timelineId);
         return ResponseEntity.ok(templateList);
+    }
+    
+    @Override
+    public ResponseEntity<Void> updateTemplate(final Long timelineId, final Long templateId) {
+        timelineService.updateTemplateForProject(timelineId, templateId);
+        return ResponseEntity.noContent().build();
     }
 
 }

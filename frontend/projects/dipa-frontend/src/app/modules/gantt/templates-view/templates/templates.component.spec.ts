@@ -1,25 +1,31 @@
-// import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-// import { TemplatesComponent } from './templates.component';
+import {TemplatesComponent} from './templates.component';
 
-// describe('TemplatesComponent', () => {
-//   let component: TemplatesComponent;
-//   let fixture: ComponentFixture<TemplatesComponent>;
+import {MatNavList } from '@angular/material/list';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {MatSidenavModule} from '@angular/material/sidenav';
 
-//   beforeEach(async () => {
-//     await TestBed.configureTestingModule({
-//       declarations: [ TemplatesComponent ]
-//     })
-//     .compileComponents();
-//   });
 
-//   beforeEach(() => {
-//     fixture = TestBed.createComponent(TemplatesComponent);
-//     component = fixture.componentInstance;
-//     fixture.detectChanges();
-//   });
+describe('TemplatesComponent', () => {
+  let component: TemplatesComponent;
+  let fixture: ComponentFixture<TemplatesComponent>;
 
-//   it('should create', () => {
-//     expect(component).toBeTruthy();
-//   });
-// });
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ TemplatesComponent, MatNavList ],
+      imports: [HttpClientTestingModule, MatSidenavModule]
+    })
+    .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(TemplatesComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
