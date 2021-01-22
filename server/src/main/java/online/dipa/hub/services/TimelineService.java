@@ -732,7 +732,7 @@ public class TimelineService {
         }
 
         this.sessionTemplates.put(timelineId, templates);
-        return templates;
+        return templates;       
     }
 
     public List<Milestone> updateMilestonesTemplate(final Long timelineId, final List<Milestone> milestones) {
@@ -740,20 +740,24 @@ public class TimelineService {
         TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
 
         LocalDate initTimelineStart = LocalDate.now();
-        LocalDate initTimelineEnd = milestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
+        Optional<LocalDate> initTimelineEndOptional = milestones.stream().map(Milestone::getDate).max(LocalDate::compareTo);
 
-        LocalDate currentTimelineStart = sessionTimeline.getTimeline().getStart();
-        LocalDate currentTimelineEnd = sessionTimeline.getTimeline().getEnd();
+        if (initTimelineEndOptional.isPresent()) {
+            LocalDate initTimelineEnd = initTimelineEndOptional.get();
 
-        long oldDaysBetween = DAYS.between(initTimelineStart, initTimelineEnd);
-        long newDaysBetween = DAYS.between(currentTimelineStart, currentTimelineEnd);
-        double factor = (double) newDaysBetween / oldDaysBetween;
+            LocalDate currentTimelineStart = sessionTimeline.getTimeline().getStart();
+            LocalDate currentTimelineEnd = sessionTimeline.getTimeline().getEnd();
 
-        for (Milestone m : milestones) {
-            long oldMilestoneRelativePosition = DAYS.between(initTimelineStart, m.getDate());
-            long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
+            long oldDaysBetween = DAYS.between(initTimelineStart, initTimelineEnd);
+            long newDaysBetween = DAYS.between(currentTimelineStart, currentTimelineEnd);
+            double factor = (double) newDaysBetween / oldDaysBetween;
 
-            m.setDate(currentTimelineStart.plusDays(newMilestoneRelativePosition));
+            for (Milestone m : milestones) {
+                long oldMilestoneRelativePosition = DAYS.between(initTimelineStart, m.getDate());
+                long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
+
+                m.setDate(currentTimelineStart.plusDays(newMilestoneRelativePosition));
+            }
         }
     
         return milestones;
