@@ -1,6 +1,10 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {NavMenuListItemComponent} from './nav-menu-list-item.component';
+import {NavService} from '../../nav.service';
+import {RouterModule} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {MatIcon} from '@angular/material/icon';
 
 describe('NavMenuListItemComponent', () => {
   let component: NavMenuListItemComponent;
@@ -8,7 +12,9 @@ describe('NavMenuListItemComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ NavMenuListItemComponent ]
+      declarations: [ NavMenuListItemComponent, MatIcon ],
+      imports: [RouterTestingModule],
+      providers: [NavService, RouterModule]
     })
     .compileComponents();
   });
@@ -16,6 +22,11 @@ describe('NavMenuListItemComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NavMenuListItemComponent);
     component = fixture.componentInstance;
+    component.item = {
+      name: 'Zeitplan',
+      icon: 'event_note',
+      route: 'gantt'
+    };
     fixture.detectChanges();
   });
 

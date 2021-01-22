@@ -117,8 +117,11 @@ export class GanttComponent implements OnInit, OnDestroy {
     this.activatedRouteSubscription.unsubscribe();
     this.periodStartDateSubscription.unsubscribe();
     this.periodEndDateSubscription.unsubscribe();
-    this.operationTypesSubscription.unsubscribe();
     this.projectApproachesSubscription.unsubscribe();
+
+    if (this.operationTypesSubscription != null) {
+      this.operationTypesSubscription.unsubscribe();
+    }
   }
 
   getIcsCalendarFile(): void {
