@@ -30,8 +30,7 @@ jobs:
       - name: Install
         run: npm ci
         working-directory: frontend
-      - name: Generate ESLint report
-        continue-on-error: true
+      - name: Run NG Lint
         run: npx ng lint dipa-frontend
         working-directory: frontend
       - name: Set up JDK
