@@ -30,8 +30,10 @@ jobs:
       - name: Install
         run: npm ci
         working-directory: frontend
-      - name: Run NG Lint
+      - name: Run NG TSLint
         run: npx ng lint dipa-frontend
+      - name: Run ESLint
+        run: npx eslint projects/dipa-frontend/{e2e,src}/**/*.{html,js,json,jsx,ts,tsx,gql,graphql}
         working-directory: frontend
       - name: Set up JDK
         uses: actions/setup-java@v1
