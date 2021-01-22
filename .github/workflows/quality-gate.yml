@@ -22,43 +22,18 @@ jobs:
         uses: actions/setup-node@v2.1.4
         with:
           node-version: 14.x
-      - uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-node-
       - name: Install
-        run: npm ci
+        run: |
+          npm ci
+          npx ng lint dipa-frontend
+          npx eslint projects/dipa-frontend/{e2e,src}/**/*.{html,js,json,jsx,ts,tsx}
         working-directory: frontend
-      - name: Run NG TSLint
-        run: npx ng lint dipa-frontend
-        working-directory: frontend
-      - name: Run ESLint
-        run: npx eslint projects/dipa-frontend/{e2e,src}/**/*.{html,js,json,jsx,ts,tsx}
-        working-directory: frontend
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: "11.0.2"
-          architecture: x64
-          server-id: docker.dipa.online
-          server-username: DOCKER_REGISTRY_USERNAME
-          server-password: DOCKER_REGISTRY_TOKEN
-      - name: Cache local Maven repository
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - name: Cache Frontend Build Node Modules
-        uses: actions/cache@v2
-        with:
-          path: frontend/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-      - name: Build with Maven
-        run: mvn clean install
-        env:
-          CI: false
+      # - name: Set up JDK
+      #   uses: actions/setup-java@v1
+      #   with:
+      #     java-version: "11.0.2"
+      #     architecture: x64
+      # - name: Build with Maven
+      #   run: mvn clean install
+      #   env:
+      #     CI: false
