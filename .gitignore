@@ -196,3 +196,4 @@ buildNumber.properties
 /frontend/node/**
 /frontend/projects/dipa-api-client/src/**
 /server/src/main/resources/liquibase-diff-changeLog.yaml
+/frontend/eslint-report.json
