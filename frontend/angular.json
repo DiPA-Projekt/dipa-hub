@@ -21,23 +21,12 @@
             }
           }
         },
-//        "test": {
-//          "builder": "@angular-devkit/build-angular:karma",
-//          "options": {
-//            "main": "projects/dipa-api-client/src/test.ts",
-//            "tsConfig": "projects/dipa-api-client/tsconfig.spec.json",
-//            "karmaConfig": "projects/dipa-api-client/karma.conf.js"
-//          }
-//        },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/dipa-api-client/tsconfig.lib.json",
-              "projects/dipa-api-client/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/dipa-api-client/**/*.ts",
+              "projects/dipa-api-client/**/*.html"
             ]
           }
         }
@@ -140,15 +129,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/dipa-frontend/tsconfig.app.json",
-              "projects/dipa-frontend/tsconfig.spec.json",
-              "projects/dipa-frontend/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/dipa-frontend/**/*.ts",
+              "projects/dipa-frontend/**/*.html"
             ]
           }
         },
