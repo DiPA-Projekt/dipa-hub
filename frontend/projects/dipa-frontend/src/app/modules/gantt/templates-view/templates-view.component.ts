@@ -125,14 +125,15 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
 
         // this.standardName = this.standardTemplatesList[this.selectedStandardTemplateIndex].name;
 
-        const templateData = this.selectedTemplatesList;
+        const selectedTemplates = this.selectedTemplatesList;
         this.selectedTemplatesIdList = this.selectedTemplatesList.map(t => t.id);
 
         const selectedTimeline = timelinesData.find(c => c.id === Number(this.selectedTimelineId));
 
         return {
           selectedTimeline,
-          templateData
+          selectedTemplates,
+          templatesData
         };
       })
     );

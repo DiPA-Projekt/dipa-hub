@@ -51,7 +51,7 @@ public class PlanTemplateEntity extends BaseEntity {
     private boolean standard;
 
     @Basic(optional = false)
-    private boolean default_template;
+    private boolean defaultTemplate;
 
     public String getName() {
         return name;
@@ -102,10 +102,10 @@ public class PlanTemplateEntity extends BaseEntity {
     }
 
     public boolean getDefaultTemplate() {
-        return default_template;
+        return defaultTemplate;
     }
 
-    public void setDefaultTemplate(final boolean default_template) {
-        this.default_template = default_template;
+    public void setDefaultTemplate(final boolean defaultTemplate) {
+        this.defaultTemplate = defaultTemplate;
     }
 }

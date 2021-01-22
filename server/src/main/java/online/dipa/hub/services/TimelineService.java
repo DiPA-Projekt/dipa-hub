@@ -165,7 +165,6 @@ public class TimelineService {
 
         TimelineState sessionTimeline = findTimelineState(timelineId);
 
-        // List<Increment> incrementsList = loadIncrements(timelineId, incrementCount);
         List<Increment> incrementsList = loadIncrementsTemplate(timelineId, incrementCount, tempMilestones, sessionTimeline.getMilestones());
         tempMilestones.remove(tempMilestones.size() - 1);
         tempMilestones.remove(0);
@@ -262,7 +261,7 @@ public class TimelineService {
 
                     PlanTemplateEntity masterPlanTemplate = planTemplateList.stream()
                             .filter(template -> template.getId().equals(masterPlanId))
-                            .filter(template -> template.getDefaultTemplate() == true).findFirst().orElse(null);
+                            .filter(template -> template.getDefaultTemplate()).findFirst().orElse(null);
                 
                     if (masterPlanTemplate != null) {
                         milestones.addAll(convertMilestones(masterPlanTemplate));
@@ -271,7 +270,7 @@ public class TimelineService {
                     PlanTemplateEntity planTemplate = planTemplateList.stream()
                             .filter(template -> template.getProjectApproach() != null)
                             .filter(template -> template.getProjectApproach().getId().equals(projectApproach.getId()))
-                            .filter(template -> template.getDefaultTemplate() == true)
+                            .filter(template -> template.getDefaultTemplate())
                             .findFirst().orElse(null);
                     
                     if (planTemplate != null) {
@@ -315,7 +314,6 @@ public class TimelineService {
             if (projectApproach.isIterative()) {
                 List<Milestone> initMilestones = getMilestonesFromRespository(timelineId);
                 sessionTimeline.setIncrements(this.loadIncrementsTemplate(timelineId, 1, initMilestones, null));
-                // sessionTimeline.setIncrements(this.loadIncrements(timelineId, 1));
             }
         }
     }
@@ -589,8 +587,7 @@ public class TimelineService {
         if (increments != null) {
             int incrementCount = increments.size();
             sessionTimeline.setIncrements(this.loadIncrementsTemplate(timelineId, incrementCount, null, sessionTimeline.getMilestones()));
-            // to be fixed
-            // sessionTimeline.setMilestones(this.loadMilestones(timelineId, incrementCount));
+            // fix sessionTimeline setMilestones
 
         }
     }
@@ -671,7 +668,11 @@ public class TimelineService {
         final TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
         long count = 0;
 
-        Template currentTemplate = new Template().id(count++).name("aktuell").milestones(sessionTimeline.getMilestones()).increments(sessionTimeline.getIncrements());
+        Template currentTemplate = new Template()
+                                        .id(count++)
+                                        .name("aktuell")
+                                        .milestones(sessionTimeline.getMilestones())
+                                        .increments(sessionTimeline.getIncrements());
 
         templates.add(currentTemplate);
 
@@ -687,10 +688,11 @@ public class TimelineService {
         if (planTemplateList.size() == 1) {
             milestones = convertMilestones(planTemplateList.get(0));
 
-            Template respoTemplate = createTemplate(count++, 
-                                                    planTemplateList.get(0).getName(), 
-                                                    planTemplateList.get(0).getStandard(), 
-                                                    this.updateMilestonesTemplate(timelineId, milestones));
+            Template respoTemplate = new Template().id(count++)
+                                                    .name(planTemplateList.get(0).getName())
+                                                    .standard(planTemplateList.get(0).getStandard())
+                                                    .milestones(this.updateMilestonesTemplate(timelineId, milestones));
+           
 
             templates.add(respoTemplate);
         }
@@ -712,7 +714,12 @@ public class TimelineService {
                 List<Milestone> planTemplateMilestones = new ArrayList<>(milestones);
                 planTemplateMilestones.addAll(convertMilestones(temp));
 
-                Template template = createTemplate(count++, temp.getName(), temp.getStandard(), updateMilestonesTemplate(timelineId, planTemplateMilestones));
+                Template template =  new Template()
+                                        .id(count++)
+                                        .name(temp.getName())
+                                        .standard(temp.getStandard())
+                                        .milestones(updateMilestonesTemplate(timelineId, planTemplateMilestones));
+
 
                 if (projectApproach.isIterative() && temp.getStandard()) {
                     // template increments
@@ -726,11 +733,6 @@ public class TimelineService {
 
         this.sessionTemplates.put(timelineId, templates);
         return templates;
-
-    }
-
-    private Template createTemplate(final Long id, final String name, final boolean standard, final List<Milestone> milestones) {
-        return new Template().id(id).name(name).standard(standard).milestones(milestones);
     }
 
     public List<Milestone> updateMilestonesTemplate(final Long timelineId, final List<Milestone> milestones) {
@@ -753,15 +755,15 @@ public class TimelineService {
 
             m.setDate(currentTimelineStart.plusDays(newMilestoneRelativePosition));
         }
-
+    
         return milestones;
     }
 
     public void updateTemplateForProject(final Long timelineId, final Long templateId) {
         TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
 
-        List<Template> sessionTemplates = this.sessionTemplates.get(timelineId);
-        Optional<Template> selectedTemplateOptional = sessionTemplates.stream().filter(t -> t.getId().equals(templateId)).findFirst();
+        List<Template> currentSessionTemplates = this.sessionTemplates.get(timelineId);
+        Optional<Template> selectedTemplateOptional = currentSessionTemplates.stream().filter(t -> t.getId().equals(templateId)).findFirst();
 
         if (selectedTemplateOptional.isPresent()) {
             Template selectedTemplate = selectedTemplateOptional.get();

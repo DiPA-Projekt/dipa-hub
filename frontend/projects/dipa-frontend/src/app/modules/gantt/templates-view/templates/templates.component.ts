@@ -58,11 +58,12 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
     @Input() timelineData: any = {};
     @Input() templateData = [];
+    @Input() allTemplates: any = {};
 
-    @ViewChild('templateChart') templateChart:ElementRef;
+    @ViewChild('templateChart') templateChart: ElementRef;
 
     standardTemplatesList = null;
-    allTemplates = null;
+    // allTemplates = null;
     selectedTemplatesIdList = [];
 
     chartFigure: ElementRef;
@@ -128,18 +129,11 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
       this.drawChart();
 
-      if (this.timelineData.length === 0) {
-        this.templateSubscription = this.templateService.getTemplatesForTimeline(this.timelineData.id)
-        .subscribe((data) => {
-          this.allTemplates = data;
-        });
-      }
-
       this.templatesListSubscription = this.templatesViewControlsService.getTemplatesList()
         .subscribe((data) => {
 
-          if (this.allTemplates !== null) {
-            
+          if (data !== null) {
+
             this.selectedTemplatesIdList = data;
             const newTemplates = this.allTemplates.filter(t => data.includes(t.id));
 
@@ -224,8 +218,6 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     }
 
     ngAfterViewInit(): void {
-      console.log(this.elementRef.nativeElement)
-
       this.resizeChart(this.templateChart.nativeElement.offsetWidth);
     }
 

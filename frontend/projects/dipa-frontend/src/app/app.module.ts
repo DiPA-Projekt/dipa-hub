@@ -10,7 +10,6 @@ import {CoreModule} from './core/core.module';
 import {HttpClientModule} from '@angular/common/http';
 import {MaterialModule} from './material/material.module';
 import {SharedModule} from './shared/shared.module';
-
 import {NavService} from './nav.service';
 
 @NgModule({
@@ -25,7 +24,7 @@ import {NavService} from './nav.service';
     ApiModule.forRoot(AppModule.getApiConfiguration),
     BrowserAnimationsModule,
     CoreModule,
-    SharedModule,
+    SharedModule
   ],
   providers: [ { provide: LOCALE_ID, useValue: 'de-DE' }, NavService ],
   bootstrap: [AppComponent]

@@ -242,7 +242,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   }
 
   ngAfterViewInit(): void {
-    console.log(this.chartFigure.nativeElement)
     this.resizeChart(this.chartFigure.nativeElement.offsetWidth);
   }
 

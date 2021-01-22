@@ -40,7 +40,7 @@ export class Increments {
 
   draw(offset): void {
 
-    const dataGroup = this.svg.select('g' + '#incrementsArea' + this.incrementsAreaId + '.increment-group');;
+    const dataGroup = this.svg.select('g' + '#incrementsArea' + this.incrementsAreaId + '.increment-group');
 
     const incrementGroup = dataGroup.selectAll('g.incrementEntry')
       .data(this.data)
@@ -120,7 +120,7 @@ export class Increments {
 
   redraw(offset): void {
 
-    const dataGroup = this.svg.select('g' + '#incrementsArea' + this.incrementsAreaId + '.increment-group');;
+    const dataGroup = this.svg.select('g' + '#incrementsArea' + this.incrementsAreaId + '.increment-group');
 
     // increment entry
     const incrementGroup = dataGroup.selectAll('g.incrementEntry')

@@ -64,7 +64,8 @@
             <ng-container *ngIf="vm$ | async as vm">
               <app-templates #templateChart
                         [timelineData]="vm.selectedTimeline"
-                        [templateData]="vm.templateData"
+                        [templateData]="vm.selectedTemplates"
+                        [allTemplates]="vm.templatesData"
                         id = "template{{vm.selectedTimeline.id}}"
               ></app-templates>
             </ng-container>
