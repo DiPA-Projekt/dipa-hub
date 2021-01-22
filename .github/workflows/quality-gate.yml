@@ -32,6 +32,7 @@ jobs:
         working-directory: frontend
       - name: Run NG TSLint
         run: npx ng lint dipa-frontend
+        working-directory: frontend
       - name: Run ESLint
         run: npx eslint projects/dipa-frontend/{e2e,src}/**/*.{html,js,json,jsx,ts,tsx,gql,graphql}
         working-directory: frontend
