@@ -92,7 +92,7 @@
               <goal>npm</goal>
             </goals>
             <configuration>
-              <arguments>run-script build</arguments>
+              <arguments>run-script build:ci</arguments>
             </configuration>
           </execution>
         </executions>
