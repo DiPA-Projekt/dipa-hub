@@ -3,7 +3,6 @@ import * as d3 from 'd3';
 import {IncrementsService, MilestonesService, TasksService, TemplatesService, TimelinesIncrementService, TimelinesService} from 'dipa-api-client';
 import {forkJoin, Observable} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
-import {TemplatesViewComponent} from '../templates-view.component';
 
 import {
   AfterViewInit,
@@ -23,9 +22,7 @@ import {MilestonesArea} from '../../chart/chart-elements/MilestonesArea';
 import {ProjectDuration} from '../../chart/chart-elements/ProjectDuration';
 import {TasksArea} from '../../chart/chart-elements/TasksArea';
 import {XAxis} from '../../chart/chart-elements/XAxis';
-import { ActivatedRoute } from '@angular/router';
-import { GanttControlsService } from '../../gantt-controls.service';
-import { TemplateBindingParseResult } from '@angular/compiler';
+import {TemplatesViewControlsService} from '../templates-view-controls.service';
 
 @Component({
   selector: 'app-templates',
@@ -37,12 +34,9 @@ import { TemplateBindingParseResult } from '@angular/compiler';
 
 export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
 
-  constructor(public ganttControlsService: GanttControlsService,
-              private milestonesService: MilestonesService,
-              private tasksService: TasksService,
+  constructor(public templatesViewControlsService: TemplatesViewControlsService,
               private timelinesService: TimelinesService,
-              private incrementService: IncrementsService,
-              private timelinesIncrementService: TimelinesIncrementService,
+              private templateService: TemplatesService,
               private elementRef: ElementRef) {
 
     d3.timeFormatDefaultLocale({
@@ -62,12 +56,13 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     });
     }
 
-    // @Input() incrementsData = [];
-    // @Input() milestoneData = [];
-    @Input() templateData = [];
+    // @Input() templateData = [];
     @Input() timelineData: any = {};
-    // @Input() projectStartDate: any;
-    // @Input() projectEndDate: any;
+    @Input() templateData = [];
+    standardTemplatesList = null;
+    allTemplates = null;
+    templatesIdList = [];
+
     milestonesData: any;
 
     @ViewChild('templateChart')
@@ -82,16 +77,14 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
     arrangeLabelTimeout;
 
-    periodStartDateSubscription;
-    periodEndDateSubscription;
-
     viewTypeSubscription;
+    templateSubscription;
 
     // element for chart
     private svg;
     private zoomElement;
 
-    private viewBoxHeight = 300;
+    private viewBoxHeight = 290;
     private viewBoxWidth = 750;
 
     private padding = { top: 40, left: 0};
@@ -104,12 +97,12 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     headerX: XAxis;
     projectDuration: ProjectDuration;
     milestonesArea: MilestonesArea[];
+    incrementsArea: any[];
+
     // milestoneViewItem: MilestonesArea;
     taskViewItem: TasksArea;
     incrementsViewItem: Increments;
 
-    milestoneSubscription;
-    taskSubscription;
     addIncrementSubscription;
     deleteIncrementSubscription;
     timelineSubscription;
@@ -126,8 +119,10 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
     statusList: any[] = ['offen', 'erledigt'];
 
-    ngOnInit(): void {
+    standardTemplateSubscription;
 
+
+    ngOnInit(): void {
 
       // TODO: this is just temporary
       this.modifiable = false;
@@ -140,8 +135,82 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       .append('div')
       .attr('class', 'tooltip');
 
+      this.templatesIdList = this.templateData.map(t => t.id);
+
       this.drawChart();
-    }
+      this.templateService.getTemplatesForTimeline(this.timelineData.id)
+        .subscribe((data) => {
+          this.allTemplates = data;
+        });
+
+      this.templateSubscription = this.templatesViewControlsService.getTemplatesList()
+        .subscribe((data) => {
+
+          if (this.allTemplates !== null) {
+            this.templatesIdList = data;
+            const newTemplates = this.allTemplates.filter(t => data.includes(t.id));
+
+            this.setDataReset(this.timelineData, newTemplates);
+
+          }
+        });
+
+      this.viewTypeSubscription = this.templatesViewControlsService.getViewType()
+      .subscribe((data) => {
+        if (this.viewType !== data) {
+          this.viewType = data;
+          if (this.xScale) {
+
+            switch (data) {
+              case 'DAYS': {
+                this.headerX.formatDate = this.headerX.formatDateDay;
+
+                this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick / 5); });
+                this.refreshXScale();
+                this.redrawChart(0);
+
+                break;
+              }
+              case 'WEEKS': {
+                this.headerX.formatDate = this.headerX.formatDateWeek;
+
+                this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event,  (this.oneDayTick * 7) / 12); });
+                this.refreshXScale();
+                this.redrawChart(0);
+
+                break;
+              }
+              case 'MONTHS': {
+                this.headerX.formatDate = this.headerX.formatDateMonth;
+
+                this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, (this.oneDayTick * 30) / 12); });
+                this.refreshXScale();
+                this.redrawChart(0);
+
+                break;
+            }
+              case 'YEARS': {
+                this.headerX.formatDate = this.headerX.formatDateYear;
+
+                this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, (this.oneDayTick * 365) / 12); });
+                this.refreshXScale();
+                this.redrawChart(0);
+                break;
+              }
+              case null: {
+                this.headerX.formatDate = this.headerX.formatDateFull;
+                this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => { this.onZoom(event, this.oneDayTick); });
+
+                this.refreshXScale();
+                this.redrawChart(0);
+
+                break;
+              }
+            }
+          }
+        }
+      });
+  }
 
     ngOnChanges(changes: SimpleChanges): void {
       if (changes.taskData && !changes.taskData.isFirstChange()
@@ -151,16 +220,11 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     }
 
     ngOnDestroy(): void {
-      // this.periodStartDateSubscription.unsubscribe();
-      // this.periodEndDateSubscription.unsubscribe();
-
-      this.milestoneSubscription?.unsubscribe();
-      this.taskSubscription?.unsubscribe();
       this.addIncrementSubscription?.unsubscribe();
       this.deleteIncrementSubscription?.unsubscribe();
       this.timelineSubscription?.unsubscribe();
-      this.timelineStartSubscription?.unsubscribe();
-      this.timelineEndSubscription?.unsubscribe();
+      this.standardTemplateSubscription?.unsubscribe();
+      this.templateSubscription?.unsubscribe();
     }
 
     ngAfterViewInit(): void {
@@ -195,156 +259,176 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       this.headerX.formatDate = this.headerX.formatDateFull;
       this.headerX.draw();
 
-      this.projectDuration = new ProjectDuration(this.svg, this.chartElement, this.xScale, this.timelineData, this.modifiable);
+      this.projectDuration = new ProjectDuration(this.svg, this.chartElement, this.xScale, this.timelineData, true);
       this.projectDuration.draw();
 
 
-      // this.taskViewItem = new TasksArea(this.svg, this.xScale, this.taskData);
-      // this.taskViewItem.draw({left: 0, top: 0});
+      this.projectDuration.onDragEnd = (offsetDays: number) => {
+
+        if (offsetDays !== 0) {
+          const moveTimeline$ = this.timelinesService.applyOperation(
+            this.timelineData.id,
+            {operation: 'moveTimeline', days: offsetDays});
+          this.timelineSubscription = this.subscribeForRedraw(moveTimeline$);
+
+        } else {
+          this.projectDuration.redraw(200);
+        }
+      };
+
+      this.projectDuration.onDragEndProjectStart = (offsetDays: number) => {
+        if (offsetDays !== 0) {
+          const moveTimelineStart$ = this.timelinesService.applyOperation(
+            this.timelineData.id,
+            {operation: 'moveTimelineStart', days: offsetDays});
+
+          this.timelineStartSubscription = this.subscribeForRedraw(moveTimelineStart$);
+
+        } else {
+          this.projectDuration.redraw(200);
+        }
+      };
+
+      this.projectDuration.onDragEndProjectEnd = (offsetDays: number) => {
+        if (offsetDays !== 0) {
+          const moveTimelineEnd$ = this.timelinesService.applyOperation(
+            this.timelineData.id,
+            {operation: 'moveTimelineEnd', days: offsetDays});
+
+          this.timelineEndSubscription = this.subscribeForRedraw(moveTimelineEnd$);
+        } else {
+          this.projectDuration.redraw(200);
+        }
+      };
 
       this.milestonesArea = [];
+      this.incrementsArea = [];
 
+      let countId = 1;
       for (const template of this.templateData) {
 
         const milestoneViewItem = new MilestonesArea(this.svg, this.chartElement, this.xScale,
-          template.milestones, this.modifiable, this.showMenu, template.id);
+          template.milestones, this.modifiable, this.showMenu, countId);
 
         milestoneViewItem.draw({left: this.padding.left, top: 0});
         this.milestonesArea.push(milestoneViewItem);
+
+        if (template.increments !== null) {
+          const incrementsViewItem = new Increments(this.svg, this.xScale, template.increments, countId);
+          incrementsViewItem.draw({left: 0, top: 0});
+          this.incrementsArea.push(incrementsViewItem);
+        }
+        countId++;
+
       }
 
-
-      // this.milestoneViewItem = new MilestonesArea(this.svg, this.chartElement, this.xScale,
-      //                                       this.milestonesData, this.modifiable, this.showMenu);
-      // this.milestoneViewItem.draw({left: 0,top:  0});
-
-      // this.incrementsViewItem = new Increments(this.svg, this.xScale, this.incrementsData);
-      // this.incrementsViewItem.draw({left: 0, top: this.taskViewItem.getAreaHeight()});
-
-      // this.incrementsViewItem.onClickAddButton = () => {
-      // const addIncrement$ = this.timelinesIncrementService.addIncrement(this.timelineData.id);
-      // this.addIncrementSubscription = this.subscribeForReset(addIncrement$);
-      // };
-      // this.incrementsViewItem.onClickDeleteButton = () => {
-      // const deleteIncrement$ = this.timelinesIncrementService.deleteIncrement(this.timelineData.id);
-      // this.deleteIncrementSubscription = this.subscribeForReset(deleteIncrement$);
-      // };
     }
 
     private redrawChart(animationDuration): void {
 
-    const ticksList = this.xScale.ticks();
+      const ticksList = this.xScale.ticks();
 
-    this.svg.select('g.x-group').selectAll('text.outsideXAxisLabel').remove();
+      this.svg.select('g.x-group').selectAll('text.outsideXAxisLabel').remove();
 
-    switch (this.viewType){
-    case 'WEEKS' : {
-    const numberTicks = d3.timeWeek.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
+      switch (this.viewType){
+        case 'WEEKS' : {
+          const numberTicks = d3.timeWeek.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
 
-    if (numberTicks === 1){
+          if (numberTicks === 1){
 
-    const textOutsideBox = this.xScale(ticksList[0]) < this.xScale.range()[1];
+            const textOutsideBox = this.xScale(ticksList[0]) < this.xScale.range()[1];
 
-    if (textOutsideBox){
-      this.svg.select('g.x-group')
-      .append('text')
-      .attr('class', 'outsideXAxisLabel')
-      .text(this.headerX.formatDateWeek(ticksList[1]))
-      .attr('x', 10)
-      .attr('y', 18);
-    }
-    }
+            if (textOutsideBox){
+              this.svg.select('g.x-group')
+              .append('text')
+              .attr('class', 'outsideXAxisLabel')
+              .text(this.headerX.formatDateWeek(ticksList[1]))
+              .attr('x', 10)
+              .attr('y', 18);
+            }
+          }
 
-    if (numberTicks > 12){
-    this.headerX.tickSetting = null;
-    } else {
-    this.headerX.tickSetting = d3.timeMonday.every(1);
-    }
+          if (numberTicks > 12){
+            this.headerX.tickSetting = null;
+          } else {
+            this.headerX.tickSetting = d3.timeMonday.every(1);
+          }
 
-    break;
-    }
-    case 'MONTHS' : {
-    const numberTicks = d3.timeMonth.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
+          break;
+        }
+        case 'MONTHS' : {
+          const numberTicks = d3.timeMonth.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
 
-    if (numberTicks === 1){
+          if (numberTicks === 1){
 
-    const textOutsideBox = this.xScale(ticksList[0]) < this.xScale.range()[1];
+            const textOutsideBox = this.xScale(ticksList[0]) < this.xScale.range()[1];
 
-    if (textOutsideBox){
-      this.svg.select('g.x-group')
-      .append('text')
-      .attr('class', 'outsideXAxisLabel')
-      .text(this.headerX.formatDateMonth(ticksList[0]))
-      .attr('x', 10)
-      .attr('y', 18);
-    }
-    }
+            if (textOutsideBox){
+              this.svg.select('g.x-group')
+              .append('text')
+              .attr('class', 'outsideXAxisLabel')
+              .text(this.headerX.formatDateMonth(ticksList[0]))
+              .attr('x', 10)
+              .attr('y', 18);
+            }
+          }
 
-    if (numberTicks > 12){
-      this.headerX.tickSetting = null;
-    } else {
-      this.headerX.tickSetting = d3.timeMonth.every(1);
-    }
-      break;
-    }
-    case 'YEARS' : {
-    const numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
+          if (numberTicks > 12){
+            this.headerX.tickSetting = null;
+          } else {
+            this.headerX.tickSetting = d3.timeMonth.every(1);
+          }
+          break;
+        }
+        case 'YEARS' : {
+          const numberTicks = d3.timeYear.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
 
-    if (numberTicks === 1){
+          if (numberTicks === 1){
 
-    const textOutsideBox = this.xScale(ticksList[0]) < this.xScale.range()[1];
+            const textOutsideBox = this.xScale(ticksList[0]) < this.xScale.range()[1];
 
-    if (textOutsideBox){
-      this.svg.select('g.x-group')
-      .append('text')
-      .attr('class', 'outsideXAxisLabel')
-      .text(this.headerX.formatDateYear(ticksList[0]))
-      .attr('x', 10)
-      .attr('y', 18);
-    }
-    }
+            if (textOutsideBox){
+              this.svg.select('g.x-group')
+              .append('text')
+              .attr('class', 'outsideXAxisLabel')
+              .text(this.headerX.formatDateYear(ticksList[0]))
+              .attr('x', 10)
+              .attr('y', 18);
+            }
+          }
 
-    if (numberTicks > 12){
-    this.headerX.tickSetting = null;
-    } else {
-    this.headerX.tickSetting = d3.timeYear.every(1);
-    }
-    break;
-    }
-    // case 'DAYS' :
-    default : {
-    const numberTicks = d3.timeDay.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
+          if (numberTicks > 12){
+            this.headerX.tickSetting = null;
+          } else {
+            this.headerX.tickSetting = d3.timeYear.every(1);
+          }
+          break;
+        }
+        // case 'DAYS' :
+        default : {
+          const numberTicks = d3.timeDay.count(ticksList[0], ticksList[ticksList.length - 1]) + 1;
 
-    if (numberTicks > 12){
-    this.headerX.tickSetting = null;
-    } else {
-    this.headerX.tickSetting = d3.timeDay.every(1);
-    }
-    break;
-    }
+          if (numberTicks > 12){
+            this.headerX.tickSetting = null;
+          } else {
+            this.headerX.tickSetting = d3.timeDay.every(1);
+          }
+          break;
+        }
 
-    }
+      }
 
-    this.headerX.redraw();
-    this.projectDuration.redraw(animationDuration);
+      this.headerX.redraw();
+      this.projectDuration.redraw(animationDuration);
 
-    // this.taskViewItem.redraw({left: 0, top: 0});
-    this.milestonesArea.forEach((milestoneViewItem, index) => {
-      milestoneViewItem.redraw({left: 0, top: 0}, animationDuration);
-      // if (index !== 0) {
-      //   const lastHeight = this.milestonesArea[index - 1].getAreaHeight();
-      //   console.log(lastHeight)
-      //   milestoneViewItem.redraw({left: 0, top: this.padding.top + lastHeight}, {left: 0, top: 0}, animationDuration);
-      // }
-      // else {
-      //   milestoneViewItem.redraw({left: 0, top: this.padding.top}, {left: 0, top: 0}, animationDuration);
+      this.milestonesArea.forEach((milestoneViewItem, index) => {
+        milestoneViewItem.redraw({left: 0, top: 0}, animationDuration);
+      });
 
-      // }
-    })
-    // for (var i = 0; const milestoneViewItem of this.milestonesArea) {
-    //     milestoneViewItem.redraw({left: 0, top: 200}, {left: 0, top: 0}, animationDuration);
-    // }
-    // this.incrementsViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()});
+      this.incrementsArea.forEach((incrementsViewItem, index) => {
+        incrementsViewItem.redraw({left: 0, top: 0});
+
+      });
 
     }
 
@@ -410,17 +494,26 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       const projectGroup = this.svg.append('g').attr('class', 'project-group');
       projectGroup.attr('transform', 'translate(' + this.padding.left + ',45)');
 
-      const incrementGroup = this.svg.append('g').attr('class', 'increment-group');
-      incrementGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + 30) + ')');
+      let milestoneHeight = 120;
+      let incrementHeight = 80;
 
-      for (const template of this.templateData) {
-        const dataGroup = this.svg.append('g').attr('class', 'data-group' + template.id);
-        dataGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + 120) * (template.id + 1) + ')');
+      const list = [1, 2, 3];
+      for (const t of list) {
+
+        const incrementGroup = this.svg.append('g').attr('class', 'increment-group').attr('id', 'incrementArea' + t);
+        incrementGroup.attr('transform', 'translate(' + this.padding.left + ',' + incrementHeight + ')');
+
+        const dataGroup = this.svg.append('g').attr('class', 'data-group').attr('id', 'milestoneArea' + t);
+        dataGroup.attr('transform', 'translate(' + this.padding.left + ',' +  milestoneHeight + ')');
+
+
+        milestoneHeight = milestoneHeight + 240;
+        incrementHeight = incrementHeight + 240;
 
         dataGroup
         .attr('mask', 'url(#dataMask)');
 
-        }
+      }
 
       const currentDateGroup = this.svg.append('g').attr('class', 'current-date-group');
       currentDateGroup.attr('transform', 'translate(' + this.padding.left + ',0)');
@@ -428,56 +521,54 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     }
 
     onZoom(event: d3.D3ZoomEvent<any, any>, minTimeMs): void {
-    const eventTransform: d3.ZoomTransform = event.transform;
+      const eventTransform: d3.ZoomTransform = event.transform;
 
-    if (eventTransform.k === 1 && eventTransform.x === 0 && eventTransform.y === 0) {
-    return;
-    }
-
-    // this check is needed to prevent additional zooming on the minimum/maximum zoom level
-    // because zoom.transform is reset and the zoom levels are reinitiated every time
-    if (event.sourceEvent) {
-    const deltaY = event.sourceEvent.deltaY;
-    if (deltaY < 0 && eventTransform.y > 0 || deltaY > 0 && eventTransform.y < 0) {
-    return;
-    }
-    }
-
-    const xScaleTransformed = eventTransform.rescaleX<any>(this.xScale);
-
-    const start = xScaleTransformed.domain()[0];
-    const end = xScaleTransformed.domain()[1];
-
-    this.setZoomScaleExtent(minTimeMs);
-    // zoom to new start and end dates
-    this.xScale.domain([start, end]);
-
-    if (event.sourceEvent){
-      if (event.sourceEvent.type === 'mousemove'){
-      this.redrawChart(0);
-      } else {
-        this.redrawChart(200);
-        clearTimeout(this.arrangeLabelTimeout);
-        this.arrangeLabelTimeout = setTimeout(() => {
-          for (const milestoneViewItem of this.milestonesArea) {
-            milestoneViewItem.arrangeLabels();
-          }
-        }, 200);
+      if (eventTransform.k === 1 && eventTransform.x === 0 && eventTransform.y === 0) {
+        return;
       }
-    } else {
-    this.redrawChart(0);
+
+      // this check is needed to prevent additional zooming on the minimum/maximum zoom level
+      // because zoom.transform is reset and the zoom levels are reinitiated every time
+      if (event.sourceEvent) {
+        const deltaY = event.sourceEvent.deltaY;
+        if (deltaY < 0 && eventTransform.y > 0 || deltaY > 0 && eventTransform.y < 0) {
+          return;
+        }
+      }
+
+      const xScaleTransformed = eventTransform.rescaleX<any>(this.xScale);
+
+      const start = xScaleTransformed.domain()[0];
+      const end = xScaleTransformed.domain()[1];
+
+      this.setZoomScaleExtent(minTimeMs);
+      // zoom to new start and end dates
+      this.xScale.domain([start, end]);
+
+      if (event.sourceEvent){
+        if (event.sourceEvent.type === 'mousemove'){
+          this.redrawChart(0);
+        } else {
+          this.redrawChart(200);
+
+          clearTimeout(this.arrangeLabelTimeout);
+
+          this.arrangeLabelTimeout = setTimeout(() => {
+            for (const milestoneViewItem of this.milestonesArea) {
+              milestoneViewItem.arrangeLabels();
+            }
+          }, 200);
+
+        }
+      } else {
+      this.redrawChart(0);
     }
 
     // reset the transform so the scale can be changed from other elements like dropdown menu
-    this.zoomElement.call(this.zoom.transform, d3.zoomIdentity);
+      this.zoomElement.call(this.zoom.transform, d3.zoomIdentity);
 
-    this.periodStartDate = xScaleTransformed.invert(xScaleTransformed.range()[0]);
-    this.periodEndDate = xScaleTransformed.invert(xScaleTransformed.range()[1]);
-
-    if (this.chartElement.id.includes('gantt')){
-    this.ganttControlsService.setPeriodStartDate(this.periodStartDate);
-    this.ganttControlsService.setPeriodEndDate(this.periodEndDate);
-    }
+      this.periodStartDate = xScaleTransformed.invert(xScaleTransformed.range()[0]);
+      this.periodEndDate = xScaleTransformed.invert(xScaleTransformed.range()[1]);
 
     }
 
@@ -520,26 +611,42 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       .attr('width', newSize - this.padding.left);
     }
 
+    private redraw(animationDuration): any {
+      this.projectDuration.redraw(animationDuration);
+      for (const milestoneViewItem of this.milestonesArea) {
+          milestoneViewItem.redraw({left: 0, top: 0}, 200);
+      }
+    }
+
     // redraw if data was changed but no additional data was added or removed
     private subscribeForRedraw(obs): Observable<any> {
         return obs.pipe(
         switchMap(() => forkJoin([
         this.timelinesService.getTimelines(),
-        this.tasksService.getTasksForTimeline(this.timelineData.id),
-        this.milestonesService.getMilestonesForTimeline(this.timelineData.id),
-        this.incrementService.getIncrementsForTimeline(this.timelineData.id)
+        this.templateService.getTemplatesForTimeline(this.timelineData.id)
         ]))
-        ).subscribe(([timelinesData, taskData, milestoneData, incrementsData]) => {
+        ).subscribe(([timelinesData, templatesData]) => {
 
-        this.setData(timelinesData, taskData, milestoneData, incrementsData);
+          this.timelineData = timelinesData.find(t => t.id === this.timelineData.id);
+          this.allTemplates = templatesData;
+          const newTemplates = this.allTemplates.filter(t => this.templatesIdList.includes(t.id));
 
-        this.projectDuration.redraw(200);
-        // this.taskViewItem.redraw({left: 0, top: 0});
-      //   for (const milestoneViewItem of this.milestonesArea) {
-      //     milestoneViewItem.redraw({left: 0, top: 0}, 200);
-      // }
-    // this.milestoneViewItem.redraw({left: 0, top: 0}, 200);
-    // this.incrementsViewItem.redraw({left: 0, top: this.taskViewItem.getAreaHeight()});
+          this.projectDuration.setData(this.timelineData);
+          this.projectDuration.redraw(200);
+          console.log(newTemplates)
+          console.log(this.incrementsArea)
+
+          newTemplates.forEach((temp, i) => {
+            this.milestonesArea[i].setData(temp.milestones);
+            this.milestonesArea[i].redraw({left: 0, top: 0}, 200);
+
+            if (temp.increments !== null) {
+              this.incrementsArea[i].setData(temp.increments);
+              this.incrementsArea[i].redraw({left: 0, top: 0});
+            }
+
+          });
+
       });
     }
 
@@ -548,38 +655,35 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       return obs.pipe(
       switchMap(() => forkJoin([
       this.timelinesService.getTimelines(),
-      this.tasksService.getTasksForTimeline(this.timelineData.id),
-      this.milestonesService.getMilestonesForTimeline(this.timelineData.id),
-      this.incrementService.getIncrementsForTimeline(this.timelineData.id)
-      ]))
+        ]))
       ).subscribe(([timelinesData, taskData, milestoneData, incrementsData]) => {
 
-      this.setData(timelinesData, taskData, milestoneData, incrementsData);
 
       this.projectDuration.redraw(200);
       // this.taskViewItem.reset({left: 0, top: 0});
       for (const milestoneViewItem of this.milestonesArea) {
         milestoneViewItem.reset({left: 0, top: 0});
-    }
-      // this.milestoneViewItem.reset({left: 0, top: 0});
-      // this.incrementsViewItem.reset({left: 0, top: this.taskViewItem.getAreaHeight()});
+      }
       });
     }
 
-    private setData(timelinesData, taskData, milestoneData, incrementsData): void {
-      this.timelineData = timelinesData.find(c => c.id === this.timelineData.id);
-      this.projectDuration.setData(this.timelineData);
+    private setDataReset(timelineData, templatesData): void {
 
-    // this.taskData = taskData;
-    // this.taskViewItem.setData(taskData);
+      this.templateData = templatesData;
 
-    // this.milestoneData = milestoneData;
-    // this.milestoneViewItem.setData(milestoneData);
+      this.projectDuration.setData(timelineData);
+      this.projectDuration.redraw(200);
 
-    // this.selectedMilestoneDataMenu = milestoneData.find(m => m.id === this.selectedMilestoneId);
+      templatesData.forEach((temp, i) => {
+        this.milestonesArea[i].setData(temp.milestones);
+        this.milestonesArea[i].reset({left: 0, top: 0});
 
-    // this.incrementsData = incrementsData;
-    // this.incrementsViewItem.setData(incrementsData);
+        if (temp.increments !== null) {
+          this.incrementsArea[i].setData(temp.increments);
+          this.incrementsArea[i].reset({left: 0, top: 0});
+        }
+
+      });
     }
 
     getDate(date): any {

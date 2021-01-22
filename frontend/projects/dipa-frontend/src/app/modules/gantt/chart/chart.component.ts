@@ -213,6 +213,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       }
     });
 
+
     d3.select(this.chartElement).select('figure')
       .append('div')
       .attr('class', 'tooltip');
@@ -255,9 +256,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     if (!this.svg) {
       this.svg = this.createSvg(this.chartElement, this.chartElement.id);
-
       this.initializeSvgGraphElements();
-      console.log(this.svg)
 
       // zoom out a bit to show all data at start
       this.svg
@@ -341,7 +340,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       }
     };
 
-    this.incrementsViewItem = new Increments(this.svg, this.xScale, this.incrementsData);
+    this.incrementsViewItem = new Increments(this.svg, this.xScale, this.incrementsData, this.timelineData.id);
     this.incrementsViewItem.draw({left: 0, top: this.taskViewItem.getAreaHeight()});
 
     this.incrementsViewItem.onClickAddButton = () => {
@@ -468,7 +467,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   }
 
   public createSvg(element, id): any {
-    console.log(d3.select(element))
 
     const svg = d3.select(element).select('figure')
       .append('svg')
@@ -518,10 +516,10 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     const projectGroup = this.svg.append('g').attr('class', 'project-group');
     projectGroup.attr('transform', 'translate(' + this.padding.left + ',45)');
 
-    const incrementGroup = this.svg.append('g').attr('class', 'increment-group');
+    const incrementGroup = this.svg.append('g').attr('class', 'increment-group').attr('id', 'incrementArea' + this.timelineData.id);
     incrementGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + 30) + ')');
 
-    const dataGroup = this.svg.append('g').attr('class', 'data-group' + this.timelineData.id);
+    const dataGroup = this.svg.append('g').attr('class', 'data-group').attr('id', 'milestoneArea' + this.timelineData.id);
     dataGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + 60) + ')');
 
     const currentDateGroup = this.svg.append('g').attr('class', 'current-date-group');
@@ -603,7 +601,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       .domain([this.periodStartDate, this.periodEndDate])
       .range([0, this.viewBoxWidth - this.padding.left]);
     this.setZoomScaleExtent(this.oneDayTick);
-
   }
 
   private refreshXScale(): void {

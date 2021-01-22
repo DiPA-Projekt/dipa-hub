@@ -1,61 +1,84 @@
 .mat-form-field--inline .mat-form-field {
-    margin-right: 10px;
-  }
+  margin-right: 10px;
+}
+
+.content-container {
+  margin: 10px;
+  padding-left: 10px;
+  width: 90%;
+}
+
+.mat-sidenav-container {
+  width: 100%;
+  height: calc(100vh - 84px);
+  background-color: transparent;
+  margin-top: 15px;
+}
+
+mat-sidenav-content {
+  background-color: white;
+  align-items: center;
+  justify-content: center;
+}
+
+.operationType-container {
+  display: inline-block;
+  padding: 6px 9px 9px 9px;
+  background-color: rgba(0, 0, 0, 0.04);
+  width: 190.5px;
+  height: 51.326px;
+  border-bottom: 0.5px solid grey;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.label {
+  width: 100%;
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.6);
+  padding: 0;
+  margin: 0;
+}
+
+.name {
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.chart-container {
+  // width: 80%;
+  // padding-right: 10%;
+  width: 95%;
+  padding-left: 1%;
+  padding-right: 1%;
+
+}
+
+.template-controller {
   
-  .content-container {
-    margin: 10px;
-    padding-left: 10px;
-    width: 90%;
-  }
-  
-  .mat-sidenav-container {
-    width: 100%;
-    background-color: white;
-    margin-top: 5px;
-  }
-  
-  mat-sidenav-content {
-    background-color: white;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  mat-sidenav {
-    width: 240px;
-    background-color: white;
-    height: 100%;
-  }
-  
-  .sidenav-header {
-    padding: 16px 16px 0;
-  }
-  
-  .favorite-links-list {
-    margin-top: 20px;
-  }
-  
-  .operationType-container {
-    display: inline-block;
-    padding: 6px 9px 9px 9px;
-    background-color: rgba(0, 0, 0, 0.04);
-    width: 190.5px;
-    height: 51.326px;
-    border-bottom: 0.5px solid grey;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-  }
-  
-  .label {
-    width: 100%;
-    font-size: 11px;
-    color: rgba(0, 0, 0, 0.6);
-    padding: 0;
-    margin: 0;
-  }
-  
-  .name {
-    width: 100%;
-    text-overflow: ellipsis;
-    overflow: hidden;
-  }
-  
+  height: 290px;
+  text-align: center;
+  justify-content: center;
+  margin: auto;
+}
+
+.template-controller-container {
+  margin-top: 70px;
+}
+
+.logo {
+  width: 100px;
+}
+
+button {
+  margin: 5px;
+}
+
+.button-template {
+  text-align: center;
+}
+
+.text-template {
+  margin: 0px;
+}

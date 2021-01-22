@@ -24,6 +24,8 @@ paths:
     $ref: "paths/updateProject.yml"
   /timelines/{timelineId}/templates:
     $ref: "paths/templates.yml"
+  /timelines/{timelineId}/templates/{templateId}:
+    $ref: "paths/updateTemplate.yml"
   /timelines/{timelineId}/increments:
     $ref: "paths/increments.yml"
   /timelines/{timelineId}/increments/add:

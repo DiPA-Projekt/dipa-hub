@@ -9,10 +9,12 @@ export class Increments {
   elementColor = '#62a9f9';
 
   height = 200;
+  incrementAreaId;
 
-  constructor(svg: any, xScale: any, data: any) {
+  constructor(svg: any, xScale: any, data: any, incrementAreaId: any) {
     this.svg = svg;
     this.xScale = xScale;
+    this.incrementAreaId = incrementAreaId;
 
     this.setData(data);
   }
@@ -24,13 +26,13 @@ export class Increments {
 
     this.data = data;
 
-    const dataGroup = this.svg.select('g.increment-group');
+    const dataGroup = this.svg.select('g' + '#incrementArea' + this.incrementAreaId + '.increment-group');
     dataGroup.selectAll('g.incrementEntry')
       .data(this.data);
   }
 
   reset(offset): void {
-    const dataGroup = this.svg.select('g.increment-group');
+    const dataGroup = this.svg.select('g' + '#incrementArea' + this.incrementAreaId + '.increment-group');
     dataGroup.selectAll('g.incrementEntry').remove();
     this.draw(offset);
     this.redraw(offset);
@@ -38,7 +40,7 @@ export class Increments {
 
   draw(offset): void {
 
-    const dataGroup = this.svg.select('g.increment-group');
+    const dataGroup = this.svg.select('g' + '#incrementArea' + this.incrementAreaId + '.increment-group');;
 
     const incrementGroup = dataGroup.selectAll('g.incrementEntry')
       .data(this.data)
@@ -118,7 +120,7 @@ export class Increments {
 
   redraw(offset): void {
 
-    const dataGroup = this.svg.select('g.increment-group');
+    const dataGroup = this.svg.select('g' + '#incrementArea' + this.incrementAreaId + '.increment-group');;
 
     // increment entry
     const incrementGroup = dataGroup.selectAll('g.incrementEntry')
