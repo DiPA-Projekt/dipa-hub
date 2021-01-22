@@ -15,6 +15,8 @@
 
   <properties>
     <sonar.sources>projects/dipa-frontend/src</sonar.sources>
+    <sonar.javascript.lcov.reportPaths>coverage/dipa-frontend/lcov.info</sonar.javascript.lcov.reportPaths>
+    <sonar.typescript.tsconfigPath>tsconfig.json</sonar.typescript.tsconfigPath>
   </properties>
 
   <build>
