@@ -13,7 +13,8 @@
     "e2e": "ng e2e",
     "build:ci": "npm run build:api && npm run eslint:ci && npm run test:ci && npm run build:prod",
     "eslint": "eslint projects/dipa-frontend/{e2e,src}/**/*.{html,js,json,jsx,ts,tsx}",
-    "eslint:ci": "npm run eslint -- --quiet=true -f json -o eslint-report.json || true"
+    "eslint:ci": "npm run eslint -- --quiet=true -f json -o eslint-report.json || true",
+    "format": "prettier --check projects/dipa-frontend/{src,tests}/**"
   },
   "private": true,
   "dependencies": {
@@ -63,6 +64,7 @@
     "karma-jasmine-html-reporter": "1.5.4",
     "ng-packagr": "11.0.3",
     "npm-check-updates": "^10.2.5",
+    "prettier": "2.2.1",
     "protractor": "7.0.0",
     "puppeteer": "^5.5.0",
     "ts-node": "9.1.1",
