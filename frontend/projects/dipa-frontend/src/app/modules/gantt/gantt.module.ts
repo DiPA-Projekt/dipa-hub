@@ -36,10 +36,10 @@ import {MatRadioModule} from '@angular/material/radio';
     ToolkitComponent,
     SidenavComponent,
     TemplatesComponent,
-    TemplatesViewComponent
+    TemplatesViewComponent,
     SidenavComponent,
     FilesComponent,
-    ChartComponent,
+    ChartComponent
   ],
   exports: [
     ChartComponent,
