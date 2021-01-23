@@ -6,7 +6,6 @@ import online.dipa.hub.TimelineState;
 import online.dipa.hub.api.model.*;
 import online.dipa.hub.persistence.entities.PlanTemplateEntity;
 import online.dipa.hub.persistence.entities.ProjectApproachEntity;
-import online.dipa.hub.persistence.entities.ProjectEntity;
 import online.dipa.hub.persistence.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
@@ -24,6 +23,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
+import static online.dipa.hub.api.model.Timeline.ProjectTypeEnum;
 
 @Service
 @SessionScope
@@ -650,21 +650,18 @@ public class TimelineService {
 
         List<Long> downloadFileIds = new ArrayList<>();
 
-        switch (sessionTimeline.getTimeline().getProjectType()) {
-            case AN_PROJEKT:
-                if (projectApproach.isIterative()) {
-                    downloadFileIds.add(3L);
-                } else {
-                    downloadFileIds.add(1L);
-                }
-                break;
-            case INTERNES_PROJEKT:
-                if (projectApproach.isIterative()) {
-                    downloadFileIds.add(4L);
-                } else {
-                    downloadFileIds.add(2L);
-                }
-                break;
+        if (sessionTimeline.getTimeline().getProjectType() == ProjectTypeEnum.AN_PROJEKT) {
+            if (projectApproach.isIterative()) {
+                downloadFileIds.add(3L);
+            } else {
+                downloadFileIds.add(1L);
+            }
+        } else if (sessionTimeline.getTimeline().getProjectType() == ProjectTypeEnum.INTERNES_PROJEKT) {
+            if (projectApproach.isIterative()) {
+                downloadFileIds.add(4L);
+            } else {
+                downloadFileIds.add(2L);
+            }
         }
 
         downloadFileIds.add(5L);

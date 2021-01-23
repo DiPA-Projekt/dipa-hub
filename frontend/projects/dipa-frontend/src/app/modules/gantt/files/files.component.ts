@@ -35,14 +35,14 @@ export class FilesComponent implements OnInit, OnChanges, OnDestroy {
     this.downloadFilesSubscription = this.milestonesService.getFilesForMilestone(this.timelineId, this.milestoneId)
       .subscribe((data) => {
 
-        this.fileItems = data.map(x => {
-          return {
+        this.fileItems = data.map(x => (
+          {
             id: x.id,
             name: x.name,
             icon: 'description',
             file: '/downloadFile/' + x.id
-          };
-        });
+          }
+        ));
       });
   }
 
