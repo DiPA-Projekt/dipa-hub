@@ -1,0 +1,9 @@
+<section *ngIf="fileItems.length">
+  <div style="font-size: medium;">
+    Das benötigst du
+  </div>
+
+  <mat-nav-list>
+    <app-nav-menu-list-item *ngFor="let item of fileItems" [item]="item"></app-nav-menu-list-item>
+  </mat-nav-list>
+</section>

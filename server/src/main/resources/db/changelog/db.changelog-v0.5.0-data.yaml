@@ -106,3 +106,103 @@ databaseChangeLog:
               - column:
                   name: sort_order
                   value: 2
+  - changeSet:
+      id: insert-file-phb-an-project-agil
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: download_file
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: name
+                  value: PHB-Vorlage AN-Projekt (Agile SWE)
+              - column:
+                  name: description
+                  value: Projekthandbuch
+              - column:
+                  name: path
+                  value: downloadFiles/PHB-Vorlage AN-Projekt (Agile SWE).docx
+  - changeSet:
+      id: insert-file-phb-intern-project-agil
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: download_file
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: name
+                  value: PHB-Vorlage Internes Projekt (Agile SWE)
+              - column:
+                  name: description
+                  value: Projekthandbuch
+              - column:
+                  name: path
+                  value: downloadFiles/PHB-Vorlage Internes Projekt (Agile SWE).docx
+  - changeSet:
+      id: insert-file-phb-an-project-increment
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: download_file
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: name
+                  value: PHB-Vorlage AN-Projekt (SWE)
+              - column:
+                  name: description
+                  value: Projekthandbuch
+              - column:
+                  name: path
+                  value: downloadFiles/PHB-Vorlage AN-Projekt (SWE).docx
+  - changeSet:
+      id: insert-file-phb-intern-project-increment
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: download_file
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: name
+                  value: PHB-Vorlage Internes Projekt (SWE)
+              - column:
+                  name: description
+                  value: Projekthandbuch
+              - column:
+                  name: path
+                  value: downloadFiles/PHB-Vorlage Internes Projekt (SWE).docx
+  - changeSet:
+      id: insert-file-risk-list
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: download_file
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: name
+                  value: ITZBund Risikoliste
+              - column:
+                  name: description
+                  value: Risikoliste
+              - column:
+                  name: path
+                  value: downloadFiles/itzbund_risikoliste.xlsx

@@ -3,25 +3,16 @@ package online.dipa.hub.services;
 import net.fortuna.ical4j.model.TimeZone;
 import online.dipa.hub.IcsCalendar;
 import online.dipa.hub.TimelineState;
-import online.dipa.hub.api.model.Increment;
-import online.dipa.hub.api.model.Milestone;
-import online.dipa.hub.api.model.ProjectApproach;
-import online.dipa.hub.api.model.OperationType;
-import online.dipa.hub.api.model.Timeline;
+import online.dipa.hub.api.model.*;
 import online.dipa.hub.persistence.entities.PlanTemplateEntity;
 import online.dipa.hub.persistence.entities.ProjectApproachEntity;
-
-import online.dipa.hub.persistence.repositories.PlanTemplateRepository;
-import online.dipa.hub.persistence.repositories.ProjectApproachRepository;
-import online.dipa.hub.persistence.repositories.ProjectRepository;
-import online.dipa.hub.persistence.repositories.OperationTypeRepository;
-
+import online.dipa.hub.persistence.entities.ProjectEntity;
+import online.dipa.hub.persistence.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.SessionScope;
-
 
 import javax.persistence.EntityNotFoundException;
 import java.io.File;
@@ -46,6 +37,9 @@ public class TimelineService {
 
     @Autowired
     private ProjectRepository projectRespository;
+
+    @Autowired
+    private FileRepository fileRepository;
 
     @Autowired
     private ProjectApproachRepository projectApproachRepository;
@@ -104,7 +98,7 @@ public class TimelineService {
 
         final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
 
-        if (sessionTimeline.getMilestones() == null) {
+        if (sessionTimeline.getMilestones() == null && projectApproach != null) {
             if (projectApproach.isIterative()) {
                 initializeIncrements(timelineId);
                 sessionTimeline.setMilestones(this.loadMilestones(timelineId, 1));
@@ -643,6 +637,43 @@ public class TimelineService {
                 String.format("Milestone with id: %1$s not found.", milestoneId)));
 
         updatedMilestone.setStatus(status);
+    }
+
+    public List<DownloadFile> getFilesForMilestone(final Long timelineId, final Long milestoneId) {
+
+        final TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+        final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
+
+        if (milestoneId != 21 || projectApproach == null) {    // Meilenstein id 21: Projekteinrichtung
+            return Collections.emptyList();
+        }
+
+        List<Long> downloadFileIds = new ArrayList<>();
+
+        switch (sessionTimeline.getTimeline().getProjectType()) {
+            case AN_PROJEKT:
+                if (projectApproach.isIterative()) {
+                    downloadFileIds.add(3L);
+                } else {
+                    downloadFileIds.add(1L);
+                }
+                break;
+            case INTERNES_PROJEKT:
+                if (projectApproach.isIterative()) {
+                    downloadFileIds.add(4L);
+                } else {
+                    downloadFileIds.add(2L);
+                }
+                break;
+        }
+
+        downloadFileIds.add(5L);
+
+        return fileRepository.findAll()
+                .stream()
+                .filter(file -> downloadFileIds.contains(file.getId()))
+                .map(p -> conversionService.convert(p, DownloadFile.class))
+                .collect(Collectors.toList());
     }
 
 }
