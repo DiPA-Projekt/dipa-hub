@@ -49,7 +49,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
   selectedStandardTemplateIndex: number;
   projectApproachesList: any;
 
-  standardName;
+  private CURRENT_TEMPLATE_NAME = 'aktuell';
 
   constructor(public templatesViewControlsService: TemplatesViewControlsService,
               public ganttControlsService: GanttControlsService,
@@ -85,9 +85,6 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
             this.selectedOperationTypeName = resOperation.find(item => item.id === Number(this.selectedOperationTypeId)).name;
           });
 
-          // this.selectedProjectApproachName =  this.projectApproachesList
-          //       .find(item => item.id === Number(this.selectedProjectApproachId)).name;
-
         });
     });
 
@@ -111,7 +108,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
 
         this.selectedTemplatesList = [];
 
-        this.selectedTemplatesList.push(templatesData.find(t => t.name === 'aktuell'));
+        this.selectedTemplatesList.push(templatesData.find(t => t.name === this.CURRENT_TEMPLATE_NAME));
 
         this.standardTemplatesList = templatesData.filter(t => t.standard === true);
 
@@ -157,8 +154,8 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
   onNextStandard(event): void {
 
     if (this.standardTemplatesList.length > 0) {
-      
-      this.selectedStandardTemplateIndex = this.getNexItemList(this.standardTemplatesList, this.selectedStandardTemplateIndex);
+
+      this.selectedStandardTemplateIndex = this.getNextItemList(this.standardTemplatesList, this.selectedStandardTemplateIndex);
 
       const id = this.standardTemplatesList[this.selectedStandardTemplateIndex].id;
       this.selectedTemplatesIdList[1] = id;
@@ -168,7 +165,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
 
   }
 
-  getNexItemList(listItems, currentIndex): number {
+  getNextItemList(listItems, currentIndex): number {
 
     if (currentIndex + 1 < listItems.length ) {
       currentIndex++;

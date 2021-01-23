@@ -57,6 +57,8 @@ public class TimelineService {
     @Autowired
     private PlanTemplateRepository planTemplateRepository;
 
+    private static final String CURRENT_TEMPLATE_NAME = "aktuell";
+
     public List<Timeline> getTimelines() {
         initializeTimelines();
 
@@ -261,7 +263,7 @@ public class TimelineService {
 
                     PlanTemplateEntity masterPlanTemplate = planTemplateList.stream()
                             .filter(template -> template.getId().equals(masterPlanId))
-                            .filter(template -> template.getDefaultTemplate()).findFirst().orElse(null);
+                            .filter(PlanTemplateEntity::getDefaultTemplate).findFirst().orElse(null);
                 
                     if (masterPlanTemplate != null) {
                         milestones.addAll(convertMilestones(masterPlanTemplate));
@@ -270,7 +272,7 @@ public class TimelineService {
                     PlanTemplateEntity planTemplate = planTemplateList.stream()
                             .filter(template -> template.getProjectApproach() != null)
                             .filter(template -> template.getProjectApproach().getId().equals(projectApproach.getId()))
-                            .filter(template -> template.getDefaultTemplate())
+                            .filter(PlanTemplateEntity::getDefaultTemplate)
                             .findFirst().orElse(null);
                     
                     if (planTemplate != null) {
@@ -670,7 +672,7 @@ public class TimelineService {
 
         Template currentTemplate = new Template()
                                         .id(count++)
-                                        .name("aktuell")
+                                        .name(CURRENT_TEMPLATE_NAME)
                                         .milestones(sessionTimeline.getMilestones())
                                         .increments(sessionTimeline.getIncrements());
 
@@ -688,7 +690,7 @@ public class TimelineService {
         if (planTemplateList.size() == 1) {
             milestones = convertMilestones(planTemplateList.get(0));
 
-            Template respoTemplate = new Template().id(count++)
+            Template respoTemplate = new Template().id(count)
                                                     .name(planTemplateList.get(0).getName())
                                                     .standard(planTemplateList.get(0).getStandard())
                                                     .milestones(this.updateMilestonesTemplate(timelineId, milestones));
@@ -773,7 +775,6 @@ public class TimelineService {
             Template selectedTemplate = selectedTemplateOptional.get();
             sessionTimeline.setMilestones(selectedTemplate.getMilestones());
             sessionTimeline.setIncrements(selectedTemplate.getIncrements());
-            // sessionTimeline
         }
     
     }
