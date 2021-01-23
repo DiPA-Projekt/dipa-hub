@@ -106,3 +106,121 @@ databaseChangeLog:
               - column:
                   name: sort_order
                   value: 2
+  - changeSet:
+      id: update-planTemplate-Linear-nach-UfAB
+      author: nguyen
+      changes:
+        - update:
+            tableName: plan_template
+            columns:
+              - column:
+                  name: name
+                  value: Linear-nach-UfAB PlanTemplate
+              - column:
+                  name: project_approach_id
+                  value: 4
+            where: id=5
+  - changeSet:
+      id: insert-plan-template-Linear-nach-UfAB-vereinfacht
+      author: nguyen
+      changes:
+        - insert:
+            tableName: plan_template
+            columns:
+              - column:
+                  name: id
+                  value: 6
+              - column:
+                  name: name
+                  value: Linear-nach-UfAB vereinfacht PlanTemplate
+              - column:
+                  name: operation_type_id
+                  value: 3
+              - column:
+                  name: project_approach_id
+                  value: 4
+              - column:
+                  name: standard
+                  value: true
+              - column:
+                  name: default_template
+                  value: false
+  - changeSet:
+      id: insert-milestones-Linear-nach-UfAB-vereinfacht
+      author: nguyen
+      changes:
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 65
+              - column:
+                  name: name
+                  value: Beschaffungseckdaten sind geklärt
+              - column:
+                  name: date_offset
+                  value: 60
+              - column:
+                  name: plan_template_id
+                  value: 6
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 66
+              - column:
+                  name: name
+                  value: Beschaffung ist geplant
+              - column:
+                  name: date_offset
+                  value: 150
+              - column:
+                  name: plan_template_id
+                  value: 6
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 67
+              - column:
+                  name: name
+                  value: Durchführung der Beschaffung ist entschieden
+              - column:
+                  name: date_offset
+                  value: 240
+              - column:
+                  name: plan_template_id
+                  value: 6
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 68
+              - column:
+                  name: name
+                  value: Vergabeunterlagen sind veröffentlicht
+              - column:
+                  name: date_offset
+                  value: 270
+              - column:
+                  name: plan_template_id
+                  value: 6
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 69
+              - column:
+                  name: name
+                  value: Vertrag ist geschlossen
+              - column:
+                  name: date_offset
+                  value: 540
+              - column:
+                  name: plan_template_id
+                  value: 6
