@@ -57,8 +57,9 @@ public class TimelineService {
     @Autowired
     private PlanTemplateRepository planTemplateRepository;
 
-    final long startMilestoneId = 21;
-    final long endMilestoneId = 28;
+    private static final long masterPlanStartMilestoneId = 21;
+    private static final long masterPlanEndMilestoneId = 28;
+    private static final String CURRENT_TEMPLATE_NAME = "aktuell";
 
     public List<Timeline> getTimelines() {
         initializeTimelines();
@@ -152,8 +153,8 @@ public class TimelineService {
 
             }
             
-            milestones.removeIf(m -> m.getId().equals(endMilestoneId));
-            milestones.remove(0);
+            milestones.removeIf(m -> m.getId().equals(masterPlanStartMilestoneId));
+            milestones.removeIf(m -> m.getId().equals(masterPlanEndMilestoneId));
             
             for (Entry<Increment, List<Milestone>> entry : getIncrementMilestones(milestones, timelineId,
                     incrementCount).entrySet()) {
@@ -265,22 +266,22 @@ public class TimelineService {
 
                     long masterPlanId = 2;
 
-                    PlanTemplateEntity masterPlanTemplate = planTemplateList.stream()
+                    Optional<PlanTemplateEntity> masterPlanTemplate = planTemplateList.stream()
                             .filter(template -> template.getId().equals(masterPlanId))
-                            .filter(template -> template.getDefaultTemplate()).findFirst().orElse(null);
+                            .filter(PlanTemplateEntity::getDefaultTemplate).findFirst();
                 
-                    if (masterPlanTemplate != null) {
-                        milestones.addAll(convertMilestones(masterPlanTemplate));
+                    if (masterPlanTemplate.isPresent()) {
+                        milestones.addAll(convertMilestones(masterPlanTemplate.get()));
                     }
         
-                    PlanTemplateEntity planTemplate = planTemplateList.stream()
+                    Optional<PlanTemplateEntity> planTemplate = planTemplateList.stream()
                             .filter(template -> template.getProjectApproach() != null)
                             .filter(template -> template.getProjectApproach().getId().equals(projectApproach.getId()))
-                            .filter(template -> template.getDefaultTemplate())
-                            .findFirst().orElse(null);
+                            .filter(PlanTemplateEntity::getDefaultTemplate)
+                            .findFirst();
                     
-                    if (planTemplate != null) {
-                        milestones.addAll(convertMilestones(planTemplate));
+                    if (planTemplate.isPresent()) {
+                        milestones.addAll(convertMilestones(planTemplate.get()));
                     }
 
                 }
@@ -340,8 +341,8 @@ public class TimelineService {
             initMilestones = sortMilestones(initMilestones);
 
             // initMilestones.remove(initMilestones.size() - 1);
-            initMilestones.removeIf(m -> m.getId().equals(startMilestoneId));
-            initMilestones.removeIf(m -> m.getId().equals(endMilestoneId));
+            initMilestones.removeIf(m -> m.getId().equals(masterPlanStartMilestoneId));
+            initMilestones.removeIf(m -> m.getId().equals(masterPlanEndMilestoneId));
 
             //minus 14 days for "Inkrement geplant"
             firstMilestoneDate = initMilestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).orElseThrow(() -> new EntityNotFoundException(
@@ -467,27 +468,19 @@ public class TimelineService {
         sessionTimeline.getTimeline().setStart(newTimelineStart);
 
         for (Milestone m : sessionTimeline.getMilestones()) {
-            if (!m.getId().equals(endMilestoneId)) {
-                long oldMilestoneRelativePosition = DAYS.between(timelineStart, m.getDate());
-                long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
+            long oldMilestoneRelativePosition = DAYS.between(timelineStart, m.getDate());
+            long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
 
-                m.setDate(newTimelineStart.plusDays(newMilestoneRelativePosition));
-            }
-            else {
-                m.setDate(timelineEnd);
-            }
+            m.setDate(newTimelineStart.plusDays(newMilestoneRelativePosition));
+           
         }
 
         for (Milestone temp : sessionTimeline.getTempIncrementMilestones()) {
-            if (!temp.getId().equals(endMilestoneId)) {
-                long oldMilestoneRelativePosition = DAYS.between(timelineStart, temp.getDate());
-                long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
-    
-                temp.setDate(newTimelineStart.plusDays(newMilestoneRelativePosition));
-            }
-            else {
-                temp.setDate(timelineEnd);
-            }
+            long oldMilestoneRelativePosition = DAYS.between(timelineStart, temp.getDate());
+            long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
+
+            temp.setDate(newTimelineStart.plusDays(newMilestoneRelativePosition));
+            
         }
 
         updateIncrements(timelineId);
@@ -661,28 +654,20 @@ public class TimelineService {
 
             for (Milestone m : sessionTimeline.getMilestones()) {
 
-                if (!m.getId().equals(endMilestoneId)) {
-                    long oldMilestoneRelativePosition = DAYS.between(initTimelineStart, m.getDate());
-                    long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
+                long oldMilestoneRelativePosition = DAYS.between(initTimelineStart, m.getDate());
+                long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
 
-                    m.setDate(currentTimelineStart.plusDays(newMilestoneRelativePosition));
-                }
-                else {
-                    m.setDate(currentTimelineEnd);
-                }
+                m.setDate(currentTimelineStart.plusDays(newMilestoneRelativePosition));
+               
                 
             }
 
             for (Milestone temp : sessionTimeline.getTempIncrementMilestones()) {
-                if (!temp.getId().equals(endMilestoneId)) {
-                    long oldMilestoneRelativePosition = DAYS.between(initTimelineStart, temp.getDate());
-                    long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
+                long oldMilestoneRelativePosition = DAYS.between(initTimelineStart, temp.getDate());
+                long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
 
-                    temp.setDate(currentTimelineStart.plusDays(newMilestoneRelativePosition));
-                }
-                else {
-                    temp.setDate(currentTimelineEnd);
-                }
+                temp.setDate(currentTimelineStart.plusDays(newMilestoneRelativePosition));
+               
                 
             }
 
@@ -706,7 +691,7 @@ public class TimelineService {
 
         Template currentTemplate = new Template()
                                         .id(count++)
-                                        .name("aktuell")
+                                        .name(CURRENT_TEMPLATE_NAME)
                                         .milestones(sessionTimeline.getMilestones())
                                         .increments(sessionTimeline.getIncrements());
 
@@ -722,7 +707,7 @@ public class TimelineService {
         if (planTemplateList.size() == 1) {
             List<Milestone>  milestones = convertMilestones(planTemplateList.get(0));
 
-            Template respoTemplate = new Template().id(count++)
+            Template respoTemplate = new Template().id(count)
                                                     .name(planTemplateList.get(0).getName())
                                                     .standard(planTemplateList.get(0).getStandard())
                                                     .milestones(this.updateMilestonesTemplate(timelineId, milestones));
@@ -743,7 +728,7 @@ public class TimelineService {
                 List<Milestone> milestones = new ArrayList<>();
 
                 if (masterPlanTemplate.isPresent()) {
-                    // milestones.addAll(updateMilestonesTemplate(timelineId, convertMilestones(masterPlanTemplate.get())));
+
                     milestones.addAll(convertMilestones(masterPlanTemplate.get()));
                 }
 
@@ -753,14 +738,15 @@ public class TimelineService {
                         .standard(temp.getStandard());
 
                 if (projectApproach.isIterative()) {
+                    milestones = updateMilestonesTemplate(timelineId, milestones);
               
                     List<Milestone> tempMilestones = new ArrayList<>(convertMilestones(temp));
-                    milestones = updateMilestonesTemplate(timelineId, milestones);
 
                     for (Entry<Increment, List<Milestone>> entry : getIncrementMilestones(tempMilestones,timelineId, 1).entrySet()) {
                         List<Milestone> milestonesList = entry.getValue();
                         milestones.addAll(milestonesList);
                     }
+
                     template.milestones(sortMilestones(milestones));
                     
                     if (temp.getStandard()) {

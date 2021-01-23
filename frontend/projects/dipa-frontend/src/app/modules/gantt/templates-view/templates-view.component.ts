@@ -54,7 +54,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
 
   projectApproachesList: any;
 
-  standardName;
+  private CURRENT_TEMPLATE_NAME = 'aktuell';
 
   constructor(public templatesViewControlsService: TemplatesViewControlsService,
               public ganttControlsService: GanttControlsService,
@@ -113,13 +113,12 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
 
         this.selectedTemplatesList = [];
 
-        this.selectedTemplatesList.push(templatesData.find(t => t.name === 'aktuell'));
+        this.selectedTemplatesList.push(templatesData.find(t => t.name === this.CURRENT_TEMPLATE_NAME));
 
         this.standardTemplatesList = templatesData.filter(t => t.standard === true);
 
         this.selectedStandardTemplateIndex = 0;
         this.selectedTemplatesList.push(this.standardTemplatesList[0]);
-
 
         this.nonStandardTemplatesList = templatesData.filter(t => t.standard === false);
         if (this.nonStandardTemplatesList.length > 0) {
@@ -160,7 +159,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
 
     if (this.standardTemplatesList.length > 0) {
 
-      this.selectedStandardTemplateIndex = this.getNexItemList(this.standardTemplatesList, this.selectedStandardTemplateIndex);
+      this.selectedStandardTemplateIndex = this.getNextItemList(this.standardTemplatesList, this.selectedStandardTemplateIndex);
 
       const id = this.standardTemplatesList[this.selectedStandardTemplateIndex].id;
       this.selectedTemplatesIdList[1] = id;
@@ -188,7 +187,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
 
     if (this.nonStandardTemplatesList.length > 0) {
 
-      this.selectedNonStandardTemplateIndex = this.getNexItemList(this.nonStandardTemplatesList, this.selectedNonStandardTemplateIndex);
+      this.selectedNonStandardTemplateIndex = this.getNextItemList(this.nonStandardTemplatesList, this.selectedNonStandardTemplateIndex);
 
       const id = this.nonStandardTemplatesList[this.selectedNonStandardTemplateIndex].id;
       this.selectedTemplatesIdList[2] = id;
@@ -198,7 +197,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
 
   }
 
-  getNexItemList(listItems, currentIndex): number {
+  getNextItemList(listItems, currentIndex): number {
 
     if (currentIndex + 1 < listItems.length ) {
       currentIndex++;
