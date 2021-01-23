@@ -46,7 +46,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
   selectedTemplatesList = [];
   selectedTemplatesIdList: any[];
 
-  standardTemplatesList = [];
+  standardTemplatesList;
   selectedStandardTemplateIndex: number;
 
   nonStandardTemplatesList = [];
@@ -90,9 +90,6 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
             this.selectedOperationTypeName = resOperation.find(item => item.id === Number(this.selectedOperationTypeId)).name;
           });
 
-          // this.selectedProjectApproachName =  this.projectApproachesList
-          //       .find(item => item.id === Number(this.selectedProjectApproachId)).name;
-
         });
     });
 
@@ -120,27 +117,15 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
 
         this.standardTemplatesList = templatesData.filter(t => t.standard === true);
 
-        if (this.selectedStandardTemplateIndex === null) {
-          this.selectedTemplatesList.push(templatesData.filter(t => t.standard === true)[0]);
-          this.selectedStandardTemplateIndex = 0;
-        }
-        else {
-          this.selectedTemplatesList.push(templatesData.filter(t => t.standard === true)[this.selectedStandardTemplateIndex]);
-        }
+        this.selectedStandardTemplateIndex = 0;
+        this.selectedTemplatesList.push(this.standardTemplatesList[0]);
+
 
         this.nonStandardTemplatesList = templatesData.filter(t => t.standard === false);
-
-        this.selectedTemplatesList.push(this.nonStandardTemplatesList[0])
-        // if (this.selectedNonStandardTemplateIndex === null) {
-        //   this.selectedTemplatesList.push(templatesData.filter(t => t.standard === false)[0]);
-        //   this.selectedNonStandardTemplateIndex = 0;
-        // }
-        // else {
-        //   this.selectedTemplatesList.push(templatesData.filter(t => t.standard === false)[this.selectedNonStandardTemplateIndex]);
-        // }
-
-        console.log(this.selectedTemplatesList)
-        // this.standardName = this.standardTemplatesList[this.selectedStandardTemplateIndex].name;
+        if (this.nonStandardTemplatesList.length > 0) {
+          this.selectedNonStandardTemplateIndex = 0;
+          this.selectedTemplatesList.push(this.nonStandardTemplatesList[0]);
+        }
 
         const selectedTemplates = this.selectedTemplatesList;
         this.selectedTemplatesIdList = this.selectedTemplatesList.map(t => t.id);
@@ -287,6 +272,14 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
 
   updateTemplateStandard(event): void {
     const templateId = this.standardTemplatesList[this.selectedStandardTemplateIndex].id;
+
+    this.updateTemplateSubscription = this.templateService.updateTemplate(this.selectedTimelineId, templateId).subscribe(data => {
+      this.setData();
+    });
+  }
+
+  updateTemplateNonStandard(event): void {
+    const templateId = this.nonStandardTemplatesList[this.selectedNonStandardTemplateIndex].id;
 
     this.updateTemplateSubscription = this.templateService.updateTemplate(this.selectedTimelineId, templateId).subscribe(data => {
       this.setData();

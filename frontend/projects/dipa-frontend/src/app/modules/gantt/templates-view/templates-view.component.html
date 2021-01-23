@@ -58,9 +58,9 @@
               </div>
             </div>
           </div>
-          <div class="template-controller">
+          <div class="template-controller" *ngIf="nonStandardTemplatesList.length>0">
             <h2 class="text-template">Zeitpläne anderer Projekte</h2>
-            <button mat-stroked-button color="primary" (click)="updateTemplateStandard($event)">Übernehmen</button>
+            <button mat-stroked-button color="primary" (click)="updateTemplateNonStandard($event)">Übernehmen</button>
             <div class="row justify-content-center">
               <div class="button-template">
                 <button mat-icon-button (click)="onPrevNonStandard($event)">

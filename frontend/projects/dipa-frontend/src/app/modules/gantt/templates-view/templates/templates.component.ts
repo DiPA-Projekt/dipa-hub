@@ -115,31 +115,35 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
     ngOnInit(): void {
 
+      this.milestonesArea = [];
+      this.incrementsArea = [];
+      this.svg = null;
+
       // TODO: this is just temporary
       this.modifiable = false;
 
       this.periodStartDate = new Date(this.timelineData.start);
       this.periodEndDate = new Date(this.timelineData.end);
 
+
       d3.select(this.chartElement).select('figure')
       .append('div')
       .attr('class', 'tooltip');
-      console.log(this.allTemplates)
 
       this.selectedTemplatesIdList = this.templateData.map(t => t.id);
-
-      this.drawChart();
 
       this.templatesListSubscription = this.templatesViewControlsService.getTemplatesList()
         .subscribe((data) => {
 
-          if (data !== null) {
+          if (this.milestonesArea.length > 0) {
+            if (data !== null) {
 
-            this.selectedTemplatesIdList = data;
-            const newTemplates = this.allTemplates.filter(t => data.includes(t.id));
+              this.selectedTemplatesIdList = data;
+              const newTemplates = this.allTemplates.filter(t => data.includes(t.id));
 
-            this.setDataReset(this.timelineData, newTemplates);
+              this.setDataReset(this.timelineData, newTemplates);
 
+            }
           }
         });
 
@@ -198,6 +202,9 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
           }
         }
       });
+
+      this.drawChart();
+
   }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -231,18 +238,18 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
     private drawChart(): void {
 
-      if (!this.svg) {
-        this.svg = this.createSvg(this.chartElement, this.chartElement.id);
+      // if (!this.svg) {
+      this.svg = this.createSvg(this.chartElement, this.chartElement.id);
 
-        this.initializeSvgGraphElements();
+      this.initializeSvgGraphElements();
 
-        // zoom out a bit to show all data at start
-        this.svg
-        .transition()
-        .duration(0)
-        .call(this.zoom.scaleBy, 0.8)
-        .on('end', () => this.refreshXScale());
-      }
+      // zoom out a bit to show all data at start
+      this.svg
+      .transition()
+      .duration(0)
+      .call(this.zoom.scaleBy, 0.8)
+      .on('end', () => this.refreshXScale());
+      // }
 
       this.initializeXScale();
 
@@ -622,15 +629,25 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
           this.projectDuration.setData(this.timelineData);
           this.projectDuration.redraw(200);
 
+          this.incrementsArea = [];
+          let countId = 1;
+
           newTemplates.forEach((temp, i) => {
             this.milestonesArea[i].setData(temp.milestones);
             this.milestonesArea[i].redraw({left: 0, top: 0}, 200);
 
             if (temp.increments !== null) {
-              this.incrementsArea[i].setData(temp.increments);
-              this.incrementsArea[i].redraw({left: 0, top: 0});
+              const incrementsViewItem = new Increments(this.svg, this.xScale, temp.increments, countId);
+              incrementsViewItem.draw({left: 0, top: 0});
+              this.incrementsArea.push(incrementsViewItem);
             }
 
+            countId++;
+
+          });
+
+          this.incrementsArea.forEach((incrementsViewItem) => {
+          incrementsViewItem.redraw({left: 0, top: 0});
           });
 
       });
@@ -643,15 +660,20 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       this.projectDuration.setData(timelineData);
       this.projectDuration.redraw(200);
 
+      this.incrementsArea = [];
+      let countId = 1;
+
       templatesData.forEach((temp, i) => {
         this.milestonesArea[i].setData(temp.milestones);
         this.milestonesArea[i].reset({left: 0, top: 0});
 
         if (temp.increments !== null) {
-          this.incrementsArea[i].setData(temp.increments);
-          this.incrementsArea[i].reset({left: 0, top: 0});
+          const incrementsViewItem = new Increments(this.svg, this.xScale, temp.increments, countId);
+          incrementsViewItem.draw({left: 0, top: 0});
+          this.incrementsArea.push(incrementsViewItem);
         }
 
+        countId++;
       });
     }
 

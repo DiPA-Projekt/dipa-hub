@@ -340,7 +340,7 @@ databaseChangeLog:
                   value: 8
               - column:
                   name: name
-                  value:  Software Entwicklung inkrementell Non-standard 2
+                  value: Software Entwicklung inkrementell Non-standard 2
               - column:
                   name: operation_type_id
                   value: 2
