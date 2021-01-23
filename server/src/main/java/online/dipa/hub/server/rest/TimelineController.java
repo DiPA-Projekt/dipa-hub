@@ -13,6 +13,7 @@ import online.dipa.hub.api.model.Milestone;
 import online.dipa.hub.api.model.ProjectApproach;
 import online.dipa.hub.api.model.OperationType;
 import online.dipa.hub.api.model.Task;
+import online.dipa.hub.api.model.Template;
 import online.dipa.hub.api.model.Timeline;
 import online.dipa.hub.api.rest.TimelinesApi;
 
@@ -130,6 +131,18 @@ public class TimelineController implements TimelinesApi {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @Override
+    public ResponseEntity<List<Template>> getTemplatesForTimeline(final Long timelineId) {
+        final List<Template> templateList = timelineService.getTemplatesForTimeline(timelineId);
+        return ResponseEntity.ok(templateList);
+    }
+    
+    @Override
+    public ResponseEntity<Void> updateTemplate(final Long timelineId, final Long templateId) {
+        timelineService.updateTemplateForProject(timelineId, templateId);
+        return ResponseEntity.noContent().build();
     }
 
 }

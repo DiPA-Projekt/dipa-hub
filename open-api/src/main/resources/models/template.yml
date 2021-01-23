@@ -1,0 +1,26 @@
+Template:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the template
+      type: integer
+      format: int64
+      example: 2
+    name:
+      description: The name of the template
+      type: string
+      example: "Serveraustausch PlanTemplate"
+    standard:
+      description: Flag if this template is a standard template
+      type: boolean
+      example: true
+    milestones:
+      description: The list of milestones
+      type: array
+      items:
+        $ref: "../models/milestone.yml#/Milestone"
+    increments:
+      description: The list of increments
+      type: array
+      items:
+        $ref: "../models/increment.yml#/Increment"
