@@ -56,7 +56,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }, {
       name: 'Stöbern & Vergleichen',
       icon: 'find_replace',
-      // route: 'gantt/' + this.selectedTimelineId + '/templates'
+      route: 'gantt/' + this.selectedTimelineId + '/templates'
     }, {
       name: 'Werkzeugkit',
       icon: 'construction',

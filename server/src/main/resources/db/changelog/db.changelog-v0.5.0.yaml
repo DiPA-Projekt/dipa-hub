@@ -46,6 +46,28 @@ databaseChangeLog:
                   type: INTEGER
             tableName: external_link
   - changeSet:
+      id: addColumn-plantemplate-standard
+      author: nguyen
+      changes:
+        - addColumn:
+            tableName: plan_template
+            columns:
+              - column:
+                  name: standard
+                  type: boolean
+                  defaultValue: true
+  - changeSet:
+      id: addColumn-plantemplate-default
+      author: nguyen
+      changes:
+        - addColumn:
+            tableName: plan_template
+            columns:
+              - column:
+                  name: default_template
+                  type: boolean
+                  defaultValue: true
+  - changeSet:
       id: create-file-table
       author: bock
       changes:

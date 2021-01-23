@@ -128,6 +128,18 @@ public class TimelineController implements TimelinesApi {
     }
 
     @Override
+    public ResponseEntity<List<Template>> getTemplatesForTimeline(final Long timelineId) {
+        final List<Template> templateList = timelineService.getTemplatesForTimeline(timelineId);
+        return ResponseEntity.ok(templateList);
+    }
+
+    @Override
+    public ResponseEntity<Void> updateTemplate(final Long timelineId, final Long templateId) {
+        timelineService.updateTemplateForProject(timelineId, templateId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
     public ResponseEntity<List<DownloadFile>> getFilesForMilestone(final Long timelineId, final Long milestoneId) {
         final List<DownloadFile> attachedFilesList = timelineService.getFilesForMilestone(timelineId, milestoneId);
         return ResponseEntity.ok(attachedFilesList);

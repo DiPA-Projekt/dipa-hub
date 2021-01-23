@@ -313,7 +313,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.taskViewItem.draw({left: 0, top: 0});
 
     this.milestoneViewItem = new MilestonesArea(this.svg, this.chartElement, this.xScale,
-                                                this.milestoneData, this.modifiable, this.showMenu);
+                                                this.milestoneData, this.modifiable, this.showMenu, this.timelineData.id);
     this.milestoneViewItem.draw({left: 0, top: this.taskViewItem.getAreaHeight()});
 
     this.milestoneViewItem.onDragEndMilestone = (offsetDays: number, id: number) => {
@@ -339,7 +339,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       }
     };
 
-    this.incrementsViewItem = new Increments(this.svg, this.xScale, this.incrementsData);
+    this.incrementsViewItem = new Increments(this.svg, this.xScale, this.incrementsData, this.timelineData.id);
     this.incrementsViewItem.draw({left: 0, top: this.taskViewItem.getAreaHeight()});
 
     this.incrementsViewItem.onClickAddButton = () => {
@@ -515,10 +515,10 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     const projectGroup = this.svg.append('g').attr('class', 'project-group');
     projectGroup.attr('transform', 'translate(' + this.padding.left + ',45)');
 
-    const incrementGroup = this.svg.append('g').attr('class', 'increment-group');
+    const incrementGroup = this.svg.append('g').attr('class', 'increment-group').attr('id', 'incrementsArea' + this.timelineData.id);
     incrementGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + 30) + ')');
 
-    const dataGroup = this.svg.append('g').attr('class', 'data-group');
+    const dataGroup = this.svg.append('g').attr('class', 'data-group').attr('id', 'milestonesArea' + this.timelineData.id);
     dataGroup.attr('transform', 'translate(' + this.padding.left + ',' + (this.padding.top + 60) + ')');
 
     const currentDateGroup = this.svg.append('g').attr('class', 'current-date-group');
