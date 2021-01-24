@@ -309,11 +309,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
         milestoneViewItem.draw({left: this.padding.left, top: 0});
         this.milestonesArea.push(milestoneViewItem);
 
-        if (template.increments !== null) {
-          const incrementsViewItem = new Increments(this.svg, this.xScale, template.increments, countId);
-          incrementsViewItem.draw({left: 0, top: 0});
-          this.incrementsArea.push(incrementsViewItem);
-        }
+        this.createIncrementsArea(template.increments, countId, this.incrementsArea);
 
         countId++;
       }
@@ -634,11 +630,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
             this.milestonesArea[i].setData(temp.milestones);
             this.milestonesArea[i].redraw({left: 0, top: 0}, 200);
 
-            if (temp.increments !== null) {
-              const incrementsViewItem = new Increments(this.svg, this.xScale, temp.increments, countId);
-              incrementsViewItem.draw({left: 0, top: 0});
-              this.incrementsArea.push(incrementsViewItem);
-            }
+            this.createIncrementsArea(temp.increments, countId, this.incrementsArea);
 
             countId++;
 
@@ -665,14 +657,20 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
         this.milestonesArea[i].setData(temp.milestones);
         this.milestonesArea[i].reset({left: 0, top: 0});
 
-        if (temp.increments !== null) {
-          const incrementsViewItem = new Increments(this.svg, this.xScale, temp.increments, countId);
-          incrementsViewItem.draw({left: 0, top: 0});
-          this.incrementsArea.push(incrementsViewItem);
-        }
+        this.createIncrementsArea(temp.increments, countId, this.incrementsArea);
 
         countId++;
       });
+    }
+
+    private createIncrementsArea(data, index, incrementsArea) {
+
+      if (data !== null) {
+        const incrementsViewItem = new Increments(this.svg, this.xScale, data, index);
+        incrementsViewItem.draw({left: 0, top: 0});
+        incrementsArea.push(incrementsViewItem);
+      }
+
     }
 
   }

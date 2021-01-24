@@ -57,8 +57,8 @@ public class TimelineService {
     @Autowired
     private PlanTemplateRepository planTemplateRepository;
 
-    private static final long masterPlanStartMilestoneId = 21;
-    private static final long masterPlanEndMilestoneId = 28;
+    private static final long FIRST_MASTER_MILESTONE_ID = 21;
+    private static final long LAST_MASTER_MILESTONE_ID = 28;
     private static final String CURRENT_TEMPLATE_NAME = "aktuell";
 
     public List<Timeline> getTimelines() {
@@ -153,14 +153,11 @@ public class TimelineService {
 
             }
             
-            milestones.removeIf(m -> m.getId().equals(masterPlanStartMilestoneId));
-            milestones.removeIf(m -> m.getId().equals(masterPlanEndMilestoneId));
-            
-            for (Entry<Increment, List<Milestone>> entry : getIncrementMilestones(milestones, timelineId,
-                    incrementCount).entrySet()) {
-                List<Milestone> milestonesList = entry.getValue();
-                incrementMilestones.addAll(milestonesList);
-            }
+            milestones.removeIf(m -> m.getId().equals(FIRST_MASTER_MILESTONE_ID));
+            milestones.removeIf(m -> m.getId().equals(LAST_MASTER_MILESTONE_ID));
+
+            this.getValuesFromHashMap( getIncrementMilestones(milestones, timelineId,
+            incrementCount), incrementMilestones);  
 
             return sortMilestones(incrementMilestones);
         }
@@ -318,12 +315,11 @@ public class TimelineService {
             .filter(p -> p.getProjectApproach().getId().equals(sessionTimeline.getTimeline().getProjectApproachId())).findFirst().orElseThrow(() -> new EntityNotFoundException(
                             String.format("No project approach available for timeline id: %1$s.", timelineId))).getProjectApproach();
 
-            if (projectApproach.isIterative()) {
+            if (projectApproach.isIterative() && (currentSessionTemplates == null || sessionTimeline.getIterative())) {
                 
-                if (currentSessionTemplates == null || sessionTimeline.getIterative()) {
-                    List<Milestone> initMilestones = getMilestonesFromRespository(timelineId);
-                    sessionTimeline.setIncrements(this.loadIncrementsTemplate(timelineId, 1, initMilestones, null));
-                }
+                List<Milestone> initMilestones = getMilestonesFromRespository(timelineId);
+                sessionTimeline.setIncrements(this.loadIncrementsTemplate(timelineId, 1, initMilestones, null));
+                
             }
     
         }
@@ -339,9 +335,8 @@ public class TimelineService {
         if (currentMilestones == null) {
             initMilestones = sortMilestones(initMilestones);
 
-            // initMilestones.remove(initMilestones.size() - 1);
-            initMilestones.removeIf(m -> m.getId().equals(masterPlanStartMilestoneId));
-            initMilestones.removeIf(m -> m.getId().equals(masterPlanEndMilestoneId));
+            initMilestones.removeIf(m -> m.getId().equals(FIRST_MASTER_MILESTONE_ID));
+            initMilestones.removeIf(m -> m.getId().equals(LAST_MASTER_MILESTONE_ID));
 
             //minus 14 days for "Inkrement geplant"
             firstMilestoneDate = initMilestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).orElseThrow(() -> new EntityNotFoundException(
@@ -452,7 +447,6 @@ public class TimelineService {
     public void moveTimelineStartByDays(final Long timelineId, final Long days) {
 
         TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
-        // long endMilestoneId = 28;
 
         updateTempMilestones(timelineId);
 
@@ -658,8 +652,7 @@ public class TimelineService {
                 long oldMilestoneRelativePosition = DAYS.between(initTimelineStart, m.getDate());
                 long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
 
-                m.setDate(currentTimelineStart.plusDays(newMilestoneRelativePosition));
-               
+                m.setDate(currentTimelineStart.plusDays(newMilestoneRelativePosition));          
                 
             }
 
@@ -668,7 +661,6 @@ public class TimelineService {
                 long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
 
                 temp.setDate(currentTimelineStart.plusDays(newMilestoneRelativePosition));
-               
                 
             }
 
@@ -728,25 +720,20 @@ public class TimelineService {
             for (PlanTemplateEntity temp: planTemplates) {
                 List<Milestone> milestones = new ArrayList<>();
 
-                if (masterPlanTemplate.isPresent()) {
+                Template template = new Template()
+                                    .id(count++)
+                                    .name(temp.getName())
+                                    .standard(temp.getStandard());
+
+                if (projectApproach.isIterative() && masterPlanTemplate.isPresent()) {
 
                     milestones.addAll(convertMilestones(masterPlanTemplate.get()));
-                }
 
-                Template template =  new Template()
-                        .id(count++)
-                        .name(temp.getName())
-                        .standard(temp.getStandard());
-
-                if (projectApproach.isIterative()) {
                     milestones = updateMilestonesTemplate(timelineId, milestones);
               
                     List<Milestone> tempMilestones = new ArrayList<>(convertMilestones(temp));
 
-                    for (Entry<Increment, List<Milestone>> entry : getIncrementMilestones(tempMilestones,timelineId, 1).entrySet()) {
-                        List<Milestone> milestonesList = entry.getValue();
-                        milestones.addAll(milestonesList);
-                    }
+                    this.getValuesFromHashMap(getIncrementMilestones(tempMilestones,timelineId, 1), milestones);
 
                     template.milestones(sortMilestones(milestones));
                     
@@ -816,6 +803,13 @@ public class TimelineService {
 
         }
     
+    }
+
+    private void getValuesFromHashMap(HashMap<Increment, List<Milestone>> hashMap, List<Milestone> list) {
+        
+        for (List<Milestone> value : hashMap.values()) {
+            list.addAll(value);
+        }
     }
 
 }
