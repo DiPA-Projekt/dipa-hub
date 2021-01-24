@@ -628,6 +628,8 @@ public class TimelineService {
         sessionTimeline.setIncrements(null);
         sessionTimeline.setTempIncrementMilestones(null);
 
+        this.sessionTemplates.remove(timeline.getId());
+
         this.initializeMilestones(timeline.getId());
         this.updateMilestonesAndIncrement(timeline);
     }
