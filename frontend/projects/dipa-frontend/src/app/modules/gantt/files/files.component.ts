@@ -4,8 +4,7 @@ import {NavItem} from '../../../nav-item';
 
 @Component({
   selector: 'app-files',
-  templateUrl: './files.component.html',
-  styleUrls: ['./files.component.scss']
+  templateUrl: './files.component.html'
 })
 export class FilesComponent implements OnInit, OnChanges, OnDestroy {
 

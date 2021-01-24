@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.SessionScope;
 
 import java.net.MalformedURLException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Optional;
 
 @Service
@@ -36,12 +36,18 @@ public class DownloadFileService {
         if (downloadFile.isPresent()) {
 
             String filePath = downloadFile.get().getPath();
-            Path path = Paths.get(filePath);
 
-            try {
-                return new UrlResource(path.toUri());
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+            ClassLoader classLoader = getClass().getClassLoader();
+            URL resource = classLoader.getResource(filePath);
+
+            if (resource == null) {
+                throw new IllegalArgumentException("file not found! " + filePath);
+            } else {
+                try {
+                    return new UrlResource(resource.toURI());
+                } catch (MalformedURLException | URISyntaxException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return null;
