@@ -46,7 +46,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
   selectedTemplatesList = [];
   selectedTemplatesIdList: any[];
 
-  standardTemplatesList;
+  standardTemplatesList = [];
   selectedStandardTemplateIndex: number;
 
   nonStandardTemplatesList = [];
@@ -54,7 +54,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
 
   projectApproachesList: any;
 
-  private CURRENT_TEMPLATE_NAME = 'aktuell';
+  private currentTemplateName = 'aktuell';
 
   constructor(public templatesViewControlsService: TemplatesViewControlsService,
               public ganttControlsService: GanttControlsService,
@@ -113,7 +113,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
 
         this.selectedTemplatesList = [];
 
-        this.selectedTemplatesList.push(templatesData.find(t => t.name === this.CURRENT_TEMPLATE_NAME));
+        this.selectedTemplatesList.push(templatesData.find(t => t.name === this.currentTemplateName));
 
         this.standardTemplatesList = templatesData.filter(t => t.standard === true);
 

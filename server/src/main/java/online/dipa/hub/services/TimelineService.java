@@ -175,7 +175,6 @@ public class TimelineService {
 
         List<Increment> incrementsList = loadIncrementsTemplate(timelineId, incrementCount, tempMilestones, sessionTimeline.getMilestones());
 
-
         Optional<LocalDate> firstDatePeriodOptional = tempMilestones.stream().map(Milestone::getDate).min(LocalDate::compareTo);
         Optional<LocalDate> lastDatePeriodOptional = tempMilestones.stream().map(Milestone::getDate).max(LocalDate::compareTo);
 
@@ -812,7 +811,7 @@ public class TimelineService {
             sessionTimeline.setMilestones(selectedTemplate.getMilestones());
             sessionTimeline.setIncrements(selectedTemplate.getIncrements());
             sessionTimeline.setIterative(selectedTemplate.getIncrements() != null);
-            // sessionTimeline
+
         }
     
     }

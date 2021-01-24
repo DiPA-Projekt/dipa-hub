@@ -34,27 +34,6 @@ import {TemplatesViewControlsService} from '../templates-view-controls.service';
 
 export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
 
-  constructor(public templatesViewControlsService: TemplatesViewControlsService,
-              private timelinesService: TimelinesService,
-              private templateService: TemplatesService,
-              private elementRef: ElementRef) {
-
-    d3.timeFormatDefaultLocale({
-      // @ts-ignore
-      decimal: ',',
-      thousands: '.',
-      grouping: [3],
-      currency: ['€', ''],
-      dateTime: '%a %b %e %X %Y',
-      date: '%d.%m.%Y',
-      time: '%H:%M:%S',
-      periods: ['AM', 'PM'],
-      days: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
-      shortDays: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
-      months: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
-      shortMonths: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez']
-    });
-    }
 
     @Input() timelineData: any = {};
     @Input() templateData = [];
@@ -80,20 +59,6 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     templateSubscription;
     templatesListSubscription;
 
-    // element for chart
-    private svg;
-    private zoomElement;
-
-    private viewBoxHeight = 290;
-    private viewBoxWidth = 750;
-
-    private padding = { top: 40, left: 0};
-
-    private xScale;
-    private zoom;
-
-    private oneDayTick = 1.2096e+9;
-
     headerX: XAxis;
     projectDuration: ProjectDuration;
     milestonesArea: MilestonesArea[];
@@ -113,6 +78,42 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
     listAreasId = [1, 2, 3];
 
+    // element for chart
+    private svg;
+    private zoomElement;
+
+    private viewBoxHeight = 290;
+    private viewBoxWidth = 750;
+
+    private padding = { top: 40, left: 0};
+
+    private xScale;
+    private zoom;
+
+    private oneDayTick = 1.2096e+9;
+
+    constructor(public templatesViewControlsService: TemplatesViewControlsService,
+      private timelinesService: TimelinesService,
+      private templateService: TemplatesService,
+      private elementRef: ElementRef) {
+
+      d3.timeFormatDefaultLocale({
+      // @ts-ignore
+      decimal: ',',
+      thousands: '.',
+      grouping: [3],
+      currency: ['€', ''],
+      dateTime: '%a %b %e %X %Y',
+      date: '%d.%m.%Y',
+      time: '%H:%M:%S',
+      periods: ['AM', 'PM'],
+      days: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+      shortDays: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
+      months: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+      shortMonths: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez']
+      });
+    }
+
     ngOnInit(): void {
 
       this.milestonesArea = [];
@@ -124,7 +125,6 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
       this.periodStartDate = new Date(this.timelineData.start);
       this.periodEndDate = new Date(this.timelineData.end);
-
 
       d3.select(this.chartElement).select('figure')
       .append('div')
@@ -238,7 +238,6 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
     private drawChart(): void {
 
-      // if (!this.svg) {
       this.svg = this.createSvg(this.chartElement, this.chartElement.id);
 
       this.initializeSvgGraphElements();
@@ -249,7 +248,6 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       .duration(0)
       .call(this.zoom.scaleBy, 0.8)
       .on('end', () => this.refreshXScale());
-      // }
 
       this.initializeXScale();
 
@@ -441,7 +439,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       this.redrawChart(0);
     }
 
-    public createSvg(element, id): any {
+    private createSvg(element, id): any {
 
       const svg = d3.select(element).select('figure')
         .append('svg')
@@ -463,7 +461,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       return svg;
     }
 
-    resizeSvg(newSize): void {
+    private resizeSvg(newSize): void {
       this.svg
       .attr('viewBox', '0 0 ' + newSize + ' ' + (this.viewBoxHeight * this.templateData.length));
 
@@ -515,7 +513,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
     }
 
-    onZoom(event: d3.D3ZoomEvent<any, any>, minTimeMs): void {
+    private onZoom(event: d3.D3ZoomEvent<any, any>, minTimeMs): void {
       const eventTransform: d3.ZoomTransform = event.transform;
 
       if (eventTransform.k === 1 && eventTransform.x === 0 && eventTransform.y === 0) {
@@ -568,7 +566,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     }
 
     // set minimum and maximum zoom levels
-    setZoomScaleExtent(minTimeMs): void {
+    private setZoomScaleExtent(minTimeMs): void {
     // const minTimeMs = 1.2096e+9; // 14 days to show 1 day ticks
     const maxTimeMs = 3.1536e+11; // ~ 10 years
 
@@ -675,12 +673,6 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
         countId++;
       });
-    }
-
-    getDate(date): any {
-      const dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
-
-      return new Date(date).toLocaleDateString('de-DE', dateOptions);
     }
 
   }
