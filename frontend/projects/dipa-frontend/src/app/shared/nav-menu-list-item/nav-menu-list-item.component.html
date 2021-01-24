@@ -1,6 +1,7 @@
 <a mat-list-item class="menu-list-item"
    [ngStyle]="{'padding-left': (depth * 15) + 'px'}" (click)="onItemSelected(item)"
-   [ngClass]="{'active': item.route ? router.isActive(item.route, true): false, 'expanded': expanded}">
+   [ngClass]="{'active': item.route ? router.isActive(item.route, true): false, 'expanded': expanded}"
+   [attr.href]="item.file ? (baseApiPath + item.file) : null" download>
   <mat-icon class="routeIcon">{{item.icon}}</mat-icon>
   <span class="full-width">{{item.name}}</span>
   <span class="d-flex" *ngIf="item.url">
