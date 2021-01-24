@@ -3,18 +3,12 @@ package online.dipa.hub.server.rest;
 import java.util.Collections;
 import java.util.List;
 
-import online.dipa.hub.api.model.Increment;
-import online.dipa.hub.api.model.InlineObject;
+import online.dipa.hub.api.model.*;
+
 import online.dipa.hub.services.TimelineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
-import online.dipa.hub.api.model.Milestone;
-import online.dipa.hub.api.model.ProjectApproach;
-import online.dipa.hub.api.model.OperationType;
-import online.dipa.hub.api.model.Task;
-import online.dipa.hub.api.model.Template;
-import online.dipa.hub.api.model.Timeline;
 import online.dipa.hub.api.rest.TimelinesApi;
 
 import org.springframework.core.io.FileUrlResource;
@@ -138,11 +132,18 @@ public class TimelineController implements TimelinesApi {
         final List<Template> templateList = timelineService.getTemplatesForTimeline(timelineId);
         return ResponseEntity.ok(templateList);
     }
-    
+
     @Override
     public ResponseEntity<Void> updateTemplate(final Long timelineId, final Long templateId) {
         timelineService.updateTemplateForProject(timelineId, templateId);
         return ResponseEntity.noContent().build();
     }
+
+    @Override
+    public ResponseEntity<List<DownloadFile>> getFilesForMilestone(final Long timelineId, final Long milestoneId) {
+        final List<DownloadFile> attachedFilesList = timelineService.getFilesForMilestone(timelineId, milestoneId);
+        return ResponseEntity.ok(attachedFilesList);
+    }
+
 
 }

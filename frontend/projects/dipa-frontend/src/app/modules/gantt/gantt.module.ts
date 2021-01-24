@@ -24,6 +24,9 @@ import {ToolkitComponent} from './toolkit/toolkit.component';
 import {SidenavComponent} from './sidenav/sidenav.component';
 import {TemplatesComponent} from './templates-view/templates/templates.component';
 import {TemplatesViewComponent} from './templates-view/templates-view.component';
+import {FilesComponent} from './files/files.component';
+import {ChartComponent} from './chart/chart.component';
+import {MatRadioModule} from '@angular/material/radio';
 
 
 @NgModule({
@@ -33,7 +36,15 @@ import {TemplatesViewComponent} from './templates-view/templates-view.component'
     ToolkitComponent,
     SidenavComponent,
     TemplatesComponent,
-    TemplatesViewComponent
+    TemplatesViewComponent,
+    SidenavComponent,
+    FilesComponent,
+    ChartComponent
+  ],
+  exports: [
+    ChartComponent,
+    FilesComponent,
+    NavMenuListItemComponent
   ],
   imports: [
     FormsModule,
@@ -46,6 +57,7 @@ import {TemplatesViewComponent} from './templates-view/templates-view.component'
     MatFormFieldModule,
     MatDatepickerModule,
     MatButtonToggleModule,
+    MatRadioModule,
     MatInputModule,
     MatSelectModule,
     AngularResizedEventModule,
