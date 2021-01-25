@@ -1,0 +1,24 @@
+DownloadFile:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the file
+      type: integer
+      format: int64
+      example: 1
+    name:
+      description: Name of the file
+      type: string
+      example: PHB-Vorlage AN-Projekt (Agile SWE)
+    description:
+      description: Short description text for the file
+      type: string
+      example: Projekthandbuch
+    path:
+      description: path to the file
+      type: string
+      example: /downloadFiles/PHB-Vorlage AN-Projekt (Agile SWE).docx
+  required:
+    - id
+    - name
+    - path

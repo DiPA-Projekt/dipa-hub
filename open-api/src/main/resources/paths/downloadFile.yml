@@ -1,0 +1,22 @@
+get:
+  tags:
+    - files
+  summary: File for an ID
+  description: Retrieves file.
+  operationId: getFile
+  parameters:
+    - in: path
+      name: fileId
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: Numeric ID of the file.
+  responses:
+    200:
+      description: OK
+      content:
+        application/octet-stream:
+          schema:
+            type: string
+            format: binary

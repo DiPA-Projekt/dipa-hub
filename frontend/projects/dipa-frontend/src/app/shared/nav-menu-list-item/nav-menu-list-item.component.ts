@@ -3,6 +3,7 @@ import {NavItem} from '../../nav-item';
 import {NavService} from '../../nav.service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {Router} from '@angular/router';
+import {FilesService} from 'dipa-api-client';
 
 @Component({
   selector: 'app-nav-menu-list-item',
@@ -21,11 +22,13 @@ import {Router} from '@angular/router';
 export class NavMenuListItemComponent implements OnInit {
 
   expanded: boolean;
+  baseApiPath: string;
   @HostBinding('attr.aria-expanded') ariaExpanded;
   @Input() item: NavItem;
   @Input() depth: number;
 
   constructor(public navService: NavService,
+              private fileService: FilesService,
               public router: Router) {
     if (this.depth === undefined) {
       this.depth = 0;
@@ -36,6 +39,7 @@ export class NavMenuListItemComponent implements OnInit {
 
     this.expanded = false;
     this.ariaExpanded = this.expanded;
+    this.baseApiPath = this.fileService.configuration.basePath;
 
     this.navService.currentUrl.subscribe((url: string) => {
       if (this.item.route && url) {
