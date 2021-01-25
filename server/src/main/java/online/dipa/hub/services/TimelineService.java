@@ -713,17 +713,18 @@ public class TimelineService {
             for (PlanTemplateEntity temp: planTemplates) {
                 List<Milestone> milestones = new ArrayList<>();
 
+                if (masterPlanTemplate.isPresent()) {
+                    milestones.addAll(convertMilestones(masterPlanTemplate.get()));
+                }
+
                 Template template = new Template()
                                     .id(count++)
                                     .name(temp.getName())
                                     .standard(temp.getStandard());
 
-                if (projectApproach.isIterative() && masterPlanTemplate.isPresent()) {
-
-                    milestones.addAll(convertMilestones(masterPlanTemplate.get()));
+                if (projectApproach.isIterative()) {
 
                     milestones = updateMilestonesTemplate(timelineId, milestones);
-              
                     List<Milestone> tempMilestones = new ArrayList<>(convertMilestones(temp));
 
                     this.getValuesFromHashMap(getIncrementMilestones(tempMilestones,timelineId, 1), milestones);

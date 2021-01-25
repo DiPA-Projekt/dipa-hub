@@ -21,6 +21,8 @@ import { TemplatesViewControlsService } from './templates-view-controls.service'
 
 export class TemplatesViewComponent implements OnInit, OnDestroy {
 
+  private static readonly currentTemplateName = 'aktuell';
+
   @ViewChild('templateChart', { static: true }) template: TemplatesComponent;
 
   periodStartDate = new Date(2020, 0, 1);
@@ -53,8 +55,6 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
   selectedNonStandardTemplateIndex: number;
 
   projectApproachesList: any;
-
-  private currentTemplateName = 'aktuell';
 
   constructor(public templatesViewControlsService: TemplatesViewControlsService,
               public ganttControlsService: GanttControlsService,
@@ -113,7 +113,8 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
 
         this.selectedTemplatesList = [];
 
-        this.selectedTemplatesList.push(templatesData.find(t => t.name === this.currentTemplateName));
+        this.selectedTemplatesList.push(templatesData.find(t => t.name === TemplatesViewComponent.currentTemplateName
+          ));
 
         this.standardTemplatesList = templatesData.filter(t => t.standard === true);
 
