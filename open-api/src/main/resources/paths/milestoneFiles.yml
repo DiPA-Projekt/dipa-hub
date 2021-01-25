@@ -1,0 +1,30 @@
+get:
+  tags:
+    - milestones
+  summary: File List for attached files at milestone
+  description: Retrieves the list of Milestone attached files.
+  operationId: getFilesForMilestone
+  parameters:
+    - in: path
+      name: timelineId
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: Numeric ID of the timeline.
+    - in: path
+      name: milestoneId
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: Numeric ID of the milestone.
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../models/file.yml#/DownloadFile"

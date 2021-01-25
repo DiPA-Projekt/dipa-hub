@@ -1,15 +1,14 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {NavItem} from '../../../nav-item';
-import {ExternalLinksUserService, Timeline, TimelinesService} from 'dipa-api-client';
-import {ActivatedRoute} from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NavItem } from '../../../nav-item';
+import { ExternalLinksUserService, Timeline, TimelinesService } from 'dipa-api-client';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-sidenav',
   templateUrl: './sidenav.component.html',
-  styleUrls: ['./sidenav.component.scss']
+  styleUrls: ['./sidenav.component.scss'],
 })
 export class SidenavComponent implements OnInit, OnDestroy {
-
   timelineData = [];
 
   timeline: Timeline;
@@ -23,22 +22,22 @@ export class SidenavComponent implements OnInit, OnDestroy {
   navMenuItems: NavItem[] = [];
   favoriteLinkItems: NavItem[] = [];
 
-  constructor(private timelinesService: TimelinesService,
-              private externalLinksUserService: ExternalLinksUserService,
-              public activatedRoute: ActivatedRoute) { }
+  constructor(
+    private timelinesService: TimelinesService,
+    private externalLinksUserService: ExternalLinksUserService,
+    public activatedRoute: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
-
-    this.activatedRouteSubscription = this.activatedRoute.params.subscribe(param => {
+    this.activatedRouteSubscription = this.activatedRoute.params.subscribe((param) => {
       this.selectedTimelineId = param.id;
-      this.timelinesSubscription = this.timelinesService.getTimelines()
-        .subscribe((data) => {
-          this.timelineData = data;
+      this.timelinesSubscription = this.timelinesService.getTimelines().subscribe((data) => {
+        this.timelineData = data;
 
-          this.timeline = this.timelineData.find(c => c.id === Number(this.selectedTimelineId));
-        });
+        this.timeline = this.timelineData.find((c) => c.id === Number(this.selectedTimelineId));
+        this.setSideNavMenu();
+      });
     });
-    this.setSideNavMenu();
   }
 
   ngOnDestroy(): void {
@@ -48,37 +47,36 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   setSideNavMenu(): void {
+    this.navMenuItems = [
+      {
+        name: 'Zeitplan',
+        icon: 'event_note',
+        route: 'gantt/' + this.selectedTimelineId,
+      },
+      {
+        name: 'Stöbern & Vergleichen',
+        icon: 'find_replace',
+        route: 'gantt/' + this.selectedTimelineId + '/templates',
+      },
+      {
+        name: 'Werkzeugkit',
+        icon: 'construction',
+        route: 'gantt/' + this.selectedTimelineId + '/toolkit',
+      },
+    ];
 
-    this.navMenuItems = [{
-      name: 'Zeitplan',
-      icon: 'event_note',
-      route: 'gantt/' + this.selectedTimelineId
-    }, {
-      name: 'Stöbern & Vergleichen',
-      icon: 'find_replace',
-      // route: 'gantt/' + this.selectedTimelineId + '/templates'
-    }, {
-      name: 'Werkzeugkit',
-      icon: 'construction',
-      route: 'gantt/' + this.selectedTimelineId + '/toolkit'
-    }];
-
-    this.favoriteLinksSubscription = this.externalLinksUserService.getFavoriteLinks()
-      .subscribe((data) => {
-
-        this.favoriteLinkItems = [
-          {
-            name: 'Favoriten-Links',
-            icon: 'bookmarks',
-            children: data.map(x => {
-              return {
-                name: x.name,
-                icon: 'star',
-                url: x.url
-              };
-            })
-          }
-        ];
-      });
+    this.favoriteLinksSubscription = this.externalLinksUserService.getFavoriteLinks().subscribe((data) => {
+      this.favoriteLinkItems = [
+        {
+          name: 'Favoriten-Links',
+          icon: 'bookmarks',
+          children: data.map((x) => ({
+            name: x.name,
+            icon: 'star',
+            url: x.url,
+          })),
+        },
+      ];
+    });
   }
 }

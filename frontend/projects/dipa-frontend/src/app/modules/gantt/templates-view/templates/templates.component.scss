@@ -1,0 +1,173 @@
+
+.gantt {
+
+  .tooltip {
+    background-color: rgba(0, 0, 0, 0.78);
+    color: #fff;
+    display: none;
+    position: fixed;
+    opacity: 0;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+  }
+
+  figure {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+
+    svg {
+      defs {
+        mask#dataMask {
+          rect {
+            fill: #fff;
+          }
+        }
+      }
+
+      g.x-group {
+        rect.headerX {
+          fill: #444;
+          opacity: 0.8;
+          rx: 3;
+        }
+
+        text.xAxisLabel {
+          font-size: 10px;
+          fill: #fff;
+        }
+
+        text.outsideXAxisLabel {
+          font-size: 10px;
+          fill: #fff;
+        }
+      }
+
+      g.y-group {
+        text.groupTitle {
+          text-anchor: start;
+        }
+
+        rect.groupBackground {
+          opacity: 0.2;
+        }
+      }
+
+      g.project-group {
+        rect.projectDuration:not(.inactive) {
+          cursor: move;
+        }
+
+        text {
+          font-size: 10px;
+          opacity: 0.87;
+        }
+
+        line.projectStartDateLine, line.projectEndDateLine {
+          stroke-width: 2;
+        }
+
+        line.projectStartDateLine:not(.inactive), line.projectEndDateLine:not(.inactive) {
+          cursor: ew-resize;
+        }
+      }
+
+      g.increment-group {
+
+        rect.incrementHeader {
+          rx: 5;
+        }
+
+        text.incrementActions {
+          tspan.btn {
+            font-size: 1.1rem;
+            cursor: pointer;
+            opacity: 0.6;
+          }
+          tspan.btn:hover {
+            opacity: 1;
+          }
+        }
+        text.incrementName {
+          opacity: 0.6;
+        }
+        rect.increment {
+          rx: 5;
+          opacity: 0.5;
+          pointer-events: none;
+        }
+        text {
+          font-size: 11px;
+        }
+      }
+
+      g.current-date-group {
+        circle.currentDateCircle {
+          r: 4;
+          cy: 5;
+          fill: white;
+        }
+        circle.currentDatePoint {
+          r: 1;
+          cy: 5;
+        }
+      }
+
+      g.data-group {
+
+        g.milestoneEntry {
+
+          path.milestone {
+            width: 50px;
+          }
+
+          path.milestone:not(.inactive) {
+            cursor: pointer;
+          }
+
+          text.milestoneLabel, text.milestoneStatusIcon {
+            font-size: 11px;
+            pointer-events: none;
+            text-anchor: middle;
+          }
+
+          text.milestoneStatusIcon {
+            fill: #fff;
+            font-weight: bold;
+          }
+
+          line.labelLine {
+            stroke: #000;
+            opacity: 0.2;
+          }
+        }
+
+        rect.task {
+          cursor: move;
+          rx: 3;
+        }
+
+        rect.dragBarLeft, rect.dragBarRight {
+          rx: 1;
+          opacity: 0;
+        }
+
+        rect.dragBarLeft:not(.inactive), rect.dragBarRight:not(.inactive) {
+          cursor: ew-resize;
+        }
+
+        text.taskLabel {
+          text-anchor: middle;
+          font-size: 11px;
+          fill: #fff;
+          pointer-events: none;
+        }
+      }
+    }
+  }
+
+}

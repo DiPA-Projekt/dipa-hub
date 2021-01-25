@@ -1,5 +1,4 @@
 export interface IChartElement {
-
   svg: any;
   xScale: any;
   data: any[];

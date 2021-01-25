@@ -4,20 +4,19 @@
       <app-sidenav></app-sidenav>
     </mat-sidenav>
     <mat-sidenav-content class="content-container">
-      <div class="content-container">
+      <div class="content-container" style="padding-right: 15px">
         <div class="row justify-content-between">
           <div class="col-6">
             <div class="row justify-content-start">
               <div class="operationType-container">
                 <p class="label">Vorhabensart</p>
-                <p class="name">{{selectedOperationTypeName}}</p>
+                <p class="name">{{ selectedOperationTypeName }}</p>
               </div>
               <div *ngIf="timelineData" class="col">
                 <mat-form-field appearance="fill" floatLabel="always">
                   <mat-label>Vorgehensweise</mat-label>
                   <mat-select [(value)]="selectedProjectApproachId" (selectionChange)="changeProjectApproach($event)">
-                    <mat-option *ngFor="let projectApproach of filterProjectApproaches()"
-                                [value]="projectApproach.id">
+                    <mat-option *ngFor="let projectApproach of filterProjectApproaches()" [value]="projectApproach.id">
                       {{ projectApproach.name }}
                     </mat-option>
                   </mat-select>
@@ -27,7 +26,14 @@
           </div>
           <div class="col-6">
             <div class="row justify-content-end">
-              <mat-button-toggle-group name="chartMetric" #group="matButtonToggleGroup" multiple aria-label="Chart Metric" [(ngModel)]="viewTypeSelected" (change)="changeViewType($event)">
+              <mat-button-toggle-group
+                name="chartMetric"
+                #group="matButtonToggleGroup"
+                multiple
+                aria-label="Chart Metric"
+                [(ngModel)]="viewTypeSelected"
+                (change)="changeViewType($event)"
+              >
                 <mat-button-toggle class="md-button" value="YEARS">Jahre</mat-button-toggle>
                 <mat-button-toggle class="md-button" value="MONTHS">Monate</mat-button-toggle>
                 <mat-button-toggle class="md-button" value="WEEKS">Wochen</mat-button-toggle>
@@ -38,10 +44,13 @@
         </div>
         <div class="row">
           <div class="col">
-            <button (click)="getIcsCalendarFile()"
-                    mat-raised-button
-                    title="Exportiere Meilensteine im iCal Format"
-                    aria-label="Exportiere Meilensteine im iCal Format">
+            <button
+              (click)="getIcsCalendarFile()"
+              mat-raised-button
+              title="Exportiere Meilensteine im iCal Format"
+              aria-label="Exportiere Meilensteine im iCal Format"
+              style="margin-bottom: 3px"
+            >
               <mat-icon>event_note</mat-icon>
               Export
             </button>
@@ -50,12 +59,13 @@
         <div class="row">
           <div class="col">
             <ng-container *ngIf="vm$ | async as vm">
-              <app-chart #ganttChart
-                        [timelineData]="vm.selectedTimeline"
-                        [milestoneData]="vm.milestoneData"
-                        [taskData]="vm.taskData"
-                        [incrementsData]="vm.incrementsData"
-                        id = "gantt{{vm.selectedTimeline.id}}"
+              <app-chart
+                #ganttChart
+                [timelineData]="vm.selectedTimeline"
+                [milestoneData]="vm.milestoneData"
+                [taskData]="vm.taskData"
+                [incrementsData]="vm.incrementsData"
+                id="gantt{{ vm.selectedTimeline.id }}"
               ></app-chart>
             </ng-container>
           </div>
@@ -64,4 +74,3 @@
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>
-
