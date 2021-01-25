@@ -58,6 +58,20 @@
               </div>
             </div>
           </div>
+          <div class="template-controller" *ngIf="nonStandardTemplatesList.length>0">
+            <h2 class="text-template">Zeitpläne anderer Projekte</h2>
+            <button mat-stroked-button color="primary" (click)="updateTemplateNonStandard($event)">Übernehmen</button>
+            <div class="row justify-content-center">
+              <div class="button-template">
+                <button mat-icon-button (click)="onPrevNonStandard($event)">
+                  <mat-icon color="primary">keyboard_arrow_left</mat-icon>
+                </button>
+                <button mat-icon-button (click)="onNextNonStandard($event)">
+                  <mat-icon color="primary">keyboard_arrow_right</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="col-10">
           <div class="">

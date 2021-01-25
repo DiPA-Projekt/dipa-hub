@@ -21,6 +21,8 @@ import { TemplatesViewControlsService } from './templates-view-controls.service'
 
 export class TemplatesViewComponent implements OnInit, OnDestroy {
 
+  private static readonly currentTemplateName = 'aktuell';
+
   @ViewChild('templateChart', { static: true }) template: TemplatesComponent;
 
   periodStartDate = new Date(2020, 0, 1);
@@ -45,11 +47,14 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
 
   selectedTemplatesList = [];
   selectedTemplatesIdList: any[];
+
   standardTemplatesList = [];
   selectedStandardTemplateIndex: number;
-  projectApproachesList: any;
 
-  private CURRENT_TEMPLATE_NAME = 'aktuell';
+  nonStandardTemplatesList = [];
+  selectedNonStandardTemplateIndex: number;
+
+  projectApproachesList: any;
 
   constructor(public templatesViewControlsService: TemplatesViewControlsService,
               public ganttControlsService: GanttControlsService,
@@ -108,19 +113,19 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
 
         this.selectedTemplatesList = [];
 
-        this.selectedTemplatesList.push(templatesData.find(t => t.name === this.CURRENT_TEMPLATE_NAME));
+        this.selectedTemplatesList.push(templatesData.find(t => t.name === TemplatesViewComponent.currentTemplateName
+          ));
 
         this.standardTemplatesList = templatesData.filter(t => t.standard === true);
 
-        if (this.selectedStandardTemplateIndex === null) {
-          this.selectedTemplatesList.push(templatesData.filter(t => t.standard === true)[0]);
-          this.selectedStandardTemplateIndex = 0;
-        }
-        else {
-          this.selectedTemplatesList.push(templatesData.filter(t => t.standard === true)[this.selectedStandardTemplateIndex]);
-        }
+        this.selectedStandardTemplateIndex = 0;
+        this.selectedTemplatesList.push(this.standardTemplatesList[0]);
 
-        // this.standardName = this.standardTemplatesList[this.selectedStandardTemplateIndex].name;
+        this.nonStandardTemplatesList = templatesData.filter(t => t.standard === false);
+        if (this.nonStandardTemplatesList.length > 0) {
+          this.selectedNonStandardTemplateIndex = 0;
+          this.selectedTemplatesList.push(this.nonStandardTemplatesList[0]);
+        }
 
         const selectedTemplates = this.selectedTemplatesList;
         this.selectedTemplatesIdList = this.selectedTemplatesList.map(t => t.id);
@@ -159,6 +164,34 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
 
       const id = this.standardTemplatesList[this.selectedStandardTemplateIndex].id;
       this.selectedTemplatesIdList[1] = id;
+
+      this.templatesViewControlsService.setTemplatesList(this.selectedTemplatesIdList);
+    }
+
+  }
+
+  onPrevNonStandard(event): void {
+
+    if (this.nonStandardTemplatesList.length > 0) {
+
+      this.selectedNonStandardTemplateIndex = this.getPrevItemList(this.nonStandardTemplatesList, this.selectedNonStandardTemplateIndex);
+
+      const id = this.nonStandardTemplatesList[this.selectedNonStandardTemplateIndex].id;
+      this.selectedTemplatesIdList[2] = id;
+
+      this.templatesViewControlsService.setTemplatesList(this.selectedTemplatesIdList);
+    }
+
+  }
+
+  onNextNonStandard(event): void {
+
+    if (this.nonStandardTemplatesList.length > 0) {
+
+      this.selectedNonStandardTemplateIndex = this.getNextItemList(this.nonStandardTemplatesList, this.selectedNonStandardTemplateIndex);
+
+      const id = this.nonStandardTemplatesList[this.selectedNonStandardTemplateIndex].id;
+      this.selectedTemplatesIdList[2] = id;
 
       this.templatesViewControlsService.setTemplatesList(this.selectedTemplatesIdList);
     }
@@ -239,6 +272,14 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
 
   updateTemplateStandard(event): void {
     const templateId = this.standardTemplatesList[this.selectedStandardTemplateIndex].id;
+
+    this.updateTemplateSubscription = this.templateService.updateTemplate(this.selectedTimelineId, templateId).subscribe(data => {
+      this.setData();
+    });
+  }
+
+  updateTemplateNonStandard(event): void {
+    const templateId = this.nonStandardTemplatesList[this.selectedNonStandardTemplateIndex].id;
 
     this.updateTemplateSubscription = this.templateService.updateTemplate(this.selectedTimelineId, templateId).subscribe(data => {
       this.setData();

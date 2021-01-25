@@ -10,7 +10,6 @@ export class TemplatesViewControlsService {
   private templatesList = new BehaviorSubject<any>(null);
 
   private isFullscreen = new BehaviorSubject<boolean>(false);
-  isFullscreen$ = this.isFullscreen.asObservable();
 
   private viewType = new BehaviorSubject<string>(null);
 
@@ -18,6 +17,10 @@ export class TemplatesViewControlsService {
 
   setIsFullscreen(isFullscreen: boolean): void {
     this.isFullscreen.next(isFullscreen);
+  }
+
+  getIsFullscreen(): Observable<any> {
+    return this.isFullscreen;
   }
 
   getViewType(): Observable<string> {
