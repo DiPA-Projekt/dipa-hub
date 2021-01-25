@@ -1,5 +1,4 @@
-import { NgModule } from '@angular/core';
-import { ChartComponent } from '../modules/gantt/chart/chart.component';
+import {NgModule} from '@angular/core';
 
 import {MatCardModule} from '@angular/material/card';
 import {MatIconModule} from '@angular/material/icon';
@@ -17,10 +16,11 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
+import {MatListModule} from '@angular/material/list';
 
 
 @NgModule({
-  declarations: [ChartComponent],
+  declarations: [],
   imports: [
     MatCardModule,
     MatIconModule,
@@ -37,10 +37,8 @@ import {CommonModule} from '@angular/common';
     MatToolbarModule,
     MatSidenavModule,
     FormsModule,
-    CommonModule
-  ],
-  exports: [
-    ChartComponent
-]
+    CommonModule,
+    MatListModule,
+  ]
 })
 export class SharedModule { }

@@ -3,20 +3,10 @@ package online.dipa.hub.services;
 import net.fortuna.ical4j.model.TimeZone;
 import online.dipa.hub.IcsCalendar;
 import online.dipa.hub.TimelineState;
-import online.dipa.hub.api.model.Increment;
-import online.dipa.hub.api.model.Milestone;
-import online.dipa.hub.api.model.ProjectApproach;
-import online.dipa.hub.api.model.Template;
-import online.dipa.hub.api.model.OperationType;
-import online.dipa.hub.api.model.Timeline;
+import online.dipa.hub.api.model.*;
 import online.dipa.hub.persistence.entities.PlanTemplateEntity;
 import online.dipa.hub.persistence.entities.ProjectApproachEntity;
-
-import online.dipa.hub.persistence.repositories.PlanTemplateRepository;
-import online.dipa.hub.persistence.repositories.ProjectApproachRepository;
-import online.dipa.hub.persistence.repositories.ProjectRepository;
-import online.dipa.hub.persistence.repositories.OperationTypeRepository;
-
+import online.dipa.hub.persistence.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
@@ -32,6 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
+import static online.dipa.hub.api.model.Timeline.ProjectTypeEnum;
 
 @Service
 @SessionScope
@@ -46,6 +37,9 @@ public class TimelineService {
 
     @Autowired
     private ProjectRepository projectRespository;
+
+    @Autowired
+    private FileRepository fileRepository;
 
     @Autowired
     private ProjectApproachRepository projectApproachRepository;
@@ -256,7 +250,7 @@ public class TimelineService {
 
                 if (planTemplateList.size() == 1) {
                     milestones = convertMilestones(planTemplateList.get(0));
-                } 
+                }
                 else {
 
                     long masterPlanId = 2;
@@ -572,13 +566,13 @@ public class TimelineService {
 
             String projectEventTitle = "Projektstart" + " - " + projectApproach.getName();
             icsCalendar.addEvent(timezone, sessionTimeline.getTimeline().getStart(), projectEventTitle, "Test Comment");
-    
+
             List<Milestone> milestones = getMilestonesForTimeline(timelineId);
             for (Milestone milestone : milestones) {
                 LocalDate eventDate = milestone.getDate();
                 String eventTitle = milestone.getName() + " - " + projectApproach.getName();
                 String eventComment = "Test Comment";
-    
+
                 icsCalendar.addEvent(timezone, eventDate, eventTitle, eventComment);
             }
         }
@@ -752,7 +746,7 @@ public class TimelineService {
         }
 
         this.sessionTemplates.put(timelineId, templates);
-        return templates;       
+        return templates;
     }
 
     public List<Milestone> updateMilestonesTemplate(final Long timelineId, List<Milestone> milestones) {
@@ -784,7 +778,7 @@ public class TimelineService {
              
             }
         }
-    
+
         return milestones;
     }
 
@@ -801,7 +795,41 @@ public class TimelineService {
             sessionTimeline.setIterative(selectedTemplate.getIncrements() != null);
 
         }
-    
+
+    }
+
+    public List<DownloadFile> getFilesForMilestone(final Long timelineId, final Long milestoneId) {
+
+        final TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+        final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
+
+        if (milestoneId != 21 || projectApproach == null) {    // Meilenstein id 21: Projekteinrichtung
+            return Collections.emptyList();
+        }
+
+        List<Long> downloadFileIds = new ArrayList<>();
+
+        if (sessionTimeline.getTimeline().getProjectType() == ProjectTypeEnum.AN_PROJEKT) {
+            if (projectApproach.isIterative()) {
+                downloadFileIds.add(3L);
+            } else {
+                downloadFileIds.add(1L);
+            }
+        } else if (sessionTimeline.getTimeline().getProjectType() == ProjectTypeEnum.INTERNES_PROJEKT) {
+            if (projectApproach.isIterative()) {
+                downloadFileIds.add(4L);
+            } else {
+                downloadFileIds.add(2L);
+            }
+        }
+
+        downloadFileIds.add(5L);
+
+        return fileRepository.findAll()
+                .stream()
+                .filter(file -> downloadFileIds.contains(file.getId()))
+                .map(p -> conversionService.convert(p, DownloadFile.class))
+                .collect(Collectors.toList());
     }
 
     private void getValuesFromHashMap(HashMap<Increment, List<Milestone>> hashMap, List<Milestone> list) {

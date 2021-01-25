@@ -334,8 +334,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
         this.showMilestoneMenu = true;
         this.selectedMilestoneDataMenu = data;
         this.selectedMilestoneId = data.id;
-      }
-      else {
+      } else {
         this.closeMenu();
       }
     };
