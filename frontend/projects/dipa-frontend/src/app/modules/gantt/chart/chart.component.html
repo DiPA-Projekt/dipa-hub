@@ -19,8 +19,11 @@
                             {{status}}
                         </mat-radio-button>
                     </div>
-                    <br>
+                  <br>
                 </mat-radio-group>
+
+                <app-files [timelineId]="timelineData.id" [milestoneId]="selectedMilestoneId"></app-files>
+
             </div>
         </div>
     </mat-sidenav>

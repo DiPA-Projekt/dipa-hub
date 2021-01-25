@@ -2,9 +2,9 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {NavMenuListItemComponent} from './nav-menu-list-item.component';
 import {NavService} from '../../nav.service';
-import {RouterModule} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {MatIcon} from '@angular/material/icon';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 
 describe('NavMenuListItemComponent', () => {
   let component: NavMenuListItemComponent;
@@ -13,8 +13,8 @@ describe('NavMenuListItemComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ NavMenuListItemComponent, MatIcon ],
-      imports: [RouterTestingModule],
-      providers: [NavService, RouterModule]
+      imports: [RouterTestingModule, HttpClientTestingModule],
+      providers: [NavService]
     })
     .compileComponents();
   });

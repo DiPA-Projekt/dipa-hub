@@ -4,15 +4,15 @@
       <app-sidenav></app-sidenav>
     </mat-sidenav>
     <mat-sidenav-content class="content-container">
-      <div class="content-container" style="padding-right: 15px">
+      <div class="content-container">
         <div class="row justify-content-between">
-          <div class="col-6">
+          <div class="col">
             <div class="row justify-content-start">
               <div class="operationType-container">
                 <p class="label">Vorhabensart</p>
                 <p class="name">{{selectedOperationTypeName}}</p>
               </div>
-              <div *ngIf="timelineData" class="col">
+              <div *ngIf="projectApproachesList" class="col">
                 <mat-form-field appearance="fill" floatLabel="always">
                   <mat-label>Vorgehensweise</mat-label>
                   <mat-select [(value)]="selectedProjectApproachId" (selectionChange)="changeProjectApproach($event)">
@@ -25,9 +25,9 @@
               </div>
             </div>
           </div>
-          <div class="col-6">
+          <div class="col">
             <div class="row justify-content-end">
-              <mat-button-toggle-group name="chartMetric" #group="matButtonToggleGroup" multiple aria-label="Chart Metric" [(ngModel)]="viewTypeSelected" (change)="changeViewType($event)">
+              <mat-button-toggle-group name="chartMetric" #group="matButtonToggleGroup" multiple aria-label="Chart Metric" (change)="changeViewType($event)">
                 <mat-button-toggle class="md-button" value="YEARS">Jahre</mat-button-toggle>
                 <mat-button-toggle class="md-button" value="MONTHS">Monate</mat-button-toggle>
                 <mat-button-toggle class="md-button" value="WEEKS">Wochen</mat-button-toggle>
@@ -36,27 +36,38 @@
             </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col">
-            <button (click)="getIcsCalendarFile()"
-                    mat-raised-button
-                    title="Exportiere Meilensteine im iCal Format"
-                    aria-label="Exportiere Meilensteine im iCal Format">
-              <mat-icon>event_note</mat-icon>
-              Export
-            </button>
+      </div>
+      <div *ngIf="timelineData" class="row chart-container">
+        <div class="col-2 template-controller-container">
+          <div class="template-controller">
+            <h2>Aktuell</h2>
+          </div>
+          <div class="template-controller">
+            <img class="logo" *ngIf="selectedOperationTypeId===2" src="/assets/img/VMXT-logo.png" alt="VMXT">
+            <img class="logo" *ngIf="selectedOperationTypeId===3" src="/assets/img/UfAB-logo.png" alt="UfAB">
+            <h2 class="text-template">Standard</h2>
+            <button mat-stroked-button color="primary" (click)="updateTemplateStandard($event)">Übernehmen</button>
+            <div class="row justify-content-center">
+              <div class="button-template">
+                <button mat-icon-button (click)="onPrevStandard($event)">
+                  <mat-icon color="primary">keyboard_arrow_left</mat-icon>
+                </button>
+                <button mat-icon-button (click)="onNextStandard($event)">
+                  <mat-icon color="primary">keyboard_arrow_right</mat-icon>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col">
+        <div class="col-10">
+          <div class="">
             <ng-container *ngIf="vm$ | async as vm">
-              <app-chart #ganttChart
+              <app-templates #templateChart
                         [timelineData]="vm.selectedTimeline"
-                        [milestoneData]="vm.milestoneData"
-                        [taskData]="vm.taskData"
-                        [incrementsData]="vm.incrementsData"
-                        id = "gantt{{vm.selectedTimeline.id}}"
-              ></app-chart>
+                        [templateData]="vm.selectedTemplates"
+                        [allTemplates]="vm.templatesData"
+                        id = "template{{vm.selectedTimeline.id}}"
+              ></app-templates>
             </ng-container>
           </div>
         </div>

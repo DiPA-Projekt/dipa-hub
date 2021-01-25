@@ -106,3 +106,221 @@ databaseChangeLog:
               - column:
                   name: sort_order
                   value: 2
+  - changeSet:
+      id: update-planTemplate-Linear-nach-UfAB
+      author: nguyen
+      changes:
+        - update:
+            tableName: plan_template
+            columns:
+              - column:
+                  name: name
+                  value: Linear-nach-UfAB PlanTemplate
+              - column:
+                  name: project_approach_id
+                  value: 4
+            where: id=5
+  - changeSet:
+      id: insert-plan-template-Linear-nach-UfAB-vereinfacht
+      author: nguyen
+      changes:
+        - insert:
+            tableName: plan_template
+            columns:
+              - column:
+                  name: id
+                  value: 6
+              - column:
+                  name: name
+                  value: Linear-nach-UfAB vereinfacht PlanTemplate
+              - column:
+                  name: operation_type_id
+                  value: 3
+              - column:
+                  name: project_approach_id
+                  value: 4
+              - column:
+                  name: standard
+                  value: true
+              - column:
+                  name: default_template
+                  value: false
+  - changeSet:
+      id: insert-milestones-Linear-nach-UfAB-vereinfacht
+      author: nguyen
+      changes:
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 65
+              - column:
+                  name: name
+                  value: Beschaffungseckdaten sind geklärt
+              - column:
+                  name: date_offset
+                  value: 60
+              - column:
+                  name: plan_template_id
+                  value: 6
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 66
+              - column:
+                  name: name
+                  value: Beschaffung ist geplant
+              - column:
+                  name: date_offset
+                  value: 150
+              - column:
+                  name: plan_template_id
+                  value: 6
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 67
+              - column:
+                  name: name
+                  value: Durchführung der Beschaffung ist entschieden
+              - column:
+                  name: date_offset
+                  value: 240
+              - column:
+                  name: plan_template_id
+                  value: 6
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 68
+              - column:
+                  name: name
+                  value: Vergabeunterlagen sind veröffentlicht
+              - column:
+                  name: date_offset
+                  value: 270
+              - column:
+                  name: plan_template_id
+                  value: 6
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 69
+              - column:
+                  name: name
+                  value: Vertrag ist geschlossen
+              - column:
+                  name: date_offset
+                  value: 540
+              - column:
+                  name: plan_template_id
+                  value: 6
+  - changeSet:
+      id: insert-file-phb-an-project-agil
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: download_file
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: name
+                  value: PHB-Vorlage AN-Projekt (Agile SWE)
+              - column:
+                  name: description
+                  value: Projekthandbuch
+              - column:
+                  name: path
+                  value: downloadFiles/PHB-Vorlage AN-Projekt (Agile SWE).docx
+  - changeSet:
+      id: insert-file-phb-intern-project-agil
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: download_file
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: name
+                  value: PHB-Vorlage Internes Projekt (Agile SWE)
+              - column:
+                  name: description
+                  value: Projekthandbuch
+              - column:
+                  name: path
+                  value: downloadFiles/PHB-Vorlage Internes Projekt (Agile SWE).docx
+  - changeSet:
+      id: insert-file-phb-an-project-increment
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: download_file
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: name
+                  value: PHB-Vorlage AN-Projekt (SWE)
+              - column:
+                  name: description
+                  value: Projekthandbuch
+              - column:
+                  name: path
+                  value: downloadFiles/PHB-Vorlage AN-Projekt (SWE).docx
+  - changeSet:
+      id: insert-file-phb-intern-project-increment
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: download_file
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: name
+                  value: PHB-Vorlage Internes Projekt (SWE)
+              - column:
+                  name: description
+                  value: Projekthandbuch
+              - column:
+                  name: path
+                  value: downloadFiles/PHB-Vorlage Internes Projekt (SWE).docx
+  - changeSet:
+      id: insert-file-risk-list
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: download_file
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: name
+                  value: ITZBund Risikoliste
+              - column:
+                  name: description
+                  value: Risikoliste
+              - column:
+                  name: path
+                  value: downloadFiles/itzbund_risikoliste.xlsx

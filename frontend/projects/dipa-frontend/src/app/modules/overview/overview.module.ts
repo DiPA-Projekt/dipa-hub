@@ -1,9 +1,9 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 
-import { OverviewRoutingModule } from './overview-routing.module';
-import { OverviewComponent } from './overview.component';
-import { MaterialModule } from '../../material/material.module';
+import {OverviewRoutingModule} from './overview-routing.module';
+import {OverviewComponent} from './overview.component';
+import {MaterialModule} from '../../material/material.module';
 
 import {MatCardModule} from '@angular/material/card';
 import {MatIconModule} from '@angular/material/icon';
@@ -18,7 +18,8 @@ import {MatSelectModule} from '@angular/material/select';
 import {AngularResizedEventModule} from 'angular-resize-event';
 import {FormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
-import { SharedModule } from '../../shared/shared.module';
+import {SharedModule} from '../../shared/shared.module';
+import {GanttModule} from '../gantt/gantt.module';
 
 @NgModule({
   declarations: [OverviewComponent],
@@ -40,6 +41,7 @@ import { SharedModule } from '../../shared/shared.module';
     MatSelectModule,
     AngularResizedEventModule,
     MatButtonModule,
+    GanttModule
   ]
 })
 export class OverviewModule { }

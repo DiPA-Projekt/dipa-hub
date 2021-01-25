@@ -5,6 +5,7 @@
 .content-container {
   margin: 10px;
   padding-left: 10px;
+  width: 90%;
 }
 
 .mat-sidenav-container {
@@ -43,4 +44,37 @@ mat-sidenav-content {
   width: 100%;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.chart-container {
+  width: 95%;
+  padding-left: 1%;
+  padding-right: 1%;
+}
+
+.template-controller {
+  height: 290px;
+  text-align: center;
+  justify-content: center;
+  margin: auto;
+}
+
+.template-controller-container {
+  margin-top: 70px;
+}
+
+.logo {
+  width: 100px;
+}
+
+button {
+  margin: 5px;
+}
+
+.button-template {
+  text-align: center;
+}
+
+.text-template {
+  margin: 0px;
 }
