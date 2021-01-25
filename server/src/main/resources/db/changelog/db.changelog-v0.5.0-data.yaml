@@ -227,6 +227,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-plan-template-swe-iterative-non-standard-1
       author: nguyen
+      context: itzbund
       changes:
         - insert:
             tableName: plan_template
@@ -252,6 +253,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-milestones-swe-iterative-non-standard-1
       author: nguyen
+      context: itzbund
       changes:
         - insert:
             tableName: milestone_template
@@ -331,6 +333,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-plan-template-swe-iterative-non-standard-2
       author: nguyen
+      context: itzbund
       changes:
         - insert:
             tableName: plan_template
@@ -356,6 +359,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-milestones-swe-iterativ-non-standard-2
       author: nguyen
+      context: itzbund
       changes:
         - insert:
             tableName: milestone_template
