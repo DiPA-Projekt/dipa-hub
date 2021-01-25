@@ -298,7 +298,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       for (const template of this.templateData) {
 
         const milestoneViewItem = new MilestonesArea(this.svg, this.chartElement, this.xScale,
-          template.milestones, this.modifiable, false, countId);
+          template.milestones, this.modifiable, false, countId, this.timelineData);
 
         milestoneViewItem.draw({left: this.padding.left, top: 0});
         this.milestonesArea.push(milestoneViewItem);

@@ -313,7 +313,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.taskViewItem.draw({left: 0, top: 0});
 
     this.milestoneViewItem = new MilestonesArea(this.svg, this.chartElement, this.xScale,
-                                                this.milestoneData, this.modifiable, this.showMenu, this.timelineData.id);
+                                                this.milestoneData, this.modifiable, this.showMenu, this.timelineData.id, this.timelineData);
     this.milestoneViewItem.draw({left: 0, top: this.taskViewItem.getAreaHeight()});
 
     this.milestoneViewItem.onDragEndMilestone = (offsetDays: number, id: number) => {
