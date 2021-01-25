@@ -1,0 +1,72 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Show stack performance
+
+on:
+  push:
+    branches:
+      - "chore/analyse-stack"
+
+jobs:
+  show-performance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: "11.0.2"
+          architecture: x64
+          server-id: docker.dipa.online
+          server-username: DOCKER_REGISTRY_USERNAME
+          server-password: DOCKER_REGISTRY_TOKEN
+      - name: Maven-Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: NPM-Cache
+        uses: actions/cache@v2
+        with:
+          path: frontend/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install frontend and only all required modules
+        run: mvn clean install -pl frontend --am
+        env:
+          CI: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2.1.4
+        with:
+          node-version: 14.x
+
+      - name: Run Unit-Tests - Angular specific
+        continue-on-error: true
+        run: npm run test:ci
+        working-directory: frontend
+      - name: Run Unit-Tests - pure Mocha
+        continue-on-error: true
+        run: npm run nyc:ci
+        working-directory: frontend
+
+      - name: Run ESLint-Test - Angular specific
+        continue-on-error: true
+        run: npm run eslint -- --config=.eslintrc.ng.js
+        working-directory: frontend
+      - name: Run ESLint-Test - pure TypeScript-ESLint
+        continue-on-error: true
+        run: npm run eslint -- --config .eslintrc.fast.js
+        working-directory: frontend
+      - name: Run ESLint-Test - combined Variant
+        continue-on-error: true
+        run: npm run eslint
+        working-directory: frontend
