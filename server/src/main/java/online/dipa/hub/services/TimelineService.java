@@ -3,19 +3,10 @@ package online.dipa.hub.services;
 import net.fortuna.ical4j.model.TimeZone;
 import online.dipa.hub.IcsCalendar;
 import online.dipa.hub.TimelineState;
-import online.dipa.hub.api.model.Increment;
-import online.dipa.hub.api.model.Milestone;
-import online.dipa.hub.api.model.ProjectApproach;
-import online.dipa.hub.api.model.ProjectType;
-import online.dipa.hub.api.model.Timeline;
+import online.dipa.hub.api.model.*;
 import online.dipa.hub.persistence.entities.PlanTemplateEntity;
 import online.dipa.hub.persistence.entities.ProjectApproachEntity;
-
-import online.dipa.hub.persistence.repositories.PlanTemplateRepository;
-import online.dipa.hub.persistence.repositories.ProjectApproachRepository;
-import online.dipa.hub.persistence.repositories.ProjectRepository;
-import online.dipa.hub.persistence.repositories.ProjectTypeRepository;
-
+import online.dipa.hub.persistence.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
@@ -28,10 +19,10 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
+import static online.dipa.hub.api.model.Timeline.ProjectTypeEnum;
 
 @Service
 @SessionScope
@@ -39,6 +30,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 public class TimelineService {
 
     private Map<Long, TimelineState> sessionTimelines;
+    private Map<Long, List<Template>> sessionTemplates = new HashMap<>();
 
     @Autowired
     private ConversionService conversionService;
@@ -47,13 +39,20 @@ public class TimelineService {
     private ProjectRepository projectRespository;
 
     @Autowired
+    private FileRepository fileRepository;
+
+    @Autowired
     private ProjectApproachRepository projectApproachRepository;
 
     @Autowired
-    private ProjectTypeRepository projectTypeRepository;
+    private OperationTypeRepository operationTypeRepository;
 
     @Autowired
     private PlanTemplateRepository planTemplateRepository;
+
+    private static final long FIRST_MASTER_MILESTONE_ID = 21;
+    private static final long LAST_MASTER_MILESTONE_ID = 28;
+    private static final String CURRENT_TEMPLATE_NAME = "aktuell";
 
     public List<Timeline> getTimelines() {
         initializeTimelines();
@@ -80,9 +79,9 @@ public class TimelineService {
                 });
     }
 
-    public List<ProjectType> getProjectTypes() {
+    public List<OperationType> getOperationTypes() {
 
-        return projectTypeRepository.findAll().stream().map(p -> conversionService.convert(p, ProjectType.class))
+        return operationTypeRepository.findAll().stream().map(p -> conversionService.convert(p, OperationType.class))
                 .collect(Collectors.toList());
     }
 
@@ -103,7 +102,7 @@ public class TimelineService {
 
         final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
 
-        if (sessionTimeline.getMilestones() == null) {
+        if (projectApproach != null && sessionTimeline.getMilestones() == null) {
             if (projectApproach.isIterative()) {
                 initializeIncrements(timelineId);
                 sessionTimeline.setMilestones(this.loadMilestones(timelineId, 1));
@@ -116,7 +115,7 @@ public class TimelineService {
     private List<Milestone> loadMilestones(final Long timelineId, final int incrementCount) {
         TimelineState sessionTimeline = findTimelineState(timelineId);
 
-        List<Milestone> milestones = new ArrayList<>();
+        List<Milestone> milestones;
 
         // get template Milestones
         if (sessionTimeline.getTempIncrementMilestones() == null) {
@@ -131,7 +130,7 @@ public class TimelineService {
             return milestones;
         } else {
 
-            List<Milestone> incrementMilestones = new ArrayList<Milestone>();
+            List<Milestone> incrementMilestones = new ArrayList<>();
 
             // add master plan into milestones list
             if (sessionTimeline.getMilestones() == null) {
@@ -141,119 +140,144 @@ public class TimelineService {
             } else {
 
                 List<Milestone> currentMilestones = sessionTimeline.getMilestones();
-
+                
                 incrementMilestones.add(currentMilestones.get(0));
                 incrementMilestones.add(currentMilestones.get(currentMilestones.size() - 1));
-            }
 
-            for (Entry<Increment, List<Milestone>> entry : getIncrementMilestones(milestones, timelineId,
-                    incrementCount).entrySet()) {
-                List<Milestone> milestonesList = entry.getValue();
-                incrementMilestones.addAll(milestonesList);
             }
+            
+            milestones.removeIf(m -> m.getId().equals(FIRST_MASTER_MILESTONE_ID));
+            milestones.removeIf(m -> m.getId().equals(LAST_MASTER_MILESTONE_ID));
 
-            return incrementMilestones.stream().map(m -> conversionService.convert(m, Milestone.class))
-                    .sorted(Comparator.comparing(Milestone::getDate)).collect(Collectors.toList());
+            this.getValuesFromHashMap( getIncrementMilestones(milestones, timelineId,
+            incrementCount), incrementMilestones);  
+
+            return sortMilestones(incrementMilestones);
         }
     }
 
     private HashMap<Increment, List<Milestone>> getIncrementMilestones(List<Milestone> tempMilestones,
             final Long timelineId, final int incrementCount) {
 
+        HashMap<Increment, List<Milestone>> hashmapIncrementMilestones = new HashMap<>();
+
         TimelineState sessionTimeline = findTimelineState(timelineId);
 
-        List<Increment> incrementsList = loadIncrements(timelineId, incrementCount);
+        List<Increment> incrementsList = loadIncrementsTemplate(timelineId, incrementCount, tempMilestones, sessionTimeline.getMilestones());
 
-        tempMilestones.remove(tempMilestones.size() - 1);
-        tempMilestones.remove(0);
+        Optional<LocalDate> firstDatePeriodOptional = tempMilestones.stream().map(Milestone::getDate).min(LocalDate::compareTo);
+        Optional<LocalDate> lastDatePeriodOptional = tempMilestones.stream().map(Milestone::getDate).max(LocalDate::compareTo);
 
-        LocalDate firstDatePeriod = tempMilestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get();
-        LocalDate lastDatePeriod = tempMilestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
+        if (firstDatePeriodOptional.isPresent() && lastDatePeriodOptional.isPresent()) {
+            LocalDate firstDatePeriod = firstDatePeriodOptional.get();
+            LocalDate lastDatePeriod = lastDatePeriodOptional.get();
 
-        long id = tempMilestones.stream().map(Milestone::getId).min(Long::compareTo).get();
-        long count = 0;
+            long oldDaysBetween = DAYS.between(firstDatePeriod, lastDatePeriod);
 
-        HashMap<Increment, List<Milestone>> hashmapIncrementMilestones = new HashMap<>();
-        long oldDaysBetween = DAYS.between(firstDatePeriod, lastDatePeriod);
+            long id = tempMilestones.stream().map(Milestone::getId).min(Long::compareTo).orElseThrow(() -> new EntityNotFoundException(
+                    String.format("Timeline with id: %1$s milestone has no id.", timelineId)));
+            long count = 0;
 
-        for (Increment increment : incrementsList) {
-            List<Milestone> incrementMilestones = new ArrayList<Milestone>();
+            for (Increment increment : incrementsList) {
+                List<Milestone> incrementMilestones = new ArrayList<>();
 
-            long newDaysBetween = DAYS.between(increment.getStart().plusDays(14), increment.getEnd());
-            LocalDate newStartDateIncrement = increment.getStart().plusDays(14);
+                long newDaysBetween = DAYS.between(increment.getStart().plusDays(14), increment.getEnd());
+                LocalDate newStartDateIncrement = increment.getStart().plusDays(14);
 
-            double factor = (double) newDaysBetween / oldDaysBetween;
+                double factor = (double) newDaysBetween / oldDaysBetween;
 
-            for (Milestone m : tempMilestones) {
+                for (Milestone m : tempMilestones) {
 
-                long daysFromFirstDate = DAYS.between(firstDatePeriod, newStartDateIncrement);
-                LocalDate newDateBeforeScale = m.getDate().plusDays(daysFromFirstDate);
+                    long daysFromFirstDate = DAYS.between(firstDatePeriod, newStartDateIncrement);
+                    LocalDate newDateBeforeScale = m.getDate().plusDays(daysFromFirstDate);
 
-                long relativePositionBeforeScale = DAYS.between(newStartDateIncrement, newDateBeforeScale);
-                long newDateAfterScale = (long)(relativePositionBeforeScale * factor);
-                long milestoneId = id + count;
+                    long relativePositionBeforeScale = DAYS.between(newStartDateIncrement, newDateBeforeScale);
+                    long newDateAfterScale = (long)(relativePositionBeforeScale * factor);
+                    long milestoneId = id + count;
 
-                Milestone newMilestone = new Milestone();
-                newMilestone.setId(milestoneId);
-                newMilestone.setName(m.getName());
-                newMilestone.setDate(increment.getStart().plusDays(newDateAfterScale).plusDays(14));
+                    String milestoneName = m.getName();
+                    LocalDate milestoneDate = increment.getStart().plusDays(newDateAfterScale).plusDays(14);
 
-                if (sessionTimeline.getMilestones() != null) {
-                    Milestone oldMilestone =  sessionTimeline.getMilestones().stream().filter(milestone -> milestone.getId().equals(milestoneId)).findFirst().orElse(null);
+                    Milestone newMilestone = createMilestone(sessionTimeline, milestoneId, milestoneName, milestoneDate);
+                    incrementMilestones.add(newMilestone);
 
-                    if (oldMilestone != null) {
-                        newMilestone.setStatus(oldMilestone.getStatus());
-                    }
-                    else {
-                        newMilestone.setStatus(Milestone.StatusEnum.OFFEN);
-                    }
+                    count++;
                 }
-                else {
-                    newMilestone.setStatus(Milestone.StatusEnum.OFFEN);
-                }
+                hashmapIncrementMilestones.put(increment, incrementMilestones);
 
-                incrementMilestones.add(newMilestone);
-
-                count++;
             }
-            hashmapIncrementMilestones.put(increment, incrementMilestones);
 
         }
-
         return hashmapIncrementMilestones;
+    }
+
+    private Milestone createMilestone(TimelineState sessionTimeline, long milestoneId, String milestoneName, LocalDate milestoneDate) {
+        Milestone newMilestone = new Milestone();
+        newMilestone.setId(milestoneId);
+        newMilestone.setName(milestoneName);
+        newMilestone.setDate(milestoneDate);
+
+        if (sessionTimeline.getMilestones() != null) {
+            Milestone oldMilestone = sessionTimeline.getMilestones().stream().filter(milestone -> milestone.getId().equals(milestoneId)).findFirst().orElse(null);
+
+            if (oldMilestone != null) {
+                newMilestone.setStatus(oldMilestone.getStatus());
+            } else {
+                newMilestone.setStatus(Milestone.StatusEnum.OFFEN);
+            }
+        }
+        else {
+            newMilestone.setStatus(Milestone.StatusEnum.OFFEN);
+        }
+
+        return newMilestone;
     }
 
     private List<Milestone> getMilestonesFromRespository(final Long timelineId) {
         TimelineState sessionTimeline = findTimelineState(timelineId);
 
         final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
-        Long projectTypeId = projectApproach.getProjectType().getId();
 
-        final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
-                .filter(template -> template.getProjectTypeEntity().getId().equals(projectTypeId))
+        List<Milestone> milestones = new ArrayList<>();
+
+        if (projectApproach != null) {
+
+            Long operationTypeId = projectApproach.getOperationType().getId();
+
+            final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
+                .filter(template -> template.getOperationTypeEntity().getId().equals(operationTypeId))
                 .collect(Collectors.toList());
 
-        List<Milestone> milestones = new ArrayList<Milestone>();
+                if (planTemplateList.size() == 1) {
+                    milestones = convertMilestones(planTemplateList.get(0));
+                }
+                else {
 
-        if (planTemplateList.size() == 1) {
-            milestones = convertMilestones(planTemplateList.get(0));
-        } else {
-            long masterPlanId = 2;
-            PlanTemplateEntity masterPlan = planTemplateList.stream()
-                    .filter(template -> template.getId().equals(masterPlanId)).findFirst().orElse(null);
+                    long masterPlanId = 2;
 
-            milestones.addAll(convertMilestones(masterPlan));
+                    Optional<PlanTemplateEntity> masterPlanTemplate = planTemplateList.stream()
+                            .filter(template -> template.getId().equals(masterPlanId))
+                            .filter(PlanTemplateEntity::getDefaultTemplate).findFirst();
+                
+                    if (masterPlanTemplate.isPresent()) {
+                        milestones.addAll(convertMilestones(masterPlanTemplate.get()));
+                    }
+        
+                    Optional<PlanTemplateEntity> planTemplate = planTemplateList.stream()
+                            .filter(template -> template.getProjectApproach() != null)
+                            .filter(template -> template.getProjectApproach().getId().equals(projectApproach.getId()))
+                            .filter(PlanTemplateEntity::getDefaultTemplate)
+                            .findFirst();
+                    
+                    if (planTemplate.isPresent()) {
+                        milestones.addAll(convertMilestones(planTemplate.get()));
+                    }
 
-            PlanTemplateEntity iterativePlan = planTemplateList.stream()
-                    .filter(template -> template.getProjectApproach() != null)
-                    .filter(template -> template.getProjectApproach().getId().equals(projectApproach.getId()))
-                    .findFirst().orElse(null);
+                }
 
-            milestones.addAll(convertMilestones(iterativePlan));
         }
 
-        return milestones.stream().map(m -> conversionService.convert(m, Milestone.class))
-                .sorted(Comparator.comparing(Milestone::getDate)).collect(Collectors.toList());
+        return sortMilestones(milestones);
     }
 
     private List<Milestone> convertMilestones(PlanTemplateEntity planTemplate) {
@@ -261,9 +285,13 @@ public class TimelineService {
                 .sorted(Comparator.comparing(Milestone::getDate)).collect(Collectors.toList());
     }
 
+    private List<Milestone> sortMilestones(List<Milestone> milestones) {
+         return milestones.stream().map(m -> conversionService.convert(m, Milestone.class))
+        .sorted(Comparator.comparing(Milestone::getDate)).collect(Collectors.toList());
+    }
+
     public List<Increment> getIncrementsForTimeline(final Long timelineId) {
 
-        // initializeMilestones(timelineId);
         initializeIncrements(timelineId);
 
         List<Increment> result = this.sessionTimelines.get(timelineId).getIncrements();
@@ -273,50 +301,51 @@ public class TimelineService {
 
     private void initializeIncrements(final Long timelineId) {
         TimelineState sessionTimeline = findTimelineState(timelineId);
+        List<Template> currentSessionTemplates = this.sessionTemplates.get(timelineId);
 
         if (sessionTimeline.getIncrements() == null) {
             final ProjectApproachEntity projectApproach = projectRespository.findAll().stream()
-            .filter(p -> p.getProjectApproach().getId().equals(sessionTimeline.getTimeline().getProjectApproachId())).findFirst().orElse(null).getProjectApproach();
+            .filter(p -> p.getProjectApproach().getId().equals(sessionTimeline.getTimeline().getProjectApproachId())).findFirst().orElseThrow(() -> new EntityNotFoundException(
+                            String.format("No project approach available for timeline id: %1$s.", timelineId))).getProjectApproach();
 
-            if (projectApproach.isIterative()) {
-                sessionTimeline.setIncrements(this.loadIncrements(timelineId, 1));
+            if (projectApproach.isIterative() && (currentSessionTemplates == null || sessionTimeline.getIterative())) {
+                
+                List<Milestone> initMilestones = getMilestonesFromRespository(timelineId);
+                sessionTimeline.setIncrements(this.loadIncrementsTemplate(timelineId, 1, initMilestones, null));
+                
             }
+    
         }
     }
 
-    private List<Increment> loadIncrements(final Long timelineId, final int incrementCount) {
-        TimelineState sessionTimeline = findTimelineState(timelineId);
-
-        List<Milestone> milestones = getMilestonesFromRespository(timelineId);
-
-        // delete masterplan from milestones list
-        milestones.remove(milestones.size() - 1);
-        milestones.remove(0);
+    private List<Increment> loadIncrementsTemplate(final Long timelineId, final int incrementCount, List<Milestone> initMilestones, List<Milestone> currentMilestones) {
 
         LocalDate firstMilestoneDate;
         LocalDate lastMilestoneDate;
         long daysBetween;
-        List<Increment> incrementsList = new ArrayList<Increment>();
+        List<Increment> incrementsList = new ArrayList<>();
 
-        if (sessionTimeline.getMilestones() == null) {
+        if (currentMilestones == null) {
+            initMilestones = sortMilestones(initMilestones);
+
+            initMilestones.removeIf(m -> m.getId().equals(FIRST_MASTER_MILESTONE_ID));
+            initMilestones.removeIf(m -> m.getId().equals(LAST_MASTER_MILESTONE_ID));
 
             //minus 14 days for "Inkrement geplant"
-            firstMilestoneDate = milestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).get().minusDays(14);
-            lastMilestoneDate = milestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
+            firstMilestoneDate = initMilestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).orElseThrow(() -> new EntityNotFoundException(
+                    String.format("No valid milestone date available for timeline id: %1$s.", timelineId))).minusDays(14);
+            lastMilestoneDate = initMilestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).orElseThrow(() -> new EntityNotFoundException(
+                    String.format("No valid milestone date available for timeline id: %1$s.", timelineId)));
 
-            daysBetween = DAYS.between(firstMilestoneDate, lastMilestoneDate);
+        } else {
 
-        }
-        else {
-
-            List<Milestone> currentMilestones = sessionTimeline.getMilestones();
+            currentMilestones = sortMilestones(currentMilestones);
 
             firstMilestoneDate = currentMilestones.get(1).getDate().minusDays(14);
-            lastMilestoneDate = currentMilestones.get(currentMilestones.size()-2).getDate();
-
-            daysBetween = DAYS.between(firstMilestoneDate, lastMilestoneDate);
+            lastMilestoneDate = currentMilestones.get(currentMilestones.size() - 2).getDate();
 
         }
+        daysBetween = DAYS.between(firstMilestoneDate, lastMilestoneDate);
 
         long durationIncrement = daysBetween / incrementCount;
 
@@ -343,9 +372,7 @@ public class TimelineService {
             } else {
                 endDateIncrement = endDateIncrement.plusDays(durationIncrement);
             }
-
         }
-
         return incrementsList;
     }
 
@@ -354,7 +381,7 @@ public class TimelineService {
 
         int incrementCount = sessionTimeline.getIncrements().size();
 
-        sessionTimeline.setIncrements(this.loadIncrements(timelineId, incrementCount + 1));
+        sessionTimeline.setIncrements(this.loadIncrementsTemplate(timelineId, incrementCount + 1, null, sessionTimeline.getMilestones()));
         sessionTimeline.setMilestones(this.loadMilestones(timelineId, incrementCount + 1));
     }
 
@@ -364,14 +391,15 @@ public class TimelineService {
         int incrementCount = sessionTimeline.getIncrements().size();
 
         if (incrementCount != 1) {
-            sessionTimeline.setIncrements(this.loadIncrements(timelineId, incrementCount - 1));
+            sessionTimeline.setIncrements(this.loadIncrementsTemplate(timelineId, incrementCount - 1, null, sessionTimeline.getMilestones()));
             sessionTimeline.setMilestones(this.loadMilestones(timelineId, incrementCount - 1));
         }
     }
 
     private ProjectApproachEntity findProjectApproach(Long projectApproachId) {
         return projectRespository.findAll().stream()
-        .filter(p -> p.getProjectApproach().getId().equals(projectApproachId)).findFirst().orElse(null).getProjectApproach();
+        .filter(p -> p.getProjectApproach().getId().equals(projectApproachId)).findFirst().orElseThrow(() -> new EntityNotFoundException(
+                        String.format("Project approach with id: %1$s not found.", projectApproachId))).getProjectApproach();
     }
 
     private TimelineState findTimelineState(Long timelineId) {
@@ -430,6 +458,7 @@ public class TimelineService {
             long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
 
             m.setDate(newTimelineStart.plusDays(newMilestoneRelativePosition));
+           
         }
 
         for (Milestone temp : sessionTimeline.getTempIncrementMilestones()) {
@@ -437,6 +466,7 @@ public class TimelineService {
             long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
 
             temp.setDate(newTimelineStart.plusDays(newMilestoneRelativePosition));
+            
         }
 
         updateIncrements(timelineId);
@@ -480,35 +510,48 @@ public class TimelineService {
     public void moveMileStoneByDays(final Long timelineId, final Long days, final Long movedMilestoneId) {
         TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
 
-        LocalDate oldFirstMilestoneDate = sessionTimeline.getMilestones().stream().map(Milestone::getDate)
-                .min(LocalDate::compareTo).get();
-        LocalDate oldProjectStart = sessionTimeline.getTimeline().getStart();
-        long diffProjectStartMilestone = Duration
-                .between(oldFirstMilestoneDate.atStartOfDay(), oldProjectStart.atStartOfDay()).toDays();
+        Optional<LocalDate> oldFirstMilestoneOptionalDate = sessionTimeline.getMilestones().stream().map(Milestone::getDate)
+                .min(LocalDate::compareTo);
+        if (oldFirstMilestoneOptionalDate.isPresent()) {
+            LocalDate oldFirstMilestoneDate = oldFirstMilestoneOptionalDate.get();
 
-        for (Milestone m : sessionTimeline.getMilestones()) {
-            if (m.getId().equals(movedMilestoneId)) {
-                m.setDate(m.getDate().plusDays(days));
+            LocalDate oldProjectStart = sessionTimeline.getTimeline().getStart();
+            long diffProjectStartMilestone = Duration
+                    .between(oldFirstMilestoneDate.atStartOfDay(), oldProjectStart.atStartOfDay()).toDays();
+
+            for (Milestone m : sessionTimeline.getMilestones()) {
+                if (m.getId().equals(movedMilestoneId)) {
+                    m.setDate(m.getDate().plusDays(days));
+                }
+            }
+
+            Optional<LocalDate> newFirstMilestoneOptionalDate = sessionTimeline.getMilestones().stream().map(Milestone::getDate)
+                    .min(LocalDate::compareTo);
+            if (newFirstMilestoneOptionalDate.isPresent()) {
+                LocalDate newFirstMilestoneDate = newFirstMilestoneOptionalDate.get();
+
+                long daysOffsetStart = Duration.between(oldProjectStart.atStartOfDay(), newFirstMilestoneDate.atStartOfDay())
+                        .toDays();
+                LocalDate newProjectStart = sessionTimeline.getTimeline().getStart()
+                        .plusDays(daysOffsetStart + diffProjectStartMilestone);
+
+                sessionTimeline.getTimeline().setStart(newProjectStart);
+            }
+
+            Optional<LocalDate> newLastMilestoneOptionalDate = sessionTimeline.getMilestones().stream().map(Milestone::getDate)
+                    .max(LocalDate::compareTo);
+            if (newLastMilestoneOptionalDate.isPresent()) {
+                LocalDate newLastMilestoneDate = newLastMilestoneOptionalDate.get();
+
+                LocalDate oldProjectEnd = sessionTimeline.getTimeline().getEnd();
+
+                long daysOffsetEnd = Duration.between(oldProjectEnd.atStartOfDay(), newLastMilestoneDate.atStartOfDay())
+                        .toDays();
+                LocalDate newProjectEnd = sessionTimeline.getTimeline().getEnd().plusDays(daysOffsetEnd);
+
+                sessionTimeline.getTimeline().setEnd(newProjectEnd);
             }
         }
-
-        LocalDate newFirstMilestoneDate = sessionTimeline.getMilestones().stream().map(Milestone::getDate)
-                .min(LocalDate::compareTo).get();
-        long daysOffsetStart = Duration.between(oldProjectStart.atStartOfDay(), newFirstMilestoneDate.atStartOfDay())
-                .toDays();
-        LocalDate newProjectStart = sessionTimeline.getTimeline().getStart()
-                .plusDays(daysOffsetStart + diffProjectStartMilestone);
-
-        LocalDate newLastMilestoneDate = sessionTimeline.getMilestones().stream().map(Milestone::getDate)
-                .max(LocalDate::compareTo).get();
-        LocalDate oldProjectEnd = sessionTimeline.getTimeline().getEnd();
-
-        long daysOffsetEnd = Duration.between(oldProjectEnd.atStartOfDay(), newLastMilestoneDate.atStartOfDay())
-                .toDays();
-        LocalDate newProjectEnd = sessionTimeline.getTimeline().getEnd().plusDays(daysOffsetEnd);
-
-        sessionTimeline.getTimeline().setStart(newProjectStart);
-        sessionTimeline.getTimeline().setEnd(newProjectEnd);
     }
 
     public File getCalendarFileForTimeline(final Long timelineId) throws IOException {
@@ -519,16 +562,19 @@ public class TimelineService {
 
         final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
 
-        String projectEventTitle = "Projektstart" + " - " + projectApproach.getName();
-        icsCalendar.addEvent(timezone, sessionTimeline.getTimeline().getStart(), projectEventTitle, "Test Comment");
+        if (projectApproach != null) {
 
-        List<Milestone> milestones = getMilestonesForTimeline(timelineId);
-        for (Milestone milestone : milestones) {
-            LocalDate eventDate = milestone.getDate();
-            String eventTitle = milestone.getName() + " - " + projectApproach.getName();
-            String eventComment = "Test Comment";
+            String projectEventTitle = "Projektstart" + " - " + projectApproach.getName();
+            icsCalendar.addEvent(timezone, sessionTimeline.getTimeline().getStart(), projectEventTitle, "Test Comment");
 
-            icsCalendar.addEvent(timezone, eventDate, eventTitle, eventComment);
+            List<Milestone> milestones = getMilestonesForTimeline(timelineId);
+            for (Milestone milestone : milestones) {
+                LocalDate eventDate = milestone.getDate();
+                String eventTitle = milestone.getName() + " - " + projectApproach.getName();
+                String eventComment = "Test Comment";
+
+                icsCalendar.addEvent(timezone, eventDate, eventTitle, eventComment);
+            }
         }
 
         return icsCalendar.getCalendarFile("Meilensteine");
@@ -542,8 +588,8 @@ public class TimelineService {
 
         if (increments != null) {
             int incrementCount = increments.size();
-            sessionTimeline.setIncrements(this.loadIncrements(timelineId, incrementCount));
-            sessionTimeline.setMilestones(this.loadMilestones(timelineId, incrementCount));
+            sessionTimeline.setIncrements(this.loadIncrementsTemplate(timelineId, incrementCount, null, sessionTimeline.getMilestones()));
+            // fix sessionTimeline setMilestones
 
         }
     }
@@ -554,7 +600,7 @@ public class TimelineService {
 
         if (sessionTimeline.getTempIncrementMilestones() == null) {
 
-            List<Milestone> tempMilestonesList = new ArrayList<Milestone>(getMilestonesFromRespository(timelineId));
+            List<Milestone> tempMilestonesList = new ArrayList<>(getMilestonesFromRespository(timelineId));
             sessionTimeline.setTempIncrementMilestones(tempMilestonesList);
         }
     }
@@ -562,12 +608,14 @@ public class TimelineService {
     public void updateProject(final Timeline timeline) {
 
         TimelineState sessionTimeline = getSessionTimelines().get(timeline.getId());
-        sessionTimeline.getTimeline().setProjectTypeId(timeline.getProjectTypeId());
+        sessionTimeline.getTimeline().setOperationTypeId(timeline.getOperationTypeId());
         sessionTimeline.getTimeline().setProjectApproachId(timeline.getProjectApproachId());
 
         sessionTimeline.setMilestones(null);
         sessionTimeline.setIncrements(null);
         sessionTimeline.setTempIncrementMilestones(null);
+
+        this.sessionTemplates.remove(timeline.getId());
 
         this.initializeMilestones(timeline.getId());
         this.updateMilestonesAndIncrement(timeline);
@@ -580,36 +628,216 @@ public class TimelineService {
         updateTempMilestones(timeline.getId());
 
         LocalDate initTimelineStart = LocalDate.now();
-        LocalDate initTimelineEnd = sessionTimeline.getMilestones().stream().map(Milestone::getDate).max(LocalDate::compareTo).get();
+        Optional<LocalDate> initTimelineEndOptional = sessionTimeline.getMilestones().stream().map(Milestone::getDate).max(LocalDate::compareTo);
 
-        LocalDate currentTimelineStart = sessionTimeline.getTimeline().getStart();
-        LocalDate currentTimelineEnd = sessionTimeline.getTimeline().getEnd();
+        if (initTimelineEndOptional.isPresent()) {
+            LocalDate initTimelineEnd = initTimelineEndOptional.get();
 
-        long oldDaysBetween = DAYS.between(initTimelineStart, initTimelineEnd);
-        long newDaysBetween = DAYS.between(currentTimelineStart, currentTimelineEnd);
-        double factor = (double) newDaysBetween / oldDaysBetween;
+            LocalDate currentTimelineStart = sessionTimeline.getTimeline().getStart();
+            LocalDate currentTimelineEnd = sessionTimeline.getTimeline().getEnd();
 
-        for (Milestone m : sessionTimeline.getMilestones()) {
-            long oldMilestoneRelativePosition = DAYS.between(initTimelineStart, m.getDate());
-            long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
+            long oldDaysBetween = DAYS.between(initTimelineStart, initTimelineEnd);
+            long newDaysBetween = DAYS.between(currentTimelineStart, currentTimelineEnd);
+            double factor = (double) newDaysBetween / oldDaysBetween;
 
-            m.setDate(currentTimelineStart.plusDays(newMilestoneRelativePosition));
+            for (Milestone m : sessionTimeline.getMilestones()) {
+
+                long oldMilestoneRelativePosition = DAYS.between(initTimelineStart, m.getDate());
+                long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
+
+                m.setDate(currentTimelineStart.plusDays(newMilestoneRelativePosition));          
+                
+            }
+
+            for (Milestone temp : sessionTimeline.getTempIncrementMilestones()) {
+                long oldMilestoneRelativePosition = DAYS.between(initTimelineStart, temp.getDate());
+                long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
+
+                temp.setDate(currentTimelineStart.plusDays(newMilestoneRelativePosition));
+                
+            }
+
+            updateIncrements(timeline.getId());
         }
-
-        for (Milestone temp : sessionTimeline.getTempIncrementMilestones()) {
-            long oldMilestoneRelativePosition = DAYS.between(initTimelineStart, temp.getDate());
-            long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
-
-            temp.setDate(currentTimelineStart.plusDays(newMilestoneRelativePosition));
-        }
-
-        updateIncrements(timeline.getId());
     }
 
     public void updateMilestoneStatus(final Long timelineId, final Long milestoneId, final Milestone.StatusEnum status) {
         final TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
-        final Milestone updatedMilestone = sessionTimeline.getMilestones().stream().filter(m -> m.getId().equals(milestoneId)).findFirst().orElse(null);
+        final Milestone updatedMilestone = sessionTimeline.getMilestones().stream().filter(m -> m.getId().equals(milestoneId)).findFirst().orElseThrow(() -> new EntityNotFoundException(
+                String.format("Milestone with id: %1$s not found.", milestoneId)));
+
         updatedMilestone.setStatus(status);
+    }
+
+    public List<Template> getTemplatesForTimeline(final Long timelineId) {
+
+        List<Template> templates = new ArrayList<>();
+        final TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+        long count = 0;
+
+        Template currentTemplate = new Template()
+                                        .id(count++)
+                                        .name(CURRENT_TEMPLATE_NAME)
+                                        .milestones(sessionTimeline.getMilestones())
+                                        .increments(sessionTimeline.getIncrements());
+
+        templates.add(currentTemplate);
+
+        final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
+        Long operationTypeId = projectApproach.getOperationType().getId();
+
+        final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
+                .filter(template -> template.getOperationTypeEntity().getId().equals(operationTypeId))
+                .collect(Collectors.toList());
+
+        if (planTemplateList.size() == 1) {
+            List<Milestone>  milestones = convertMilestones(planTemplateList.get(0));
+
+            Template respoTemplate = new Template().id(count)
+                                                    .name(planTemplateList.get(0).getName())
+                                                    .standard(planTemplateList.get(0).getStandard())
+                                                    .milestones(this.updateMilestonesTemplate(timelineId, milestones));
+
+            templates.add(respoTemplate);
+        }
+        else {
+            long masterPlanId = 2;
+            Optional<PlanTemplateEntity> masterPlanTemplate = planTemplateList.stream()
+                            .filter(template -> template.getId().equals(masterPlanId)).findFirst();
+
+            List<PlanTemplateEntity> planTemplates = planTemplateList.stream()
+                    .filter(template -> template.getProjectApproach() != null)
+                    .filter(template -> template.getProjectApproach().getId().equals(projectApproach.getId()))
+                    .collect(Collectors.toList());
+
+            for (PlanTemplateEntity temp: planTemplates) {
+                List<Milestone> milestones = new ArrayList<>();
+
+                if (masterPlanTemplate.isPresent()) {
+                    milestones.addAll(convertMilestones(masterPlanTemplate.get()));
+                }
+
+                Template template = new Template()
+                                    .id(count++)
+                                    .name(temp.getName())
+                                    .standard(temp.getStandard());
+
+                if (projectApproach.isIterative()) {
+
+                    milestones = updateMilestonesTemplate(timelineId, milestones);
+                    List<Milestone> tempMilestones = new ArrayList<>(convertMilestones(temp));
+
+                    this.getValuesFromHashMap(getIncrementMilestones(tempMilestones,timelineId, 1), milestones);
+
+                    template.milestones(sortMilestones(milestones));
+                    
+                    if (temp.getStandard()) {
+                        template.increments(loadIncrementsTemplate((long) 1, 1, milestones, null));
+                    }
+
+                }
+                else {
+                    milestones.addAll(convertMilestones(temp));
+                    template.milestones(updateMilestonesTemplate(timelineId, milestones));
+                }
+
+                templates.add(template);
+
+            }
+        }
+
+        this.sessionTemplates.put(timelineId, templates);
+        return templates;
+    }
+
+    public List<Milestone> updateMilestonesTemplate(final Long timelineId, List<Milestone> milestones) {
+
+        TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+        milestones = sortMilestones(milestones);
+
+        LocalDate initTimelineStart = LocalDate.now();
+
+        Optional<LocalDate> initTimelineEndOptional = milestones.stream().map(Milestone::getDate).max(LocalDate::compareTo);
+
+        LocalDate initTimelineEnd;
+
+        if (initTimelineEndOptional.isPresent()) {
+            initTimelineEnd = initTimelineEndOptional.get();
+
+            LocalDate currentTimelineStart = sessionTimeline.getTimeline().getStart();
+            LocalDate currentTimelineEnd = sessionTimeline.getTimeline().getEnd();
+
+            long oldDaysBetween = DAYS.between(initTimelineStart, initTimelineEnd);
+            long newDaysBetween = DAYS.between(currentTimelineStart, currentTimelineEnd);
+            double factor = (double) newDaysBetween / oldDaysBetween;
+
+            for (Milestone m : milestones) {
+                long oldMilestoneRelativePosition = DAYS.between(initTimelineStart, m.getDate());
+                long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
+
+                m.setDate(currentTimelineStart.plusDays(newMilestoneRelativePosition));
+             
+            }
+        }
+
+        return milestones;
+    }
+
+    public void updateTemplateForProject(final Long timelineId, final Long templateId) {
+        TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+
+        List<Template> currentSessionTemplates = this.sessionTemplates.get(timelineId);
+        Optional<Template> selectedTemplateOptional = currentSessionTemplates.stream().filter(t -> t.getId().equals(templateId)).findFirst();
+
+        if (selectedTemplateOptional.isPresent()) {
+            Template selectedTemplate = selectedTemplateOptional.get();
+            sessionTimeline.setMilestones(selectedTemplate.getMilestones());
+            sessionTimeline.setIncrements(selectedTemplate.getIncrements());
+            sessionTimeline.setIterative(selectedTemplate.getIncrements() != null);
+
+        }
+
+    }
+
+    public List<DownloadFile> getFilesForMilestone(final Long timelineId, final Long milestoneId) {
+
+        final TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+        final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
+
+        if (milestoneId != 21 || projectApproach == null) {    // Meilenstein id 21: Projekteinrichtung
+            return Collections.emptyList();
+        }
+
+        List<Long> downloadFileIds = new ArrayList<>();
+
+        if (sessionTimeline.getTimeline().getProjectType() == ProjectTypeEnum.AN_PROJEKT) {
+            if (projectApproach.isIterative()) {
+                downloadFileIds.add(3L);
+            } else {
+                downloadFileIds.add(1L);
+            }
+        } else if (sessionTimeline.getTimeline().getProjectType() == ProjectTypeEnum.INTERNES_PROJEKT) {
+            if (projectApproach.isIterative()) {
+                downloadFileIds.add(4L);
+            } else {
+                downloadFileIds.add(2L);
+            }
+        }
+
+        downloadFileIds.add(5L);
+
+        return fileRepository.findAll()
+                .stream()
+                .filter(file -> downloadFileIds.contains(file.getId()))
+                .map(p -> conversionService.convert(p, DownloadFile.class))
+                .collect(Collectors.toList());
+    }
+
+    private void getValuesFromHashMap(HashMap<Increment, List<Milestone>> hashMap, List<Milestone> list) {
+        
+        for (List<Milestone> value : hashMap.values()) {
+            list.addAll(value);
+        }
     }
 
 }

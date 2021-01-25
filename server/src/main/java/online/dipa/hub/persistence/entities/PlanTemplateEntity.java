@@ -45,7 +45,13 @@ public class PlanTemplateEntity extends BaseEntity {
 
     @NotNull
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    private ProjectTypeEntity projectType;
+    private OperationTypeEntity operationType;
+
+    @Basic(optional = false)
+    private boolean standard;
+
+    @Basic(optional = false)
+    private boolean defaultTemplate;
 
     public String getName() {
         return name;
@@ -71,12 +77,12 @@ public class PlanTemplateEntity extends BaseEntity {
         this.tasks = tasks;
     }
 
-    public ProjectTypeEntity getProjectTypeEntity() {
-        return projectType;
+    public OperationTypeEntity getOperationTypeEntity() {
+        return operationType;
     }
 
-    public void setProjectTypeEntity(final ProjectTypeEntity projectType) {
-        this.projectType = projectType;
+    public void setOperationTypeEntity(final OperationTypeEntity operationType) {
+        this.operationType = operationType;
     }
 
     public ProjectApproachEntity getProjectApproach() {
@@ -85,5 +91,21 @@ public class PlanTemplateEntity extends BaseEntity {
 
     public void setProjectApproach(final ProjectApproachEntity projectApproach) {
         this.projectApproach = projectApproach;
+    }
+
+    public boolean getStandard() {
+        return standard;
+    }
+
+    public void setStandard(final boolean standard) {
+        this.standard = standard;
+    }
+
+    public boolean getDefaultTemplate() {
+        return defaultTemplate;
+    }
+
+    public void setDefaultTemplate(final boolean defaultTemplate) {
+        this.defaultTemplate = defaultTemplate;
     }
 }

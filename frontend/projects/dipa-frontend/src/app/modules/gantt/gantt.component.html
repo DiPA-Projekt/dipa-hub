@@ -1,21 +1,16 @@
 <div id="gantt" class="gantt" #gantt>
   <mat-sidenav-container autosize>
-    <mat-sidenav #drawer mode="side" opened>
-      <ng-container *ngIf="vm$ | async as vm">
-        <br>
-        <h1>
-          {{vm.selectedTimeline.name}}
-        </h1>
-      </ng-container>
+    <mat-sidenav mode="side" opened="true" class="sidenav">
+      <app-sidenav></app-sidenav>
     </mat-sidenav>
     <mat-sidenav-content class="content-container">
-      <div class="content-container">
+      <div class="content-container" style="padding-right: 15px">
         <div class="row justify-content-between">
           <div class="col-6">
             <div class="row justify-content-start">
-              <div class="projectType-container">
-                <p class="label">Vorgehensart</p>
-                <p class="name">{{selectedProjectTypeName}}</p>
+              <div class="operationType-container">
+                <p class="label">Vorhabensart</p>
+                <p class="name">{{selectedOperationTypeName}}</p>
               </div>
               <div *ngIf="timelineData" class="col">
                 <mat-form-field appearance="fill" floatLabel="always">
@@ -46,7 +41,8 @@
             <button (click)="getIcsCalendarFile()"
                     mat-raised-button
                     title="Exportiere Meilensteine im iCal Format"
-                    aria-label="Exportiere Meilensteine im iCal Format">
+                    aria-label="Exportiere Meilensteine im iCal Format"
+                    style="margin-bottom: 3px">
               <mat-icon>event_note</mat-icon>
               Export
             </button>

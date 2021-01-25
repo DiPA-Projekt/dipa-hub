@@ -1,11 +1,9 @@
 package online.dipa.hub.tenancy;
 
-import java.util.Map;
-
-import javax.persistence.EntityManagerFactory;
-
+import online.dipa.hub.persistence.entities.OperationTypeEntity;
+import online.dipa.hub.persistence.repositories.Repositories;
 import org.hibernate.MultiTenancyStrategy;
-import org.hibernate.cfg.Environment;
+import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +24,8 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import online.dipa.hub.persistence.entities.ProjectTypeEntity;
-import online.dipa.hub.persistence.repositories.Repositories;
+import javax.persistence.EntityManagerFactory;
+import java.util.Map;
 
 @EnableJpaRepositories(basePackageClasses = { Repositories.class })
 @EnableTransactionManagement
@@ -38,9 +36,6 @@ public class MultiTenantJpaConfiguration {
 
     @Autowired
     private JpaProperties jpaProperties;
-
-    @Autowired
-    private HibernateProperties hibernateProperties;
 
     @Autowired
     private LiquibaseProperties liquibaseProperties;
@@ -59,7 +54,7 @@ public class MultiTenantJpaConfiguration {
     }
 
     @Bean
-    public static EntityManagerFactoryDependsOnPostProcessor LiquibaseEntityManagerFactoryDependsOnPostProcessor() {
+    public static EntityManagerFactoryDependsOnPostProcessor liquibaseEntityManagerFactoryDependsOnPostProcessor() {
         return new EntityManagerFactoryDependsOnPostProcessor(MultiTenantLiquibase.class);
     }
 
@@ -80,19 +75,20 @@ public class MultiTenantJpaConfiguration {
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(final JpaVendorAdapter jpaVendorAdapter,
             final CurrentTenantIdentifierResolver currentTenantIdentifierResolver,
-            final MultiTenantConnectionProvider multiTenantConnectionProvider) {
+            final MultiTenantConnectionProvider multiTenantConnectionProvider,
+            final HibernateProperties hibernateProperties) {
         final LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
 
-        entityManagerFactoryBean.setPackagesToScan(ProjectTypeEntity.class.getPackageName());
+        entityManagerFactoryBean.setPackagesToScan(OperationTypeEntity.class.getPackageName());
         entityManagerFactoryBean.setJpaVendorAdapter(jpaVendorAdapter);
 
-        final Map<String, Object> jpaProperties = entityManagerFactoryBean.getJpaPropertyMap();
-        jpaProperties.putAll(hibernateProperties.determineHibernateProperties(this.jpaProperties.getProperties(),
+        final Map<String, Object> properties = entityManagerFactoryBean.getJpaPropertyMap();
+        properties.putAll(hibernateProperties.determineHibernateProperties(this.jpaProperties.getProperties(),
                 new HibernateSettings()));
 
-        jpaProperties.put(Environment.MULTI_TENANT, MultiTenancyStrategy.DATABASE);
-        jpaProperties.put(Environment.MULTI_TENANT_CONNECTION_PROVIDER, multiTenantConnectionProvider);
-        jpaProperties.put(Environment.MULTI_TENANT_IDENTIFIER_RESOLVER, currentTenantIdentifierResolver);
+        properties.put(AvailableSettings.MULTI_TENANT, MultiTenancyStrategy.DATABASE);
+        properties.put(AvailableSettings.MULTI_TENANT_CONNECTION_PROVIDER, multiTenantConnectionProvider);
+        properties.put(AvailableSettings.MULTI_TENANT_IDENTIFIER_RESOLVER, currentTenantIdentifierResolver);
 
         return entityManagerFactoryBean;
     }

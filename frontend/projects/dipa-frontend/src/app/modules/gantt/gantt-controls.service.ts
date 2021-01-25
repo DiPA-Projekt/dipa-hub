@@ -46,4 +46,5 @@ export class GanttControlsService {
   setViewType(viewType: string): void {
     this.viewType.next(viewType);
   }
+
 }

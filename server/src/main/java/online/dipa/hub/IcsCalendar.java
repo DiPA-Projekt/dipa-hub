@@ -19,14 +19,13 @@ import java.util.GregorianCalendar;
 
 public class IcsCalendar {
 
-    public Calendar calendar;
+    private Calendar calendar;
 
-    private final String PRODUCT_ID = "-//DiPA//www.dipa.online 1.0//DE";
+    private static final String PRODUCT_ID = "-//DiPA//www.dipa.online 1.0//DE";
 
-    private final UidGenerator uidGenerator;
+    private static final UidGenerator uidGenerator = new RandomUidGenerator();
 
     public IcsCalendar() {
-        uidGenerator = new RandomUidGenerator();
         calendar = createCalendar();
     }
 

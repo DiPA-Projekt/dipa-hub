@@ -3,17 +3,12 @@ package online.dipa.hub.server.rest;
 import java.util.Collections;
 import java.util.List;
 
-import online.dipa.hub.api.model.Increment;
-import online.dipa.hub.api.model.InlineObject;
+import online.dipa.hub.api.model.*;
+
 import online.dipa.hub.services.TimelineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
-import online.dipa.hub.api.model.Milestone;
-import online.dipa.hub.api.model.ProjectApproach;
-import online.dipa.hub.api.model.ProjectType;
-import online.dipa.hub.api.model.Task;
-import online.dipa.hub.api.model.Timeline;
 import online.dipa.hub.api.rest.TimelinesApi;
 
 import org.springframework.core.io.FileUrlResource;
@@ -39,9 +34,9 @@ public class TimelineController implements TimelinesApi {
     }
 
     @Override
-    public ResponseEntity<List<ProjectType>> getProjectTypes() {
-        final List<ProjectType> projectTypesList = timelineService.getProjectTypes();
-        return ResponseEntity.ok(projectTypesList);
+    public ResponseEntity<List<OperationType>> getOperationTypes() {
+        final List<OperationType> operationTypesList = timelineService.getOperationTypes();
+        return ResponseEntity.ok(operationTypesList);
     }
 
     @Override
@@ -73,6 +68,8 @@ public class TimelineController implements TimelinesApi {
                 break;
             case "moveMilestone": timelineService.moveMileStoneByDays(timelineId, inlineObject.getDays(), inlineObject.getMovedMilestoneId());
                 break;
+            default:
+                return ResponseEntity.notFound().build();
         }
 
         return ResponseEntity.noContent().build();
@@ -104,6 +101,7 @@ public class TimelineController implements TimelinesApi {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     public ResponseEntity<Void> updateMilestoneData(final Long timelineId, final Long milestoneId, final Milestone milestone ) {
         if (Optional.ofNullable(milestone.getStatus()).isPresent()) {
             timelineService.updateMilestoneStatus(timelineId, milestoneId, milestone.getStatus());
@@ -111,12 +109,13 @@ public class TimelineController implements TimelinesApi {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     public ResponseEntity<Resource> getTimelineCalendar(final Long timelineId) {
 
         try {
             File icsFile = timelineService.getCalendarFileForTimeline(timelineId);
             FileUrlResource icsFileResource = new FileUrlResource(icsFile.getPath());
-// Access-Control-Expose-Headers
+            // Access-Control-Expose-Headers
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType("application/octet-stream"))
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + icsFile.getName() + "\"")
@@ -127,5 +126,24 @@ public class TimelineController implements TimelinesApi {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @Override
+    public ResponseEntity<List<Template>> getTemplatesForTimeline(final Long timelineId) {
+        final List<Template> templateList = timelineService.getTemplatesForTimeline(timelineId);
+        return ResponseEntity.ok(templateList);
+    }
+
+    @Override
+    public ResponseEntity<Void> updateTemplate(final Long timelineId, final Long templateId) {
+        timelineService.updateTemplateForProject(timelineId, templateId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<List<DownloadFile>> getFilesForMilestone(final Long timelineId, final Long milestoneId) {
+        final List<DownloadFile> attachedFilesList = timelineService.getFilesForMilestone(timelineId, milestoneId);
+        return ResponseEntity.ok(attachedFilesList);
+    }
+
 
 }

@@ -10,8 +10,8 @@ Timeline:
       description: Name of the project
       type: string
       example: "Feldberg"
-    projectTypeId:
-      description: Unique identifier of the project type
+    operationTypeId:
+      description: Unique identifier of the operation type
       type: integer
       format: int64
       example: 1
@@ -20,6 +20,14 @@ Timeline:
       type: integer
       format: int64
       example: 2
+    projectType:
+      description: project type of this project
+      type: string
+      enum:
+        - "internes Projekt"
+        - "AN-Projekt"
+        - null
+      example: "internes Projekt"
     start:
       description: The start date of the timeline
       type: string

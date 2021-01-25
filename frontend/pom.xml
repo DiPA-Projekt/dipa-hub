@@ -5,13 +5,20 @@
   <parent>
     <groupId>online.dipa.hub</groupId>
     <artifactId>dipa-parent</artifactId>
-    <version>0.4.0</version>
+    <version>0.5.0</version>
   </parent>
 
   <artifactId>dipa-frontend</artifactId>
   <packaging>jar</packaging>
   <name>DiPA :: Frontend</name>
   <description>Weit e.V. DiPA Frontend</description>
+
+  <properties>
+    <sonar.sources>projects/dipa-frontend/src</sonar.sources>
+    <sonar.javascript.lcov.reportPaths>coverage/dipa-frontend/lcov.info</sonar.javascript.lcov.reportPaths>
+    <sonar.typescript.tsconfigPath>tsconfig.json</sonar.typescript.tsconfigPath>
+    <sonar.eslint.reportPaths>eslint-report.json</sonar.eslint.reportPaths>
+  </properties>
 
   <build>
     <defaultGoal>install</defaultGoal>
@@ -88,7 +95,7 @@
               <goal>npm</goal>
             </goals>
             <configuration>
-              <arguments>run-script build</arguments>
+              <arguments>run-script build:ci</arguments>
             </configuration>
           </execution>
         </executions>

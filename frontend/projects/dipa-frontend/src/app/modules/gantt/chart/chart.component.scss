@@ -173,9 +173,11 @@
 
 .mat-sidenav-container {
   width: 100%;
-  height: 100%;
-  background: transparent;
-  margin-top: 5px;
+  background-color: transparent;
+}
+
+mat-sidenav {
+  width: 240px;
 }
 
 mat-sidenav-content {
@@ -183,13 +185,6 @@ mat-sidenav-content {
   height: 100%;
   align-items: center;
   justify-content: center;
-}
-
-mat-sidenav {
-  width: 22%;
-  background-color: white;
-  height: 100%;
-  position: relative;
 }
 
 .mat-drawer:not(.mat-drawer-side) {
@@ -225,28 +220,6 @@ mat-sidenav {
 
 .mat-radio-button {
   margin-left: 2em;
-}
-mat-card {
-  height: 100%;
-}
-
-.mat-card-header {
-  display: inline-block;
-  height: 50px;
-  box-sizing: border-box;
-  align-items: center;
-  border-bottom: solid 1px rgba(0,0,0,0.12);
-  color: rgba(0,0,0,0.6);
-
-  .title {
-    // margin-left: 10px;
-    margin-right: auto;
-    font-weight: 500;
-  }
-}
-
-.mat-card-content {
-  padding: 10px;
 }
 
 .mat-button-focus-overlay {

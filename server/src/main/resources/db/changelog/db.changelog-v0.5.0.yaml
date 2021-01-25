@@ -1,0 +1,95 @@
+databaseChangeLog:
+  - changeSet:
+      id: addColumn-project-projectType
+      author: nguyen
+      changes:
+        - addColumn:
+            tableName: project
+            columns:
+              - column:
+                  name: project_type
+                  type: VARCHAR(255)
+                  defaultValue: null
+  - changeSet:
+      id: create-external-link-table
+      author: bock
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: externalLinkPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: description
+                  type: VARCHAR(1000)
+              - column:
+                  name: url
+                  type: VARCHAR(2000)
+              - column:
+                  name: img
+                  type: VARCHAR(255)
+              - column:
+                  name: category
+                  type: VARCHAR(255)
+              - column:
+                  name: sort_order
+                  type: INTEGER
+            tableName: external_link
+  - changeSet:
+      id: addColumn-plantemplate-standard
+      author: nguyen
+      changes:
+        - addColumn:
+            tableName: plan_template
+            columns:
+              - column:
+                  name: standard
+                  type: boolean
+                  defaultValue: true
+  - changeSet:
+      id: addColumn-plantemplate-default
+      author: nguyen
+      changes:
+        - addColumn:
+            tableName: plan_template
+            columns:
+              - column:
+                  name: default_template
+                  type: boolean
+                  defaultValue: true
+  - changeSet:
+      id: create-file-table
+      author: bock
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: filePK
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: description
+                  type: VARCHAR(1000)
+              - column:
+                  name: path
+                  type: VARCHAR(2000)
+            tableName: download_file

@@ -194,5 +194,7 @@ buildNumber.properties
 # VS Code
 .vscode
 /frontend/node/**
+/frontend/coverage/**
 /frontend/projects/dipa-api-client/src/**
 /server/src/main/resources/liquibase-diff-changeLog.yaml
+/frontend/eslint-report.json

@@ -7,12 +7,13 @@ import {map, tap} from 'rxjs/operators';
 import {
   IncrementsService,
   MilestonesService,
+  OperationTypesService,
   ProjectApproachesService,
-  ProjectTypesService,
   TasksService,
   TimelinesIncrementService,
-  TimelinesService} from 'dipa-api-client';
-import { ActivatedRoute } from '@angular/router';
+  TimelinesService
+} from 'dipa-api-client';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-gantt',
@@ -29,7 +30,7 @@ export class GanttComponent implements OnInit, OnDestroy {
   periodStartDateSubscription;
   periodEndDateSubscription;
 
-  projectTypesSubscription;
+  operationTypesSubscription;
   projectApproachesSubscription;
 
   vm$: Observable<any>;
@@ -41,12 +42,12 @@ export class GanttComponent implements OnInit, OnDestroy {
 
   selectedTimelineId: number;
   selectedProjectApproachId: number;
-  selectedProjectTypeId: number;
-  selectedProjectTypeName: string;
+  selectedOperationTypeId: number;
+  selectedOperationTypeName: string;
 
   viewTypeSelected: any;
 
-  projectTypesList = [];
+  operationTypesList = [];
   projectApproachesList = [];
 
   constructor(public ganttControlsService: GanttControlsService,
@@ -55,7 +56,7 @@ export class GanttComponent implements OnInit, OnDestroy {
               private tasksService: TasksService,
               private timelinesIncrementService: TimelinesIncrementService,
               private incrementService: IncrementsService,
-              private projectTypesService: ProjectTypesService,
+              private operationTypesService: OperationTypesService,
               private projectApproachesService: ProjectApproachesService,
               public activatedRoute: ActivatedRoute) {  }
 
@@ -78,13 +79,13 @@ export class GanttComponent implements OnInit, OnDestroy {
         .subscribe((data) => {
           this.timelineData = data;
 
-          this.selectedProjectTypeId = this.timelineData.find(item => item.id === Number(this.selectedTimelineId)).projectTypeId;
+          this.selectedOperationTypeId = this.timelineData.find(item => item.id === Number(this.selectedTimelineId)).operationTypeId;
           this.selectedProjectApproachId = this.timelineData.find(item => item.id === Number(this.selectedTimelineId)).projectApproachId;
 
-          this.projectTypesSubscription = this.projectTypesService.getProjectTypes()
+          this.operationTypesSubscription = this.operationTypesService.getOperationTypes()
           .subscribe((res) => {
 
-            this.selectedProjectTypeName = res.find(item => item.id === Number(this.selectedProjectTypeId)).name;
+            this.selectedOperationTypeName = res.find(item => item.id === Number(this.selectedOperationTypeId)).name;
           });
 
           this.setData();
@@ -115,8 +116,11 @@ export class GanttComponent implements OnInit, OnDestroy {
     this.activatedRouteSubscription.unsubscribe();
     this.periodStartDateSubscription.unsubscribe();
     this.periodEndDateSubscription.unsubscribe();
-    this.projectTypesSubscription.unsubscribe();
     this.projectApproachesSubscription.unsubscribe();
+
+    if (this.operationTypesSubscription != null) {
+      this.operationTypesSubscription.unsubscribe();
+    }
   }
 
   getIcsCalendarFile(): void {
@@ -214,7 +218,7 @@ export class GanttComponent implements OnInit, OnDestroy {
   }
 
   filterProjectApproaches(): any[] {
-    return this.projectApproachesList.filter(projectApproach => projectApproach.projectTypeId === this.selectedProjectTypeId);
+    return this.projectApproachesList.filter(projectApproach => projectApproach.operationTypeId === this.selectedOperationTypeId);
   }
 
   createDateAtMidnight(date: any): Date {
@@ -231,5 +235,4 @@ export class GanttComponent implements OnInit, OnDestroy {
   getTimelineName(): any {
     return this.timelineData.find(t => t.id === this.selectedTimelineId);
   }
-
 }

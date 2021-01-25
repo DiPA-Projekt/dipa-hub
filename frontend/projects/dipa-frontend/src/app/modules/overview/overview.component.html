@@ -6,15 +6,20 @@
     <ng-container *ngFor="let vm of vmAll$ | async">
       <div class="row">
         <div class="col col-md-auto">
-          <h2>{{vm.timeline.name}}</h2>
+          <div class="mat-card-title">
+            {{vm.timeline.name}}
+          </div>
+          <div class="mat-card-subtitle">
+            {{vm.timeline.projectType}}
+          </div>
         </div>
         <div *ngIf="timelineData" class="col col-md-auto">
-          <mat-form-field appearance="fill" floatLabel="always" id="projectType-{{vm.timeline.id}}">
+          <mat-form-field appearance="fill" floatLabel="always" id="operationType-{{vm.timeline.id}}">
             <mat-label>Vorhabensart</mat-label>
-            <mat-select [(value)]="vm.timeline.projectTypeId" (selectionChange)="changeProjectType($event, vm.timeline.id)">
-              <mat-option *ngFor="let projectType of projectTypesList" 
-                          [value]="projectType.id">
-                {{ projectType.name }}
+            <mat-select [(value)]="vm.timeline.operationTypeId" (selectionChange)="changeOperationType($event, vm.timeline.id)">
+              <mat-option *ngFor="let operationType of operationTypesList"
+                          [value]="operationType.id">
+                {{ operationType.name }}
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -23,7 +28,7 @@
           <mat-form-field appearance="fill" floatLabel="always" id="projectApproach-{{vm.timeline.id}}">
             <mat-label>Vorgehensweise</mat-label>
             <mat-select [(value)]="vm.timeline.projectApproachId" (selectionChange)="changeProjectApproach($event, vm.timeline.id)">
-              <mat-option *ngFor="let projectApproach of filterProjectApproaches(vm.timeline.projectTypeId)"
+              <mat-option *ngFor="let projectApproach of filterProjectApproaches(vm.timeline.operationTypeId)"
                           [value]="projectApproach.id">
                 {{ projectApproach.name }}
               </mat-option>
