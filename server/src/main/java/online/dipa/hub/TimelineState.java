@@ -19,6 +19,8 @@ public class TimelineState {
 
     private List<Increment> increments;
 
+    private boolean iterative;
+
     public Timeline getTimeline() {
         return timeline;
     }
@@ -57,5 +59,13 @@ public class TimelineState {
 
     public void setIncrements(List<Increment> increments) {
         this.increments = increments;
+    }
+
+    public boolean getIterative() {
+        return iterative;
+    }
+
+    public void setIterative(boolean iterative) {
+        this.iterative = iterative;
     }
 }
