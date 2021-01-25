@@ -1,0 +1,24 @@
+patch:
+  tags:
+    - templates
+  summary: Update template for a project
+  description: Apply a template for a project
+  operationId: updateTemplate
+  parameters:
+    - in: path
+      name: timelineId
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: Numeric ID of the timeline.
+    - in: path
+      name: templateId
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: Numeric ID of the template.
+  responses:
+    204:
+      description: The update was applied successfully.

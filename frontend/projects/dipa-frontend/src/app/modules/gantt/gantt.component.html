@@ -4,7 +4,7 @@
       <app-sidenav></app-sidenav>
     </mat-sidenav>
     <mat-sidenav-content class="content-container">
-      <div class="content-container">
+      <div class="content-container" style="padding-right: 15px">
         <div class="row justify-content-between">
           <div class="col-6">
             <div class="row justify-content-start">
@@ -41,7 +41,8 @@
             <button (click)="getIcsCalendarFile()"
                     mat-raised-button
                     title="Exportiere Meilensteine im iCal Format"
-                    aria-label="Exportiere Meilensteine im iCal Format">
+                    aria-label="Exportiere Meilensteine im iCal Format"
+                    style="margin-bottom: 3px">
               <mat-icon>event_note</mat-icon>
               Export
             </button>
