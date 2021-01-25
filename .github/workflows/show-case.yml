@@ -61,9 +61,11 @@ jobs:
       - name: Run ESLint-Test - Angular specific
         continue-on-error: true
         run: npx ng lint dipa-frontend
+        working-directory: frontend
       - name: Run ESLint-Test - Angular specific (2)
         continue-on-error: true
         run: npx ng lint -cig=projects/dipa-frontend/.eslintrc.js
+        working-directory: frontend
       - name: Run ESLint-Test - Angular specific (3)
         continue-on-error: true
         run: npm run eslint -- --config=.eslintrc.ng.js
