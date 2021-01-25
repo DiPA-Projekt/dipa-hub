@@ -15,7 +15,7 @@
     "eslint": "eslint projects/dipa-frontend/{e2e,src}/**/*.{html,js,json,jsx,ts,tsx}",
     "eslint:ci": "npm run eslint -- --quiet=true -f json -o eslint-report.json || exit 0",
     "mocha": "mocha",
-    "mocha:ci": "npm run moche || exit 0",
+    "mocha:ci": "npm run mocha || exit 0",
     "nyc": "nyc mocha",
     "nyc:ci": "npm run nyc || exit 0"
   },
