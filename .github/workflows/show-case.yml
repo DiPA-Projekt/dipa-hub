@@ -58,23 +58,27 @@ jobs:
         run: npm run nyc:ci
         working-directory: frontend
 
-      - name: Run ESLint-Test - Angular specific
+      - name: Run ESLint-Test - Angular specific config (NG CLI)
         continue-on-error: true
         run: npx ng lint dipa-frontend
         working-directory: frontend
-      - name: Run ESLint-Test - Angular specific (2)
-        continue-on-error: true
-        run: npx ng lint -c=projects/dipa-frontend/.eslintrc.js
-        working-directory: frontend
-      - name: Run ESLint-Test - Angular specific (3)
-        continue-on-error: true
-        run: npm run eslint -- --config=.eslintrc.ng.js
-        working-directory: frontend
-      - name: Run ESLint-Test - pure TypeScript-ESLint
-        continue-on-error: true
-        run: npm run eslint -- --config .eslintrc.fast.js
-        working-directory: frontend
-      - name: Run ESLint-Test - combined Variant
+      - name: Run ESLint-Test - Angular specific config (ESLint)
         continue-on-error: true
         run: npm run eslint
         working-directory: frontend
+      - name: Run ESLint-Test - pure TypeScript config (ESLint)
+        continue-on-error: true
+        run: npm run eslint -- --config .eslintrc.pure.js
+        working-directory: frontend
+      # - name: Run ESLint-Test - pure TypeScript config (NG CLI)
+      #   continue-on-error: true
+      #   run: npx ng lint -c=.eslintrc.pure.js
+      #   working-directory: frontend
+      - name: Run ESLint-Test - combined Variant (ESLint)
+        continue-on-error: true
+        run: npm run eslint -- --config=.eslintrc.combined.js
+        working-directory: frontend
+      # - name: Run ESLint-Test - combined Variant (NG CLI)
+      #   continue-on-error: true
+      #   run: npx ng lint -c=.eslintrc.combined.js
+      #   working-directory: frontend
