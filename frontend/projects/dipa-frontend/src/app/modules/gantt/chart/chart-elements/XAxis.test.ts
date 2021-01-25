@@ -4,8 +4,8 @@ import * as d3 from 'd3';
 import { XAxis } from './XAxis';
 
 const createContext = (): {
-  element: unknown,
-  svg: unknown,
+  element: unknown;
+  svg: unknown;
 } => {
   const ELEMENT = document.createElement('div');
   const SVG = d3
@@ -15,7 +15,7 @@ const createContext = (): {
     .attr('class', 'x-group');
   return {
     element: ELEMENT,
-    svg_ SVG,
+    svg: SVG,
   };
 };
 
