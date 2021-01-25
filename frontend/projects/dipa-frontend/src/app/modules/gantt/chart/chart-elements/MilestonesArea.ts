@@ -2,6 +2,8 @@ import * as d3 from 'd3';
 import {parseSvg} from 'd3-interpolate/src/transform/parse';
 import {IChartElement} from './IChartElement';
 import {Milestone} from '../../../../../../../dipa-api-client/src';
+import {Timeline} from 'dipa-api-client';
+import ProjectTypeEnum = Timeline.ProjectTypeEnum;
 
 export class MilestonesArea implements IChartElement {
 
@@ -9,16 +11,6 @@ export class MilestonesArea implements IChartElement {
   readonly xScale;
   data: any[];
   tooltip;
-
-  agileTooltipSupplement = `<br>zugeordnete Entscheidungspunkte<br>
-      - V-Modell XT Version: ITZBund 2.3<br>
-      - Projekttyp: AN-Projekt SWE<br>
-      - Entwicklungsstrategie: agil<br><br>
-      * Sprint gestartet<br>
-      * Sprint abgeschlossen<br>
-      * Lieferung durchgeführt<br>
-      * Abnahme durchgeführt<br>
-      * Systembetrieb freigegeben<br>`;
 
   animationDuration;
 
@@ -40,14 +32,16 @@ export class MilestonesArea implements IChartElement {
   showMenu = false;
   selectedMilestoneId: number;
   milestonesAreaId: number;
+  timelineData: any;
 
-  constructor(svg: any, chartElement: any, xScale: any, data: any[],  modifiable: boolean, showMenu: boolean, milestonesAreaId: any) {
+  constructor(svg: any, chartElement: any, xScale: any, data: any[],  modifiable: boolean, showMenu: boolean, milestonesAreaId: number, timelineData: Timeline) {
     this.svg = svg;
     this.xScale = xScale;
     this.data = data;
     this.modifiable = modifiable;
     this.showMenu = showMenu;
     this.milestonesAreaId = milestonesAreaId;
+    this.timelineData = timelineData;
     this.tooltip = d3.select(chartElement).select('figure#chart .tooltip');
   }
 
@@ -387,8 +381,26 @@ export class MilestonesArea implements IChartElement {
     let tooltip = `${data.name}<br>` + `Fällig: ${new Date(data.date).toLocaleDateString('de-DE', this.dateOptions)}<br>`;
     // alle Meilensteine der agilen Softwareentwicklung im ITZBund
     if (data.id >= 22 && data.id <= 27) {
-      tooltip += `${this.agileTooltipSupplement}<br>`;
+
+      let projectType = '';
+
+      if (this.timelineData.projectType === ProjectTypeEnum.InternesProjekt) {
+        projectType = 'Internes Projekt (Agile SWE)';
+      } else if (this.timelineData.projectType === ProjectTypeEnum.AnProjekt) {
+        projectType = 'AN-Projekt SWE';
+      }
+
+      tooltip += `<br>zugeordnete Entscheidungspunkte<br>
+      - V-Modell XT Version: ITZBund 2.3<br>
+      - Projekttyp: ${projectType}<br>
+      - Entwicklungsstrategie: agil<br><br>
+      * Sprint gestartet<br>
+      * Sprint abgeschlossen<br>
+      * Lieferung durchgeführt<br>
+      * Abnahme durchgeführt<br>
+      * Systembetrieb freigegeben<br>`;
     }
+
     return tooltip;
   }
 
