@@ -675,6 +675,11 @@ public class TimelineService {
         final TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
         long count = 0;
 
+        if (sessionTimeline.getMilestones() == null) {
+            initializeMilestones(timelineId);
+            initializeIncrements(timelineId);
+        }
+
         Template currentTemplate = new Template()
                                         .id(count++)
                                         .name(CURRENT_TEMPLATE_NAME)
