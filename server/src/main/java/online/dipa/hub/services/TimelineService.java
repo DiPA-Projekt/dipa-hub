@@ -835,12 +835,8 @@ public class TimelineService {
             }
         }
 
-        if (sessionTimeline.getTimeline().getOperationTypeId() == 2) {
-            downloadFileIds.add(6L);
-        }
-
-        downloadFileIds.add(5L);
-        downloadFileIds.add(7L);
+        List<Long> vmxtProjectFiles = Arrays.asList(5L, 6L, 7L);
+        downloadFileIds.addAll(vmxtProjectFiles);
 
         return downloadFileIds;
     }
