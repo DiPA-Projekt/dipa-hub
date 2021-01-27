@@ -51,3 +51,15 @@ databaseChangeLog:
                   name: project_type
                   value: "internes Projekt"
             where: id=5
+  - changeSet:
+      id: update-planTemplate-Serveraustausch
+      author: nguyen
+      context: ba
+      changes:
+        - update:
+            tableName: plan_template
+            columns:
+              - column:
+                  name: project_approach_id
+                  value: 1
+            where: id=1

@@ -675,16 +675,11 @@ public class TimelineService {
         final TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
         long count = 0;
 
-        if (sessionTimeline.getMilestones() == null) {
-            initializeMilestones(timelineId);
-            initializeIncrements(timelineId);
-        }
-
         Template currentTemplate = new Template()
                                         .id(count++)
                                         .name(CURRENT_TEMPLATE_NAME)
-                                        .milestones(sessionTimeline.getMilestones())
-                                        .increments(sessionTimeline.getIncrements());
+                                        .milestones(getMilestonesForTimeline(timelineId))
+                                        .increments(getIncrementsForTimeline(timelineId));
 
         templates.add(currentTemplate);
 
@@ -692,63 +687,49 @@ public class TimelineService {
         Long operationTypeId = projectApproach.getOperationType().getId();
 
         final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
-                .filter(template -> template.getOperationTypeEntity().getId().equals(operationTypeId))
+                        .filter(template -> template.getOperationTypeEntity().getId().equals(operationTypeId))
+                        .collect(Collectors.toList());
+
+        Optional<PlanTemplateEntity> masterPlanTemplate = planTemplateList.stream().filter(temp -> temp.getProjectApproach() == null).findFirst();
+
+        List<PlanTemplateEntity> projectApproachPlanTemplates = planTemplateList.stream()
+                .filter(template -> template.getProjectApproach() != null)
+                .filter(template -> template.getProjectApproach().getId().equals(projectApproach.getId()))
                 .collect(Collectors.toList());
 
-        if (planTemplateList.size() == 1) {
-            List<Milestone>  milestones = convertMilestones(planTemplateList.get(0));
+        for (PlanTemplateEntity temp: projectApproachPlanTemplates) {
+            List<Milestone> milestones = new ArrayList<>();
 
-            Template respoTemplate = new Template().id(count)
-                                                    .name(planTemplateList.get(0).getName())
-                                                    .standard(planTemplateList.get(0).getStandard())
-                                                    .milestones(this.updateMilestonesTemplate(timelineId, milestones));
+            if (masterPlanTemplate.isPresent()) {
+                milestones.addAll(convertMilestones(masterPlanTemplate.get()));
+            }
 
-            templates.add(respoTemplate);
-        }
-        else {
-            long masterPlanId = 2;
-            Optional<PlanTemplateEntity> masterPlanTemplate = planTemplateList.stream()
-                            .filter(template -> template.getId().equals(masterPlanId)).findFirst();
+            Template template = new Template()
+                                .id(count++)
+                                .name(temp.getName())
+                                .standard(temp.getStandard());
 
-            List<PlanTemplateEntity> planTemplates = planTemplateList.stream()
-                    .filter(template -> template.getProjectApproach() != null)
-                    .filter(template -> template.getProjectApproach().getId().equals(projectApproach.getId()))
-                    .collect(Collectors.toList());
+            if (projectApproach.isIterative()) {
 
-            for (PlanTemplateEntity temp: planTemplates) {
-                List<Milestone> milestones = new ArrayList<>();
+                milestones = updateMilestonesTemplate(timelineId, milestones);
+                List<Milestone> tempMilestones = new ArrayList<>(convertMilestones(temp));
 
-                if (masterPlanTemplate.isPresent()) {
-                    milestones.addAll(convertMilestones(masterPlanTemplate.get()));
+                this.getValuesFromHashMap(getIncrementMilestones(tempMilestones,timelineId, 1), milestones);
+
+                template.milestones(sortMilestones(milestones));
+                
+                if (temp.getStandard()) {
+                    template.increments(loadIncrementsTemplate((long) 1, 1, milestones, null));
                 }
-
-                Template template = new Template()
-                                    .id(count++)
-                                    .name(temp.getName())
-                                    .standard(temp.getStandard());
-
-                if (projectApproach.isIterative()) {
-
-                    milestones = updateMilestonesTemplate(timelineId, milestones);
-                    List<Milestone> tempMilestones = new ArrayList<>(convertMilestones(temp));
-
-                    this.getValuesFromHashMap(getIncrementMilestones(tempMilestones,timelineId, 1), milestones);
-
-                    template.milestones(sortMilestones(milestones));
-                    
-                    if (temp.getStandard()) {
-                        template.increments(loadIncrementsTemplate((long) 1, 1, milestones, null));
-                    }
-
-                }
-                else {
-                    milestones.addAll(convertMilestones(temp));
-                    template.milestones(updateMilestonesTemplate(timelineId, milestones));
-                }
-
-                templates.add(template);
 
             }
+            else {
+                milestones.addAll(convertMilestones(temp));
+                template.milestones(updateMilestonesTemplate(timelineId, milestones));
+            }
+
+            templates.add(template);
+
         }
 
         this.sessionTemplates.put(timelineId, templates);
