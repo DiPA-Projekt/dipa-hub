@@ -1,0 +1,53 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-file-tracking-list-external-dl
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: download_file
+            columns:
+              - column:
+                  name: id
+                  value: 6
+              - column:
+                  name: name
+                  value: Trackingtabelle externe Dienstleistung
+              - column:
+                  name: description
+                  value: Trackingtabelle
+              - column:
+                  name: path
+                  value: downloadFiles/externeDL.xlsx
+  - changeSet:
+      id: insert-file-qs-handbuch
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: download_file
+            columns:
+              - column:
+                  name: id
+                  value: 7
+              - column:
+                  name: name
+                  value: QS-Handbuch
+              - column:
+                  name: description
+                  value: Dokumentenvorlage
+              - column:
+                  name: path
+                  value: downloadFiles/QS-Handbuch.doc
+  - changeSet:
+      id: update-project-projectType-bergsteigerausruestung
+      author: bock
+      context: itzbund
+      changes:
+        - update:
+            tableName: project
+            columns:
+              - column:
+                  name: project_type
+                  value: "internes Projekt"
+            where: id=5
