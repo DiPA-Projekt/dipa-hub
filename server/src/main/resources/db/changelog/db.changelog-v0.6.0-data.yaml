@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: update-project-projectType-bergsteigerausruestung
+      author: bock
+      context: itzbund
+      changes:
+        - update:
+            tableName: project
+            columns:
+              - column:
+                  name: project_type
+                  value: "internes Projekt"
+            where: id=5
