@@ -42,9 +42,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.activatedRouteSubscription.unsubscribe();
-    this.favoriteLinksSubscription.unsubscribe();
-    this.timelinesSubscription.unsubscribe();
+    this.activatedRouteSubscription?.unsubscribe();
+    this.favoriteLinksSubscription?.unsubscribe();
+    this.timelinesSubscription?.unsubscribe();
   }
 
   setSideNavMenu(): void {
