@@ -815,7 +815,7 @@ public class TimelineService {
         final TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
         final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
 
-        if (milestoneId != 21 || projectApproach == null) {    // Meilenstein-ID 21: Projekteinrichtung
+        if (milestoneId != FIRST_MASTER_MILESTONE_ID || projectApproach == null) {
             return Collections.emptyList();
         }
 
