@@ -19,3 +19,23 @@ databaseChangeLog:
               - column:
                   name: path
                   value: downloadFiles/externeDL.xlsx
+  - changeSet:
+      id: insert-file-qs-handbuch
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: download_file
+            columns:
+              - column:
+                  name: id
+                  value: 7
+              - column:
+                  name: name
+                  value: QS-Handbuch
+              - column:
+                  name: description
+                  value: Dokumentenvorlage
+              - column:
+                  name: path
+                  value: downloadFiles/QS-Handbuch.doc

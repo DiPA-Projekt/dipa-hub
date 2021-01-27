@@ -835,11 +835,12 @@ public class TimelineService {
             }
         }
 
-        downloadFileIds.add(5L);
-
         if (sessionTimeline.getTimeline().getOperationTypeId() == 2) {
             downloadFileIds.add(6L);
         }
+
+        downloadFileIds.add(5L);
+        downloadFileIds.add(7L);
 
         return downloadFileIds;
     }
