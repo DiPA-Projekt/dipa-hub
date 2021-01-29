@@ -21,11 +21,12 @@ import {FilesService} from 'dipa-api-client';
 })
 export class NavMenuListItemComponent implements OnInit {
 
-  expanded: boolean;
-  baseApiPath: string;
   @HostBinding('attr.aria-expanded') ariaExpanded;
   @Input() item: NavItem;
   @Input() depth: number;
+
+  expanded: boolean;
+  baseApiPath: string;
 
   constructor(public navService: NavService,
               private fileService: FilesService,

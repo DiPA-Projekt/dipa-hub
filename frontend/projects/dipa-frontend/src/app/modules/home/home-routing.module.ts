@@ -7,7 +7,7 @@ import {LinksComponent} from './links/links.component';
 
 const routes: Routes = [
   {
-    path: 'home',
+    path: '',
     component: HomeComponent,
     children: [
       { path: 'tour', component: ProjectTourComponent },
