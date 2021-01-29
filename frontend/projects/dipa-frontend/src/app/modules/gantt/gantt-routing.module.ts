@@ -8,7 +8,7 @@ import {ToolkitComponent} from './toolkit/toolkit.component';
 
 const routes: Routes = [
   {
-    path: 'gantt/:id',
+    path: ':id',
     component: GanttComponent,
     children: [
       { path: 'timeline', component: TimelineComponent },
