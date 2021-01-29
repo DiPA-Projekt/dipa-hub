@@ -23,9 +23,6 @@ export class LinksComponent implements OnInit, OnDestroy {
         this.externalLinkGroups[link.category] = this.externalLinkGroups[link.category] || [];
         this.externalLinkGroups[link.category].push(link);
       });
-
-      console.log(data);
-
     });
   }
 
