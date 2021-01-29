@@ -51,3 +51,467 @@ databaseChangeLog:
                   name: project_type
                   value: "internes Projekt"
             where: id=5
+  - changeSet:
+      id: insert-external-link-wiki-projektleitung
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: name
+                  value: Wiki Projektleitung (II A 1)
+              - column:
+                  name: description
+                  value: Wiki
+              - column:
+                  name: url
+                  value: https://sp.vzd.zivb.net/sites/D712/A19B/Seiten/Home.aspx
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Wissen
+              - column:
+                  name: sort_order
+                  value: 3
+  - changeSet:
+      id: insert-external-link-haushalt-a-z
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: name
+                  value: Haushalt von A-Z
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://intranet.itzbund.de/DE/5_Organisation/Organisationseinheiten/Abteilung_Z/Referat_Z_3/Z_31/Allgemeine_Informationen_von_A_bis_Z/Allgemeine_Informationen_von_A_bis_Z_node.html
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Wissen
+              - column:
+                  name: sort_order
+                  value: 4
+  - changeSet:
+      id: insert-external-link-it-planung-itr4web
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: name
+                  value: IT-Planungsverfahren und ITR4Web
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://sp.vzd.zivb.net/orgeinheit/info-_und_dokumentenpool_abteilung_i/Referatsbereiche/Referat_I_4/AB-I-42/Lists/Startseite%20Kacheln/Tiles.aspx
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Wissen
+              - column:
+                  name: sort_order
+                  value: 5
+  - changeSet:
+      id: insert-external-link-haushalt-ressourcenmanagement
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 6
+              - column:
+                  name: name
+                  value: Ressourcenmanagement
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://sp.vzd.zivb.net/sites/B22D/Lists/Tiles/Tiles.aspx
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Wissen
+              - column:
+                  name: sort_order
+                  value: 6
+  - changeSet:
+      id: insert-external-link-vertragsmanagement
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 7
+              - column:
+                  name: name
+                  value: Vertragsmanagement
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://sp.vzd.zivb.net/sites/2FCA/SitePages/Homepage.aspx
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Wissen
+              - column:
+                  name: sort_order
+                  value: 7
+  - changeSet:
+      id: insert-external-link-service-center
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 8
+              - column:
+                  name: name
+                  value: Service Center
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://portal-zb.itsm-suite.service.itzbund.net/dwp/app
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Verwaltung
+              - column:
+                  name: sort_order
+                  value: 8
+  - changeSet:
+      id: insert-external-link-service-desk
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 9
+              - column:
+                  name: name
+                  value: Service Desk und WebSelfService
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://intranet.itzbund.de/DE/4_Arbeitsorganisation/Anwendungen/ServiceDesk/servicedesk_node.html
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Verwaltung
+              - column:
+                  name: sort_order
+                  value: 9
+  - changeSet:
+      id: insert-external-link-elbe
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 10
+              - column:
+                  name: name
+                  value: Elbe
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://applnosrmp.zivit.iv.bfinv.de:8001/SAP/BC/NWBC/SRM
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Verwaltung
+              - column:
+                  name: sort_order
+                  value: 10
+  - changeSet:
+      id: insert-external-link-isar
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 11
+              - column:
+                  name: name
+                  value: iSAR
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://applpzport.zivit.iv.bfinv.de:52801/irj/portal
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Verwaltung
+              - column:
+                  name: sort_order
+                  value: 11
+  - changeSet:
+      id: insert-external-link-aedl
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 12
+              - column:
+                  name: name
+                  value: AeDL
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://aedl.itz.itzbund.net/AeDL-Web/sites/login.xhtml
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Verwaltung
+              - column:
+                  name: sort_order
+                  value: 12
+  - changeSet:
+      id: insert-external-link-itr4web
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 13
+              - column:
+                  name: name
+                  value: ITR4Web
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://itr4web.itz.intranet.bund.de/itr4web/
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Verwaltung
+              - column:
+                  name: sort_order
+                  value: 13
+  - changeSet:
+      id: insert-external-link-projekte-itzbund
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 14
+              - column:
+                  name: name
+                  value: Projekte im ITZBund
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://intranet.itzbund.de/DE/2_Projekte/projekte_node.html
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Weiteres
+              - column:
+                  name: sort_order
+                  value: 14
+  - changeSet:
+      id: insert-external-link-agile-swe-itzbund
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 15
+              - column:
+                  name: name
+                  value: Agile SWE im ITZBund
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://sp.vzd.zivb.net/sites/pm/Agile/SitePages/Homepage.aspx
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Weiteres
+              - column:
+                  name: sort_order
+                  value: 15
+  - changeSet:
+      id: insert-external-link-social-intranet-bund
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 16
+              - column:
+                  name: name
+                  value: Social Intranet des Bundes
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://social.intranet.bund.de/
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Weiteres
+              - column:
+                  name: sort_order
+                  value: 16
+  - changeSet:
+      id: insert-external-link-ggb
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 17
+              - column:
+                  name: name
+                  value: GGB
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://sp.vzd.zivb.net/orgeinheit/info-_und_dokumentenpool_abteilung_i/Gemeinsame%20Geschftsbedingungen%20GGB/Forms/AllItems.aspx
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Weiteres
+              - column:
+                  name: sort_order
+                  value: 17
+  - changeSet:
+      id: insert-external-link-vmxt-produktvorlagen
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 18
+              - column:
+                  name: name
+                  value: VMXT Produktvorlagen
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://sp.vzd.zivb.net/sites/pm/ccvmxt/_layouts/15/start.aspx#/Freigegebene%20Dokumente/Forms/AllItems.aspx?RootFolder=%2Fsites%2Fpm%2Fccvmxt%2FFreigegebene%20Dokumente%2FProduktvorlagen&View=%7BA3E0D562-8BAA-41B9-8BDB-BB4581DB385A%7D
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Verwaltung
+              - column:
+                  name: sort_order
+                  value: 18

@@ -17,6 +17,6 @@ public class ExternalLinkEntityToExternalLinkConverter implements Converter<Exte
                 .img(entity.getImg())
                 .category(entity.getCategory())
                 .sortOrder(entity.getSortOrder())
-                .favorite(entity.getId() % 2 == 1);
+                .favorite(entity.getId() % 4 == 1);
     }
 }

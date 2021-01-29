@@ -23,6 +23,7 @@ import {MilestonesArea} from './chart-elements/MilestonesArea';
 import {ProjectDuration} from './chart-elements/ProjectDuration';
 import {TasksArea} from './chart-elements/TasksArea';
 import {XAxis} from './chart-elements/XAxis';
+import {MatRadioChange} from '@angular/material/radio';
 
 @Component({
   selector: 'app-chart',
@@ -32,30 +33,6 @@ import {XAxis} from './chart-elements/XAxis';
 })
 
 export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
-
-  constructor(public ganttControlsService: GanttControlsService,
-              private milestonesService: MilestonesService,
-              private tasksService: TasksService,
-              private timelinesService: TimelinesService,
-              private incrementService: IncrementsService,
-              private timelinesIncrementService: TimelinesIncrementService,
-              private elementRef: ElementRef) {
-    d3.timeFormatDefaultLocale({
-      // @ts-ignore
-      decimal: ',',
-      thousands: '.',
-      grouping: [3],
-      currency: ['€', ''],
-      dateTime: '%a %b %e %X %Y',
-      date: '%d.%m.%Y',
-      time: '%H:%M:%S',
-      periods: ['AM', 'PM'],
-      days: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
-      shortDays: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
-      months: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
-      shortMonths: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez']
-    });
-  }
 
   @Input() incrementsData = [];
   @Input() milestoneData = [];
@@ -81,20 +58,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
   viewTypeSubscription;
 
-  // element for chart
-  private svg;
-  private zoomElement;
-
-  private viewBoxHeight = 300;
-  private viewBoxWidth = 750;
-
-  private padding = { top: 40, left: 0};
-
-  private xScale;
-  private zoom;
-
-  private oneDayTick = 1.2096e+9;
-
   headerX: XAxis;
   projectDuration: ProjectDuration;
   milestoneViewItem: MilestonesArea;
@@ -118,6 +81,47 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   selectedMilestoneId: number;
 
   statusList: any[] = ['offen', 'erledigt'];
+
+  // element for chart
+  private svg;
+  private zoomElement;
+
+  private viewBoxHeight = 300;
+  private viewBoxWidth = 750;
+
+  private padding = { top: 40, left: 0};
+
+  private xScale;
+  private zoom;
+
+  private oneDayTick = 1.2096e+9;
+
+  constructor(public ganttControlsService: GanttControlsService,
+              private milestonesService: MilestonesService,
+              private tasksService: TasksService,
+              private timelinesService: TimelinesService,
+              private incrementService: IncrementsService,
+              private timelinesIncrementService: TimelinesIncrementService,
+              private elementRef: ElementRef) {
+
+    d3.formatLocale({
+      decimal: ',',
+      thousands: '.',
+      grouping: [3],
+      currency: ['€', '']
+    });
+
+    d3.timeFormatDefaultLocale({
+      dateTime: '%a %b %e %X %Y',
+      date: '%d.%m.%Y',
+      time: '%H:%M:%S',
+      periods: ['AM', 'PM'],
+      days: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+      shortDays: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
+      months: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+      shortMonths: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez']
+    });
+  }
 
   ngOnInit(): void {
     this.showMilestoneMenu = false;
@@ -213,7 +217,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       }
     });
 
-
     d3.select(this.chartElement).select('figure')
       .append('div')
       .attr('class', 'tooltip');
@@ -245,11 +248,65 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.resizeChart(this.chartFigure.nativeElement.offsetWidth);
   }
 
+  getDate(date: string): any {
+    const dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
+
+    return new Date(date).toLocaleDateString('de-DE', dateOptions);
+  }
+
+  changeStatus(event: MatRadioChange): void {
+    const changeMilestoneStatus$ = this.milestonesService.updateMilestoneData(
+      this.timelineData.id,
+      this.selectedMilestoneDataMenu.id,
+      {
+        status: event.value,
+      }
+    );
+
+    this.milestoneSubscription = this.subscribeForReset(changeMilestoneStatus$);
+  }
+
+  closeMenu(): void {
+    this.showMilestoneMenu = false;
+    this.milestoneViewItem.onCloseMenu();
+    this.selectedMilestoneId = null;
+  }
+
   onResized(event: ResizedEvent): void {
     // only resize if width was changed, height is not relevant here
     if (event.newWidth !== this.viewBoxWidth) {
       this.resizeChart(event.newWidth);
     }
+  }
+
+  public createSvg(element: HTMLElement, id: number): any {
+
+    const svg = d3.select(element).select('figure')
+      .append('svg')
+      .attr('id', id)
+      .attr('width', '100%')
+      // .attr('height', '100vh')
+      .attr('viewBox', '0 0 ' + this.viewBoxWidth + ' ' + this.viewBoxHeight);
+
+    svg
+      .append('defs')
+      .append('mask')
+      .attr('id', 'dataMask')
+      .append('rect')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', (this.viewBoxWidth - this.padding.left))
+      .attr('height', (this.viewBoxHeight - this.padding.top));
+
+    return svg;
+  }
+
+  resizeSvg(newSize: number): void {
+    this.svg
+      .attr('viewBox', '0 0 ' + newSize + ' ' + this.viewBoxHeight);
+
+    this.svg.select('#dataMask rect')
+      .attr('width', (newSize - this.padding.left));
   }
 
   private drawChart(): void {
@@ -313,7 +370,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.taskViewItem.draw({left: 0, top: 0});
 
     this.milestoneViewItem = new MilestonesArea(this.svg, this.chartElement, this.xScale,
-                                                this.milestoneData, this.modifiable, this.showMenu, this.timelineData.id, this.timelineData);
+      this.milestoneData, this.modifiable, this.showMenu, this.timelineData.id, this.timelineData);
     this.milestoneViewItem.draw({left: 0, top: this.taskViewItem.getAreaHeight()});
 
     this.milestoneViewItem.onDragEndMilestone = (offsetDays: number, id: number) => {
@@ -465,36 +522,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.redrawChart(0);
   }
 
-  public createSvg(element, id): any {
-
-    const svg = d3.select(element).select('figure')
-      .append('svg')
-      .attr('id', id)
-      .attr('width', '100%')
-      // .attr('height', '100vh')
-      .attr('viewBox', '0 0 ' + this.viewBoxWidth + ' ' + this.viewBoxHeight);
-
-    svg
-      .append('defs')
-      .append('mask')
-      .attr('id', 'dataMask')
-      .append('rect')
-      .attr('x', 0)
-      .attr('y', 0)
-      .attr('width', (this.viewBoxWidth - this.padding.left))
-      .attr('height', (this.viewBoxHeight - this.padding.top));
-
-    return svg;
-  }
-
-  resizeSvg(newSize): void {
-    this.svg
-      .attr('viewBox', '0 0 ' + newSize + ' ' + this.viewBoxHeight);
-
-    this.svg.select('#dataMask rect')
-      .attr('width', (newSize - this.padding.left));
-  }
-
   private initializeSvgGraphElements(): void {
     const xGroup = this.svg.append('g').attr('class', 'x-group');
     xGroup.attr('transform', 'translate(' + this.padding.left + ',20)');
@@ -528,7 +555,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       .attr('mask', 'url(#dataMask)');
   }
 
-  onZoom(event: d3.D3ZoomEvent<any, any>, minTimeMs): void {
+  private onZoom(event: d3.D3ZoomEvent<any, any>, minTimeMs: number): void {
     const eventTransform: d3.ZoomTransform = event.transform;
 
     if (eventTransform.k === 1 && eventTransform.x === 0 && eventTransform.y === 0) {
@@ -577,11 +604,10 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       this.ganttControlsService.setPeriodStartDate(this.periodStartDate);
       this.ganttControlsService.setPeriodEndDate(this.periodEndDate);
     }
-
   }
 
   // set minimum and maximum zoom levels
-  setZoomScaleExtent(minTimeMs): void {
+  private setZoomScaleExtent(minTimeMs): void {
     // const minTimeMs = 1.2096e+9; // 14 days to show 1 day ticks
     const maxTimeMs = 3.1536e+11; // ~ 10 years
 
@@ -672,30 +698,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     this.incrementsData = incrementsData;
     this.incrementsViewItem.setData(incrementsData);
-  }
-
-  changeStatus(event): void {
-    const changeMilestoneStatus$ = this.milestonesService.updateMilestoneData(
-      this.timelineData.id,
-      this.selectedMilestoneDataMenu.id,
-      {
-        status: event.value,
-      }
-    );
-
-    this.milestoneSubscription = this.subscribeForReset(changeMilestoneStatus$);
-  }
-
-  closeMenu(): void {
-    this.showMilestoneMenu = false;
-    this.milestoneViewItem.onCloseMenu();
-    this.selectedMilestoneId = null;
-  }
-
-  getDate(date): any {
-    const dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
-
-    return new Date(date).toLocaleDateString('de-DE', dateOptions);
   }
 
 }
