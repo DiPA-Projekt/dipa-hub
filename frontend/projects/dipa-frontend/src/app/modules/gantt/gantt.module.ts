@@ -27,6 +27,7 @@ import {TemplatesViewComponent} from './templates-view/templates-view.component'
 import {FilesComponent} from './files/files.component';
 import {ChartComponent} from './chart/chart.component';
 import {MatRadioModule} from '@angular/material/radio';
+import {TimelineComponent} from './timeline/timeline.component';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import {MatRadioModule} from '@angular/material/radio';
     TemplatesViewComponent,
     SidenavComponent,
     FilesComponent,
-    ChartComponent
+    ChartComponent,
+    TimelineComponent
   ],
   exports: [
     ChartComponent,

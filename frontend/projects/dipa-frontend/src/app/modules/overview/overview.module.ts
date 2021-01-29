@@ -9,7 +9,6 @@ import {MatCardModule} from '@angular/material/card';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatTableModule} from '@angular/material/table';
-// import { TooltipComponent } from './tooltip/tooltip.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
@@ -20,9 +19,10 @@ import {FormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {SharedModule} from '../../shared/shared.module';
 import {GanttModule} from '../gantt/gantt.module';
+import {ProjectsComponent} from './projects/projects.component';
 
 @NgModule({
-  declarations: [OverviewComponent],
+  declarations: [OverviewComponent, ProjectsComponent],
   imports: [
     CommonModule,
     MaterialModule,

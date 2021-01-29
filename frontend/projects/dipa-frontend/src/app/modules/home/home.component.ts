@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ExternalLinksService} from 'dipa-api-client';
+import {NavItem} from '../../nav-item';
 
 @Component({
   selector: 'app-home',
@@ -8,11 +8,25 @@ import {ExternalLinksService} from 'dipa-api-client';
 })
 export class HomeComponent implements OnInit {
 
-  externalLinks$ = this.externalLinksService.getExternalLinks();
+  navMenuItems: NavItem[] = [];
 
-  constructor(private externalLinksService: ExternalLinksService) { }
+  constructor() { }
 
   ngOnInit(): void {
+    this.setSideNavMenu();
+  }
+
+  setSideNavMenu(): void {
+
+    this.navMenuItems = [{
+      name: 'Eine Reise durchs Projekt',
+      icon: 'explore',
+      route: 'home/tour'
+    }, {
+      name: 'Nützliche Links',
+      icon: 'bookmarks',
+      route: 'home/links'
+    }];
   }
 
 }

@@ -1,16 +1,21 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 
-import {ChartComponent} from './chart/chart.component';
 import {GanttComponent} from './gantt.component';
 import {TemplatesViewComponent} from './templates-view/templates-view.component';
+import {TimelineComponent} from './timeline/timeline.component';
 import {ToolkitComponent} from './toolkit/toolkit.component';
 
 const routes: Routes = [
-  { path: ':id', component: GanttComponent },
-  { path: ':id/toolkit', component: ToolkitComponent },
-  { path: ':id/templates', component: TemplatesViewComponent},
-  { path: 'chart', component: ChartComponent },
+  {
+    path: 'gantt/:id',
+    component: GanttComponent,
+    children: [
+      { path: 'timeline', component: TimelineComponent },
+      { path: 'templates', component: TemplatesViewComponent },
+      { path: 'toolkit', component: ToolkitComponent },
+    ]
+  },
 ];
 
 @NgModule({

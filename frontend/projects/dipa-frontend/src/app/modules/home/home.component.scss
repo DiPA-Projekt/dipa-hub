@@ -1,11 +1,12 @@
-.mat-card-header-actions {
-  white-space: nowrap;
-  margin-left: auto;
-  margin-top: -8px;
-
-  .mat-button {
-    min-width: 36px;
-    padding: 0 3px;
-  }
+.mat-sidenav-container {
+  width: 100%;
+  height: calc(100vh - 84px);
+  background-color: transparent;
+  margin-top: 15px;
 }
 
+mat-sidenav-content {
+  background-color: white;
+  align-items: center;
+  justify-content: center;
+}

@@ -1,0 +1,29 @@
+.mat-card-header-actions {
+  white-space: nowrap;
+  margin-left: auto;
+  margin-top: -8px;
+
+  .mat-button {
+    min-width: 36px;
+    padding: 0 3px;
+  }
+}
+
+.mat-card-title {
+  font-size: 16px;
+  color: rgba(0,0,0,.78);
+}
+
+.mat-card-subtitle {
+  margin-bottom: 0;
+}
+
+h2 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 24px;
+  font-weight: 400;
+  padding: 0;
+
+  color: rgba(0,0,0,.78);
+}

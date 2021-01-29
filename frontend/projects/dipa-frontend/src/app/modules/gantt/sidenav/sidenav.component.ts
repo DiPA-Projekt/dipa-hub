@@ -42,9 +42,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.activatedRouteSubscription.unsubscribe();
-    this.favoriteLinksSubscription.unsubscribe();
-    this.timelinesSubscription.unsubscribe();
+    this.activatedRouteSubscription?.unsubscribe();
+    this.favoriteLinksSubscription?.unsubscribe();
+    this.timelinesSubscription?.unsubscribe();
   }
 
   setSideNavMenu(): void {
@@ -52,7 +52,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.navMenuItems = [{
       name: 'Zeitplan',
       icon: 'event_note',
-      route: 'gantt/' + this.selectedTimelineId
+      route: 'gantt/' + this.selectedTimelineId + '/timeline'
     }, {
       name: 'Stöbern & Vergleichen',
       icon: 'find_replace',
