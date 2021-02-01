@@ -10,14 +10,13 @@
             <div class="row justify-content-start">
               <div class="operationType-container">
                 <p class="label">Vorhabensart</p>
-                <p class="name">{{selectedOperationTypeName}}</p>
+                <p class="name">{{ selectedOperationTypeName }}</p>
               </div>
               <div *ngIf="projectApproachesList" class="col">
                 <mat-form-field appearance="fill" floatLabel="always">
                   <mat-label>Vorgehensweise</mat-label>
                   <mat-select [(value)]="selectedProjectApproachId" (selectionChange)="changeProjectApproach($event)">
-                    <mat-option *ngFor="let projectApproach of filterProjectApproaches()"
-                                [value]="projectApproach.id">
+                    <mat-option *ngFor="let projectApproach of filterProjectApproaches()" [value]="projectApproach.id">
                       {{ projectApproach.name }}
                     </mat-option>
                   </mat-select>
@@ -27,7 +26,13 @@
           </div>
           <div class="col">
             <div class="row justify-content-end">
-              <mat-button-toggle-group name="chartMetric" #group="matButtonToggleGroup" multiple aria-label="Chart Metric" (change)="changeViewType($event)">
+              <mat-button-toggle-group
+                name="chartMetric"
+                #group="matButtonToggleGroup"
+                multiple
+                aria-label="Chart Metric"
+                (change)="changeViewType($event)"
+              >
                 <mat-button-toggle class="md-button" value="YEARS">Jahre</mat-button-toggle>
                 <mat-button-toggle class="md-button" value="MONTHS">Monate</mat-button-toggle>
                 <mat-button-toggle class="md-button" value="WEEKS">Wochen</mat-button-toggle>
@@ -43,8 +48,8 @@
             <h2>Aktuell</h2>
           </div>
           <div class="template-controller">
-            <img class="logo" *ngIf="selectedOperationTypeId===2" src="/assets/img/VMXT-logo.png" alt="VMXT">
-            <img class="logo" *ngIf="selectedOperationTypeId===3" src="/assets/img/UfAB-logo.png" alt="UfAB">
+            <img class="logo" *ngIf="selectedOperationTypeId === 2" src="/assets/img/VMXT-logo.png" alt="VMXT" />
+            <img class="logo" *ngIf="selectedOperationTypeId === 3" src="/assets/img/UfAB-logo.png" alt="UfAB" />
             <h2 class="text-template">Standard</h2>
             <button mat-stroked-button color="primary" (click)="updateTemplateStandard($event)">Übernehmen</button>
             <div class="row justify-content-center">
@@ -58,15 +63,30 @@
               </div>
             </div>
           </div>
+          <div class="template-controller" *ngIf="nonStandardTemplatesList.length > 0">
+            <h2 class="text-template">Zeitpläne anderer Projekte</h2>
+            <button mat-stroked-button color="primary" (click)="updateTemplateNonStandard($event)">Übernehmen</button>
+            <div class="row justify-content-center">
+              <div class="button-template">
+                <button mat-icon-button (click)="onPrevNonStandard($event)">
+                  <mat-icon color="primary">keyboard_arrow_left</mat-icon>
+                </button>
+                <button mat-icon-button (click)="onNextNonStandard($event)">
+                  <mat-icon color="primary">keyboard_arrow_right</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="col-10">
           <div class="">
             <ng-container *ngIf="vm$ | async as vm">
-              <app-templates #templateChart
-                        [timelineData]="vm.selectedTimeline"
-                        [templateData]="vm.selectedTemplates"
-                        [allTemplates]="vm.templatesData"
-                        id = "template{{vm.selectedTimeline.id}}"
+              <app-templates
+                #templateChart
+                [timelineData]="vm.selectedTimeline"
+                [templateData]="vm.selectedTemplates"
+                [allTemplates]="vm.templatesData"
+                id="template{{ vm.selectedTimeline.id }}"
               ></app-templates>
             </ng-container>
           </div>
@@ -75,4 +95,3 @@
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>
-

@@ -20,15 +20,6 @@
               "tsConfig": "projects/dipa-api-client/tsconfig.lib.prod.json"
             }
           }
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": [
-              "projects/dipa-api-client/**/*.ts",
-              "projects/dipa-api-client/**/*.html"
-            ]
-          }
         }
       }
     },
@@ -132,8 +123,10 @@
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": [
-              "projects/dipa-frontend/**/*.ts",
-              "projects/dipa-frontend/**/*.html"
+              "projects/dipa-frontend/**/*.html",
+              "projects/dipa-frontend/**/*.js",
+              "projects/dipa-frontend/**/*.json",
+              "projects/dipa-frontend/**/*.ts"
             ]
           }
         },
