@@ -62,11 +62,11 @@ export class GanttComponent implements OnInit, OnDestroy {
   ) {}
 
   static getMinimumDate(data: Date[]): Date {
-    return data.reduce((acc, curr) => acc < curr ? acc : curr);
+    return data.reduce((acc, curr) => (acc < curr ? acc : curr));
   }
 
   static getMaximumDate(data: Date[]): Date {
-    return data.reduce((acc, curr) => acc > curr ? acc : curr);
+    return data.reduce((acc, curr) => (acc > curr ? acc : curr));
   }
 
   ngOnInit(): void {
