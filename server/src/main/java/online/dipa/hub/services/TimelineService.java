@@ -801,10 +801,21 @@ public class TimelineService {
 
     public List<DownloadFile> getFilesForMilestone(final Long timelineId, final Long milestoneId) {
 
+        List<Long> downloadFileIds = getDownloadFileIds(timelineId, milestoneId);
+
+        return fileRepository.findAll()
+                .stream()
+                .filter(file -> downloadFileIds.contains(file.getId()))
+                .map(p -> conversionService.convert(p, DownloadFile.class))
+                .collect(Collectors.toList());
+    }
+
+    private List<Long> getDownloadFileIds(final Long timelineId, final Long milestoneId) {
+
         final TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
         final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
 
-        if (milestoneId != 21 || projectApproach == null) {    // Meilenstein id 21: Projekteinrichtung
+        if (milestoneId != FIRST_MASTER_MILESTONE_ID || projectApproach == null) {
             return Collections.emptyList();
         }
 
@@ -824,13 +835,10 @@ public class TimelineService {
             }
         }
 
-        downloadFileIds.add(5L);
+        List<Long> vmxtProjectFiles = Arrays.asList(5L, 6L, 7L);
+        downloadFileIds.addAll(vmxtProjectFiles);
 
-        return fileRepository.findAll()
-                .stream()
-                .filter(file -> downloadFileIds.contains(file.getId()))
-                .map(p -> conversionService.convert(p, DownloadFile.class))
-                .collect(Collectors.toList());
+        return downloadFileIds;
     }
 
     private void getValuesFromHashMap(HashMap<Increment, List<Milestone>> hashMap, List<Milestone> list) {
