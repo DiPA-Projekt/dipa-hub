@@ -1,0 +1,6 @@
+**/assets/**
+projects/dipa-api-client/**
+favicon.ico
+*.log
+*.sass
+*.scss
