@@ -175,9 +175,7 @@ export class MilestonesArea implements IChartElement {
       .attr('class', 'material-icons milestoneStatusIcon')
       .attr('x', 0)
       .attr('y', 6)
-      .style('opacity', (d) => {
-        return d.status === Milestone.StatusEnum.Offen ? 0 : 1;
-      });
+      .style('opacity', (d) => d.status === Milestone.StatusEnum.Offen ? 0 : 1);
 
     const maxLabelWidth = 30;
 
@@ -272,7 +270,7 @@ export class MilestonesArea implements IChartElement {
   }
 
   wrapLabel(svgText, maxWidth): void {
-    svgText.each(function (): void {
+    svgText.each(function(): void {
       const text = d3.select(this);
       const words = text.text().split(/\s+/);
 
