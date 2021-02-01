@@ -20,7 +20,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { NavMenuListItemComponent } from '../../shared/nav-menu-list-item/nav-menu-list-item.component';
-import { ToolkitComponent } from './toolkit/toolkit.component';
+import { ProjectChecklistComponent } from './project-checklist/project-checklist.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { TemplatesComponent } from './templates-view/templates/templates.component';
 import { TemplatesViewComponent } from './templates-view/templates-view.component';
@@ -33,7 +33,7 @@ import { TimelineComponent } from './timeline/timeline.component';
   declarations: [
     GanttComponent,
     NavMenuListItemComponent,
-    ToolkitComponent,
+    ProjectChecklistComponent,
     SidenavComponent,
     TemplatesComponent,
     TemplatesViewComponent,
