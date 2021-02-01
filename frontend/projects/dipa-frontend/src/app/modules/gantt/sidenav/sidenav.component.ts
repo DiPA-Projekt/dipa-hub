@@ -51,7 +51,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       {
         name: 'Zeitplan',
         icon: 'event_note',
-        route: 'gantt/' + this.selectedTimelineId,
+        route: 'gantt/' + this.selectedTimelineId + '/timeline',
       },
       {
         name: 'Stöbern & Vergleichen',

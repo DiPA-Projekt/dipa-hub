@@ -2,8 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ChartComponent } from './chart.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSidenav, MatSidenavContainer, MatSidenavContent, MatSidenavModule } from '@angular/material/sidenav';
 import { MatNavList } from '@angular/material/list';
+import { RouterTestingModule } from '@angular/router/testing';
+import { SidenavComponent } from '../sidenav/sidenav.component';
 
 describe('ChartComponent', () => {
   let component: ChartComponent;
@@ -11,8 +13,8 @@ describe('ChartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ChartComponent, MatNavList],
-      imports: [HttpClientTestingModule, MatSidenavModule],
+      declarations: [ChartComponent, MatNavList, MatSidenavContent, SidenavComponent, MatSidenav, MatSidenavContainer],
+      imports: [RouterTestingModule, HttpClientTestingModule, MatSidenavModule],
     }).compileComponents();
   });
 
