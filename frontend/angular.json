@@ -43,10 +43,7 @@
             "polyfills": "projects/dipa-frontend/src/polyfills.ts",
             "tsConfig": "projects/dipa-frontend/tsconfig.app.json",
             "aot": true,
-            "assets": [
-              "projects/dipa-frontend/src/favicon.ico",
-              "projects/dipa-frontend/src/assets"
-            ],
+            "assets": ["projects/dipa-frontend/src/favicon.ico", "projects/dipa-frontend/src/assets"],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "projects/dipa-frontend/src/styles.scss"
@@ -108,10 +105,7 @@
             "polyfills": "projects/dipa-frontend/src/polyfills.ts",
             "tsConfig": "projects/dipa-frontend/tsconfig.spec.json",
             "karmaConfig": "projects/dipa-frontend/karma.conf.js",
-            "assets": [
-              "projects/dipa-frontend/src/favicon.ico",
-              "projects/dipa-frontend/src/assets"
-            ],
+            "assets": ["projects/dipa-frontend/src/favicon.ico", "projects/dipa-frontend/src/assets"],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "projects/dipa-frontend/src/styles.scss"

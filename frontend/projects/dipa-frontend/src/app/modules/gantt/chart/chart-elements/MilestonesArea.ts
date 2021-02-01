@@ -1,8 +1,10 @@
 import * as d3 from 'd3';
 import { parseSvg } from 'd3-interpolate/src/transform/parse';
-import { IChartElement } from './IChartElement';
-import { Milestone } from '../../../../../../../dipa-api-client/src';
 import { Timeline } from 'dipa-api-client';
+
+import { Milestone } from '../../../../../../../dipa-api-client/src';
+import { IChartElement } from './IChartElement';
+
 import ProjectTypeEnum = Timeline.ProjectTypeEnum;
 
 export class MilestonesArea implements IChartElement {
@@ -175,9 +177,7 @@ export class MilestonesArea implements IChartElement {
       .attr('class', 'material-icons milestoneStatusIcon')
       .attr('x', 0)
       .attr('y', 6)
-      .style('opacity', (d) => {
-        return d.status === Milestone.StatusEnum.Offen ? 0 : 1;
-      });
+      .style('opacity', (d: { status: Milestone.StatusEnum }) => (d.status === Milestone.StatusEnum.Offen ? 0 : 1));
 
     const maxLabelWidth = 30;
 
