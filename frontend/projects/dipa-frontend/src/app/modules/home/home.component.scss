@@ -1,31 +1,12 @@
-.mat-card-header-actions {
-  white-space: nowrap;
-  margin-left: auto;
-  margin-top: -8px;
-
-  .mat-button {
-    min-width: 36px;
-    padding: 0 3px;
-  }
+.mat-sidenav-container {
+  width: 100%;
+  height: calc(100vh - 84px);
+  background-color: transparent;
+  margin-top: 15px;
 }
 
-.mat-card-title {
-  font-size: 16px;
-  color: rgba(0,0,0,.78);
+mat-sidenav-content {
+  background-color: white;
+  align-items: center;
+  justify-content: center;
 }
-
-.mat-card-subtitle {
-  margin-bottom: 0;
-}
-
-h2 {
-  margin-top: 30px;
-  margin-bottom: 0;
-  font-size: 24px;
-  font-weight: 400;
-  padding: 0;
-
-  color: rgba(0,0,0,.78);
-}
-
-

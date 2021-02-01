@@ -1,57 +1,10 @@
-<h1>Übersicht über alle Projekte:</h1>
-<div class="container">
-  <div class="row justify-content-center">
-    <mat-spinner *ngIf="loading"></mat-spinner>
-  </div>
-  <ng-container *ngFor="let vm of vmAll$ | async">
-    <div class="row">
-      <div class="col col-md-auto">
-        <div class="mat-card-title">
-          {{ vm.timeline.name }}
-        </div>
-        <div class="mat-card-subtitle">
-          {{ vm.timeline.projectType }}
-        </div>
-      </div>
-      <div *ngIf="timelineData" class="col col-md-auto">
-        <mat-form-field appearance="fill" floatLabel="always" id="operationType-{{ vm.timeline.id }}">
-          <mat-label>Vorhabensart</mat-label>
-          <mat-select
-            [(value)]="vm.timeline.operationTypeId"
-            (selectionChange)="changeOperationType($event, vm.timeline.id)"
-          >
-            <mat-option *ngFor="let operationType of operationTypesList" [value]="operationType.id">
-              {{ operationType.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div *ngIf="timelineData" class="col col-md-auto">
-        <mat-form-field appearance="fill" floatLabel="always" id="projectApproach-{{ vm.timeline.id }}">
-          <mat-label>Vorgehensweise</mat-label>
-          <mat-select
-            [(value)]="vm.timeline.projectApproachId"
-            (selectionChange)="changeProjectApproach($event, vm.timeline.id)"
-          >
-            <mat-option
-              *ngFor="let projectApproach of filterProjectApproaches(vm.timeline.operationTypeId)"
-              [value]="projectApproach.id"
-            >
-              {{ projectApproach.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-    </div>
-    <div id="gantt{{ vm.timeline.id }}" class="gantt">
-      <app-chart
-        #charts
-        [timelineData]="vm.timeline"
-        [milestoneData]="vm.milestoneData"
-        [taskData]="vm.taskData"
-        [incrementsData]="vm.incrementsData"
-        id="overview{{ vm.timeline.id }}"
-      ></app-chart>
-    </div>
-  </ng-container>
-</div>
+<mat-sidenav-container class="mat-sidenav-container" autosize hasBackdrop="false">
+  <mat-sidenav mode="side" opened="true" class="sidenav">
+    <mat-nav-list>
+      <app-nav-menu-list-item *ngFor="let item of navMenuItems" [item]="item"></app-nav-menu-list-item>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

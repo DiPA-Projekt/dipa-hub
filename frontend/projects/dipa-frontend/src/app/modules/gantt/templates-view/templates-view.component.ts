@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { GanttControlsService } from '../gantt-controls.service';
 import { TemplatesComponent } from './templates/templates.component';
 
-import { ProjectApproachesService, OperationTypesService, TimelinesService, TemplatesService } from 'dipa-api-client';
+import { OperationTypesService, ProjectApproachesService, TemplatesService, TimelinesService } from 'dipa-api-client';
 
 import { forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
@@ -67,7 +67,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
       this.projectApproachesList = data;
     });
 
-    this.activatedRouteSubscription = this.activatedRoute.params.subscribe((param) => {
+    this.activatedRouteSubscription = this.activatedRoute.parent.params.subscribe((param) => {
       this.selectedTimelineId = param.id;
 
       this.timelinesSubscription = this.timelinesService.getTimelines().subscribe((data) => {
