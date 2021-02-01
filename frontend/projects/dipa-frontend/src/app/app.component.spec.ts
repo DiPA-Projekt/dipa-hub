@@ -1,25 +1,17 @@
-import {TestBed} from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
-import {RouterTestingModule} from '@angular/router/testing';
-import {AppComponent} from './app.component';
-import {GanttMenuComponent} from './menus/gantt-menu/gantt-menu.component';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {MatSidenavModule} from '@angular/material/sidenav';
-import {MaterialModule} from './material/material.module';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AppComponent } from './app.component';
+import { GanttMenuComponent } from './menus/gantt-menu/gantt-menu.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MaterialModule } from './material/material.module';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [
-        AppComponent,
-        GanttMenuComponent
-      ],
-      imports: [
-        RouterTestingModule,
-        HttpClientTestingModule,
-        MatSidenavModule,
-        MaterialModule
-      ]
+      declarations: [AppComponent, GanttMenuComponent],
+      imports: [RouterTestingModule, HttpClientTestingModule, MatSidenavModule, MaterialModule],
     }).compileComponents();
   });
 
@@ -36,5 +28,4 @@ describe('AppComponent', () => {
     fixture.detectChanges();
     expect(app.title).toEqual('dipa-frontend');
   });
-
 });

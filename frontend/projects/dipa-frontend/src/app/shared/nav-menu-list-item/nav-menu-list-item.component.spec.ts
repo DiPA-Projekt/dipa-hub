@@ -1,10 +1,10 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {NavMenuListItemComponent} from './nav-menu-list-item.component';
-import {NavService} from '../../nav.service';
-import {RouterTestingModule} from '@angular/router/testing';
-import {MatIcon} from '@angular/material/icon';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import { NavMenuListItemComponent } from './nav-menu-list-item.component';
+import { NavService } from '../../nav.service';
+import { RouterTestingModule } from '@angular/router/testing';
+import { MatIcon } from '@angular/material/icon';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('NavMenuListItemComponent', () => {
   let component: NavMenuListItemComponent;
@@ -12,11 +12,10 @@ describe('NavMenuListItemComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ NavMenuListItemComponent, MatIcon ],
+      declarations: [NavMenuListItemComponent, MatIcon],
       imports: [RouterTestingModule, HttpClientTestingModule],
-      providers: [NavService]
-    })
-    .compileComponents();
+      providers: [NavService],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -25,7 +24,7 @@ describe('NavMenuListItemComponent', () => {
     component.item = {
       name: 'Zeitplan',
       icon: 'event_note',
-      route: 'gantt'
+      route: 'gantt',
     };
     fixture.detectChanges();
   });
