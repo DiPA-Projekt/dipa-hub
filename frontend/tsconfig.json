@@ -11,15 +11,12 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "es2020",
-    "lib": [
-      "es2018",
-      "dom"
-    ],
+    "lib": ["es2018", "dom"],
     "paths": {
-      "dipa-api-client": [
-        "dist/dipa-api-client/dipa-api-client",
-        "dist/dipa-api-client"
-      ]
-    }
+      "dipa-api-client": ["dist/dipa-api-client/dipa-api-client", "dist/dipa-api-client"]
+    },
+    "forceConsistentCasingInFileNames": true,
+    "removeComments": true,
+    "strict": false
   }
 }
