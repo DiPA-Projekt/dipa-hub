@@ -1,6 +1,9 @@
 import * as d3 from 'd3';
 
 export class Increments {
+  public onClickAddButton?: () => void;
+  public onClickDeleteButton?: () => void;
+
   svg;
   readonly xScale;
   data: any[];
@@ -17,9 +20,6 @@ export class Increments {
 
     this.setData(data);
   }
-
-  public onClickAddButton?: () => void;
-  public onClickDeleteButton?: () => void;
 
   setData(data): void {
     this.data = data;

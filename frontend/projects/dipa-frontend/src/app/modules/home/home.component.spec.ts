@@ -16,8 +16,16 @@ describe('HomeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [HomeComponent, MatNavList, MatIcon, MatSidenavContainer,
-        MatSidenav, MatSidenavContent, NavMenuListItemComponent, MatNavList],
+      declarations: [
+        HomeComponent,
+        MatNavList,
+        MatIcon,
+        MatSidenavContainer,
+        MatSidenav,
+        MatSidenavContent,
+        NavMenuListItemComponent,
+        MatNavList,
+      ],
       imports: [BrowserAnimationsModule, RouterTestingModule, HttpClientTestingModule],
       providers: [NavService],
     }).compileComponents();

@@ -1,7 +1,7 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {LinksComponent} from './links.component';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import { LinksComponent } from './links.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('LinksComponent', () => {
   let component: LinksComponent;
@@ -9,10 +9,9 @@ describe('LinksComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LinksComponent ],
-      imports: [HttpClientTestingModule]
-    })
-    .compileComponents();
+      declarations: [LinksComponent],
+      imports: [HttpClientTestingModule],
+    }).compileComponents();
   });
 
   beforeEach(() => {

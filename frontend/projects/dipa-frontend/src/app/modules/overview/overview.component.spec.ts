@@ -16,10 +16,8 @@ describe('OverviewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [OverviewComponent, NavMenuListItemComponent,
-      MatIcon, MatNavList],
-      imports: [HttpClientTestingModule, RouterTestingModule,
-        MatSidenavModule, BrowserAnimationsModule],
+      declarations: [OverviewComponent, NavMenuListItemComponent, MatIcon, MatNavList],
+      imports: [HttpClientTestingModule, RouterTestingModule, MatSidenavModule, BrowserAnimationsModule],
       providers: [NavService],
     }).compileComponents();
   });

@@ -1,7 +1,7 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {ProjectTourComponent} from './project-tour.component';
-import {RouterTestingModule} from '@angular/router/testing';
+import { ProjectTourComponent } from './project-tour.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ProjectTourComponent', () => {
   let component: ProjectTourComponent;
@@ -9,10 +9,9 @@ describe('ProjectTourComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ProjectTourComponent ],
-      imports: [RouterTestingModule]
-    })
-    .compileComponents();
+      declarations: [ProjectTourComponent],
+      imports: [RouterTestingModule],
+    }).compileComponents();
   });
 
   beforeEach(() => {

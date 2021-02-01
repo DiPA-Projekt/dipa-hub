@@ -1,9 +1,9 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 
-import {HomeComponent} from './home.component';
-import {ProjectTourComponent} from './project-tour/project-tour.component';
-import {LinksComponent} from './links/links.component';
+import { HomeComponent } from './home.component';
+import { ProjectTourComponent } from './project-tour/project-tour.component';
+import { LinksComponent } from './links/links.component';
 
 const routes: Routes = [
   {
@@ -11,9 +11,10 @@ const routes: Routes = [
     component: HomeComponent,
     children: [
       { path: 'tour', component: ProjectTourComponent },
-      { path: 'links', component: LinksComponent }
-    ]
-  }];
+      { path: 'links', component: LinksComponent },
+    ],
+  },
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

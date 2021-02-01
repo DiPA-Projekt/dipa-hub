@@ -1,9 +1,9 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {ProjectsComponent} from './projects.component';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {NavMenuListItemComponent} from '../../../shared/nav-menu-list-item/nav-menu-list-item.component';
-import {RouterTestingModule} from '@angular/router/testing';
+import { ProjectsComponent } from './projects.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NavMenuListItemComponent } from '../../../shared/nav-menu-list-item/nav-menu-list-item.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ProjectsComponent', () => {
   let component: ProjectsComponent;
@@ -11,10 +11,9 @@ describe('ProjectsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ProjectsComponent, NavMenuListItemComponent ],
-      imports: [RouterTestingModule, HttpClientTestingModule]
-    })
-    .compileComponents();
+      declarations: [ProjectsComponent, NavMenuListItemComponent],
+      imports: [RouterTestingModule, HttpClientTestingModule],
+    }).compileComponents();
   });
 
   beforeEach(() => {

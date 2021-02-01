@@ -10,11 +10,6 @@ import { GanttModule } from '../gantt/gantt.module';
 
 @NgModule({
   declarations: [HomeComponent, ProjectTourComponent, LinksComponent],
-  imports: [
-    CommonModule,
-    MaterialModule,
-    HomeRoutingModule,
-    GanttModule,
-  ],
+  imports: [CommonModule, MaterialModule, HomeRoutingModule, GanttModule],
 })
 export class HomeModule {}

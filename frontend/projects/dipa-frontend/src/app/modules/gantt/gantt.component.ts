@@ -6,9 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./gantt.component.scss'],
 })
 export class GanttComponent implements OnInit {
-
   constructor() {}
 
   ngOnInit(): void {}
-
 }

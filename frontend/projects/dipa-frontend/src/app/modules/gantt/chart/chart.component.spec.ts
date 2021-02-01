@@ -13,10 +13,8 @@ describe('ChartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ChartComponent, MatNavList, MatSidenavContent, SidenavComponent,
-      MatSidenav, MatSidenavContainer],
-      imports: [RouterTestingModule, HttpClientTestingModule,
-        MatSidenavModule],
+      declarations: [ChartComponent, MatNavList, MatSidenavContent, SidenavComponent, MatSidenav, MatSidenavContainer],
+      imports: [RouterTestingModule, HttpClientTestingModule, MatSidenavModule],
     }).compileComponents();
   });
 

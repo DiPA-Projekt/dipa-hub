@@ -7,7 +7,6 @@ import { NavItem } from '../../nav-item';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-
   navMenuItems: NavItem[] = [];
 
   constructor() {}
@@ -17,15 +16,17 @@ export class HomeComponent implements OnInit {
   }
 
   setSideNavMenu(): void {
-
-    this.navMenuItems = [{
-      name: 'Eine Reise durchs Projekt',
-      icon: 'explore',
-      route: 'home/tour',
-    }, {
-      name: 'Nützliche Links',
-      icon: 'bookmarks',
-      route: 'home/links',
-    }];
+    this.navMenuItems = [
+      {
+        name: 'Eine Reise durchs Projekt',
+        icon: 'explore',
+        route: 'home/tour',
+      },
+      {
+        name: 'Nützliche Links',
+        icon: 'bookmarks',
+        route: 'home/links',
+      },
+    ];
   }
 }

@@ -16,25 +16,19 @@ describe('GanttComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ GanttComponent, MatSidenav, MatSidenavContainer, SidenavComponent,
-        MatSidenavContent, MatNavList],
-      imports: [
-        RouterTestingModule,
-        BrowserAnimationsModule,
-        HttpClientTestingModule
+      declarations: [GanttComponent, MatSidenav, MatSidenavContainer, SidenavComponent, MatSidenavContent, MatNavList],
+      imports: [RouterTestingModule, BrowserAnimationsModule, HttpClientTestingModule],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({
+              id: '1',
+            }),
+          },
+        },
       ],
-      providers: [{
-        provide: ActivatedRoute,
-        useValue: {
-          params: of(
-            {
-              id: '1'
-            }
-          )
-        }
-      }],
-    })
-    .compileComponents();
+    }).compileComponents();
   });
 
   beforeEach(() => {
