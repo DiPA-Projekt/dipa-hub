@@ -1,6 +1,5 @@
 {
   "extends": "../../.eslintrc.js",
-  "ignorePatterns": ["!**/*"],
   "overrides": [
     {
       "files": ["*.ts"],
@@ -30,10 +29,6 @@
           }
         ]
       }
-    },
-    {
-      "files": ["*.html"],
-      "rules": {}
     }
   ]
 }
