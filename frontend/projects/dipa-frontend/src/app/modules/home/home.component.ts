@@ -1,25 +1,23 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ExternalLinksService} from 'dipa-api-client';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ExternalLinksService } from 'dipa-api-client';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit, OnDestroy {
-
   externalLinksSubscription;
 
   externalLinkGroups;
 
-  constructor(private externalLinksService: ExternalLinksService) { }
+  constructor(private externalLinksService: ExternalLinksService) {}
 
   ngOnInit(): void {
     this.externalLinksSubscription = this.externalLinksService.getExternalLinks().subscribe((data) => {
-
       this.externalLinkGroups = Object.create(null);
 
-      data.forEach(link => {
+      data.forEach((link) => {
         this.externalLinkGroups[link.category] = this.externalLinkGroups[link.category] || [];
         this.externalLinkGroups[link.category].push(link);
       });
@@ -34,5 +32,4 @@ export class HomeComponent implements OnInit, OnDestroy {
   returnZero(): number {
     return 0;
   }
-
 }
