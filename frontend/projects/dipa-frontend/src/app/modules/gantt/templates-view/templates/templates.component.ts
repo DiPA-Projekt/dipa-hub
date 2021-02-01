@@ -94,12 +94,14 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     private templateService: TemplatesService,
     private elementRef: ElementRef
   ) {
-    d3.timeFormatDefaultLocale({
-      // @ts-ignore
+    d3.formatLocale({
       decimal: ',',
       thousands: '.',
       grouping: [3],
       currency: ['€', ''],
+    });
+
+    d3.timeFormatDefaultLocale({
       dateTime: '%a %b %e %X %Y',
       date: '%d.%m.%Y',
       time: '%H:%M:%S',

@@ -1,0 +1,53 @@
+<div class="container">
+  <section *ngFor="let item of externalLinkGroups | keyvalue: returnZero">
+    <div class="row">
+      <div class="col-12">
+        <h2>
+          {{ item.key }}
+        </h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 my-2" *ngFor="let link of item.value">
+        <mat-card class="card-container">
+          <mat-card-header>
+            <div mat-card-avatar>
+              <img *ngIf="link.img" src="{{ link.img }}" width="40px" alt="Icon {{ link.name }}" />
+            </div>
+            <mat-card-title>{{ link.name }}</mat-card-title>
+            <mat-card-subtitle>{{ link.description }}</mat-card-subtitle>
+            <div class="mat-card-header-actions">
+              <button mat-button>
+                <mat-icon
+                  *ngIf="!link.favorite"
+                  role="img"
+                  class="mat-icon notranslate material-icons mat-icon-no-color"
+                  aria-hidden="true"
+                  data-mat-icon-type="font"
+                  >star_outline</mat-icon
+                >
+                <mat-icon
+                  *ngIf="link.favorite"
+                  role="img"
+                  class="mat-icon notranslate material-icons mat-icon-no-color"
+                  aria-hidden="true"
+                  data-mat-icon-type="font"
+                  >star</mat-icon
+                >
+              </button>
+              <a href="{{ link.url }}" target="_blank" rel="noopener" mat-button>
+                <mat-icon
+                  role="img"
+                  class="mat-icon notranslate material-icons mat-icon-no-color"
+                  aria-hidden="true"
+                  data-mat-icon-type="font"
+                  >open_in_new</mat-icon
+                >
+              </a>
+            </div>
+          </mat-card-header>
+        </mat-card>
+      </div>
+    </div>
+  </section>
+</div>

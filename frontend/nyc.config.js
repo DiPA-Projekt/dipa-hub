@@ -1,22 +1,13 @@
-const path = require("path");
+const path = require('path');
 module.exports = {
-  include: [
-    "projects/dipa-frontend/src/**/*.js",
-    "projects/dipa-frontend/src/**/*.ts",
-  ],
-  exclude: [
-    "**/*.d.ts",
-    "**/*.mocha.ts",
-    "**/*.mock.ts",
-    "**/*.spec.ts",
-    "**/*.test.ts",
-  ],
+  include: ['projects/dipa-frontend/src/**/*.js', 'projects/dipa-frontend/src/**/*.ts'],
+  exclude: ['**/*.d.ts', '**/*.mocha.ts', '**/*.mock.ts', '**/*.spec.ts', '**/*.test.ts'],
   all: true,
   cache: false,
-  reporter: ["html", "lcovonly", "text"],
-  "report-dir": path.resolve(process.cwd(), "coverage/dipa-frontend"),
-  "temp-dir": path.resolve(process.cwd(), "coverage/nyc"),
-  require: ["esm", "esbuild-register"],
+  reporter: ['html', 'lcovonly', 'text'],
+  'report-dir': path.resolve(process.cwd(), 'coverage/dipa-frontend'),
+  'temp-dir': path.resolve(process.cwd(), 'coverage/nyc'),
+  require: ['esm', 'esbuild-register'],
   watermarks: {
     lines: [50, 75],
     functions: [50, 75],
