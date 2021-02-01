@@ -1,16 +1,16 @@
-import {Component, OnInit} from '@angular/core';
-import {NavItem} from '../../nav-item';
+import { Component, OnInit } from '@angular/core';
+import { NavItem } from '../../nav-item';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
 
   navMenuItems: NavItem[] = [];
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {
     this.setSideNavMenu();
@@ -21,12 +21,11 @@ export class HomeComponent implements OnInit {
     this.navMenuItems = [{
       name: 'Eine Reise durchs Projekt',
       icon: 'explore',
-      route: 'home/tour'
+      route: 'home/tour',
     }, {
       name: 'Nützliche Links',
       icon: 'bookmarks',
-      route: 'home/links'
+      route: 'home/links',
     }];
   }
-
 }

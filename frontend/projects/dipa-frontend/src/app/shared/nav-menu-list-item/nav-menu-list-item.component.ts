@@ -1,9 +1,9 @@
-import {Component, HostBinding, Input, OnInit} from '@angular/core';
-import {NavItem} from '../../nav-item';
-import {NavService} from '../../nav.service';
-import {animate, state, style, transition, trigger} from '@angular/animations';
-import {Router} from '@angular/router';
-import {FilesService} from 'dipa-api-client';
+import { Component, HostBinding, Input, OnInit } from '@angular/core';
+import { NavItem } from '../../nav-item';
+import { NavService } from '../../nav.service';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { Router } from '@angular/router';
+import { FilesService } from 'dipa-api-client';
 
 @Component({
   selector: 'app-nav-menu-list-item',
@@ -11,16 +11,13 @@ import {FilesService} from 'dipa-api-client';
   styleUrls: ['./nav-menu-list-item.component.scss'],
   animations: [
     trigger('indicatorRotate', [
-      state('collapsed', style({transform: 'rotate(0deg)'})),
-      state('expanded', style({transform: 'rotate(180deg)'})),
-      transition('expanded <=> collapsed',
-        animate('250ms cubic-bezier(0.42,0,0.58,1)')
-      )
-    ])
-  ]
+      state('collapsed', style({ transform: 'rotate(0deg)' })),
+      state('expanded', style({ transform: 'rotate(180deg)' })),
+      transition('expanded <=> collapsed', animate('250ms cubic-bezier(0.42,0,0.58,1)')),
+    ]),
+  ],
 })
 export class NavMenuListItemComponent implements OnInit {
-
   @HostBinding('attr.aria-expanded') ariaExpanded;
   @Input() item: NavItem;
   @Input() depth: number;
@@ -28,16 +25,13 @@ export class NavMenuListItemComponent implements OnInit {
   expanded: boolean;
   baseApiPath: string;
 
-  constructor(public navService: NavService,
-              private fileService: FilesService,
-              public router: Router) {
+  constructor(public navService: NavService, private fileService: FilesService, public router: Router) {
     if (this.depth === undefined) {
       this.depth = 0;
     }
   }
 
   ngOnInit(): void {
-
     this.expanded = false;
     this.ariaExpanded = this.expanded;
     this.baseApiPath = this.fileService.configuration.basePath;
@@ -52,7 +46,6 @@ export class NavMenuListItemComponent implements OnInit {
 
   onItemSelected(item: NavItem): void {
     if (!item.children || !item.children.length) {
-
       if (item.route) {
         this.router.navigate([item.route]);
       } else if (item.url) {
@@ -63,5 +56,4 @@ export class NavMenuListItemComponent implements OnInit {
       this.expanded = !this.expanded;
     }
   }
-
 }

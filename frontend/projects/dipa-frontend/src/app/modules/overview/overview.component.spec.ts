@@ -1,14 +1,14 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {OverviewComponent} from './overview.component';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {MatSidenavModule} from '@angular/material/sidenav';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {NavMenuListItemComponent} from '../../shared/nav-menu-list-item/nav-menu-list-item.component';
-import {NavService} from '../../nav.service';
-import {RouterTestingModule} from '@angular/router/testing';
-import {MatIcon} from '@angular/material/icon';
-import {MatNavList} from '@angular/material/list';
+import { OverviewComponent } from './overview.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NavMenuListItemComponent } from '../../shared/nav-menu-list-item/nav-menu-list-item.component';
+import { NavService } from '../../nav.service';
+import { RouterTestingModule } from '@angular/router/testing';
+import { MatIcon } from '@angular/material/icon';
+import { MatNavList } from '@angular/material/list';
 
 describe('OverviewComponent', () => {
   let component: OverviewComponent;
@@ -16,13 +16,12 @@ describe('OverviewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ OverviewComponent, NavMenuListItemComponent,
+      declarations: [OverviewComponent, NavMenuListItemComponent,
       MatIcon, MatNavList],
-      imports: [ HttpClientTestingModule, RouterTestingModule,
+      imports: [HttpClientTestingModule, RouterTestingModule,
         MatSidenavModule, BrowserAnimationsModule],
-      providers: [NavService]
-    })
-    .compileComponents();
+      providers: [NavService],
+    }).compileComponents();
   });
 
   beforeEach(() => {

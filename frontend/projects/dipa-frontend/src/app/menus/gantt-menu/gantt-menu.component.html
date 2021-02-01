@@ -1,5 +1,5 @@
 <mat-menu menu="matMenu">
-    <div *ngFor="let timeline of timelineData">
-        <button mat-menu-item [routerLink]="['/gantt/',timeline.id,'timeline']">{{timeline.name}}</button>
-    </div>
+  <div *ngFor="let timeline of timelineData">
+    <button mat-menu-item [routerLink]="['/gantt/', timeline.id, 'timeline']">{{ timeline.name }}</button>
+  </div>
 </mat-menu>
