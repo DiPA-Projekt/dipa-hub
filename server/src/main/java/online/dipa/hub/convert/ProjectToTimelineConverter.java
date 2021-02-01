@@ -36,6 +36,7 @@ public class ProjectToTimelineConverter implements Converter<ProjectEntity, Time
 
         final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
                                                         .filter(template -> template.getOperationTypeEntity().getId().equals(operationTypeId))
+                                                        .filter(PlanTemplateEntity::getDefaultTemplate)
                                                         .collect(Collectors.toList());       
         
         final List<MilestoneTemplateEntity> maxMilestoneDateList = new ArrayList<>();

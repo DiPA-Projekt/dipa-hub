@@ -34,27 +34,6 @@ import {TemplatesViewControlsService} from '../templates-view-controls.service';
 
 export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
 
-  constructor(public templatesViewControlsService: TemplatesViewControlsService,
-              private timelinesService: TimelinesService,
-              private templateService: TemplatesService,
-              private elementRef: ElementRef) {
-
-    d3.timeFormatDefaultLocale({
-      // @ts-ignore
-      decimal: ',',
-      thousands: '.',
-      grouping: [3],
-      currency: ['€', ''],
-      dateTime: '%a %b %e %X %Y',
-      date: '%d.%m.%Y',
-      time: '%H:%M:%S',
-      periods: ['AM', 'PM'],
-      days: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
-      shortDays: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
-      months: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
-      shortMonths: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez']
-    });
-    }
 
     @Input() timelineData: any = {};
     @Input() templateData = [];
@@ -80,20 +59,6 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     templateSubscription;
     templatesListSubscription;
 
-    // element for chart
-    private svg;
-    private zoomElement;
-
-    private viewBoxHeight = 290;
-    private viewBoxWidth = 750;
-
-    private padding = { top: 40, left: 0};
-
-    private xScale;
-    private zoom;
-
-    private oneDayTick = 1.2096e+9;
-
     headerX: XAxis;
     projectDuration: ProjectDuration;
     milestonesArea: MilestonesArea[];
@@ -113,7 +78,47 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
     listAreasId = [1, 2, 3];
 
+    // element for chart
+    private svg;
+    private zoomElement;
+
+    private viewBoxHeight = 290;
+    private viewBoxWidth = 750;
+
+    private padding = { top: 40, left: 0};
+
+    private xScale;
+    private zoom;
+
+    private oneDayTick = 1.2096e+9;
+
+    constructor(public templatesViewControlsService: TemplatesViewControlsService,
+      private timelinesService: TimelinesService,
+      private templateService: TemplatesService,
+      private elementRef: ElementRef) {
+
+      d3.timeFormatDefaultLocale({
+      // @ts-ignore
+      decimal: ',',
+      thousands: '.',
+      grouping: [3],
+      currency: ['€', ''],
+      dateTime: '%a %b %e %X %Y',
+      date: '%d.%m.%Y',
+      time: '%H:%M:%S',
+      periods: ['AM', 'PM'],
+      days: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+      shortDays: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
+      months: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+      shortMonths: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez']
+      });
+    }
+
     ngOnInit(): void {
+
+      this.milestonesArea = [];
+      this.incrementsArea = [];
+      this.svg = null;
 
       // TODO: this is just temporary
       this.modifiable = false;
@@ -127,18 +132,18 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
       this.selectedTemplatesIdList = this.templateData.map(t => t.id);
 
-      this.drawChart();
-
       this.templatesListSubscription = this.templatesViewControlsService.getTemplatesList()
         .subscribe((data) => {
 
-          if (data !== null) {
+          if (this.milestonesArea.length > 0) {
+            if (data !== null) {
 
-            this.selectedTemplatesIdList = data;
-            const newTemplates = this.allTemplates.filter(t => data.includes(t.id));
+              this.selectedTemplatesIdList = data;
+              const newTemplates = this.allTemplates.filter(t => data.includes(t.id));
 
-            this.setDataReset(this.timelineData, newTemplates);
+              this.setDataReset(this.timelineData, newTemplates);
 
+            }
           }
         });
 
@@ -197,6 +202,9 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
           }
         }
       });
+
+      this.drawChart();
+
   }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -230,18 +238,16 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
     private drawChart(): void {
 
-      if (!this.svg) {
-        this.svg = this.createSvg(this.chartElement, this.chartElement.id);
+      this.svg = this.createSvg(this.chartElement, this.chartElement.id);
 
-        this.initializeSvgGraphElements();
+      this.initializeSvgGraphElements();
 
-        // zoom out a bit to show all data at start
-        this.svg
-        .transition()
-        .duration(0)
-        .call(this.zoom.scaleBy, 0.8)
-        .on('end', () => this.refreshXScale());
-      }
+      // zoom out a bit to show all data at start
+      this.svg
+      .transition()
+      .duration(0)
+      .call(this.zoom.scaleBy, 0.8)
+      .on('end', () => this.refreshXScale());
 
       this.initializeXScale();
 
@@ -298,16 +304,12 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       for (const template of this.templateData) {
 
         const milestoneViewItem = new MilestonesArea(this.svg, this.chartElement, this.xScale,
-          template.milestones, this.modifiable, false, countId);
+          template.milestones, this.modifiable, false, countId, this.timelineData);
 
         milestoneViewItem.draw({left: this.padding.left, top: 0});
         this.milestonesArea.push(milestoneViewItem);
 
-        if (template.increments !== null) {
-          const incrementsViewItem = new Increments(this.svg, this.xScale, template.increments, countId);
-          incrementsViewItem.draw({left: 0, top: 0});
-          this.incrementsArea.push(incrementsViewItem);
-        }
+        this.createIncrementsArea(template.increments, countId, this.incrementsArea);
 
         countId++;
       }
@@ -433,7 +435,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       this.redrawChart(0);
     }
 
-    public createSvg(element, id): any {
+    private createSvg(element, id): any {
 
       const svg = d3.select(element).select('figure')
         .append('svg')
@@ -455,7 +457,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       return svg;
     }
 
-    resizeSvg(newSize): void {
+    private resizeSvg(newSize): void {
       this.svg
       .attr('viewBox', '0 0 ' + newSize + ' ' + (this.viewBoxHeight * this.templateData.length));
 
@@ -507,7 +509,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
     }
 
-    onZoom(event: d3.D3ZoomEvent<any, any>, minTimeMs): void {
+    private onZoom(event: d3.D3ZoomEvent<any, any>, minTimeMs): void {
       const eventTransform: d3.ZoomTransform = event.transform;
 
       if (eventTransform.k === 1 && eventTransform.x === 0 && eventTransform.y === 0) {
@@ -560,7 +562,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     }
 
     // set minimum and maximum zoom levels
-    setZoomScaleExtent(minTimeMs): void {
+    private setZoomScaleExtent(minTimeMs): void {
     // const minTimeMs = 1.2096e+9; // 14 days to show 1 day ticks
     const maxTimeMs = 3.1536e+11; // ~ 10 years
 
@@ -621,15 +623,21 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
           this.projectDuration.setData(this.timelineData);
           this.projectDuration.redraw(200);
 
+          this.incrementsArea = [];
+          let countId = 1;
+
           newTemplates.forEach((temp, i) => {
             this.milestonesArea[i].setData(temp.milestones);
             this.milestonesArea[i].redraw({left: 0, top: 0}, 200);
 
-            if (temp.increments !== null) {
-              this.incrementsArea[i].setData(temp.increments);
-              this.incrementsArea[i].redraw({left: 0, top: 0});
-            }
+            this.createIncrementsArea(temp.increments, countId, this.incrementsArea);
 
+            countId++;
+
+          });
+
+          this.incrementsArea.forEach((incrementsViewItem) => {
+          incrementsViewItem.redraw({left: 0, top: 0});
           });
 
       });
@@ -642,22 +650,27 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       this.projectDuration.setData(timelineData);
       this.projectDuration.redraw(200);
 
+      this.incrementsArea = [];
+      let countId = 1;
+
       templatesData.forEach((temp, i) => {
         this.milestonesArea[i].setData(temp.milestones);
         this.milestonesArea[i].reset({left: 0, top: 0});
 
-        if (temp.increments !== null) {
-          this.incrementsArea[i].setData(temp.increments);
-          this.incrementsArea[i].reset({left: 0, top: 0});
-        }
+        this.createIncrementsArea(temp.increments, countId, this.incrementsArea);
 
+        countId++;
       });
     }
 
-    getDate(date): any {
-      const dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
+    private createIncrementsArea(data, index, incrementsArea) {
 
-      return new Date(date).toLocaleDateString('de-DE', dateOptions);
+      if (data !== null) {
+        const incrementsViewItem = new Increments(this.svg, this.xScale, data, index);
+        incrementsViewItem.draw({left: 0, top: 0});
+        incrementsArea.push(incrementsViewItem);
+      }
+
     }
 
   }

@@ -36,15 +36,15 @@ export class SidenavComponent implements OnInit, OnDestroy {
           this.timelineData = data;
 
           this.timeline = this.timelineData.find(c => c.id === Number(this.selectedTimelineId));
+          this.setSideNavMenu();
         });
     });
-    this.setSideNavMenu();
   }
 
   ngOnDestroy(): void {
-    this.activatedRouteSubscription.unsubscribe();
-    this.favoriteLinksSubscription.unsubscribe();
-    this.timelinesSubscription.unsubscribe();
+    this.activatedRouteSubscription?.unsubscribe();
+    this.favoriteLinksSubscription?.unsubscribe();
+    this.timelinesSubscription?.unsubscribe();
   }
 
   setSideNavMenu(): void {
@@ -70,13 +70,11 @@ export class SidenavComponent implements OnInit, OnDestroy {
           {
             name: 'Favoriten-Links',
             icon: 'bookmarks',
-            children: data.map(x => {
-              return {
+            children: data.map(x => ({
                 name: x.name,
                 icon: 'star',
                 url: x.url
-              };
-            })
+              }))
           }
         ];
       });

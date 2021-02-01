@@ -225,6 +225,263 @@ databaseChangeLog:
                   name: plan_template_id
                   value: 6
   - changeSet:
+      id: insert-plan-template-swe-iterative-non-standard-1
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: plan_template
+            columns:
+              - column:
+                  name: id
+                  value: 7
+              - column:
+                  name: name
+                  value: Software Entwicklung inkrementell Non-standard 1
+              - column:
+                  name: operation_type_id
+                  value: 2
+              - column:
+                  name: project_approach_id
+                  value: 3
+              - column:
+                  name: standard
+                  value: false
+              - column:
+                  name: default_template
+                  value: false
+  - changeSet:
+      id: insert-milestones-swe-iterative-non-standard-1
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 70
+              - column:
+                  name: name
+                  value: Lastenheft erstellt
+              - column:
+                  name: date_offset
+                  value: 90
+              - column:
+                  name: plan_template_id
+                  value: 7
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 71
+              - column:
+                  name: name
+                  value: Systementwurf erstellt
+              - column:
+                  name: date_offset
+                  value: 180
+              - column:
+                  name: plan_template_id
+                  value: 7
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 72
+              - column:
+                  name: name
+                  value: Fachliche Abnahme, Release 1 in den Betrieb übergeben
+              - column:
+                  name: date_offset
+                  value: 270
+              - column:
+                  name: plan_template_id
+                  value: 7
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 73
+              - column:
+                  name: name
+                  value: Fachliche Abnahme, Release 2 in den Betrieb übergeben
+              - column:
+                  name: date_offset
+                  value: 360
+              - column:
+                  name: plan_template_id
+                  value: 7
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 74
+              - column:
+                  name: name
+                  value: Fachliche Abnahme, Release 3 in den Betrieb übergeben
+              - column:
+                  name: date_offset
+                  value: 450
+              - column:
+                  name: plan_template_id
+                  value: 7
+  - changeSet:
+      id: insert-plan-template-swe-iterative-non-standard-2
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: plan_template
+            columns:
+              - column:
+                  name: id
+                  value: 8
+              - column:
+                  name: name
+                  value: Software Entwicklung inkrementell Non-standard 2
+              - column:
+                  name: operation_type_id
+                  value: 2
+              - column:
+                  name: project_approach_id
+                  value: 3
+              - column:
+                  name: standard
+                  value: false
+              - column:
+                  name: default_template
+                  value: false
+  - changeSet:
+      id: insert-milestones-swe-iterativ-non-standard-2
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 75
+              - column:
+                  name: name
+                  value: Beratung Lastenhefterstellung
+              - column:
+                  name: date_offset
+                  value: 420
+              - column:
+                  name: plan_template_id
+                  value: 8
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 76
+              - column:
+                  name: name
+                  value: Pflichtenheft Release 1
+              - column:
+                  name: date_offset
+                  value: 570
+              - column:
+                  name: plan_template_id
+                  value: 8
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 77
+              - column:
+                  name: name
+                  value: Pflichtenheft Migration Release 1
+              - column:
+                  name: date_offset
+                  value: 870
+              - column:
+                  name: plan_template_id
+                  value: 8
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 78
+              - column:
+                  name: name
+                  value: Implementierung Release 1, Pflichtenheft Release 2
+              - column:
+                  name: date_offset
+                  value: 960
+              - column:
+                  name: plan_template_id
+                  value: 8
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 79
+              - column:
+                  name: name
+                  value: Abnahme Release 1
+              - column:
+                  name: date_offset
+                  value: 1020
+              - column:
+                  name: plan_template_id
+                  value: 8
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 80
+              - column:
+                  name: name
+                  value: Feinkonzeption Release 2
+              - column:
+                  name: date_offset
+                  value: 1180
+              - column:
+                  name: plan_template_id
+                  value: 8
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 81
+              - column:
+                  name: name
+                  value: Entwicklung Release 2
+              - column:
+                  name: date_offset
+                  value: 1210
+              - column:
+                  name: plan_template_id
+                  value: 8
+        - insert:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: id
+                  value: 82
+              - column:
+                  name: name
+                  value: Abnahme Release 2
+              - column:
+                  name: date_offset
+                  value: 1300
+              - column:
+                  name: plan_template_id
+                  value: 8
+  - changeSet:        
       id: insert-file-phb-an-project-agil
       author: bock
       context: itzbund
