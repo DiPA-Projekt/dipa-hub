@@ -8,11 +8,7 @@ const createContext = (): {
   svg: unknown;
 } => {
   const ELEMENT = document.createElement('div');
-  const SVG = d3
-    .select(ELEMENT)
-    .append('svg')
-    .append('g')
-    .attr('class', 'x-group');
+  const SVG = d3.select(ELEMENT).append('svg').append('g').attr('class', 'x-group');
   return {
     element: ELEMENT,
     svg: SVG,

@@ -1,11 +1,10 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TemplatesViewControlsService {
-
   // not used yet
   private templatesList = new BehaviorSubject<any>(null);
 
@@ -13,7 +12,7 @@ export class TemplatesViewControlsService {
 
   private viewType = new BehaviorSubject<string>(null);
 
-  constructor() { }
+  constructor() {}
 
   setIsFullscreen(isFullscreen: boolean): void {
     this.isFullscreen.next(isFullscreen);
@@ -38,5 +37,4 @@ export class TemplatesViewControlsService {
   setTemplatesList(templatesList: any): void {
     this.templatesList.next(templatesList);
   }
-
 }
