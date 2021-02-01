@@ -77,7 +77,7 @@
     "karma-jasmine-html-reporter": "1.5.4",
     "mocha": "8.2.1",
     "mock-local-storage": "1.1.17",
-    "ng-packagr": "11.0.3",
+    "ng-packagr": "11.1.2",
     "nyc": "15.1.0",
     "prettier": "2.2.1",
     "protractor": "7.0.0",
