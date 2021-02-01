@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./sidenav.component.scss'],
 })
 export class SidenavComponent implements OnInit, OnDestroy {
-  timelineData = [];
+  timelineData: Timeline[] = [];
 
   timeline: Timeline;
 
@@ -30,11 +30,11 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.activatedRouteSubscription = this.activatedRoute.params.subscribe((param) => {
-      this.selectedTimelineId = param.id;
+      this.selectedTimelineId = Number(param.id);
       this.timelinesSubscription = this.timelinesService.getTimelines().subscribe((data) => {
         this.timelineData = data;
 
-        this.timeline = this.timelineData.find((c) => c.id === Number(this.selectedTimelineId));
+        this.timeline = this.timelineData.find((c) => c.id === this.selectedTimelineId);
         this.setSideNavMenu();
       });
     });
@@ -51,17 +51,17 @@ export class SidenavComponent implements OnInit, OnDestroy {
       {
         name: 'Deine Reise durchs Projekt',
         icon: 'directions_walk',
-        route: 'gantt/' + this.selectedTimelineId + '/project-checklist',
+        route: `gantt/${this.selectedTimelineId}/project-checklist`,
       },
       {
         name: 'Zeitplan',
         icon: 'event_note',
-        route: 'gantt/' + this.selectedTimelineId + '/timeline',
+        route: `gantt/${this.selectedTimelineId}/timeline`,
       },
       {
         name: 'Stöbern & Vergleichen',
         icon: 'find_replace',
-        route: 'gantt/' + this.selectedTimelineId + '/templates',
+        route: `gantt/${this.selectedTimelineId}/templates`,
       },
     ];
 
