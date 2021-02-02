@@ -32,7 +32,7 @@ public class ProjectToTimelineConverter implements Converter<ProjectEntity, Time
 
         final OperationTypeEntity operationType = projectApproach.getOperationType();
 
-        final Long operationTypeId = projectApproach.getOperationType().getId();    
+        final Long operationTypeId = projectApproach.getOperationType().getId();
 
         final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
                                                         .filter(template -> template.getOperationTypeEntity().getId().equals(operationTypeId))
