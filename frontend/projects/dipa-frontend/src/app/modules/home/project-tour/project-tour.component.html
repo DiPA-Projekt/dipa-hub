@@ -1,1 +1,47 @@
-<p>project-tour works!</p>
+<div class="container">
+  <section *ngFor="let item of projectFlowItems">
+    <div class="row">
+      <div class="col-12">
+        <h2>
+          {{ item.name }}
+        </h2>
+      </div>
+    </div>
+    <div class="row">
+      <ng-container *ngIf="item.actions.length > 0; else noItems">
+        <div class="col-md-6 my-2" *ngFor="let action of item.actions">
+          <mat-card class="card-container">
+            <mat-card-content *ngIf="action.explanation; else noEntry">{{ action.explanation }}</mat-card-content>
+            <ng-template #noEntry> Please friend, login. </ng-template>
+            <mat-card-actions>
+              <a
+                *ngFor="let link of action.links"
+                href="{{ link.url }}"
+                target="_blank"
+                rel="noopener"
+                mat-button
+                color="primary"
+              >
+                {{ link.name }}
+                <mat-icon
+                  role="img"
+                  class="mat-icon notranslate material-icons mat-icon-no-color"
+                  aria-hidden="true"
+                  data-mat-icon-type="font"
+                  >open_in_new
+                </mat-icon>
+              </a>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </ng-container>
+      <ng-template #noItems>
+        <div class="col-md-6 my-2">
+          <mat-card class="card-container">
+            <mat-card-content>Das Reiseziel ist noch unbekannt.</mat-card-content>
+          </mat-card>
+        </div>
+      </ng-template>
+    </div>
+  </section>
+</div>
