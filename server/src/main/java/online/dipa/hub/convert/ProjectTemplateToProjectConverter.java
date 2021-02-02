@@ -21,7 +21,7 @@ public class ProjectTemplateToProjectConverter implements Converter<ProjectEntit
                              .projectOwner(template.getProjectOwner());
         
         if (template.getProjectSize() != null) {
-            timeline.projectSize(Project.ProjectSizeEnum.fromValue(template.getProjectSize()));
+            project.projectSize(Project.ProjectSizeEnum.fromValue(template.getProjectSize()));
         }
         return project;
     }
