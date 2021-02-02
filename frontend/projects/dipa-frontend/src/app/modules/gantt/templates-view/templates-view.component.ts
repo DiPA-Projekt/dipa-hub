@@ -242,7 +242,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
 
     selectedTimeline.projectApproachId = event.value;
 
-    this.timelinesService.updateProject(selectedTimeline.id, selectedTimeline).subscribe((d) => {
+    this.timelinesService.updateTimeline(selectedTimeline.id, selectedTimeline).subscribe((d) => {
       this.timelinesSubscription = this.timelinesService.getTimelines().subscribe((data) => {
         this.timelineData = data;
 

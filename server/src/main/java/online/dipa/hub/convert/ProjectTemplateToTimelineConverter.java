@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class ProjectToTimelineConverter implements Converter<ProjectEntity, Timeline> {
+public class ProjectTemplateToTimelineConverter implements Converter<ProjectEntity, Timeline> {
 
     @Autowired
     private PlanTemplateRepository planTemplateRepository;
@@ -54,6 +54,7 @@ public class ProjectToTimelineConverter implements Converter<ProjectEntity, Time
         if (maxMilestoneDate != null) {
             maxMilestoneDateOffset = maxMilestoneDate.getDateOffset();
         }
+        System.out.println(project.getProjectSize());
 
         Timeline timeline = new Timeline().id(project.getId())
                              .name(project.getName())

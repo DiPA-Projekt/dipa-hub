@@ -23,6 +23,28 @@ Project:
         - "AN-Projekt"
       default: null
       example: "internes Projekt"
-  required:
-    - id
-    - name
+    projectSize:
+      description: size of this project
+      type: string
+      enum:
+        - "small"
+        - "medium"
+        - "big"
+      default: null
+      example: "small"
+    AKZ:
+      description: AKZ
+      type: string
+      example: "01234"
+    client:
+      description: client
+      type: string
+      example: "BMF"
+    department:
+      description: responsible department for this project
+      type: string
+      example: "II A 1"
+    projectOwner:
+      description: project owner's name
+      type: string
+      example: "Max Mustermann"

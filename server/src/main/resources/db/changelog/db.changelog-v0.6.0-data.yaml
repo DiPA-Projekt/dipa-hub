@@ -515,3 +515,37 @@ databaseChangeLog:
               - column:
                   name: sort_order
                   value: 18
+  - changeSet:
+      id: update-project-projectSize-Feldberg
+      author: nguyen
+      changes:
+        - update:
+            tableName: project
+            columns:
+              - column:
+                  name: project_size
+                  value: "small"
+              - column:
+                  name: AKZ
+                  value: "01234"
+              - column:
+                  name: client
+                  value: "BMF"
+              - column:
+                  name: department
+                  value: "II A 1"
+              - column:
+                  name: project_owner
+                  value: "Max Mustermann"
+            where: id=3
+  - changeSet:
+      id: update-project-projectSize-Zugspitze
+      author: nguyen
+      changes:
+        - update:
+            tableName: project
+            columns:
+              - column:
+                  name: project_size
+                  value: "small"
+            where: id=4

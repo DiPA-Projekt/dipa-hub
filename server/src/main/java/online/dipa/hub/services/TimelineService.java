@@ -605,7 +605,7 @@ public class TimelineService {
         }
     }
 
-    public void updateProject(final Timeline timeline) {
+    public void updateTimeline(final Timeline timeline) {
 
         TimelineState sessionTimeline = getSessionTimelines().get(timeline.getId());
         sessionTimeline.getTimeline().setOperationTypeId(timeline.getOperationTypeId());

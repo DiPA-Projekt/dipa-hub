@@ -1,9 +1,9 @@
 patch:
   tags:
-    - timelines
-  summary: Update project type and project approach for a timeline
-  description: Update project type and project approach for a timeline
-  operationId: updateProject
+    - project
+  summary: Update project's information
+  description: Update project's information
+  operationId: updateProjectData
   parameters:
     - in: path
       name: timelineId
@@ -18,7 +18,7 @@ patch:
     content:
       application/json:
         schema:
-          $ref: "../models/timeline.yml#/Timeline"
+          $ref: "../models/project.yml#/Project"
   responses:
     204:
       description: The operation was applied successfully.
