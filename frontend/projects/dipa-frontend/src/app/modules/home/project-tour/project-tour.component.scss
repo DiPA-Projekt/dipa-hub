@@ -7,8 +7,14 @@ h2 {
   color: #3f51b5;
   margin-top: 20px;
   margin-bottom: 5px;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 400;
-  padding: 8px 16px;
+  padding: 4px 16px;
   border-radius: 4px;
+}
+
+.mat-icon.icon-small {
+  font-size: 16px;
+  height: 16px;
+  width: 16px;
 }
