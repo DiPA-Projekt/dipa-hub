@@ -10,29 +10,16 @@ Project:
       description: The name of the project
       type: string
       example: "Feldberg"
-    projectApproachId:
-      description: Unique identifier of the linked project approach
-      type: integer
-      format: int64
-      example: 3
-    projectType:
-      description: project type of this project
-      type: string
-      enum:
-        - "internes Projekt"
-        - "AN-Projekt"
-      default: null
-      example: "internes Projekt"
     projectSize:
       description: size of this project
       type: string
       enum:
-        - "small"
-        - "medium"
-        - "big"
+        - "klein"
+        - "mittel"
+        - "groß"
       default: null
-      example: "small"
-    AKZ:
+      example: "klein"
+    akz:
       description: AKZ
       type: string
       example: "01234"

@@ -524,9 +524,9 @@ databaseChangeLog:
             columns:
               - column:
                   name: project_size
-                  value: "small"
+                  value: "klein"
               - column:
-                  name: AKZ
+                  name: akz
                   value: "01234"
               - column:
                   name: client
@@ -536,7 +536,7 @@ databaseChangeLog:
                   value: "II A 1"
               - column:
                   name: project_owner
-                  value: "Max Mustermann"
+                  value: "Herr Mustermann"
             where: id=3
   - changeSet:
       id: update-project-projectSize-Zugspitze
@@ -547,5 +547,5 @@ databaseChangeLog:
             columns:
               - column:
                   name: project_size
-                  value: "small"
+                  value: "mittel"
             where: id=4

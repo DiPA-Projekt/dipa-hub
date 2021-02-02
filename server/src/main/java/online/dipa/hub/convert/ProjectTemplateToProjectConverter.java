@@ -15,12 +15,14 @@ public class ProjectTemplateToProjectConverter implements Converter<ProjectEntit
 
         Project project = new Project().id(template.getId())
                              .name(template.getName())
-                             .projectSize(Project.ProjectSizeEnum.fromValue(template.getProjectSize()))
-                             .AKZ(template.getAKZ())
+                             .akz(template.getAKZ())
                              .client(template.getClient())
                              .department(template.getDepartment())
                              .projectOwner(template.getProjectOwner());
         
+        if (template.getProjectSize() != null) {
+            timeline.projectSize(Project.ProjectSizeEnum.fromValue(template.getProjectSize()));
+        }
         return project;
     }
 }

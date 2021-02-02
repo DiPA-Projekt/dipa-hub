@@ -2,8 +2,6 @@ package online.dipa.hub;
 
 import online.dipa.hub.api.model.*;
 
-import java.util.List;
-
 public class ProjectState {
 
     private Project project;

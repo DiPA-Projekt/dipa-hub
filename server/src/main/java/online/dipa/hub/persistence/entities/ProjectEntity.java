@@ -34,7 +34,7 @@ public class ProjectEntity extends BaseEntity {
     private String projectType;
     private String projectSize;
 
-    private String AKZ;
+    private String akz;
     private String client;
     private String department;
     private String projectOwner;
@@ -65,8 +65,12 @@ public class ProjectEntity extends BaseEntity {
         this.projectType = projectType;
     }
 
+    public void setAKZ(final String akz) {
+        this.akz = akz;
+    }
+
     public String getAKZ() {
-        return AKZ;
+        return akz;
     }
     
     public void setProjectSize(final String projectSize) {
@@ -77,9 +81,6 @@ public class ProjectEntity extends BaseEntity {
         return projectSize;
     }
 
-    public void setAKZ(final String AKZ) {
-        this.AKZ = AKZ;
-    }
 
     public String getClient() {
         return client;

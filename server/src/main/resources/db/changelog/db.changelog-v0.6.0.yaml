@@ -11,7 +11,7 @@ databaseChangeLog:
                   type: VARCHAR(255)
                   defaultValue: null
               - column:
-                  name: AKZ
+                  name: akz
                   type: VARCHAR(255)
                   defaultValue: null
               - column:
