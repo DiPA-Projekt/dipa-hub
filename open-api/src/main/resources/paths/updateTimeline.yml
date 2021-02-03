@@ -1,8 +1,8 @@
 patch:
   tags:
     - timelines
-  summary: Update opeartion type and project approach for a timeline
-  description: Update opeartion type and project approach for a timeline
+  summary: Update operation type and project approach for a timeline
+  description: Update operation type and project approach for a timeline
   operationId: updateTimeline
   parameters:
     - in: path

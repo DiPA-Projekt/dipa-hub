@@ -525,7 +525,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: project_size
-                  value: "klein"
+                  value: SMALL
               - column:
                   name: akz
                   value: "01234"
@@ -549,7 +549,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: project_size
-                  value: "mittel"
+                  value: MIDDLE
             where: id=4
   - changeSet:
       id: insert-external-link-kommunikation-ohne-sina

@@ -8,7 +8,7 @@ import online.dipa.hub.api.model.Project;
 import online.dipa.hub.persistence.entities.ProjectEntity;
 
 @Component
-public class ProjectTemplateToProjectConverter implements Converter<ProjectEntity, Project> {
+public class ProjectEntityToProjectConverter implements Converter<ProjectEntity, Project> {
 
     @Override
     public Project convert(final ProjectEntity template) {

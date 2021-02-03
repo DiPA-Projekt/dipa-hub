@@ -15,6 +15,7 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.SessionScope;
+import java.util.Objects;
 
 
 
@@ -43,6 +44,7 @@ public class ProjectService {
     private void initializeProjects() {
 
         projectRespository.findAll().stream().map(p -> conversionService.convert(p, Project.class))
+                .filter(Objects::nonNull)
                 .forEach(t -> {
                     ProjectState sessionProject = findProjectState(t.getId());
                     if (sessionProject.getProject() == null) {

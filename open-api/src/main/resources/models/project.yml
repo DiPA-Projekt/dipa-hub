@@ -14,11 +14,11 @@ Project:
       description: size of this project
       type: string
       enum:
-        - "klein"
-        - "mittel"
-        - "groß"
+        - SMALL
+        - MIDDLE
+        - BIG
       default: null
-      example: "klein"
+      example: SMALL
     akz:
       description: AKZ
       type: string
@@ -35,3 +35,6 @@ Project:
       description: project owner's name
       type: string
       example: "Max Mustermann"
+  required:
+    - id
+    - name
