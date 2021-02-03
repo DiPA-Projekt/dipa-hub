@@ -36,7 +36,7 @@ export class FilesComponent implements OnInit, OnChanges, OnDestroy {
           id: x.id,
           name: x.name,
           icon: 'description',
-          file: '/downloadFile/' + x.id,
+          file: `/downloadFile/${x.id}`,
         }));
       });
   }

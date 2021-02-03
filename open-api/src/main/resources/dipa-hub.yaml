@@ -12,6 +12,8 @@ paths:
     $ref: "paths/externalLinks.yml"
   /externalLinks/favorites:
     $ref: "paths/favoriteLinks.yml"
+  /projectFlowSteps:
+    $ref: "paths/projectFlowSteps.yml"
   /status:
     $ref: "paths/status.yml"
   /timelines:

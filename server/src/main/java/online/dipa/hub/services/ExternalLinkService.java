@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.SessionScope;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +28,8 @@ public class ExternalLinkService {
         return externalLinkRepository.findAll()
                 .stream()
                 .map(p -> conversionService.convert(p, ExternalLink.class))
+                .filter(Objects::nonNull)
+                .filter(link -> link.getCategory() != null)
                 .collect(Collectors.toList());
     }
 
@@ -35,7 +38,8 @@ public class ExternalLinkService {
         return externalLinkRepository.findAll()
                 .stream()
                 .map(p -> conversionService.convert(p, ExternalLink.class))
-                .filter(p -> p.getFavorite().equals(true))
+                .filter(Objects::nonNull)
+                .filter(link -> link.getFavorite().equals(true))
                 .collect(Collectors.toList());
     }
 }
