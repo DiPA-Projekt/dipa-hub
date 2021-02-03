@@ -26,3 +26,111 @@ databaseChangeLog:
                   name: project_owner
                   type: VARCHAR(255)
                   defaultValue: null
+  - changeSet:
+      id: create-project-flow-step-table
+      author: bock
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: projectFlowStepPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: sort_order
+                  type: INTEGER
+            tableName: project_flow_step
+  - changeSet:
+      id: create-project-flow-step-action-table
+      author: bock
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: projectFlowStepActionPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_flow_step_id
+                  type: BIGINT
+              - column:
+                  name: explanation
+                  type: VARCHAR(1000)
+            tableName: project_flow_step_action
+  - changeSet:
+      id: create-project-flow-step-action-link-table
+      author: bock
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: projectFlowStepActionLinkPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_flow_step_action_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: external_link_id
+                  type: BIGINT
+            tableName: project_flow_step_action_link
+  - changeSet:
+      id: createForeignKeyConstraint-projectFlowStepActionLink
+      author: bock
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: external_link_id
+            baseTableName: project_flow_step_action_link
+            constraintName: FKactionLinks
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: external_link
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-projectFlowStepActionId
+      author: bock
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_flow_step_action_id
+            baseTableName: project_flow_step_action_link
+            constraintName: FKactionId
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_flow_step_action
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-projectFlowStepId
+      author: bock
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_flow_step_id
+            baseTableName: project_flow_step_action
+            constraintName: FKstepId
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_flow_step
+            validate: true
