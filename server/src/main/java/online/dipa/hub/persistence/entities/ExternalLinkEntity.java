@@ -6,6 +6,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "external_link")
@@ -36,6 +38,9 @@ public class ExternalLinkEntity extends BaseEntity {
 
     @Basic
     private int sortOrder;
+
+    @ManyToMany(mappedBy = "actionLinks")
+    private Set<ProjectFlowStepActionEntity> projectFlowStepAction = new HashSet<>();
     
     public String getName() {
         return name;

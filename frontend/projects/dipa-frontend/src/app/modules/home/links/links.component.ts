@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ExternalLink, ExternalLinksService } from 'dipa-api-client';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-links',
@@ -7,7 +8,7 @@ import { ExternalLink, ExternalLinksService } from 'dipa-api-client';
   styleUrls: ['./links.component.scss'],
 })
 export class LinksComponent implements OnInit, OnDestroy {
-  externalLinksSubscription;
+  externalLinksSubscription: Subscription;
 
   externalLinkGroups;
 

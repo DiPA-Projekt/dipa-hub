@@ -1,0 +1,30 @@
+ProjectFlowStep:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the project flow item
+      type: integer
+      format: int64
+      example: 3
+    name:
+      description: The step in the journey through the project
+      type: string
+      example: "[PL] Verträge externer Dienstleister ins Rollen bringen"
+    sortOrder:
+      description: Sort order in project flow
+      type: integer
+      format: int32
+      example: 2
+    actions:
+      description: The list of step actions
+      type: array
+      items:
+        $ref: "../models/stepAction.yml#/StepAction"
+    projectFlowId:
+      description: Unique identifier of the linked project flow
+      type: integer
+      format: int64
+      example: 3
+  required:
+    - id
+    - name
