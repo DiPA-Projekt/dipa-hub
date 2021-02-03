@@ -27,3 +27,4 @@ ProjectFlowStep:
       example: 3
   required:
     - id
+    - name

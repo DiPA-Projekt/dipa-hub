@@ -11,8 +11,7 @@
       <ng-container *ngIf="item.actions.length > 0; else noItems">
         <div class="col-md-6 my-2" *ngFor="let action of item.actions">
           <mat-card class="card-container">
-            <mat-card-content *ngIf="action.explanation; else noEntry">{{ action.explanation }}</mat-card-content>
-            <ng-template #noEntry> Please friend, login. </ng-template>
+            <mat-card-content>{{ action.explanation }}</mat-card-content>
             <mat-card-actions>
               <a
                 *ngFor="let link of action.links"

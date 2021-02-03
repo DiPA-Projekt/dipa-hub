@@ -2,7 +2,7 @@ get:
   tags:
     - projectFlow
   summary: Project Flow
-  description: Retrieves the list of available project flow steps.
+  description: Retrieves the List of project flow steps.
   operationId: getProjectFlow
   responses:
     200:
