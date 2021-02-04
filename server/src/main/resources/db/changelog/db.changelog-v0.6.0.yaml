@@ -158,26 +158,52 @@ databaseChangeLog:
                   type: BIGINT
             tableName: project_approach_plan_template_connection
   - changeSet:
-      id: createForeignKeyConstraint-projectApproachId
+      id: createForeignKeyConstraint-projectApproachId-connection
       author: nguyen
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: project_approach_id
             baseTableName: project_approach_plan_template_connection
-            constraintName: FKprojectApproachId
+            constraintName: FKprojectApproachIdConnection
             deferrable: false
             initiallyDeferred: false
             referencedColumnNames: id
             referencedTableName: project_approach
             validate: true
   - changeSet:
-      id: createForeignKeyConstraint-planTemplateId
+      id: createForeignKeyConstraint-planTemplateId-project-approach
       author: nguyen
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: plan_template_id
             baseTableName: project_approach_plan_template_connection
-            constraintName: FKplanTemplateId
+            constraintName: FKplanTemplateIdProjectApproach
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: plan_template
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-operationTypeId-connection
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: operation_type_id
+            baseTableName: operation_type_plan_template_connection
+            constraintName: FKoperationTypeIdConnection
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: operation_type
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-planTemplateId-operation-type
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: plan_template_id
+            baseTableName: operation_type_plan_template_connection
+            constraintName: FKplanTemplateIdOperationType
             deferrable: false
             initiallyDeferred: false
             referencedColumnNames: id
