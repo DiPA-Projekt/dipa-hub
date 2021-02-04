@@ -83,7 +83,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   selectedMilestoneDataMenu: any;
   selectedMilestoneId: number;
 
-  statusList: any[] = ['offen', 'erledigt'];
+  statusList = { OPEN: 'offen', DONE: 'eledigt' };
 
   // element for chart
   private svg;

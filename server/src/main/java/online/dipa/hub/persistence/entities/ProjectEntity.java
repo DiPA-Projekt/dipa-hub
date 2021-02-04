@@ -32,6 +32,13 @@ public class ProjectEntity extends BaseEntity {
     private ProjectApproachEntity projectApproach;
 
     private String projectType;
+    private String projectSize;
+
+    private String akz;
+    private String client;
+    private String department;
+    private String projectOwner;
+
     
     public String getName() {
         return name;
@@ -57,4 +64,46 @@ public class ProjectEntity extends BaseEntity {
     public void setProjectType(final String projectType) {
         this.projectType = projectType;
     }
+
+    public void setAKZ(final String akz) {
+        this.akz = akz;
+    }
+
+    public String getAKZ() {
+        return akz;
+    }
+    
+    public void setProjectSize(final String projectSize) {
+        this.projectSize = projectSize;
+    }
+
+    public String getProjectSize() {
+        return projectSize;
+    }
+
+
+    public String getClient() {
+        return client;
+    }
+
+    public void setClient(final String client) {
+        this.client = client;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(final String department) {
+        this.department = department;
+    }
+
+    public String getProjectOwner() {
+        return projectOwner;
+    }
+
+    public void setProjectOwner(final String projectOwner) {
+        this.projectOwner = projectOwner;
+    }
+
 }

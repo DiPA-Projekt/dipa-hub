@@ -223,11 +223,11 @@ public class TimelineService {
             if (oldMilestone != null) {
                 newMilestone.setStatus(oldMilestone.getStatus());
             } else {
-                newMilestone.setStatus(Milestone.StatusEnum.OFFEN);
+                newMilestone.setStatus(Milestone.StatusEnum.OPEN);
             }
         }
         else {
-            newMilestone.setStatus(Milestone.StatusEnum.OFFEN);
+            newMilestone.setStatus(Milestone.StatusEnum.OPEN);
         }
 
         return newMilestone;
@@ -592,7 +592,7 @@ public class TimelineService {
         }
     }
 
-    public void updateProject(final Timeline timeline) {
+    public void updateTimeline(final Timeline timeline) {
 
         TimelineState sessionTimeline = getSessionTimelines().get(timeline.getId());
         sessionTimeline.getTimeline().setOperationTypeId(timeline.getOperationTypeId());

@@ -15,12 +15,12 @@
         <p>Status</p>
         <mat-radio-group
           [(ngModel)]="selectedMilestoneDataMenu.status"
-          *ngFor="let status of statusList"
+          *ngFor="let status of statusList | keyvalue: 0"
           color="primary"
         >
           <div class="row">
-            <mat-radio-button [value]="status" (change)="changeStatus($event)">
-              {{ status }}
+            <mat-radio-button [value]="status.key" (change)="changeStatus($event)">
+              {{ status.value }}
             </mat-radio-button>
           </div>
           <br />

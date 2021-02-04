@@ -1,0 +1,39 @@
+.mat-sidenav-container {
+  width: 100%;
+  height: calc(100vh - 84px);
+  background-color: transparent;
+  margin-top: 15px;
+}
+
+mat-sidenav-content {
+  background-color: white;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.content-container {
+  margin: 10px;
+  padding-left: 10px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+mat-option.multi-line-option {
+  .mat-line {
+    line-height: 1.2em;
+    margin-bottom: 2px;
+  }
+
+  h4.mat-line {
+    font-size: 14px;
+  }
+
+  p.mat-line {
+    font-size: 12px;
+    color: rgba(0,0,0,.45);
+  }
+}
+

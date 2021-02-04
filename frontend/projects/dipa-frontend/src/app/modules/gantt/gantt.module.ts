@@ -13,14 +13,14 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { AngularResizedEventModule } from 'angular-resize-event';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { SharedModule } from '../../shared/shared.module';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { NavMenuListItemComponent } from '../../shared/nav-menu-list-item/nav-menu-list-item.component';
-import { ToolkitComponent } from './toolkit/toolkit.component';
+import { ProjectChecklistComponent } from './project-checklist/project-checklist.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { TemplatesComponent } from './templates-view/templates/templates.component';
 import { TemplatesViewComponent } from './templates-view/templates-view.component';
@@ -33,7 +33,7 @@ import { TimelineComponent } from './timeline/timeline.component';
   declarations: [
     GanttComponent,
     NavMenuListItemComponent,
-    ToolkitComponent,
+    ProjectChecklistComponent,
     SidenavComponent,
     TemplatesComponent,
     TemplatesViewComponent,
@@ -63,6 +63,7 @@ import { TimelineComponent } from './timeline/timeline.component';
     SharedModule,
     MatSidenavModule,
     MatListModule,
+    ReactiveFormsModule,
   ],
 })
 export class GanttModule {}

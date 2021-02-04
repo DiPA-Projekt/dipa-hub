@@ -1,5 +1,32 @@
 databaseChangeLog:
   - changeSet:
+      id: addColumn-project-projectSize
+      author: nguyen
+      changes:
+        - addColumn:
+            tableName: project
+            columns:
+              - column:
+                  name: project_size
+                  type: VARCHAR(255)
+                  defaultValue: null
+              - column:
+                  name: akz
+                  type: VARCHAR(255)
+                  defaultValue: null
+              - column:
+                  name: client
+                  type: VARCHAR(255)
+                  defaultValue: null
+              - column:
+                  name: department
+                  type: VARCHAR(255)
+                  defaultValue: null
+              - column:
+                  name: project_owner
+                  type: VARCHAR(255)
+                  defaultValue: null
+  - changeSet:
       id: create-project-flow-step-table
       author: bock
       changes:
