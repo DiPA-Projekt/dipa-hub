@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { GanttComponent } from './gantt.component';
 import { TemplatesViewComponent } from './templates-view/templates-view.component';
 import { TimelineComponent } from './timeline/timeline.component';
-import { ToolkitComponent } from './toolkit/toolkit.component';
+import { ProjectChecklistComponent } from './project-checklist/project-checklist.component';
 
 const routes: Routes = [
   {
@@ -13,7 +13,7 @@ const routes: Routes = [
     children: [
       { path: 'timeline', component: TimelineComponent },
       { path: 'templates', component: TemplatesViewComponent },
-      { path: 'toolkit', component: ToolkitComponent },
+      { path: 'project-checklist', component: ProjectChecklistComponent },
     ],
   },
 ];

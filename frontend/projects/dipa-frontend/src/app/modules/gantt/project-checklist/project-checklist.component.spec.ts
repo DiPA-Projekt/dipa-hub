@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ToolkitComponent } from './toolkit.component';
+import { ProjectChecklistComponent } from './project-checklist.component';
 import { SidenavComponent } from '../sidenav/sidenav.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -11,14 +11,14 @@ import { NavService } from '../../../nav.service';
 import { MatIcon } from '@angular/material/icon';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-describe('ToolkitComponent', () => {
-  let component: ToolkitComponent;
-  let fixture: ComponentFixture<ToolkitComponent>;
+describe('ProjectChecklistComponent', () => {
+  let component: ProjectChecklistComponent;
+  let fixture: ComponentFixture<ProjectChecklistComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [
-        ToolkitComponent,
+        ProjectChecklistComponent,
         SidenavComponent,
         NavMenuListItemComponent,
         MatNavList,
@@ -34,7 +34,7 @@ describe('ToolkitComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ToolkitComponent);
+    fixture = TestBed.createComponent(ProjectChecklistComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
