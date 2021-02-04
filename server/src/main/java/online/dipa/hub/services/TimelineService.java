@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.SessionScope;
 
-import liquibase.hub.model.Project;
-
 import javax.persistence.EntityNotFoundException;
 import java.io.File;
 import java.io.IOException;
@@ -246,36 +244,23 @@ public class TimelineService {
 
             Long operationTypeId = projectApproach.getOperationType().getId();
 
-            final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
-                .filter(template -> getOperationType(template, operationTypeId))
-                .collect(Collectors.toList());
+            Optional<PlanTemplateEntity> masterPlanTemplate = planTemplateRepository.findAll().stream()
+                .filter(template -> filterOperationType(template, operationTypeId)).findFirst();
 
-                if (planTemplateList.size() == 1) {
-                    milestones = convertMilestones(planTemplateList.get(0));
-                }
-                else {
+            if (masterPlanTemplate.isPresent()) {
+                milestones.addAll(convertMilestones(masterPlanTemplate.get()));
+            }
 
-                    long masterPlanId = 2;
+            Optional<PlanTemplateEntity> planTemplate = planTemplateRepository.findAll().stream()
+                    .filter(template -> template.getProjectApproach() != null)
+                    .filter(template -> filterProjectApproach(template, projectApproach.getId()))
+                    .filter(PlanTemplateEntity::getDefaultTemplate)
+                    .findFirst();
+            
+            if (planTemplate.isPresent()) {
+                milestones.addAll(convertMilestones(planTemplate.get()));
+            }
 
-                    Optional<PlanTemplateEntity> masterPlanTemplate = planTemplateList.stream()
-                            .filter(template -> template.getId().equals(masterPlanId))
-                            .filter(PlanTemplateEntity::getDefaultTemplate).findFirst();
-                
-                    if (masterPlanTemplate.isPresent()) {
-                        milestones.addAll(convertMilestones(masterPlanTemplate.get()));
-                    }
-        
-                    Optional<PlanTemplateEntity> planTemplate = planTemplateList.stream()
-                            .filter(template -> template.getProjectApproach() != null)
-                            .filter(template -> getProjectApproach(template, projectApproach.getId()))
-                            .filter(PlanTemplateEntity::getDefaultTemplate)
-                            .findFirst();
-                    
-                    if (planTemplate.isPresent()) {
-                        milestones.addAll(convertMilestones(planTemplate.get()));
-                    }
-
-                }
 
         }
 
@@ -688,15 +673,13 @@ public class TimelineService {
         final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
         Long operationTypeId = projectApproach.getOperationType().getId();
 
-        final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
-                        .filter(template -> getOperationType(template, operationTypeId))
-                        .collect(Collectors.toList());
+        Optional<PlanTemplateEntity> masterPlanTemplate = planTemplateRepository.findAll().stream()
+                                                            .filter(template -> filterOperationType(template, operationTypeId))
+                                                            .findFirst();
 
-        Optional<PlanTemplateEntity> masterPlanTemplate = planTemplateList.stream().filter(temp -> temp.getProjectApproach() == null).findFirst();
-
-        List<PlanTemplateEntity> projectApproachPlanTemplates = planTemplateList.stream()
+        List<PlanTemplateEntity> projectApproachPlanTemplates = planTemplateRepository.findAll().stream()
                 .filter(template -> template.getProjectApproach() != null)
-                .filter(template -> getProjectApproach(template, projectApproach.getId()))
+                .filter(template -> filterProjectApproach(template, projectApproach.getId()))
                 .collect(Collectors.toList());
 
         for (PlanTemplateEntity temp: projectApproachPlanTemplates) {
@@ -838,7 +821,7 @@ public class TimelineService {
     }
 
     
-    private boolean getOperationType(PlanTemplateEntity template, final Long operationTypeId) {
+    private boolean filterOperationType(PlanTemplateEntity template, final Long operationTypeId) {
         Optional<OperationType> operationType = template.getOperationType().stream()
             .map(p -> conversionService.convert(p, OperationType.class))
             .filter(o -> o.getId().equals(operationTypeId)).findFirst();
@@ -850,7 +833,7 @@ public class TimelineService {
 
     }
 
-    private boolean getProjectApproach(PlanTemplateEntity template, final Long projectApproachId) {
+    private boolean filterProjectApproach(PlanTemplateEntity template, final Long projectApproachId) {
         Optional<ProjectApproach> projectApproach = template.getProjectApproach().stream()
             .map(p -> conversionService.convert(p, ProjectApproach.class))
             .filter(o -> o.getId().equals(projectApproachId)).findFirst();

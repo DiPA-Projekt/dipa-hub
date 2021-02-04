@@ -40,27 +40,27 @@ public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity
         final OperationTypeEntity operationType = projectApproach.getOperationType();
 
         final Long operationTypeId = projectApproach.getOperationType().getId();
-
-        final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
-                                                        // .filter(template -> getProjectApproach(template, projectApproach.getId()))
-                                                        .filter(PlanTemplateEntity::getDefaultTemplate)
-                                                        .collect(Collectors.toList());       
         
-        final List<MilestoneTemplateEntity> maxMilestoneDateList = new ArrayList<>();
+        final Optional<PlanTemplateEntity> masterPLan = planTemplateRepository.findAll().stream()
+                                                        .filter(template -> filterOperationType(template, operationTypeId))
+                                                        .findFirst();
 
-        for (PlanTemplateEntity planTemplate: planTemplateList) {
-                planTemplate.getMilestones().stream()
-                    .max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset)).ifPresent(maxMilestoneDateList::add);
+        final Optional<PlanTemplateEntity> planTemplateProjectApproach = planTemplateRepository.findAll().stream()
+                                                        .filter(template -> filterProjectApproach(template, projectApproach.getId()))
+                                                        .filter(PlanTemplateEntity::getDefaultTemplate)
+                                                        .findFirst();
+        
+        MilestoneTemplateEntity maxMilestoneDate;
+
+        if (masterPLan.isPresent()) {
+            maxMilestoneDate = masterPLan.get().getMilestones().stream().max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset)).get();
         }
+        else {
+            maxMilestoneDate = planTemplateProjectApproach.get().getMilestones().stream().max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset)).get();
+        }      
 
-        final MilestoneTemplateEntity maxMilestoneDate = maxMilestoneDateList
-                .stream()
-                .max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset)).orElse(null);
-
-        int maxMilestoneDateOffset = 0;
-        if (maxMilestoneDate != null) {
-            maxMilestoneDateOffset = maxMilestoneDate.getDateOffset();
-        }
+        int maxMilestoneDateOffset = maxMilestoneDate.getDateOffset();
+        
 
         Timeline timeline = new Timeline().id(project.getId())
                              .name(project.getName())
@@ -78,7 +78,7 @@ public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity
         return timeline;
     }
 
-    private boolean getOperationType(PlanTemplateEntity template, final Long operationTypeId) {
+    private boolean filterOperationType(PlanTemplateEntity template, final Long operationTypeId) {
         Optional<OperationType> operationType = template.getOperationType().stream()
             .map(p -> conversionService.convert(p, OperationType.class))
             .filter(o -> o.getId().equals(operationTypeId)).findFirst();
@@ -90,17 +90,15 @@ public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity
 
     }
     
-    private boolean getProjectApproach(PlanTemplateEntity template, final Long projectApproachId) {
+    private boolean filterProjectApproach(PlanTemplateEntity template, final Long projectApproachId) {
         Optional<ProjectApproach> projectApproach = template.getProjectApproach().stream()
             .map(p -> conversionService.convert(p, ProjectApproach.class))
             .filter(o -> o.getId().equals(projectApproachId)).findFirst();
-        System.out.println(projectApproach);
         
         if (projectApproach.isPresent()) {
             return true;
         }
         return false;
-
     }
 
 }
