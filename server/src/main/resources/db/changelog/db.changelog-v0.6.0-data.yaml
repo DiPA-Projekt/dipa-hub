@@ -1568,3 +1568,219 @@ databaseChangeLog:
               - column:
                   name: external_link_id
                   value: 11
+  - changeSet:
+      id: insert-operation-type-routeraustausch
+      author: nguyen
+      context: ba
+      changes:
+        - insert:
+            tableName: operation_type
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: name
+                  value: Routeraustausch
+              - column:
+                  name: default_type
+                  value: false
+  - changeSet:
+      id: insert-project-approach-routeraustausch-BA-Phasenmodell
+      author: nguyen
+      context: ba
+      changes:
+        - insert:
+            tableName: project_approach
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: name
+                  value: BA Phasenmodell
+              - column:
+                  name: iterative
+                  value: false
+              - column:
+                  name: operation_type_id
+                  value: 4
+  - changeSet:
+      id: insert-project-Routeraustausch-Oranienburg
+      author: nguyen
+      context: ba
+      changes:
+        - insert:
+            tableName: project
+            columns:
+              - column:
+                  name: id
+                  value: 6
+              - column:
+                  name: name
+                  value: Routeraustausch Oranienburg
+              - column:
+                  name: project_approach_id
+                  value: 5
+  - changeSet:
+      id: drop-columns-operation-type-project-approach
+      author: nguyen
+      changes:
+        - dropColumn:
+            columns:
+              - column:
+                  name: operation_type_id
+              - column:
+                  name: project_approach_id
+            tableName: plan_template
+  - changeSet:
+      id: insert-project-approach-plan-template-connection-serveraustausch
+      author: nguyen
+      context: ba
+      changes:
+        - insert:
+            tableName: project_approach_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: project_approach_id
+                  value: 1
+              - column:
+                  name: plan_template_id
+                  value: 1
+  - changeSet:
+      id: insert-operation-type-plan-template-connection-master-plan-swe
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: operation_type_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: operation_type_id
+                  value: 2
+              - column:
+                  name: plan_template_id
+                  value: 2
+  - changeSet:
+      id: insert-project-approach-plan-template-connection-agil-swe
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_approach_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: project_approach_id
+                  value: 2
+              - column:
+                  name: plan_template_id
+                  value: 3
+  - changeSet:
+      id: insert-project-approach-plan-template-connection-agil-iterative
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_approach_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: project_approach_id
+                  value: 3
+              - column:
+                  name: plan_template_id
+                  value: 4
+  - changeSet:
+      id: insert-project-approach-plan-template-connection-linear-nach-UfaB
+      author: nguyen
+      changes:
+        - insert:
+            tableName: project_approach_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: project_approach_id
+                  value: 4
+              - column:
+                  name: plan_template_id
+                  value: 5
+  - changeSet:
+      id: insert-project-approach-plan-template-connection-linear-nach-UfaB-vereinfacht
+      author: nguyen
+      changes:
+        - insert:
+            tableName: project_approach_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: project_approach_id
+                  value: 4
+              - column:
+                  name: plan_template_id
+                  value: 6
+  - changeSet:
+      id: insert-project-approach-plan-template-connection-swe-iterative-non-standard-1
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_approach_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 6
+              - column:
+                  name: project_approach_id
+                  value: 3
+              - column:
+                  name: plan_template_id
+                  value: 7
+  - changeSet:
+      id: insert-project-approach-plan-template-connection-swe-iterative-non-standard-2
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_approach_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 7
+              - column:
+                  name: project_approach_id
+                  value: 3
+              - column:
+                  name: plan_template_id
+                  value: 8
+  - changeSet:
+      id: insert-project-approach-plan-template-connection-routeraustausch
+      author: nguyen
+      context: ba
+      changes:
+        - insert:
+            tableName: project_approach_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 8
+              - column:
+                  name: project_approach_id
+                  value: 5
+              - column:
+                  name: plan_template_id
+                  value: 1

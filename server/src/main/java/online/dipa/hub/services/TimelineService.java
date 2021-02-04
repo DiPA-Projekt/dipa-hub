@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.SessionScope;
 
+import liquibase.hub.model.Project;
+
 import javax.persistence.EntityNotFoundException;
 import java.io.File;
 import java.io.IOException;
@@ -245,7 +247,7 @@ public class TimelineService {
             Long operationTypeId = projectApproach.getOperationType().getId();
 
             final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
-                .filter(template -> template.getOperationTypeEntity().getId().equals(operationTypeId))
+                .filter(template -> getOperationType(template, operationTypeId))
                 .collect(Collectors.toList());
 
                 if (planTemplateList.size() == 1) {
@@ -265,7 +267,7 @@ public class TimelineService {
         
                     Optional<PlanTemplateEntity> planTemplate = planTemplateList.stream()
                             .filter(template -> template.getProjectApproach() != null)
-                            .filter(template -> template.getProjectApproach().getId().equals(projectApproach.getId()))
+                            .filter(template -> getProjectApproach(template, projectApproach.getId()))
                             .filter(PlanTemplateEntity::getDefaultTemplate)
                             .findFirst();
                     
@@ -678,8 +680,8 @@ public class TimelineService {
         Template currentTemplate = new Template()
                                         .id(count++)
                                         .name(CURRENT_TEMPLATE_NAME)
-                                        .milestones(sessionTimeline.getMilestones())
-                                        .increments(sessionTimeline.getIncrements());
+                                        .milestones(getMilestonesForTimeline(timelineId))
+                                        .increments(getIncrementsForTimeline(timelineId));
 
         templates.add(currentTemplate);
 
@@ -687,67 +689,54 @@ public class TimelineService {
         Long operationTypeId = projectApproach.getOperationType().getId();
 
         final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
-                .filter(template -> template.getOperationTypeEntity().getId().equals(operationTypeId))
+                        .filter(template -> getOperationType(template, operationTypeId))
+                        .collect(Collectors.toList());
+
+        Optional<PlanTemplateEntity> masterPlanTemplate = planTemplateList.stream().filter(temp -> temp.getProjectApproach() == null).findFirst();
+
+        List<PlanTemplateEntity> projectApproachPlanTemplates = planTemplateList.stream()
+                .filter(template -> template.getProjectApproach() != null)
+                .filter(template -> getProjectApproach(template, projectApproach.getId()))
                 .collect(Collectors.toList());
 
-        if (planTemplateList.size() == 1) {
-            List<Milestone>  milestones = convertMilestones(planTemplateList.get(0));
+        for (PlanTemplateEntity temp: projectApproachPlanTemplates) {
+            List<Milestone> milestones = new ArrayList<>();
 
-            Template respoTemplate = new Template().id(count)
-                                                    .name(planTemplateList.get(0).getName())
-                                                    .standard(planTemplateList.get(0).getStandard())
-                                                    .milestones(this.updateMilestonesTemplate(timelineId, milestones));
+            if (masterPlanTemplate.isPresent()) {
+                milestones.addAll(convertMilestones(masterPlanTemplate.get()));
+            }
 
-            templates.add(respoTemplate);
-        }
-        else {
-            long masterPlanId = 2;
-            Optional<PlanTemplateEntity> masterPlanTemplate = planTemplateList.stream()
-                            .filter(template -> template.getId().equals(masterPlanId)).findFirst();
+            Template template = new Template()
+                                .id(count++)
+                                .name(temp.getName())
+                                .standard(temp.getStandard());
 
-            List<PlanTemplateEntity> planTemplates = planTemplateList.stream()
-                    .filter(template -> template.getProjectApproach() != null)
-                    .filter(template -> template.getProjectApproach().getId().equals(projectApproach.getId()))
-                    .collect(Collectors.toList());
+            if (projectApproach.isIterative()) {
 
-            for (PlanTemplateEntity temp: planTemplates) {
-                List<Milestone> milestones = new ArrayList<>();
+                milestones = updateMilestonesTemplate(timelineId, milestones);
+                List<Milestone> tempMilestones = new ArrayList<>(convertMilestones(temp));
 
-                if (masterPlanTemplate.isPresent()) {
-                    milestones.addAll(convertMilestones(masterPlanTemplate.get()));
+                this.getValuesFromHashMap(getIncrementMilestones(tempMilestones,timelineId, 1), milestones);
+
+                template.milestones(sortMilestones(milestones));
+                
+                if (temp.getStandard()) {
+                    template.increments(loadIncrementsTemplate((long) 1, 1, milestones, null));
                 }
-
-                Template template = new Template()
-                                    .id(count++)
-                                    .name(temp.getName())
-                                    .standard(temp.getStandard());
-
-                if (projectApproach.isIterative()) {
-
-                    milestones = updateMilestonesTemplate(timelineId, milestones);
-                    List<Milestone> tempMilestones = new ArrayList<>(convertMilestones(temp));
-
-                    this.getValuesFromHashMap(getIncrementMilestones(tempMilestones,timelineId, 1), milestones);
-
-                    template.milestones(sortMilestones(milestones));
-                    
-                    if (temp.getStandard()) {
-                        template.increments(loadIncrementsTemplate((long) 1, 1, milestones, null));
-                    }
-
-                }
-                else {
-                    milestones.addAll(convertMilestones(temp));
-                    template.milestones(updateMilestonesTemplate(timelineId, milestones));
-                }
-
-                templates.add(template);
 
             }
+            else {
+                milestones.addAll(convertMilestones(temp));
+                template.milestones(updateMilestonesTemplate(timelineId, milestones));
+            }
+
+            templates.add(template);
+
         }
 
         this.sessionTemplates.put(timelineId, templates);
         return templates;
+      
     }
 
     public List<Milestone> updateMilestonesTemplate(final Long timelineId, List<Milestone> milestones) {
@@ -846,6 +835,31 @@ public class TimelineService {
         for (List<Milestone> value : hashMap.values()) {
             list.addAll(value);
         }
+    }
+
+    
+    private boolean getOperationType(PlanTemplateEntity template, final Long operationTypeId) {
+        Optional<OperationType> operationType = template.getOperationType().stream()
+            .map(p -> conversionService.convert(p, OperationType.class))
+            .filter(o -> o.getId().equals(operationTypeId)).findFirst();
+        
+        if (operationType.isPresent()) {
+            return true;
+        }
+        return false;
+
+    }
+
+    private boolean getProjectApproach(PlanTemplateEntity template, final Long projectApproachId) {
+        Optional<ProjectApproach> projectApproach = template.getProjectApproach().stream()
+            .map(p -> conversionService.convert(p, ProjectApproach.class))
+            .filter(o -> o.getId().equals(projectApproachId)).findFirst();
+        
+        if (projectApproach.isPresent()) {
+            return true;
+        }
+        return false;
+
     }
 
 }

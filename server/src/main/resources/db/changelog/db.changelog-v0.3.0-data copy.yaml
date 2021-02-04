@@ -162,9 +162,6 @@ databaseChangeLog:
               - column:
                   name: name
                   value: Serveraustausch PlanTemplate
-              - column:
-                  name: project_type_id
-                  value: 1
   - changeSet:
       id: insert-master-plan-template-softwareneuentwicklung
       author: nguyen
@@ -180,8 +177,8 @@ databaseChangeLog:
                   name: name
                   value: VMXT ITZBund master PlanTemplate
               - column:
-                  name: project_type_id
-                  value: 2
+                  name: master_plan
+                  value: true
   - changeSet:
       id: insert-plan-template-softwareneuentwicklung-agil
       author: nguyen
@@ -196,12 +193,6 @@ databaseChangeLog:
               - column:
                   name: name
                   value: VMXT ITZBund agil PlanTemplate
-              - column:
-                  name: project_type_id
-                  value: 2
-              - column:
-                  name: project_approach_id
-                  value: 2
   - changeSet:
       id: insert-plan-template-softwareneuentwicklung-iterative
       author: nguyen
@@ -216,12 +207,6 @@ databaseChangeLog:
               - column:
                   name: name
                   value: VMXT ITZBund inkrementell PlanTemplate
-              - column:
-                  name: project_type_id
-                  value: 2
-              - column:
-                  name: project_approach_id
-                  value: 3
   - changeSet:
       id: insert-plan-template-beschaffung
       author: nguyen
@@ -235,9 +220,91 @@ databaseChangeLog:
               - column:
                   name: name
                   value: Beschaffung PlanTemplate
+  - changeSet:
+      id: insert-project-approach-plan-template-connection-serveraustausch
+      author: nguyen
+      context: ba
+      changes:
+        - insert:
+            tableName: project_approach_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: project_approach_id
+                  value: 1
+              - column:
+                  name: plan_template_id
+                  value: 1
+  - changeSet:
+      id: insert-project-type-plan-template-connection-master-plan-swe
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_type_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 1
               - column:
                   name: project_type_id
+                  value: 2
+              - column:
+                  name: plan_template_id
+                  value: 2
+  - changeSet:
+      id: insert-project-approach-plan-template-connection-agil-swe
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_approach_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: project_approach_id
+                  value: 2
+              - column:
+                  name: plan_template_id
                   value: 3
+  - changeSet:
+      id: insert-project-approach-plan-template-connection-agil-iterative
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_approach_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: project_approach_id
+                  value: 3
+              - column:
+                  name: plan_template_id
+                  value: 4
+  - changeSet:
+      id: insert-project-approach-plan-template-connection-beschaffung
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_approach_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: project_approach_id
+                  value: 4
+              - column:
+                  name: plan_template_id
+                  value: 5
   - changeSet:
       id: createUniqueConstraint-planTemplate-id
       author: nguyen

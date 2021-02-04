@@ -1,9 +1,12 @@
 package online.dipa.hub.convert;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import online.dipa.hub.api.model.OperationType;
+import online.dipa.hub.api.model.ProjectApproach;
 import online.dipa.hub.api.model.Timeline;
 import online.dipa.hub.api.model.Timeline.ProjectTypeEnum;
 import online.dipa.hub.persistence.entities.MilestoneTemplateEntity;
@@ -17,13 +20,17 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class ProjectToTimelineConverter implements Converter<ProjectEntity, Timeline> {
+public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity, Timeline> {
 
     @Autowired
     private PlanTemplateRepository planTemplateRepository;
+    
+    @Autowired
+    private ConversionService conversionService;
 
     @Override
     public Timeline convert(final ProjectEntity project) {
@@ -35,7 +42,7 @@ public class ProjectToTimelineConverter implements Converter<ProjectEntity, Time
         final Long operationTypeId = projectApproach.getOperationType().getId();
 
         final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
-                                                        .filter(template -> template.getOperationTypeEntity().getId().equals(operationTypeId))
+                                                        // .filter(template -> getProjectApproach(template, projectApproach.getId()))
                                                         .filter(PlanTemplateEntity::getDefaultTemplate)
                                                         .collect(Collectors.toList());       
         
@@ -70,4 +77,30 @@ public class ProjectToTimelineConverter implements Converter<ProjectEntity, Time
         
         return timeline;
     }
+
+    private boolean getOperationType(PlanTemplateEntity template, final Long operationTypeId) {
+        Optional<OperationType> operationType = template.getOperationType().stream()
+            .map(p -> conversionService.convert(p, OperationType.class))
+            .filter(o -> o.getId().equals(operationTypeId)).findFirst();
+        
+        if (operationType.isPresent()) {
+            return true;
+        }
+        return false;
+
+    }
+    
+    private boolean getProjectApproach(PlanTemplateEntity template, final Long projectApproachId) {
+        Optional<ProjectApproach> projectApproach = template.getProjectApproach().stream()
+            .map(p -> conversionService.convert(p, ProjectApproach.class))
+            .filter(o -> o.getId().equals(projectApproachId)).findFirst();
+        System.out.println(projectApproach);
+        
+        if (projectApproach.isPresent()) {
+            return true;
+        }
+        return false;
+
+    }
+
 }

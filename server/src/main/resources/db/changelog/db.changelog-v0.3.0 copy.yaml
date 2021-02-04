@@ -1,114 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: create-project-flow-step-table
-      author: bock
-      changes:
-        - createTable:
-            columns:
-              - column:
-                  autoIncrement: true
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                    primaryKeyName: projectFlowStepPK
-                  name: id
-                  type: BIGINT
-              - column:
-                  name: name
-                  type: VARCHAR(255)
-              - column:
-                  name: sort_order
-                  type: INTEGER
-            tableName: project_flow_step
-  - changeSet:
-      id: create-project-flow-step-action-table
-      author: bock
-      changes:
-        - createTable:
-            columns:
-              - column:
-                  autoIncrement: true
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                    primaryKeyName: projectFlowStepActionPK
-                  name: id
-                  type: BIGINT
-              - column:
-                  constraints:
-                    nullable: false
-                  name: project_flow_step_id
-                  type: BIGINT
-              - column:
-                  name: explanation
-                  type: VARCHAR(1000)
-            tableName: project_flow_step_action
-  - changeSet:
-      id: create-project-flow-step-action-link-table
-      author: bock
-      changes:
-        - createTable:
-            columns:
-              - column:
-                  autoIncrement: true
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                    primaryKeyName: projectFlowStepActionLinkPK
-                  name: id
-                  type: BIGINT
-              - column:
-                  constraints:
-                    nullable: false
-                  name: project_flow_step_action_id
-                  type: BIGINT
-              - column:
-                  constraints:
-                    nullable: false
-                  name: external_link_id
-                  type: BIGINT
-            tableName: project_flow_step_action_link
-  - changeSet:
-      id: createForeignKeyConstraint-projectFlowStepActionLink
-      author: bock
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: external_link_id
-            baseTableName: project_flow_step_action_link
-            constraintName: FKactionLinks
-            deferrable: false
-            initiallyDeferred: false
-            referencedColumnNames: id
-            referencedTableName: external_link
-            validate: true
-  - changeSet:
-      id: createForeignKeyConstraint-projectFlowStepActionId
-      author: bock
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: project_flow_step_action_id
-            baseTableName: project_flow_step_action_link
-            constraintName: FKactionId
-            deferrable: false
-            initiallyDeferred: false
-            referencedColumnNames: id
-            referencedTableName: project_flow_step_action
-            validate: true
-  - changeSet:
-      id: createForeignKeyConstraint-projectFlowStepId
-      author: bock
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: project_flow_step_id
-            baseTableName: project_flow_step_action
-            constraintName: FKstepId
-            deferrable: false
-            initiallyDeferred: false
-            referencedColumnNames: id
-            referencedTableName: project_flow_step
-            validate: true
-  - changeSet:
-      id: create-operation-type-planTemplate-connection
+      id: create-projectApproach-table
       author: nguyen
       changes:
         - createTable:
@@ -118,20 +10,84 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: operationTypePlanTemplateConnection
+                    primaryKeyName: project_approachPK
                   name: id
                   type: BIGINT
               - column:
                   constraints:
                     nullable: false
-                  name: operation_type_id
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: iterative
+                  type: BOOLEAN
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_type_id
+                  type: BIGINT
+            tableName: project_approach
+  - changeSet:
+      id: create-planTemplate-table
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: plan_templatePK
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+              - masterPlan:
+                  name: master_plan
+                  type: boolean
+                  defaultValue: false
+              # - column:
+              #     constraints:
+              #       nullable: false
+              #     name: project_type_id
+              #     type: BIGINT
+              # - column:
+              #     constraints:
+              #       nullable: true
+              #     name: project_approach_id
+              #     type: BIGINT
+            tableName: plan_template
+  - changeSet:
+      id: create-project-type-planTemplate-connection
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: projectTypePlanTemplateConnection
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_type_id
                   type: BIGINT
               - column:
                   constraints:
                     nullable: false
                   name: plan_template_id
                   type: BIGINT
-            tableName: operation_type_plan_template_connection
+            tableName: project_type_plan_template_connection
   - changeSet:
       id: create-project-approach-planTemplate-connection
       author: nguyen
@@ -182,4 +138,17 @@ databaseChangeLog:
             initiallyDeferred: false
             referencedColumnNames: id
             referencedTableName: plan_template
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-projectType
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_type_id
+            baseTableName: project_approach
+            constraintName: FKprojectTypeId
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_type
             validate: true

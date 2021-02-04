@@ -68,7 +68,6 @@ databaseChangeLog:
                   name: plan_template_id
                   valueComputed: 5
             where: id>40 AND id<57
-
   - changeSet:
       id: insert-project-approach-servertausch
       author: nguyen
