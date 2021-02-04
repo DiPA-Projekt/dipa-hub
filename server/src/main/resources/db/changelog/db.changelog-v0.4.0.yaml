@@ -9,7 +9,7 @@ databaseChangeLog:
               - column:
                   name: status
                   type: VARCHAR(255)
-                  defaultValue: offen
+                  defaultValue: OPEN
   - changeSet:
       id: create-project-table
       author: nguyen

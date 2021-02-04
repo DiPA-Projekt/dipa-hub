@@ -516,6 +516,42 @@ databaseChangeLog:
                   name: sort_order
                   value: 18
   - changeSet:
+      id: update-project-projectSize-Feldberg
+      context: itzbund
+      author: nguyen
+      changes:
+        - update:
+            tableName: project
+            columns:
+              - column:
+                  name: project_size
+                  value: SMALL
+              - column:
+                  name: akz
+                  value: "01234"
+              - column:
+                  name: client
+                  value: "BMF"
+              - column:
+                  name: department
+                  value: "II A 1"
+              - column:
+                  name: project_owner
+                  value: "Herr Mustermann"
+            where: id=3
+  - changeSet:
+      id: update-project-projectSize-Zugspitze
+      context: itzbund
+      author: nguyen
+      changes:
+        - update:
+            tableName: project
+            columns:
+              - column:
+                  name: project_size
+                  value: MIDDLE
+            where: id=4
+  - changeSet:
       id: insert-external-link-kommunikation-ohne-sina
       author: bock
       context: itzbund

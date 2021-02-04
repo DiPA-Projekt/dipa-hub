@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class ProjectToTimelineConverter implements Converter<ProjectEntity, Timeline> {
+public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity, Timeline> {
 
     @Autowired
     private PlanTemplateRepository planTemplateRepository;
