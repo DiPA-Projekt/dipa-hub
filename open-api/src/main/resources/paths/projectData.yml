@@ -1,0 +1,21 @@
+get:
+  tags:
+    - project
+  summary: Project's information
+  description: Retrieves the project's information
+  operationId: getProjectData
+  parameters:
+    - in: path
+      name: timelineId
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: Numeric ID of the timeline to get.
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "../models/project.yml#/Project"

@@ -10,19 +10,31 @@ Project:
       description: The name of the project
       type: string
       example: "Feldberg"
-    projectApproachId:
-      description: Unique identifier of the linked project approach
-      type: integer
-      format: int64
-      example: 3
-    projectType:
-      description: project type of this project
+    projectSize:
+      description: size of this project
       type: string
       enum:
-        - "internes Projekt"
-        - "AN-Projekt"
+        - SMALL
+        - MIDDLE
+        - BIG
       default: null
-      example: "internes Projekt"
+      example: SMALL
+    akz:
+      description: AKZ
+      type: string
+      example: "01234"
+    client:
+      description: client
+      type: string
+      example: "BMF"
+    department:
+      description: responsible department for this project
+      type: string
+      example: "II A 1"
+    projectOwner:
+      description: project owner's name
+      type: string
+      example: "Max Mustermann"
   required:
     - id
     - name

@@ -24,8 +24,12 @@ paths:
     $ref: "paths/projectApproaches.yml"
   /timelines/{timelineId}:
     $ref: "paths/timeline-ops.yml"
+  /timelines/{timelineId}/update:
+    $ref: "paths/updateTimeline.yml"
   /timelines/{timelineId}/project:
-    $ref: "paths/updateProject.yml"
+    $ref: "paths/projectData.yml"
+  /timelines/{timelineId}/project/update:
+    $ref: "paths/updateProjectData.yml"
   /timelines/{timelineId}/templates:
     $ref: "paths/templates.yml"
   /timelines/{timelineId}/templates/{templateId}:

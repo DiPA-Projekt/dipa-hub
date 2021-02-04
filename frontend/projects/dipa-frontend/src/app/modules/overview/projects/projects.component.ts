@@ -103,7 +103,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     const selectedTimeline = this.timelineData.find((item) => item.id === timelineId);
     selectedTimeline.projectApproachId = event.value;
 
-    this.timelinesService.updateProject(selectedTimeline.id, selectedTimeline).subscribe((d) => {
+    this.timelinesService.updateTimeline(selectedTimeline.id, selectedTimeline).subscribe((d) => {
       this.loadTimelines();
     });
   }

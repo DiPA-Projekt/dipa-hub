@@ -21,11 +21,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
+import online.dipa.hub.services.ProjectService;
+
 @RestApiController
 public class TimelineController implements TimelinesApi {
 
     @Autowired
     private TimelineService timelineService;
+    
+    @Autowired
+    private ProjectService projectService;
 
     @Override
     public ResponseEntity<List<Timeline>> getTimelines() {
@@ -95,9 +100,9 @@ public class TimelineController implements TimelinesApi {
     }
 
     @Override
-    public ResponseEntity<Void> updateProject(final Long timelineId, Timeline timeline) {
+    public ResponseEntity<Void> updateTimeline(final Long timelineId, Timeline timeline) {
 
-        timelineService.updateProject(timeline);
+        timelineService.updateTimeline(timeline);
         return ResponseEntity.noContent().build();
     }
 
@@ -143,6 +148,18 @@ public class TimelineController implements TimelinesApi {
     public ResponseEntity<List<DownloadFile>> getFilesForMilestone(final Long timelineId, final Long milestoneId) {
         final List<DownloadFile> attachedFilesList = timelineService.getFilesForMilestone(timelineId, milestoneId);
         return ResponseEntity.ok(attachedFilesList);
+    }
+
+    @Override
+    public ResponseEntity<Project> getProjectData(final Long timelineId) {
+        final Project project = projectService.getProjectData(timelineId);
+        return ResponseEntity.ok(project);
+    }
+    
+    @Override
+    public ResponseEntity<Void> updateProjectData(final Long timelineId, Project project) {
+        projectService.updateProjectData(timelineId, project);
+        return ResponseEntity.noContent().build();
     }
 
 

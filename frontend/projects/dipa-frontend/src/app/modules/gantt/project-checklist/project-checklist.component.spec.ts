@@ -10,6 +10,12 @@ import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/mat
 import { NavService } from '../../../nav.service';
 import { MatIcon } from '@angular/material/icon';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatSelectModule, MatSelectTrigger } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
 
 describe('ProjectChecklistComponent', () => {
   let component: ProjectChecklistComponent;
@@ -26,10 +32,33 @@ describe('ProjectChecklistComponent', () => {
         MatSidenavContainer,
         MatSidenav,
         MatIcon,
+        MatLabel,
+        MatFormField,
+        MatLabel,
+        MatSelectTrigger,
         NavMenuListItemComponent,
       ],
-      imports: [HttpClientTestingModule, RouterTestingModule, BrowserAnimationsModule],
-      providers: [NavService],
+      imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
+        BrowserAnimationsModule,
+        ReactiveFormsModule,
+        MatSelectModule,
+        MatInputModule,
+      ],
+      providers: [
+        NavService,
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: {
+              params: of({
+                id: '1',
+              }),
+            },
+          },
+        },
+      ],
     }).compileComponents();
   });
 
