@@ -1,7 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavItem } from '../../../nav-item';
 import { ExternalLinksUserService, Timeline, TimelinesService } from 'dipa-api-client';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-sidenav',
@@ -15,9 +17,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   selectedTimelineId: number;
 
-  activatedRouteSubscription;
-  favoriteLinksSubscription;
-  timelinesSubscription;
+  favoriteLinksSubscription: Subscription;
+  timelinesSubscription: Subscription;
 
   navMenuItems: NavItem[] = [];
   favoriteLinkItems: NavItem[] = [];
@@ -29,19 +30,23 @@ export class SidenavComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.activatedRouteSubscription = this.activatedRoute.params.subscribe((param) => {
-      this.selectedTimelineId = Number(param.id);
-      this.timelinesSubscription = this.timelinesService.getTimelines().subscribe((data) => {
+    this.timelinesSubscription = this.activatedRoute.params
+      .pipe(
+        switchMap(
+          (params: Params): Observable<Timeline[]> => {
+            this.selectedTimelineId = parseInt(params.id, 10);
+            return this.timelinesService.getTimelines();
+          }
+        )
+      )
+      .subscribe((data: Timeline[]) => {
         this.timelineData = data;
-
-        this.timeline = this.timelineData.find((c) => c.id === this.selectedTimelineId);
+        this.timeline = this.timelineData.find((c) => c.id === Number(this.selectedTimelineId));
         this.setSideNavMenu();
       });
-    });
   }
 
   ngOnDestroy(): void {
-    this.activatedRouteSubscription?.unsubscribe();
     this.favoriteLinksSubscription?.unsubscribe();
     this.timelinesSubscription?.unsubscribe();
   }
