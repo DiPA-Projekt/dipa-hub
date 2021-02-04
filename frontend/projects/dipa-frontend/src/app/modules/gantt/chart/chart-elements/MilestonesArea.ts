@@ -1,8 +1,7 @@
 import * as d3 from 'd3';
 import { parseSvg } from 'd3-interpolate/src/transform/parse';
-import { Timeline } from 'dipa-api-client';
+import { Timeline, Milestone } from 'dipa-api-client';
 
-import { Milestone } from '../../../../../../../dipa-api-client/src';
 import { IChartElement } from './IChartElement';
 
 import ProjectTypeEnum = Timeline.ProjectTypeEnum;

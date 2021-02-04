@@ -1,22 +1,18 @@
 package online.dipa.hub.services;
 
-import online.dipa.hub.api.model.*;
 import online.dipa.hub.ProjectState;
-
-import online.dipa.hub.persistence.repositories.*;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.persistence.EntityNotFoundException;
-
+import online.dipa.hub.api.model.Project;
+import online.dipa.hub.persistence.repositories.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.SessionScope;
-import java.util.Objects;
 
+import javax.persistence.EntityNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 
 @Service

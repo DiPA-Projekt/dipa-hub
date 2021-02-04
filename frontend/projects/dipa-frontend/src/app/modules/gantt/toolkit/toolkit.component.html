@@ -1,1 +1,75 @@
-<p>toolkit works!</p>
+<div id="toolkit">
+  <div class="content-container" style="padding-right: 15px">
+    <form [formGroup]="myForm" (ngSubmit)="onSubmit(myForm)" novalidate>
+      <div class="row">
+        <div class="col-md-6 col-lg-4 col-xl-2">
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>AKZ</mat-label>
+            <input matInput maxlength="255" placeholder="AKZ eingeben" formControlName="akz" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-4 col-xl-2">
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Projektname</mat-label>
+            <input
+              matInput
+              maxlength="255"
+              placeholder="Namen eingeben"
+              value="{{ projectData?.name }}"
+              formControlName="name"
+            />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-4 col-xl-2">
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Projektgröße</mat-label>
+            <mat-select #projectSizeSelect value="{{ projectData?.projectSize }}" formControlName="projectSize">
+              <mat-select-trigger>{{ displayProjectSize(projectSizeSelect.value) }}</mat-select-trigger>
+              <mat-option *ngFor="let size of sizes" [value]="size.value" class="multi-line-option">
+                <h4 mat-line>{{ size.display }}</h4>
+                <p mat-line>{{ size.description }}</p>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-4 col-xl-2">
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Auftraggeber</mat-label>
+            <input
+              matInput
+              maxlength="255"
+              placeholder="Auftraggeber eingeben"
+              value="{{ projectData?.client }}"
+              formControlName="client"
+            />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-4 col-xl-2">
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Referat</mat-label>
+            <input
+              matInput
+              maxlength="255"
+              placeholder="Referat eingeben"
+              value="{{ projectData?.department }}"
+              formControlName="department"
+            />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-4 col-xl-2">
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Projekteigner/-in</mat-label>
+            <input
+              matInput
+              maxlength="255"
+              placeholder="Projekteigner/-in eingeben"
+              value="{{ projectData?.projectOwner }}"
+              formControlName="projectOwner"
+            />
+          </mat-form-field>
+        </div>
+      </div>
+      <button [disabled]="!myForm.dirty" mat-raised-button type="submit" color="primary">Speichern</button>
+    </form>
+  </div>
+</div>

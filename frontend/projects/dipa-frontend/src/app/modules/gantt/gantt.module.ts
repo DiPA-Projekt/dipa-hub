@@ -13,7 +13,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { AngularResizedEventModule } from 'angular-resize-event';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { SharedModule } from '../../shared/shared.module';
 import { MatMenuModule } from '@angular/material/menu';
@@ -63,6 +63,7 @@ import { TimelineComponent } from './timeline/timeline.component';
     SharedModule,
     MatSidenavModule,
     MatListModule,
+    ReactiveFormsModule,
   ],
 })
 export class GanttModule {}
