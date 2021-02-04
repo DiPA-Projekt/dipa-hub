@@ -17,11 +17,8 @@ import online.dipa.hub.persistence.entities.OperationTypeEntity;
 import online.dipa.hub.persistence.repositories.PlanTemplateRepository;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity, Timeline> {
@@ -50,14 +47,22 @@ public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity
                                                         .filter(PlanTemplateEntity::getDefaultTemplate)
                                                         .findFirst();
         
-        MilestoneTemplateEntity maxMilestoneDate;
+        MilestoneTemplateEntity maxMilestoneDate = new MilestoneTemplateEntity();
 
         if (masterPLan.isPresent()) {
-            maxMilestoneDate = masterPLan.get().getMilestones().stream().max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset)).get();
+            Optional<MilestoneTemplateEntity> milestone = masterPLan.get().getMilestones().stream().max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset));
+            
+            if (milestone.isPresent()) {
+                maxMilestoneDate = milestone.get();
+            };
         }
-        else {
-            maxMilestoneDate = planTemplateProjectApproach.get().getMilestones().stream().max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset)).get();
-        }      
+        else if (planTemplateProjectApproach.isPresent()) {
+            Optional<MilestoneTemplateEntity> milestone = planTemplateProjectApproach.get().getMilestones().stream().max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset));
+            
+            if (milestone.isPresent()) {
+                maxMilestoneDate = milestone.get();
+            };
+        }
 
         int maxMilestoneDateOffset = maxMilestoneDate.getDateOffset();
         
@@ -83,11 +88,7 @@ public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity
             .map(p -> conversionService.convert(p, OperationType.class))
             .filter(o -> o.getId().equals(operationTypeId)).findFirst();
         
-        if (operationType.isPresent()) {
-            return true;
-        }
-        return false;
-
+        return operationType.isPresent();
     }
     
     private boolean filterProjectApproach(PlanTemplateEntity template, final Long projectApproachId) {
@@ -95,10 +96,7 @@ public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity
             .map(p -> conversionService.convert(p, ProjectApproach.class))
             .filter(o -> o.getId().equals(projectApproachId)).findFirst();
         
-        if (projectApproach.isPresent()) {
-            return true;
-        }
-        return false;
+        return projectApproach.isPresent();
     }
 
 }

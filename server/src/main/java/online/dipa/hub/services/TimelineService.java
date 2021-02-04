@@ -826,10 +826,7 @@ public class TimelineService {
             .map(p -> conversionService.convert(p, OperationType.class))
             .filter(o -> o.getId().equals(operationTypeId)).findFirst();
         
-        if (operationType.isPresent()) {
-            return true;
-        }
-        return false;
+        return operationType.isPresent();
 
     }
 
@@ -838,10 +835,7 @@ public class TimelineService {
             .map(p -> conversionService.convert(p, ProjectApproach.class))
             .filter(o -> o.getId().equals(projectApproachId)).findFirst();
         
-        if (projectApproach.isPresent()) {
-            return true;
-        }
-        return false;
+        return projectApproach.isPresent();
 
     }
 
