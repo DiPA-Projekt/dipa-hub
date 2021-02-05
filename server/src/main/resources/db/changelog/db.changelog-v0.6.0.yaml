@@ -236,3 +236,14 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: plan_template
             validate: true
+  - changeSet:
+      id: drop-columns-operation-type-project-approach
+      author: nguyen
+      changes:
+        - dropColumn:
+            columns:
+              - column:
+                  name: operation_type_id
+              - column:
+                  name: project_approach_id
+            tableName: plan_template

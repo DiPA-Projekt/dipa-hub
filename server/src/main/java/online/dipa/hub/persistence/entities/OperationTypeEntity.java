@@ -27,7 +27,7 @@ public class OperationTypeEntity extends BaseEntity {
     @Basic(optional = false)
     private boolean defaultType;
 
-    @ManyToMany(mappedBy = "operationType", cascade = { ALL })
+    @ManyToMany(mappedBy = "operationTypes", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<PlanTemplateEntity> planTemplate = new HashSet<>();
 

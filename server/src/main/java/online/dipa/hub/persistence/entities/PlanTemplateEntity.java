@@ -38,7 +38,7 @@ public class PlanTemplateEntity extends BaseEntity {
             joinColumns = { @JoinColumn(name = "plan_template_id") },
             inverseJoinColumns = { @JoinColumn(name = "project_approach_id") }
     )
-    private Set<ProjectApproachEntity> projectApproach;
+    private Set<ProjectApproachEntity> projectApproaches;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -46,7 +46,7 @@ public class PlanTemplateEntity extends BaseEntity {
             joinColumns = { @JoinColumn(name = "plan_template_id") },
             inverseJoinColumns = { @JoinColumn(name = "operation_type_id") }
     )
-    private Set<OperationTypeEntity> operationType;
+    private Set<OperationTypeEntity> operationTypes;
 
     @Basic(optional = false)
     private boolean standard;
@@ -78,20 +78,20 @@ public class PlanTemplateEntity extends BaseEntity {
         this.tasks = tasks;
     }
 
-    public Set<OperationTypeEntity> getOperationType() {
-        return operationType;
+    public Set<OperationTypeEntity> getOperationTypes() {
+        return operationTypes;
     }
 
-    public void setOperationType(final Set<OperationTypeEntity> operationType) {
-        this.operationType = operationType;
+    public void setOperationTypes(final Set<OperationTypeEntity> operationTypes) {
+        this.operationTypes = operationTypes;
     }
 
-    public Set<ProjectApproachEntity> getProjectApproach() {
-        return projectApproach;
+    public Set<ProjectApproachEntity> getProjectApproaches() {
+        return projectApproaches;
     }
 
-    public void setProjectApproach(final Set<ProjectApproachEntity> projectApproach) {
-        this.projectApproach = projectApproach;
+    public void setProjectApproaches(final Set<ProjectApproachEntity> projectApproaches) {
+        this.projectApproaches = projectApproaches;
     }
 
     public boolean getStandard() {

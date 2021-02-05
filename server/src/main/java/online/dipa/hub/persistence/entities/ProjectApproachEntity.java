@@ -27,7 +27,7 @@ public class ProjectApproachEntity extends BaseEntity {
     @Basic(optional = false)
     private boolean iterative;
 
-    @ManyToMany(mappedBy = "projectApproach", cascade = { ALL })
+    @ManyToMany(mappedBy = "projectApproaches", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<PlanTemplateEntity> planTemplate = new HashSet<>();
 

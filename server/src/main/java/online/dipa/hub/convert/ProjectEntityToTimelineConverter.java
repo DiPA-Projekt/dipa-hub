@@ -54,14 +54,14 @@ public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity
             
             if (milestone.isPresent()) {
                 maxMilestoneDate = milestone.get();
-            };
+            }
         }
         else if (planTemplateProjectApproach.isPresent()) {
             Optional<MilestoneTemplateEntity> milestone = planTemplateProjectApproach.get().getMilestones().stream().max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset));
             
             if (milestone.isPresent()) {
                 maxMilestoneDate = milestone.get();
-            };
+            }
         }
 
         int maxMilestoneDateOffset = maxMilestoneDate.getDateOffset();
@@ -84,7 +84,7 @@ public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity
     }
 
     private boolean filterOperationType(PlanTemplateEntity template, final Long operationTypeId) {
-        Optional<OperationType> operationType = template.getOperationType().stream()
+        Optional<OperationType> operationType = template.getOperationTypes().stream()
             .map(p -> conversionService.convert(p, OperationType.class))
             .filter(o -> o.getId().equals(operationTypeId)).findFirst();
         
@@ -92,7 +92,7 @@ public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity
     }
     
     private boolean filterProjectApproach(PlanTemplateEntity template, final Long projectApproachId) {
-        Optional<ProjectApproach> projectApproach = template.getProjectApproach().stream()
+        Optional<ProjectApproach> projectApproach = template.getProjectApproaches().stream()
             .map(p -> conversionService.convert(p, ProjectApproach.class))
             .filter(o -> o.getId().equals(projectApproachId)).findFirst();
         

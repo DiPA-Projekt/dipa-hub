@@ -247,12 +247,11 @@ public class TimelineService {
             Optional<PlanTemplateEntity> masterPlanTemplate = planTemplateRepository.findAll().stream()
                 .filter(template -> filterOperationType(template, operationTypeId)).findFirst();
 
-            if (masterPlanTemplate.isPresent()) {
-                milestones.addAll(convertMilestones(masterPlanTemplate.get()));
-            }
+            masterPlanTemplate.ifPresent(planTemplate -> milestones.addAll(convertMilestones(planTemplate)));
+            
 
             Optional<PlanTemplateEntity> planTemplate = planTemplateRepository.findAll().stream()
-                    .filter(template -> template.getProjectApproach() != null)
+                    .filter(template -> template.getProjectApproaches() != null)
                     .filter(template -> filterProjectApproach(template, projectApproach.getId()))
                     .filter(PlanTemplateEntity::getDefaultTemplate)
                     .findFirst();
@@ -678,7 +677,7 @@ public class TimelineService {
                                                             .findFirst();
 
         List<PlanTemplateEntity> projectApproachPlanTemplates = planTemplateRepository.findAll().stream()
-                .filter(template -> template.getProjectApproach() != null)
+                .filter(template -> template.getProjectApproaches() != null)
                 .filter(template -> filterProjectApproach(template, projectApproach.getId()))
                 .collect(Collectors.toList());
 
@@ -822,7 +821,7 @@ public class TimelineService {
 
     
     private boolean filterOperationType(PlanTemplateEntity template, final Long operationTypeId) {
-        Optional<OperationType> operationType = template.getOperationType().stream()
+        Optional<OperationType> operationType = template.getOperationTypes().stream()
             .map(p -> conversionService.convert(p, OperationType.class))
             .filter(o -> o.getId().equals(operationTypeId)).findFirst();
         
@@ -831,7 +830,7 @@ public class TimelineService {
     }
 
     private boolean filterProjectApproach(PlanTemplateEntity template, final Long projectApproachId) {
-        Optional<ProjectApproach> projectApproach = template.getProjectApproach().stream()
+        Optional<ProjectApproach> projectApproach = template.getProjectApproaches().stream()
             .map(p -> conversionService.convert(p, ProjectApproach.class))
             .filter(o -> o.getId().equals(projectApproachId)).findFirst();
         
