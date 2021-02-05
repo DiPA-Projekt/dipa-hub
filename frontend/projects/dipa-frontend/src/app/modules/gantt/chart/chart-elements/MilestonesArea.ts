@@ -270,7 +270,7 @@ export class MilestonesArea implements IChartElement {
   }
 
   wrapLabel(svgText, maxWidth): void {
-    svgText.each(function(): void {
+    svgText.each(function (): void {
       const text = d3.select(this);
       const words = text.text().split(/\s+/);
 
