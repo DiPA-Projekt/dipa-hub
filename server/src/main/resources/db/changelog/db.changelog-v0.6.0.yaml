@@ -134,3 +134,133 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: project_flow_step
             validate: true
+  - changeSet:
+      id: create-result-type-table
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: resultTypePK
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: BIGINT
+            tableName: result_type
+  - changeSet:
+      id: create-standard-result-type
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: standardResultTypePK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: result
+                  type: VARCHAR(2000)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: result_type_id
+                  type: BIGINT
+            tableName: standard_result_type
+  - changeSet:
+      id: create-ELBE-shopping-cart-result-type
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: shoppingCartResultTypePK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: name
+                  type: VARCHAR(2000)
+              - column:
+                  name: department
+                  type: VARCHAR(2000)
+              - column:
+                  name: task_area
+                  type: VARCHAR(2000)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: result_type_id
+                  type: BIGINT
+            tableName: shopping_cart_result_type
+  - changeSet:
+      id: create-ELBE-shopping-cart-result-type
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: shoppingCartResultTypePK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: name
+                  type: VARCHAR(2000)
+              - column:
+                  name: department
+                  type: VARCHAR(2000)
+              - column:
+                  name: task_area
+                  type: VARCHAR(2000)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: result_type_id
+                  type: BIGINT
+            tableName: shopping_cart_result_type
+  - changeSet:
+      id: create-ELBE-shopping-cart-result-type
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: shoppingCartResultTypePK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: name
+                  type: VARCHAR(2000)
+              - column:
+                  name: department
+                  type: VARCHAR(2000)
+              - column:
+                  name: task_area
+                  type: VARCHAR(2000)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: result_type_id
+                  type: BIGINT
+            tableName: shopping_cart_result_type
