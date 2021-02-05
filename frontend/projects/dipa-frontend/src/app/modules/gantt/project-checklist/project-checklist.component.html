@@ -81,5 +81,10 @@
       </div>
       <button [disabled]="!myForm.dirty" mat-raised-button type="submit" color="primary">Speichern</button>
     </form>
+
+    <ng-container *ngIf="selectedTimelineId === 3 || selectedTimelineId === 4">
+      <h2 class="project-checklist-header">Checkliste für kleine Projekte</h2>
+      <app-vertical-stepper></app-vertical-stepper>
+    </ng-container>
   </div>
 </div>
