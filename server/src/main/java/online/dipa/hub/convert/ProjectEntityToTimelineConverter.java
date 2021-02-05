@@ -1,7 +1,6 @@
 package online.dipa.hub.convert;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -24,10 +23,13 @@ import java.util.Optional;
 public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity, Timeline> {
 
     @Autowired
-    private PlanTemplateRepository planTemplateRepository;
-    
+    private OperationTypeTemplateToOperationType operationConverter;
+
     @Autowired
-    private ConversionService conversionService;
+    private ProjectApproachTemplateToProjectApproach projectApproachConverter;
+
+    @Autowired
+    private PlanTemplateRepository planTemplateRepository;
 
     @Override
     public Timeline convert(final ProjectEntity project) {
@@ -85,7 +87,7 @@ public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity
 
     private boolean filterOperationType(PlanTemplateEntity template, final Long operationTypeId) {
         Optional<OperationType> operationType = template.getOperationTypes().stream()
-            .map(p -> conversionService.convert(p, OperationType.class))
+            .map(p -> operationConverter.convert(p))
             .filter(o -> o.getId().equals(operationTypeId)).findFirst();
         
         return operationType.isPresent();
@@ -93,7 +95,7 @@ public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity
     
     private boolean filterProjectApproach(PlanTemplateEntity template, final Long projectApproachId) {
         Optional<ProjectApproach> projectApproach = template.getProjectApproaches().stream()
-            .map(p -> conversionService.convert(p, ProjectApproach.class))
+            .map(p -> projectApproachConverter.convert(p))
             .filter(o -> o.getId().equals(projectApproachId)).findFirst();
         
         return projectApproach.isPresent();
