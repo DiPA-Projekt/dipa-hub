@@ -1,0 +1,23 @@
+ELBEshoppingCartResult:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the project
+      type: integer
+      format: int64
+      example: 2
+    name:
+      description: name
+      type: string
+      example: "Herr Mustermann"
+    deparment:
+      description: department responsible
+      type: string
+      example: "II BM"
+    task_area:
+      description: task area
+      type: string
+      example: "Projektmanagement"
+  required:
+    - id
+    - name

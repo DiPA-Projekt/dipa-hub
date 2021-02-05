@@ -1,0 +1,22 @@
+Mission:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the mission
+      type: integer
+      format: int64
+      example: 2
+    name:
+      description: The name of the mission
+      type: string
+      example: "Übergabe IIA11-->PL"
+    description:
+      description: The description of the mission
+      type: string
+      example: "angelegtes iSAR-Projekt mit vorausgefülltem PSB"
+    result:
+      description: The result of this mission
+      $ref: "result.yml#/Result"
+  required:
+    - id
+    - name

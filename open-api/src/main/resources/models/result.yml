@@ -1,0 +1,12 @@
+Result:
+  type: object
+  oneOf:
+    - required:
+        - StandardResult
+    - required:
+        - ELBEshoppingCartResult
+  properties:
+    StandardResult:
+      $ref: "/resultTypes/standardResult.yml#/StandardResult"
+    ELBEshoppingCartResult:
+      $ref: "/resultTypes/ELBEshoppingCartResult.yml#/ELBEshoppingCartResult"
