@@ -1,0 +1,41 @@
+.mat-stepper-vertical {
+  margin-top: 8px;
+}
+
+.mat-form-field {
+  margin-top: 16px;
+}
+
+mat-vertical-stepper {
+
+  mat-step-header.mat-focus-indicator {
+    background: rgba(63, 81, 181, 0.15);
+    color: #3f51b5;
+  }
+
+  .mat-stepper {
+    background: rgba(63, 81, 181, 0.15);
+    color: #3f51b5;
+    div {
+
+      div {
+
+      }
+    }
+  }
+}
+
+
+.mat-form-field, .mat-form-field + .mat-form-field {
+  margin-left: 16px;
+}
+
+.stepDoneButton {
+  margin-left: 20px;
+}
+
+.stepExplanation {
+  margin-top: 20px;
+}
+
+
