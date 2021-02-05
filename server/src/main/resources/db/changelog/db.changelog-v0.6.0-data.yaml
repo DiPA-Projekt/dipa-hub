@@ -1656,19 +1656,8 @@ databaseChangeLog:
                   name: name
                   value: Routeraustausch Oranienburg
               - column:
-                  name: project_approach_id
+                  name: project_approach_idd
                   value: 5
-  - changeSet:
-      id: drop-columns-operation-type-project-approach
-      author: nguyen
-      changes:
-        - dropColumn:
-            columns:
-              - column:
-                  name: operation_type_id
-              - column:
-                  name: project_approach_id
-            tableName: plan_template
   - changeSet:
       id: insert-project-approach-plan-template-connection-serveraustausch
       author: nguyen
