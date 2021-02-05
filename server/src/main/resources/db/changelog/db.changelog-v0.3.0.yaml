@@ -59,3 +59,16 @@ databaseChangeLog:
                   name: project_approach_id
                   type: BIGINT
             tableName: plan_template
+  - changeSet:
+      id: createForeignKeyConstraint-projectType
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_type_id
+            baseTableName: project_approach
+            constraintName: FKprojectTypeId
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_type
+            validate: true

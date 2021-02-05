@@ -134,3 +134,116 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: project_flow_step
             validate: true
+  - changeSet:
+      id: create-operation-type-planTemplate-connection
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: operationTypePlanTemplateConnection
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: operation_type_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: plan_template_id
+                  type: BIGINT
+            tableName: operation_type_plan_template_connection
+  - changeSet:
+      id: create-project-approach-planTemplate-connection
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: projectApproachPlanTemplateConnection
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_approach_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: plan_template_id
+                  type: BIGINT
+            tableName: project_approach_plan_template_connection
+  - changeSet:
+      id: createForeignKeyConstraint-projectApproachId-connection
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_approach_id
+            baseTableName: project_approach_plan_template_connection
+            constraintName: FKprojectApproachIdConnection
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_approach
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-planTemplateId-project-approach
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: plan_template_id
+            baseTableName: project_approach_plan_template_connection
+            constraintName: FKplanTemplateIdProjectApproach
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: plan_template
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-operationTypeId-connection
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: operation_type_id
+            baseTableName: operation_type_plan_template_connection
+            constraintName: FKoperationTypeIdConnection
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: operation_type
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-planTemplateId-operation-type
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: plan_template_id
+            baseTableName: operation_type_plan_template_connection
+            constraintName: FKplanTemplateIdOperationType
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: plan_template
+            validate: true
+  - changeSet:
+      id: drop-columns-operation-type-project-approach
+      author: nguyen
+      changes:
+        - dropColumn:
+            columns:
+              - column:
+                  name: operation_type_id
+              - column:
+                  name: project_approach_id
+            tableName: plan_template

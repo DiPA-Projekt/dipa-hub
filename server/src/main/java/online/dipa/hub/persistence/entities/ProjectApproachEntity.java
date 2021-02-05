@@ -5,14 +5,7 @@ import static javax.persistence.CascadeType.ALL;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Basic;
-import javax.persistence.Cacheable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -34,7 +27,7 @@ public class ProjectApproachEntity extends BaseEntity {
     @Basic(optional = false)
     private boolean iterative;
 
-    @OneToMany(mappedBy = "projectApproach", cascade = { ALL })
+    @ManyToMany(mappedBy = "projectApproaches", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<PlanTemplateEntity> planTemplate = new HashSet<>();
 

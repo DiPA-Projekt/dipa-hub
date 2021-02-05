@@ -5,14 +5,7 @@ import static javax.persistence.CascadeType.ALL;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Basic;
-import javax.persistence.Cacheable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -39,13 +32,21 @@ public class PlanTemplateEntity extends BaseEntity {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<TaskTemplateEntity> tasks = new HashSet<>();
 
-    @NotNull
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    private ProjectApproachEntity projectApproach;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "project_approach_plan_template_connection",
+            joinColumns = { @JoinColumn(name = "plan_template_id") },
+            inverseJoinColumns = { @JoinColumn(name = "project_approach_id") }
+    )
+    private Set<ProjectApproachEntity> projectApproaches;
 
-    @NotNull
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    private OperationTypeEntity operationType;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "operation_type_plan_template_connection",
+            joinColumns = { @JoinColumn(name = "plan_template_id") },
+            inverseJoinColumns = { @JoinColumn(name = "operation_type_id") }
+    )
+    private Set<OperationTypeEntity> operationTypes;
 
     @Basic(optional = false)
     private boolean standard;
@@ -77,20 +78,20 @@ public class PlanTemplateEntity extends BaseEntity {
         this.tasks = tasks;
     }
 
-    public OperationTypeEntity getOperationTypeEntity() {
-        return operationType;
+    public Set<OperationTypeEntity> getOperationTypes() {
+        return operationTypes;
     }
 
-    public void setOperationTypeEntity(final OperationTypeEntity operationType) {
-        this.operationType = operationType;
+    public void setOperationTypes(final Set<OperationTypeEntity> operationTypes) {
+        this.operationTypes = operationTypes;
     }
 
-    public ProjectApproachEntity getProjectApproach() {
-        return projectApproach;
+    public Set<ProjectApproachEntity> getProjectApproaches() {
+        return projectApproaches;
     }
 
-    public void setProjectApproach(final ProjectApproachEntity projectApproach) {
-        this.projectApproach = projectApproach;
+    public void setProjectApproaches(final Set<ProjectApproachEntity> projectApproaches) {
+        this.projectApproaches = projectApproaches;
     }
 
     public boolean getStandard() {

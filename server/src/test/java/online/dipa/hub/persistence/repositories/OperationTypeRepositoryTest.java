@@ -19,11 +19,12 @@
      @Test
      void allBaDataInitializedCorrectly() {
          CurrentTenantContextHolder.setTenantId("ba");
-         assertThat(operationTypeRepository.findAll()).hasSize(2)
+         assertThat(operationTypeRepository.findAll()).hasSize(3)
                                                     .extracting(OperationTypeEntity::getId, OperationTypeEntity::getName,
                                                             OperationTypeEntity::isDefaultType)
                                                     .containsExactly(tuple(1L, "Serveraustausch", true),
-                                                            tuple(3L, "Beschaffung", false));
+                                                            tuple(3L, "Beschaffung", false),
+                                                            tuple(4L, "Routeraustausch", false));
      }
 
      @Test

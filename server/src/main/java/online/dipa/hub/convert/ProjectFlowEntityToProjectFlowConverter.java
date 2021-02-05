@@ -6,7 +6,6 @@ import online.dipa.hub.api.model.StepAction;
 import online.dipa.hub.persistence.entities.ProjectFlowStepActionEntity;
 import online.dipa.hub.persistence.entities.ProjectFlowStepEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
 public class ProjectFlowEntityToProjectFlowConverter implements Converter<ProjectFlowStepEntity, ProjectFlowStep> {
 
     @Autowired
-    private ConversionService conversionService;
+    protected ExternalLinkEntityToExternalLinkConverter externalLinkEntityToExternalLinkConverter;
 
     @Override
     public ProjectFlowStep convert(final ProjectFlowStepEntity entity) {
@@ -36,7 +35,7 @@ public class ProjectFlowEntityToProjectFlowConverter implements Converter<Projec
     private StepAction getStepAction(ProjectFlowStepActionEntity action) {
         List<ExternalLink> externalLinks = action.getExternalLinks()
             .stream()
-            .map(p -> conversionService.convert(p, ExternalLink.class))
+            .map(p -> externalLinkEntityToExternalLinkConverter.convert(p))
             .collect(Collectors.toList());
 
         return new StepAction()
