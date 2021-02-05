@@ -1,17 +1,17 @@
 databaseChangeLog:
-  - changeSet:  
+  - changeSet:
       id: dropForeignKeyConstraint-milestoneTemplate
       author: nguyen
-      changes:  
-      - dropForeignKeyConstraint:
+      changes:
+        - dropForeignKeyConstraint:
             baseColumnNames: project_type_id
             baseTableName: milestone_template
             constraintName: FK5nkusah4f9cwpwmpop2mrcnxm
-  - changeSet:  
+  - changeSet:
       id: dropForeignKeyConstraint-taskTemplate
       author: nguyen
-      changes:  
-      - dropForeignKeyConstraint:
+      changes:
+        - dropForeignKeyConstraint:
             baseColumnNames: project_type_id
             baseTableName: task_template
             constraintName: FKeqi79aws4b3hvcq5q33wxjdnb
@@ -19,12 +19,12 @@ databaseChangeLog:
       id: rename-column-milestone-template
       author: nguyen
       changes:
-      - renameColumn:
-           catalogName: cat
-           columnData: BIGINT
-           newColumnName: plan_template_id
-           oldColumnName: project_type_id
-           tableName: milestone_template
+        - renameColumn:
+            catalogName: cat
+            columnData: BIGINT
+            newColumnName: plan_template_id
+            oldColumnName: project_type_id
+            tableName: milestone_template
   - changeSet:
       id: rename-column-task-template
       author: nguyen
@@ -68,7 +68,7 @@ databaseChangeLog:
                   name: plan_template_id
                   valueComputed: 5
             where: id>40 AND id<57
-  
+
   - changeSet:
       id: insert-project-approach-servertausch
       author: nguyen
