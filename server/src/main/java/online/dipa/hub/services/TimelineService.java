@@ -256,10 +256,7 @@ public class TimelineService {
                     .filter(PlanTemplateEntity::getDefaultTemplate)
                     .findFirst();
             
-            if (planTemplate.isPresent()) {
-                milestones.addAll(convertMilestones(planTemplate.get()));
-            }
-
+            planTemplate.ifPresent(template -> milestones.addAll(convertMilestones(template)));
 
         }
 
