@@ -30,6 +30,10 @@ paths:
     $ref: "paths/projectData.yml"
   /timelines/{timelineId}/project/update:
     $ref: "paths/updateProjectData.yml"
+  /timelines/{timelineId}/missions:
+    $ref: "paths/missions.yml"
+  /timelines/{timelineId}/updatemissions:
+    $ref: "paths/updateMissions.yml"
   /timelines/{timelineId}/templates:
     $ref: "paths/templates.yml"
   /timelines/{timelineId}/templates/{templateId}:

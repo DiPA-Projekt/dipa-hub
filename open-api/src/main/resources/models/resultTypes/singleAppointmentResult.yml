@@ -1,0 +1,24 @@
+SingleAppointmentResult:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the result
+      type: integer
+      format: int64
+      example: 2
+    date:
+      description: The date of this appointment
+      type: string
+      example: "20.11.2021"
+    goal:
+      description: The goal of this appointment
+      type: string
+      example: "Entscheidungen über die Dienstleistungen"
+    responsibility:
+      description: The responsibility of this appointment
+      type: string
+      example: "Verantwortung"
+    status:
+      $ref: "../statusTypes/standardStatus.yml#/StandardStatus"
+  required:
+    - id

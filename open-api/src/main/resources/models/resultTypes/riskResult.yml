@@ -1,0 +1,24 @@
+RiskResult:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the result
+      type: integer
+      format: int64
+      example: 2
+    description:
+      description: The description of this risk
+      type: string
+      example: "Zeitschätzungen sind ungenau"
+    value:
+      description: The value of this risk
+      type: string
+      example: "2 Monaten über Planung"
+    solution:
+      description: The solution to reduce this risk
+      type: string
+      example: "schätzen mit Punkten"
+    status:
+      $ref: "../statusTypes/standardStatus.yml#/StandardStatus"
+  required:
+    - id

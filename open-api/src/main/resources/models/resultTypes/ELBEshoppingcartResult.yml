@@ -1,23 +1,19 @@
 ELBEshoppingCartResult:
   type: object
   properties:
-    id:
-      description: Unique identifier of the project
-      type: integer
-      format: int64
-      example: 2
-    name:
-      description: name
+    type_id:
+      description: Unique identifier of the result
       type: string
-      example: "Herr Mustermann"
-    deparment:
-      description: department responsible
+      example: "2"
+    shopingCartNumber:
+      description: number of shopping cart
       type: string
-      example: "II BM"
-    task_area:
-      description: task area
+      example: "2345"
+    shopingCartContent:
+      description: content of shopping cart
       type: string
-      example: "Projektmanagement"
+      example: "Bericht ABC"
+    status:
+      $ref: "../statusTypes/ELBEshoppingCartStatus.yml#/ELBEshoppingCartStatus"
   required:
-    - id
-    - name
+    - type_id

@@ -1,12 +1,28 @@
 Result:
   type: object
   oneOf:
-    - required:
-        - StandardResult
-    - required:
-        - ELBEshoppingCartResult
-  properties:
-    StandardResult:
-      $ref: "/resultTypes/standardResult.yml#/StandardResult"
-    ELBEshoppingCartResult:
-      $ref: "/resultTypes/ELBEshoppingCartResult.yml#/ELBEshoppingCartResult"
+    - $ref: "resultTypes/standardResult.yml#/StandardResult"
+    - $ref: "resultTypes/ELBEshoppingCartResult.yml#/ELBEshoppingCartResult"
+    - $ref: "resultTypes/contactPersonResult.yml#/ContactPersonResult"
+  discriminator:
+    propertyName: type_id
+    mapping:
+      obj1: "resultTypes/standardResult.yml#/StandardResult"
+      obj2: "resultTypes/ELBEshoppingCartResult.yml#/ELBEshoppingCartResult"
+      system: "resultTypes/contactPersonResult.yml#/ContactPersonResult"
+  # type: object
+  # oneOf:
+  #   - required:
+  #       - StandardResult
+  #   - required:
+  #       - ELBEshoppingCartResult
+  #   - required:
+  #       - ContactPersonResult
+  # properties:
+  #   StandardResult:
+  #     $ref: "resultTypes/standardResult.yml#/StandardResult"
+  #   ELBEshoppingCartResult:
+  #     $ref: "resultTypes/ELBEshoppingCartResult.yml#/ELBEshoppingCartResult"
+  #   ContactPersonResult:
+  #     $ref: "resultTypes/contactPersonResult.yml#/ContactPersonResult"
+  # # additionalProperties: true

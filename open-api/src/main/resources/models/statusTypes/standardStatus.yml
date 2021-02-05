@@ -1,0 +1,18 @@
+StandardStatus:
+  type: object
+  properties:
+    status:
+      description: status
+      type: string
+      enum:
+        - OPEN
+        - CLOSED
+        - PLANNED
+        - ASSIGNED
+        - IN_PROGRESS
+        - SUBMITTED
+        - DONE
+      default: null
+      example: OPEN
+  required:
+    - status

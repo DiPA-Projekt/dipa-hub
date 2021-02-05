@@ -1,0 +1,24 @@
+AppointmentSeriesResult:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the project
+      type: integer
+      format: int64
+      example: 2
+    appointment:
+      description: Appointment
+      type: string
+      example: "Termin1"
+    participants:
+      description: The list of participants
+      type: string
+      example: "Teilnehmer 1, Teilnehmer 2"
+    link:
+      description: link
+      type: string
+      example: "https://jira.swlm.zd.in.bund.de/secure/Dashboard.jspa"
+    status:
+      $ref: "../statusTypes/standardStatus.yml#/StandardStatus"
+  required:
+    - id

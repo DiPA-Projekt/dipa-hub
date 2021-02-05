@@ -9,6 +9,7 @@ import online.dipa.hub.services.TimelineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
+import liquibase.pro.packaged.M;
 import online.dipa.hub.api.rest.TimelinesApi;
 
 import org.springframework.core.io.FileUrlResource;
@@ -20,6 +21,8 @@ import org.springframework.http.MediaType;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
+
+import javax.validation.Valid;
 
 import online.dipa.hub.services.ProjectService;
 
@@ -159,6 +162,24 @@ public class TimelineController implements TimelinesApi {
     @Override
     public ResponseEntity<Void> updateProjectData(final Long timelineId, Project project) {
         projectService.updateProjectData(timelineId, project);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> updateMissions(final Long timelineId, List<Result> results) {
+    
+        // for (Mission mission: missions){
+            // System.out.println(mission.getName());
+            // Result results = mission.getResult();
+            // System.out.println(results.toString());
+            // for (Result result: results){
+            //                 System.out.println(result.toString());
+
+            //     System.out.println(result.getStandardResult());
+            //     System.out.println(result.getElBEshoppingCartResult());
+            // }
+        // }
+        System.out.println(results.toString());
         return ResponseEntity.noContent().build();
     }
 
