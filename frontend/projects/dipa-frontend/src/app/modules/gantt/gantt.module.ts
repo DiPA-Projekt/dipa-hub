@@ -28,6 +28,8 @@ import { FilesComponent } from './files/files.component';
 import { ChartComponent } from './chart/chart.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { TimelineComponent } from './timeline/timeline.component';
+import { VerticalStepperComponent } from './vertical-stepper/vertical-stepper.component';
+import { MatStepperModule } from '@angular/material/stepper';
 
 @NgModule({
   declarations: [
@@ -41,6 +43,7 @@ import { TimelineComponent } from './timeline/timeline.component';
     FilesComponent,
     ChartComponent,
     TimelineComponent,
+    VerticalStepperComponent,
   ],
   exports: [ChartComponent, FilesComponent, NavMenuListItemComponent],
   imports: [
@@ -64,6 +67,7 @@ import { TimelineComponent } from './timeline/timeline.component';
     MatSidenavModule,
     MatListModule,
     ReactiveFormsModule,
+    MatStepperModule,
   ],
 })
 export class GanttModule {}

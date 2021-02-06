@@ -135,7 +135,7 @@ databaseChangeLog:
             referencedTableName: project_flow_step
             validate: true
   - changeSet:
-      id: create-result-type-table
+      id: create-operation-type-planTemplate-connection
       author: nguyen
       changes:
         - createTable:
@@ -145,17 +145,22 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: resultTypePK
+                    primaryKeyName: operationTypePlanTemplateConnection
                   name: id
                   type: BIGINT
               - column:
                   constraints:
                     nullable: false
-                  name: name
+                  name: operation_type_id
                   type: BIGINT
-            tableName: result_type
+              - column:
+                  constraints:
+                    nullable: false
+                  name: plan_template_id
+                  type: BIGINT
+            tableName: operation_type_plan_template_connection
   - changeSet:
-      id: create-standard-result-type
+      id: create-project-approach-planTemplate-connection
       author: nguyen
       changes:
         - createTable:
@@ -165,102 +170,80 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: standardResultTypePK
+                    primaryKeyName: projectApproachPlanTemplateConnection
                   name: id
                   type: BIGINT
               - column:
-                  name: result
-                  type: VARCHAR(2000)
+                  constraints:
+                    nullable: false
+                  name: project_approach_id
+                  type: BIGINT
               - column:
                   constraints:
                     nullable: false
-                  name: result_type_id
+                  name: plan_template_id
                   type: BIGINT
-            tableName: standard_result_type
+            tableName: project_approach_plan_template_connection
   - changeSet:
-      id: create-ELBE-shopping-cart-result-type
+      id: createForeignKeyConstraint-projectApproachId-connection
       author: nguyen
       changes:
-        - createTable:
-            columns:
-              - column:
-                  autoIncrement: true
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                    primaryKeyName: shoppingCartResultTypePK
-                  name: id
-                  type: BIGINT
-              - column:
-                  name: name
-                  type: VARCHAR(2000)
-              - column:
-                  name: department
-                  type: VARCHAR(2000)
-              - column:
-                  name: task_area
-                  type: VARCHAR(2000)
-              - column:
-                  constraints:
-                    nullable: false
-                  name: result_type_id
-                  type: BIGINT
-            tableName: shopping_cart_result_type
+        - addForeignKeyConstraint:
+            baseColumnNames: project_approach_id
+            baseTableName: project_approach_plan_template_connection
+            constraintName: FKprojectApproachIdConnection
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_approach
+            validate: true
   - changeSet:
-      id: create-ELBE-shopping-cart-result-type
+      id: createForeignKeyConstraint-planTemplateId-project-approach
       author: nguyen
       changes:
-        - createTable:
-            columns:
-              - column:
-                  autoIncrement: true
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                    primaryKeyName: shoppingCartResultTypePK
-                  name: id
-                  type: BIGINT
-              - column:
-                  name: name
-                  type: VARCHAR(2000)
-              - column:
-                  name: department
-                  type: VARCHAR(2000)
-              - column:
-                  name: task_area
-                  type: VARCHAR(2000)
-              - column:
-                  constraints:
-                    nullable: false
-                  name: result_type_id
-                  type: BIGINT
-            tableName: shopping_cart_result_type
+        - addForeignKeyConstraint:
+            baseColumnNames: plan_template_id
+            baseTableName: project_approach_plan_template_connection
+            constraintName: FKplanTemplateIdProjectApproach
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: plan_template
+            validate: true
   - changeSet:
-      id: create-ELBE-shopping-cart-result-type
+      id: createForeignKeyConstraint-operationTypeId-connection
       author: nguyen
       changes:
-        - createTable:
+        - addForeignKeyConstraint:
+            baseColumnNames: operation_type_id
+            baseTableName: operation_type_plan_template_connection
+            constraintName: FKoperationTypeIdConnection
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: operation_type
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-planTemplateId-operation-type
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: plan_template_id
+            baseTableName: operation_type_plan_template_connection
+            constraintName: FKplanTemplateIdOperationType
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: plan_template
+            validate: true
+  - changeSet:
+      id: drop-columns-operation-type-project-approach
+      author: nguyen
+      changes:
+        - dropColumn:
             columns:
               - column:
-                  autoIncrement: true
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                    primaryKeyName: shoppingCartResultTypePK
-                  name: id
-                  type: BIGINT
+                  name: operation_type_id
               - column:
-                  name: name
-                  type: VARCHAR(2000)
-              - column:
-                  name: department
-                  type: VARCHAR(2000)
-              - column:
-                  name: task_area
-                  type: VARCHAR(2000)
-              - column:
-                  constraints:
-                    nullable: false
-                  name: result_type_id
-                  type: BIGINT
-            tableName: shopping_cart_result_type
+                  name: project_approach_id
+            tableName: plan_template

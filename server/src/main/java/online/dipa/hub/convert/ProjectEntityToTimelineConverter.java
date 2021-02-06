@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import online.dipa.hub.api.model.OperationType;
+import online.dipa.hub.api.model.ProjectApproach;
 import online.dipa.hub.api.model.Timeline;
 import online.dipa.hub.api.model.Timeline.ProjectTypeEnum;
 import online.dipa.hub.persistence.entities.MilestoneTemplateEntity;
@@ -14,13 +16,17 @@ import online.dipa.hub.persistence.entities.OperationTypeEntity;
 import online.dipa.hub.persistence.repositories.PlanTemplateRepository;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Component
 public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity, Timeline> {
+
+    @Autowired
+    private OperationTypeTemplateToOperationType operationConverter;
+
+    @Autowired
+    private ProjectApproachTemplateToProjectApproach projectApproachConverter;
 
     @Autowired
     private PlanTemplateRepository planTemplateRepository;
@@ -33,27 +39,35 @@ public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity
         final OperationTypeEntity operationType = projectApproach.getOperationType();
 
         final Long operationTypeId = projectApproach.getOperationType().getId();
-
-        final List<PlanTemplateEntity> planTemplateList = planTemplateRepository.findAll().stream()
-                                                        .filter(template -> template.getOperationTypeEntity().getId().equals(operationTypeId))
-                                                        .filter(PlanTemplateEntity::getDefaultTemplate)
-                                                        .collect(Collectors.toList());       
         
-        final List<MilestoneTemplateEntity> maxMilestoneDateList = new ArrayList<>();
+        final Optional<PlanTemplateEntity> masterPLan = planTemplateRepository.findAll().stream()
+                                                        .filter(template -> filterOperationType(template, operationTypeId))
+                                                        .findFirst();
 
-        for (PlanTemplateEntity planTemplate: planTemplateList) {
-                planTemplate.getMilestones().stream()
-                    .max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset)).ifPresent(maxMilestoneDateList::add);
+        final Optional<PlanTemplateEntity> planTemplateProjectApproach = planTemplateRepository.findAll().stream()
+                                                        .filter(template -> filterProjectApproach(template, projectApproach.getId()))
+                                                        .filter(PlanTemplateEntity::getDefaultTemplate)
+                                                        .findFirst();
+        
+        MilestoneTemplateEntity maxMilestoneDate = new MilestoneTemplateEntity();
+
+        if (masterPLan.isPresent()) {
+            Optional<MilestoneTemplateEntity> milestone = masterPLan.get().getMilestones().stream().max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset));
+            
+            if (milestone.isPresent()) {
+                maxMilestoneDate = milestone.get();
+            }
+        }
+        else if (planTemplateProjectApproach.isPresent()) {
+            Optional<MilestoneTemplateEntity> milestone = planTemplateProjectApproach.get().getMilestones().stream().max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset));
+            
+            if (milestone.isPresent()) {
+                maxMilestoneDate = milestone.get();
+            }
         }
 
-        final MilestoneTemplateEntity maxMilestoneDate = maxMilestoneDateList
-                .stream()
-                .max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset)).orElse(null);
-
-        int maxMilestoneDateOffset = 0;
-        if (maxMilestoneDate != null) {
-            maxMilestoneDateOffset = maxMilestoneDate.getDateOffset();
-        }
+        int maxMilestoneDateOffset = maxMilestoneDate.getDateOffset();
+        
 
         Timeline timeline = new Timeline().id(project.getId())
                              .name(project.getName())
@@ -70,4 +84,21 @@ public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity
         
         return timeline;
     }
+
+    private boolean filterOperationType(PlanTemplateEntity template, final Long operationTypeId) {
+        Optional<OperationType> operationType = template.getOperationTypes().stream()
+            .map(p -> operationConverter.convert(p))
+            .filter(o -> o.getId().equals(operationTypeId)).findFirst();
+        
+        return operationType.isPresent();
+    }
+    
+    private boolean filterProjectApproach(PlanTemplateEntity template, final Long projectApproachId) {
+        Optional<ProjectApproach> projectApproach = template.getProjectApproaches().stream()
+            .map(p -> projectApproachConverter.convert(p))
+            .filter(o -> o.getId().equals(projectApproachId)).findFirst();
+        
+        return projectApproach.isPresent();
+    }
+
 }
