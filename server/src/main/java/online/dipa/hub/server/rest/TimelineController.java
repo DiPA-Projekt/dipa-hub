@@ -9,7 +9,6 @@ import online.dipa.hub.services.TimelineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
-import liquibase.pro.packaged.M;
 import online.dipa.hub.api.rest.TimelinesApi;
 
 import org.springframework.core.io.FileUrlResource;
@@ -21,8 +20,6 @@ import org.springframework.http.MediaType;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
-
-import javax.validation.Valid;
 
 import online.dipa.hub.services.ProjectService;
 
