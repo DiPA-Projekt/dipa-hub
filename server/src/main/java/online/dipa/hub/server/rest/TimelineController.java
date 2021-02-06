@@ -165,23 +165,5 @@ public class TimelineController implements TimelinesApi {
         return ResponseEntity.noContent().build();
     }
 
-    @Override
-    public ResponseEntity<Void> updateMissions(final Long timelineId, List<Result> results) {
-    
-        // for (Mission mission: missions){
-            // System.out.println(mission.getName());
-            // Result results = mission.getResult();
-            // System.out.println(results.toString());
-            // for (Result result: results){
-            //                 System.out.println(result.toString());
-
-            //     System.out.println(result.getStandardResult());
-            //     System.out.println(result.getElBEshoppingCartResult());
-            // }
-        // }
-        System.out.println(results.toString());
-        return ResponseEntity.noContent().build();
-    }
-
 
 }
