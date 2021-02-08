@@ -1,0 +1,111 @@
+Result:
+  type: object
+  properties:
+    resultType:
+      description: Unique identifier of the result
+      type: string
+      example: "TYPE_STD"
+  required:
+    - resultType
+  discriminator:
+    propertyName: resultType
+    mapping:
+      TYPE_STD: "#/schemas/StandardResult"
+      TYPE_ELBE_SC: "#/schemas/ELBEshoppingCartResult"
+      TYPE_CONTACT_PERS: "#/schemas/ContactPersonResult"
+      TYPE_APPT_SERIES: "#/schemas/AppointmentSeriesResult"
+      TYPE_RISK: "#/schemas/RiskResult"
+schemas:
+  StandardResult:
+    allOf:
+      - $ref: "result.yml#/Result"
+      - type: object
+        required:
+          - resultType
+        properties:
+          result:
+            description: result content
+            type: string
+            example: "Standard"
+          status:
+            $ref: "statusTypes/standardStatus.yml#/StandardStatus"
+  ContactPersonResult:
+    allOf:
+      - $ref: "result.yml#/Result"
+      - type: object
+        required:
+          - resultType
+        properties:
+          name:
+            description: name
+            type: string
+            example: "Herr Mustermann"
+          deparment:
+            description: responsible department
+            type: string
+            example: "II A 1"
+          task_area:
+            description: task area
+            type: string
+            example: "Projektmanagement"
+          status:
+            $ref: "statusTypes/contactPersonStatus.yml#/ContactPersonStatus"
+  ELBEshoppingCartResult:
+    allOf:
+      - $ref: "result.yml#/Result"
+      - type: object
+        required:
+          - resultType
+        properties:
+          shopingCartNumber:
+            description: number of shopping cart
+            type: string
+            example: "2345"
+          shopingCartContent:
+            description: content of shopping cart
+            type: string
+            example: "Bericht ABC"
+          status:
+            $ref: "statusTypes/elbeShoppingCartStatus.yml#/ELBEshoppingCartStatus"
+  AppointmentSeriesResult:
+    allOf:
+      - $ref: "result.yml#/Result"
+      - type: object
+        required:
+          - resultType
+        properties:
+          appointment:
+            description: the name of the appointment
+            type: string
+            example: "Termin1"
+          participants:
+            description: The list of participants
+            type: string
+            example: "Teilnehmer 1, Teilnehmer 2"
+          link:
+            description: link to this appointment
+            type: string
+            example: "https://jira.swlm.zd.in.bund.de/secure/Dashboard.jspa"
+          status:
+            $ref: "statusTypes/standardStatus.yml#/StandardStatus"
+  RiskResult:
+    allOf:
+      - $ref: "result.yml#/Result"
+      - type: object
+        required:
+          - resultType
+        properties:
+          description:
+            description: The description of this risk
+            type: string
+            example: "Zeitschätzungen sind ungenau"
+          value:
+            description: The value of this risk
+            type: string
+            example: "2 Monaten über Planung"
+          solution:
+            description: The solution to reduce this risk
+            type: string
+            example: "schätzen mit Punkten"
+          status:
+            $ref: "statusTypes/standardStatus.yml#/StandardStatus"
