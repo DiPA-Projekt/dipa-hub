@@ -66,7 +66,7 @@ schemas:
             type: string
             example: "Bericht ABC"
           status:
-            $ref: "statusTypes/ELBEshoppingCartStatus.yml#/ELBEshoppingCartStatus"
+            $ref: "statusTypes/elbeShoppingCartStatus.yml#/ELBEshoppingCartStatus"
   AppointmentSeriesResult:
     allOf:
       - $ref: "result.yml#/Result"
