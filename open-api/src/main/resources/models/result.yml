@@ -4,17 +4,17 @@ Result:
     resultType:
       description: Unique identifier of the result
       type: string
-      example: "TYPE_1"
+      example: "TYPE_STD"
   required:
     - resultType
   discriminator:
     propertyName: resultType
     mapping:
-      TYPE_1: "#/schemas/StandardResult"
-      TYPE_2: "#/schemas/ELBEshoppingCartResult"
-      TYPE_3: "#/schemas/ContactPersonResult"
-      TYPE_4: "#/schemas/AppointmentSeriesResult"
-      TYPE_5: "#/schemas/RiskResult"
+      TYPE_STD: "#/schemas/StandardResult"
+      TYPE_ELBE_SC: "#/schemas/ELBEshoppingCartResult"
+      TYPE_CONTACT_PERS: "#/schemas/ContactPersonResult"
+      TYPE_APPT_SERIES: "#/schemas/AppointmentSeriesResult"
+      TYPE_RISK: "#/schemas/RiskResult"
 schemas:
   StandardResult:
     allOf:
