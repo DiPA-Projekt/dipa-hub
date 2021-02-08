@@ -1,13 +1,12 @@
-import {Component, Input, OnChanges, OnDestroy, OnInit} from '@angular/core';
-import {MilestonesService} from 'dipa-api-client';
-import {NavItem} from '../../../nav-item';
+import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import { MilestonesService } from 'dipa-api-client';
+import { NavItem } from '../../../nav-item';
 
 @Component({
   selector: 'app-files',
-  templateUrl: './files.component.html'
+  templateUrl: './files.component.html',
 })
 export class FilesComponent implements OnInit, OnChanges, OnDestroy {
-
   @Input() timelineId;
   @Input() milestoneId;
 
@@ -15,7 +14,7 @@ export class FilesComponent implements OnInit, OnChanges, OnDestroy {
 
   downloadFilesSubscription;
 
-  constructor(private milestonesService: MilestonesService) { }
+  constructor(private milestonesService: MilestonesService) {}
 
   ngOnInit(): void {
     this.setFileList();
@@ -30,19 +29,15 @@ export class FilesComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   setFileList(): void {
-
-    this.downloadFilesSubscription = this.milestonesService.getFilesForMilestone(this.timelineId, this.milestoneId)
+    this.downloadFilesSubscription = this.milestonesService
+      .getFilesForMilestone(this.timelineId, this.milestoneId)
       .subscribe((data) => {
-
-        this.fileItems = data.map(x => (
-          {
-            id: x.id,
-            name: x.name,
-            icon: 'description',
-            file: '/downloadFile/' + x.id
-          }
-        ));
+        this.fileItems = data.map((x) => ({
+          id: x.id,
+          name: x.name,
+          icon: 'description',
+          file: `/downloadFile/${x.id}`,
+        }));
       });
   }
-
 }

@@ -1,32 +1,10 @@
-<div *ngIf="externalLinks$ | async as externalLinks" class="container">
-    <div class="row">
-        <div class="col-md-6 mt-3" *ngFor="let link of externalLinks">
-          <mat-card class="card-container">
-            <mat-card-header>
-              <div mat-card-avatar>
-                <img *ngIf="link.img" src="{{ link.img }}"
-                     width="40px"
-                     alt="Icon {{ link.name }}">
-              </div>
-              <mat-card-title>{{ link.name }}</mat-card-title>
-              <mat-card-subtitle>{{ link.category }}</mat-card-subtitle>
-              <div class="mat-card-header-actions">
-                <button mat-button>
-                  <mat-icon *ngIf="!link.favorite" role="img" class="mat-icon notranslate material-icons mat-icon-no-color" aria-hidden="true" data-mat-icon-type="font">star_outline</mat-icon>
-                  <mat-icon *ngIf="link.favorite" role="img" class="mat-icon notranslate material-icons mat-icon-no-color" aria-hidden="true" data-mat-icon-type="font">star</mat-icon>
-                </button>
-                <a href="{{ link.url }}" target="_blank" rel="noopener" mat-button>
-                  <mat-icon role="img" class="mat-icon notranslate material-icons mat-icon-no-color" aria-hidden="true" data-mat-icon-type="font">open_in_new</mat-icon>
-                </a>
-              </div>
-            </mat-card-header>
-            <mat-card-content>
-              <p>
-                {{ link.description }}
-              </p>
-            </mat-card-content>
-
-          </mat-card>
-        </div>
-    </div>
-</div>
+<mat-sidenav-container class="mat-sidenav-container" autosize hasBackdrop="false">
+  <mat-sidenav mode="side" opened="true" class="sidenav">
+    <mat-nav-list>
+      <app-nav-menu-list-item *ngFor="let item of navMenuItems" [item]="item"></app-nav-menu-list-item>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,0 +1,1811 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-file-tracking-list-external-dl
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: download_file
+            columns:
+              - column:
+                  name: id
+                  value: 6
+              - column:
+                  name: name
+                  value: Trackingtabelle externe Dienstleistung
+              - column:
+                  name: description
+                  value: Trackingtabelle
+              - column:
+                  name: path
+                  value: downloadFiles/externeDL.xlsx
+  - changeSet:
+      id: insert-file-qs-handbuch
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: download_file
+            columns:
+              - column:
+                  name: id
+                  value: 7
+              - column:
+                  name: name
+                  value: QS-Handbuch
+              - column:
+                  name: description
+                  value: Dokumentenvorlage
+              - column:
+                  name: path
+                  value: downloadFiles/QS-Handbuch.doc
+  - changeSet:
+      id: update-project-projectType-bergsteigerausruestung
+      author: bock
+      context: itzbund
+      changes:
+        - update:
+            tableName: project
+            columns:
+              - column:
+                  name: project_type
+                  value: "internes Projekt"
+            where: id=5
+  - changeSet:
+      id: insert-external-link-wiki-projektleitung
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: name
+                  value: Wiki Projektleitung (II A 1)
+              - column:
+                  name: description
+                  value: Wiki
+              - column:
+                  name: url
+                  value: https://sp.vzd.zivb.net/sites/D712/A19B/Seiten/Home.aspx
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Wissen
+              - column:
+                  name: sort_order
+                  value: 3
+  - changeSet:
+      id: insert-external-link-haushalt-a-z
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: name
+                  value: Haushalt von A-Z
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://intranet.itzbund.de/DE/5_Organisation/Organisationseinheiten/Abteilung_Z/Referat_Z_3/Z_31/Allgemeine_Informationen_von_A_bis_Z/Allgemeine_Informationen_von_A_bis_Z_node.html
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Wissen
+              - column:
+                  name: sort_order
+                  value: 4
+  - changeSet:
+      id: insert-external-link-it-planung-itr4web
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: name
+                  value: IT-Planungsverfahren und ITR4Web
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://sp.vzd.zivb.net/orgeinheit/info-_und_dokumentenpool_abteilung_i/Referatsbereiche/Referat_I_4/AB-I-42/Lists/Startseite%20Kacheln/Tiles.aspx
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Wissen
+              - column:
+                  name: sort_order
+                  value: 5
+  - changeSet:
+      id: insert-external-link-haushalt-ressourcenmanagement
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 6
+              - column:
+                  name: name
+                  value: Ressourcenmanagement
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://sp.vzd.zivb.net/sites/B22D/Lists/Tiles/Tiles.aspx
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Wissen
+              - column:
+                  name: sort_order
+                  value: 6
+  - changeSet:
+      id: insert-external-link-vertragsmanagement
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 7
+              - column:
+                  name: name
+                  value: Vertragsmanagement
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://sp.vzd.zivb.net/sites/2FCA/SitePages/Homepage.aspx
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Wissen
+              - column:
+                  name: sort_order
+                  value: 7
+  - changeSet:
+      id: insert-external-link-service-center
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 8
+              - column:
+                  name: name
+                  value: Service Center
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://portal-zb.itsm-suite.service.itzbund.net/dwp/app
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Verwaltung
+              - column:
+                  name: sort_order
+                  value: 8
+  - changeSet:
+      id: insert-external-link-service-desk
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 9
+              - column:
+                  name: name
+                  value: Service Desk und WebSelfService
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://intranet.itzbund.de/DE/4_Arbeitsorganisation/Anwendungen/ServiceDesk/servicedesk_node.html
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Verwaltung
+              - column:
+                  name: sort_order
+                  value: 9
+  - changeSet:
+      id: insert-external-link-elbe
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 10
+              - column:
+                  name: name
+                  value: Elbe
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://applnosrmp.zivit.iv.bfinv.de:8001/SAP/BC/NWBC/SRM
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Verwaltung
+              - column:
+                  name: sort_order
+                  value: 10
+  - changeSet:
+      id: insert-external-link-isar
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 11
+              - column:
+                  name: name
+                  value: iSAR
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://applpzport.zivit.iv.bfinv.de:52801/irj/portal
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Verwaltung
+              - column:
+                  name: sort_order
+                  value: 11
+  - changeSet:
+      id: insert-external-link-aedl
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 12
+              - column:
+                  name: name
+                  value: AeDL
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://aedl.itz.itzbund.net/AeDL-Web/sites/login.xhtml
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Verwaltung
+              - column:
+                  name: sort_order
+                  value: 12
+  - changeSet:
+      id: insert-external-link-itr4web
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 13
+              - column:
+                  name: name
+                  value: ITR4Web
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://itr4web.itz.intranet.bund.de/itr4web/
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Verwaltung
+              - column:
+                  name: sort_order
+                  value: 13
+  - changeSet:
+      id: insert-external-link-projekte-itzbund
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 14
+              - column:
+                  name: name
+                  value: Projekte im ITZBund
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://intranet.itzbund.de/DE/2_Projekte/projekte_node.html
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Weiteres
+              - column:
+                  name: sort_order
+                  value: 14
+  - changeSet:
+      id: insert-external-link-agile-swe-itzbund
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 15
+              - column:
+                  name: name
+                  value: Agile SWE im ITZBund
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://sp.vzd.zivb.net/sites/pm/Agile/SitePages/Homepage.aspx
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Weiteres
+              - column:
+                  name: sort_order
+                  value: 15
+  - changeSet:
+      id: insert-external-link-social-intranet-bund
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 16
+              - column:
+                  name: name
+                  value: Social Intranet des Bundes
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://social.intranet.bund.de/
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Weiteres
+              - column:
+                  name: sort_order
+                  value: 16
+  - changeSet:
+      id: insert-external-link-ggb
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 17
+              - column:
+                  name: name
+                  value: GGB
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://sp.vzd.zivb.net/orgeinheit/info-_und_dokumentenpool_abteilung_i/Gemeinsame%20Geschftsbedingungen%20GGB/Forms/AllItems.aspx
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Weiteres
+              - column:
+                  name: sort_order
+                  value: 17
+  - changeSet:
+      id: insert-external-link-vmxt-produktvorlagen
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 18
+              - column:
+                  name: name
+                  value: VMXT Produktvorlagen
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://sp.vzd.zivb.net/sites/pm/ccvmxt/_layouts/15/start.aspx#/Freigegebene%20Dokumente/Forms/AllItems.aspx?RootFolder=%2Fsites%2Fpm%2Fccvmxt%2FFreigegebene%20Dokumente%2FProduktvorlagen&View=%7BA3E0D562-8BAA-41B9-8BDB-BB4581DB385A%7D
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value: Verwaltung
+              - column:
+                  name: sort_order
+                  value: 18
+  - changeSet:
+      id: update-project-projectSize-Feldberg
+      context: itzbund
+      author: nguyen
+      changes:
+        - update:
+            tableName: project
+            columns:
+              - column:
+                  name: project_size
+                  value: SMALL
+              - column:
+                  name: akz
+                  value: "01234"
+              - column:
+                  name: client
+                  value: "BMF"
+              - column:
+                  name: department
+                  value: "II A 1"
+              - column:
+                  name: project_owner
+                  value: "Herr Mustermann"
+            where: id=3
+  - changeSet:
+      id: update-project-projectSize-Zugspitze
+      context: itzbund
+      author: nguyen
+      changes:
+        - update:
+            tableName: project
+            columns:
+              - column:
+                  name: project_size
+                  value: MIDDLE
+            where: id=4
+  - changeSet:
+      id: insert-external-link-kommunikation-ohne-sina
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 19
+              - column:
+                  name: name
+                  value: WebEx
+              - column:
+                  name: description
+                  value: Kommunikation mit Teammitgliedern ohne SINA
+              - column:
+                  name: url
+                  value: https://itzbund.webex.com/webappng/sites/itzbund/dashboard?siteurl=itzbund
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value:
+              - column:
+                  name: sort_order
+                  value: 19
+  - changeSet:
+      id: insert-external-link-adressbuch-bundesverwaltung
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 20
+              - column:
+                  name: name
+                  value: Adressbuch der Bundesverwaltung
+              - column:
+                  name: description
+                  value: Suche nach Kontaktdaten von Kolleginnen und Kollegen anderer Behörden
+              - column:
+                  name: url
+                  value: http://x500.intranet.bund.de/
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value:
+              - column:
+                  name: sort_order
+                  value: 20
+  - changeSet:
+      id: insert-external-link-rahmenvertraege-itzbund
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 21
+              - column:
+                  name: name
+                  value: Rahmenverträge des ITZBund
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://sp.vzd.zivb.net/sites/2FCA/Rahmenvertrge/Forms/AllItems.aspx
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value:
+              - column:
+                  name: sort_order
+                  value: 21
+  - changeSet:
+      id: insert-external-link-kaufhaus-des-bundes
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 22
+              - column:
+                  name: name
+                  value: Kaufhaus des Bundes
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://kdb.intranet.bund.de/INTERSHOP/web/WFS/KdB-BmiTransaction-Site/de_DE/-/EUR/bmi_frames-StartTransaction?IsFromMenu=true
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value:
+              - column:
+                  name: sort_order
+                  value: 22
+  - changeSet:
+      id: insert-external-link-ausschreibungsunterlagen
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 23
+              - column:
+                  name: name
+                  value: Ausschreibungsunterlagen
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://sp.vzd.zivb.net/sites/D712/Freigegebene%20Dokumente/Forms/AllItems.aspx?RootFolder=%2fsites%2fD712%2fFreigegebene%20Dokumente%2fII%20A%201%20Gesamt%2f22%20-%20Ausschreibung%20Vorlagen%20%28Projekt%20Taube%29&FolderCTID=0x01200066D0AE83C41477419F1B68AC06037034
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value:
+              - column:
+                  name: sort_order
+                  value: 23
+  - changeSet:
+      id: insert-external-link-vorhaben-der-planer
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 24
+              - column:
+                  name: name
+                  value: Vorhaben der Planer
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://sp.vzd.zivb.net/sites/Ref_I_1/TLM/Forms/AllItems.aspx?RootFolder=%2fsites%2fRef_I_1%2fTLM%2fVorhaben&FolderCTID=0x01200056EA6404C2CA764597DF76CA379C7D65
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value:
+              - column:
+                  name: sort_order
+                  value: 24
+  - changeSet:
+      id: insert-external-link-informationen-verplichtungsabnahme
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: external_link
+            columns:
+              - column:
+                  name: id
+                  value: 25
+              - column:
+                  name: name
+                  value: Informationen zur Verpflichtungsabnahme
+              - column:
+                  name: description
+                  value:
+              - column:
+                  name: url
+                  value: https://sp.vzd.zivb.net/sites/AB_Z_12/Operativer%20Datenschutz/_layouts/15/start.aspx#/Verpflichtungsabnahme/Forms/AllItems.aspx?View=%7BA0404709%2DEDE6%2D44A8%2D95CF%2D30E776CC79F6%7D
+              - column:
+                  name: img
+                  value:
+              - column:
+                  name: category
+                  value:
+              - column:
+                  name: sort_order
+                  value: 25
+  - changeSet:
+      id: insert-project-flow-step-vertraege-externe-dienstleister
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: name
+                  value: "[PL] Verträge externer Dienstleister ins Rollen bringen"
+              - column:
+                  name: sort_order
+                  value: 1
+  - changeSet:
+      id: insert-project-flow-step-vorhaben-ins-rollen-bringen
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: name
+                  value: "[PL] Das Vorhaben ins Rollen bringen"
+              - column:
+                  name: sort_order
+                  value: 2
+  - changeSet:
+      id: insert-project-flow-step-team-ins-rollen-bringen
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: name
+                  value: "[PL] Das Team ins Rollen bringen"
+              - column:
+                  name: sort_order
+                  value: 3
+  - changeSet:
+      id: insert-project-flow-step-projektteam-managen
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: name
+                  value: "[PL] Projektteam managen"
+              - column:
+                  name: sort_order
+                  value: 4
+  - changeSet:
+      id: insert-project-flow-step-auftraggeber-managen
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: name
+                  value: "[PL] Auftraggeber managen"
+              - column:
+                  name: sort_order
+                  value: 5
+  - changeSet:
+      id: insert-project-flow-step-weiere-stakeholder-managen
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step
+            columns:
+              - column:
+                  name: id
+                  value: 6
+              - column:
+                  name: name
+                  value: "[PL] Weitere Stakeholder managen"
+              - column:
+                  name: sort_order
+                  value: 6
+  - changeSet:
+      id: insert-project-flow-step-vertragspartner-managen
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step
+            columns:
+              - column:
+                  name: id
+                  value: 7
+              - column:
+                  name: name
+                  value: "[PL] Vertragspartner managen"
+              - column:
+                  name: sort_order
+                  value: 7
+  - changeSet:
+      id: insert-project-flow-step-nutzer-managen
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step
+            columns:
+              - column:
+                  name: id
+                  value: 8
+              - column:
+                  name: name
+                  value: "[PL] Nutzer managen"
+              - column:
+                  name: sort_order
+                  value: 8
+  - changeSet:
+      id: insert-project-flow-step-risikomanagement
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step
+            columns:
+              - column:
+                  name: id
+                  value: 9
+              - column:
+                  name: name
+                  value: "[PL] Risikomanagement"
+              - column:
+                  name: sort_order
+                  value: 9
+  - changeSet:
+      id: insert-project-flow-step-projektmittel-managen
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step
+            columns:
+              - column:
+                  name: id
+                  value: 10
+              - column:
+                  name: name
+                  value: "[PL] Projektmittel managen"
+              - column:
+                  name: sort_order
+                  value: 10
+  - changeSet:
+      id: insert-project-flow-step-ablauf-termine-managen
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step
+            columns:
+              - column:
+                  name: id
+                  value: 11
+              - column:
+                  name: name
+                  value: "[PL] Ablauf und Termine managen"
+              - column:
+                  name: sort_order
+                  value: 11
+  - changeSet:
+      id: insert-project-flow-step-qualitaet-managen
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step
+            columns:
+              - column:
+                  name: id
+                  value: 12
+              - column:
+                  name: name
+                  value: "[PL] Qualität managen"
+              - column:
+                  name: sort_order
+                  value: 12
+  - changeSet:
+      id: insert-project-flow-step-projektergebnisse-managen
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step
+            columns:
+              - column:
+                  name: id
+                  value: 13
+              - column:
+                  name: name
+                  value: "[PL] Projektergebnisse managen"
+              - column:
+                  name: sort_order
+                  value: 13
+  - changeSet:
+      id: insert-project-flow-step-probleme-managen
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step
+            columns:
+              - column:
+                  name: id
+                  value: 14
+              - column:
+                  name: name
+                  value: "[PL] Probleme managen"
+              - column:
+                  name: sort_order
+                  value: 14
+  - changeSet:
+      id: insert-project-flow-step-aenderungen-managen
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step
+            columns:
+              - column:
+                  name: id
+                  value: 15
+              - column:
+                  name: name
+                  value: "[PL] Änderungen managen"
+              - column:
+                  name: sort_order
+                  value: 15
+  - changeSet:
+      id: insert-project-flow-step-entscheidungen-managen
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step
+            columns:
+              - column:
+                  name: id
+                  value: 16
+              - column:
+                  name: name
+                  value: "[PL] Entscheidungen managen"
+              - column:
+                  name: sort_order
+                  value: 16
+  - changeSet:
+      id: insert-project-flow-step-informationen-organisieren
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step
+            columns:
+              - column:
+                  name: id
+                  value: 17
+              - column:
+                  name: name
+                  value: "[PL] Informationen organisieren"
+              - column:
+                  name: sort_order
+                  value: 17
+  - changeSet:
+      id: insert-project-flow-step-berichtswesen-organisieren
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step
+            columns:
+              - column:
+                  name: id
+                  value: 18
+              - column:
+                  name: name
+                  value: "[PL] Berichtswesen organisieren"
+              - column:
+                  name: sort_order
+                  value: 18
+  - changeSet:
+      id: insert-project-flow-step-vorhabens-verantwortung-wechseln
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step
+            columns:
+              - column:
+                  name: id
+                  value: 19
+              - column:
+                  name: name
+                  value: "[PL] Vorhabens-Verantwortung wechseln"
+              - column:
+                  name: sort_order
+                  value: 19
+  - changeSet:
+      id: insert-project-flow-step-vorhaben-beenden
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step
+            columns:
+              - column:
+                  name: id
+                  value: 20
+              - column:
+                  name: name
+                  value: "[PL] Vorhaben beenden"
+              - column:
+                  name: sort_order
+                  value: 20
+  - changeSet:
+      id: insert-project-flow-step-ergebnis-uebergeben
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step
+            columns:
+              - column:
+                  name: id
+                  value: 21
+              - column:
+                  name: name
+                  value: "[PL] Ergebnis übergeben"
+              - column:
+                  name: sort_order
+                  value: 21
+  - changeSet:
+      id: insert-project-flow-step-action-vertraege-externe-dienstleister
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: explanation
+                  value: Zur Bestellung von externen Teammitgliedern, Arbeitsplatzausstattung und Software.
+              - column:
+                  name: project_flow_step_id
+                  value: 1
+  - changeSet:
+      id: insert-project-flow-step-action-vertraege-externe-teammitglieder
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: explanation
+                  value: Zur Ermittlung von Möglichkeiten externe Teammitglieder zu beschaffen.
+              - column:
+                  name: project_flow_step_id
+                  value: 1
+  - changeSet:
+      id: insert-project-flow-step-action-selbst-ausschreiben
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: explanation
+                  value: Falls du selbst ausschreiben musst.
+              - column:
+                  name: project_flow_step_id
+                  value: 1
+  - changeSet:
+      id: insert-project-flow-step-action-mitarbeit-projektplanung
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: explanation
+                  value: Zur Mitarbeit an der Projektplanung.
+              - column:
+                  name: project_flow_step_id
+                  value: 2
+  - changeSet:
+      id: insert-project-flow-step-action-beauftragung-share-point
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: explanation
+                  value: Zur Beauftragung einer Projekt-Share-Point-Seite.
+              - column:
+                  name: project_flow_step_id
+                  value: 2
+  - changeSet:
+      id: insert-project-flow-step-action-besetzung-teammitglieder
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action
+            columns:
+              - column:
+                  name: id
+                  value: 6
+              - column:
+                  name: explanation
+                  value: Zur Besetzung deiner Teammitglieder.
+              - column:
+                  name: project_flow_step_id
+                  value: 3
+  - changeSet:
+      id: insert-project-flow-step-action-verpflichtung-externer
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action
+            columns:
+              - column:
+                  name: id
+                  value: 7
+              - column:
+                  name: explanation
+                  value: Zur Durchführung der Verpflichtung Externer.
+              - column:
+                  name: project_flow_step_id
+                  value: 3
+  - changeSet:
+      id: insert-project-flow-step-action-kommunikation-ohne-sina
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action
+            columns:
+              - column:
+                  name: id
+                  value: 8
+              - column:
+                  name: explanation
+                  value: Zur Kommunikation mit Teammitgliedern ohne SINA.
+              - column:
+                  name: project_flow_step_id
+                  value: 4
+  - changeSet:
+      id: insert-project-flow-step-action-kontaktdaten-anderer-behoerden
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action
+            columns:
+              - column:
+                  name: id
+                  value: 9
+              - column:
+                  name: explanation
+                  value: Zur Suche nach Kontaktdaten von Kolleginnen und Kollegen anderer Behörden.
+              - column:
+                  name: project_flow_step_id
+                  value: 5
+  - changeSet:
+      id: insert-project-flow-step-action-vernetzung
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action
+            columns:
+              - column:
+                  name: id
+                  value: 10
+              - column:
+                  name: explanation
+                  value: Zur Vernetzung.
+              - column:
+                  name: project_flow_step_id
+                  value: 6
+  - changeSet:
+      id: insert-project-flow-step-action-vertraege-externer--erstellung-leistungsnachweise
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action
+            columns:
+              - column:
+                  name: id
+                  value: 11
+              - column:
+                  name: explanation
+                  value: Zur Verwaltung der Verträge Externer und Erstellung von Leistungsnachweisen.
+              - column:
+                  name: project_flow_step_id
+                  value: 7
+  - changeSet:
+      id: insert-project-flow-step-action-planung-ressourcen
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action
+            columns:
+              - column:
+                  name: id
+                  value: 12
+              - column:
+                  name: explanation
+                  value: Zur Planung der Ressourcen der kommenden Jahre.
+              - column:
+                  name: project_flow_step_id
+                  value: 10
+  - changeSet:
+      id: insert-project-flow-step-action-verwaltung-projektaufgaben
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action
+            columns:
+              - column:
+                  name: id
+                  value: 13
+              - column:
+                  name: explanation
+                  value: Zur Verwaltung der Projektaufgaben.
+              - column:
+                  name: project_flow_step_id
+                  value: 11
+  - changeSet:
+      id: insert-project-flow-step-action-erstellung-projektstatusberichte
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action
+            columns:
+              - column:
+                  name: id
+                  value: 14
+              - column:
+                  name: explanation
+                  value: Zur Erstellung der Projektstatusberichte.
+              - column:
+                  name: project_flow_step_id
+                  value: 18
+  - changeSet:
+      id: insert-project-flow-step-action-link-elbe
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action_link
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: project_flow_step_action_id
+                  value: 1
+              - column:
+                  name: external_link_id
+                  value: 10
+  - changeSet:
+      id: insert-project-flow-step-action-link-rahmenvertraege-itzbund
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action_link
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: project_flow_step_action_id
+                  value: 2
+              - column:
+                  name: external_link_id
+                  value: 21
+  - changeSet:
+      id: insert-project-flow-step-action-link-kaufhaus-des-bundes
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action_link
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: project_flow_step_action_id
+                  value: 2
+              - column:
+                  name: external_link_id
+                  value: 22
+  - changeSet:
+      id: insert-project-flow-step-action-link-ausschreibungsunterlagen
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action_link
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: project_flow_step_action_id
+                  value: 3
+              - column:
+                  name: external_link_id
+                  value: 23
+  - changeSet:
+      id: insert-project-flow-step-action-link-vorhaben-der-planer
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action_link
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: project_flow_step_action_id
+                  value: 4
+              - column:
+                  name: external_link_id
+                  value: 24
+  - changeSet:
+      id: insert-project-flow-step-action-link-itsm-suite
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action_link
+            columns:
+              - column:
+                  name: id
+                  value: 6
+              - column:
+                  name: project_flow_step_action_id
+                  value: 5
+              - column:
+                  name: external_link_id
+                  value: 8
+  - changeSet:
+      id: insert-project-flow-step-action-link-isar
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action_link
+            columns:
+              - column:
+                  name: id
+                  value: 7
+              - column:
+                  name: project_flow_step_action_id
+                  value: 6
+              - column:
+                  name: external_link_id
+                  value: 11
+  - changeSet:
+      id: insert-project-flow-step-action-link-informationen-verplichtungsabnahme
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action_link
+            columns:
+              - column:
+                  name: id
+                  value: 8
+              - column:
+                  name: project_flow_step_action_id
+                  value: 7
+              - column:
+                  name: external_link_id
+                  value: 25
+  - changeSet:
+      id: insert-project-flow-step-action-link-webex
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action_link
+            columns:
+              - column:
+                  name: id
+                  value: 9
+              - column:
+                  name: project_flow_step_action_id
+                  value: 8
+              - column:
+                  name: external_link_id
+                  value: 19
+  - changeSet:
+      id: insert-project-flow-step-action-link-adressbuch-bundesverwaltung
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action_link
+            columns:
+              - column:
+                  name: id
+                  value: 10
+              - column:
+                  name: project_flow_step_action_id
+                  value: 9
+              - column:
+                  name: external_link_id
+                  value: 20
+  - changeSet:
+      id: insert-project-flow-step-action-link-social-intranet-bund
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action_link
+            columns:
+              - column:
+                  name: id
+                  value: 11
+              - column:
+                  name: project_flow_step_action_id
+                  value: 10
+              - column:
+                  name: external_link_id
+                  value: 16
+  - changeSet:
+      id: insert-project-flow-step-action-link-aedl
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action_link
+            columns:
+              - column:
+                  name: id
+                  value: 12
+              - column:
+                  name: project_flow_step_action_id
+                  value: 11
+              - column:
+                  name: external_link_id
+                  value: 12
+  - changeSet:
+      id: insert-project-flow-step-action-link-itr4web
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action_link
+            columns:
+              - column:
+                  name: id
+                  value: 13
+              - column:
+                  name: project_flow_step_action_id
+                  value: 12
+              - column:
+                  name: external_link_id
+                  value: 13
+  - changeSet:
+      id: insert-project-flow-step-action-link-jira
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action_link
+            columns:
+              - column:
+                  name: id
+                  value: 14
+              - column:
+                  name: project_flow_step_action_id
+                  value: 13
+              - column:
+                  name: external_link_id
+                  value: 1
+  - changeSet:
+      id: insert-project-flow-step-action-link-isar-2
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_flow_step_action_link
+            columns:
+              - column:
+                  name: id
+                  value: 15
+              - column:
+                  name: project_flow_step_action_id
+                  value: 14
+              - column:
+                  name: external_link_id
+                  value: 11
+  - changeSet:
+      id: insert-operation-type-routeraustausch
+      author: nguyen
+      context: ba
+      changes:
+        - insert:
+            tableName: operation_type
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: name
+                  value: Routeraustausch
+              - column:
+                  name: default_type
+                  value: false
+  - changeSet:
+      id: insert-project-approach-routeraustausch-BA-Phasenmodell
+      author: nguyen
+      context: ba
+      changes:
+        - insert:
+            tableName: project_approach
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: name
+                  value: BA Phasenmodell
+              - column:
+                  name: iterative
+                  value: false
+              - column:
+                  name: operation_type_id
+                  value: 4
+  - changeSet:
+      id: insert-project-Routeraustausch-Oranienburg
+      author: nguyen
+      context: ba
+      changes:
+        - insert:
+            tableName: project
+            columns:
+              - column:
+                  name: id
+                  value: 6
+              - column:
+                  name: name
+                  value: Routeraustausch Oranienburg
+              - column:
+                  name: project_approach_id
+                  value: 5
+  - changeSet:
+      id: insert-project-approach-plan-template-connection-serveraustausch
+      author: nguyen
+      context: ba
+      changes:
+        - insert:
+            tableName: project_approach_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: project_approach_id
+                  value: 1
+              - column:
+                  name: plan_template_id
+                  value: 1
+  - changeSet:
+      id: insert-operation-type-plan-template-connection-master-plan-swe
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: operation_type_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: operation_type_id
+                  value: 2
+              - column:
+                  name: plan_template_id
+                  value: 2
+  - changeSet:
+      id: insert-project-approach-plan-template-connection-agil-swe
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_approach_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: project_approach_id
+                  value: 2
+              - column:
+                  name: plan_template_id
+                  value: 3
+  - changeSet:
+      id: insert-project-approach-plan-template-connection-agil-iterative
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_approach_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: project_approach_id
+                  value: 3
+              - column:
+                  name: plan_template_id
+                  value: 4
+  - changeSet:
+      id: insert-project-approach-plan-template-connection-linear-nach-UfaB
+      author: nguyen
+      changes:
+        - insert:
+            tableName: project_approach_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: project_approach_id
+                  value: 4
+              - column:
+                  name: plan_template_id
+                  value: 5
+  - changeSet:
+      id: insert-project-approach-plan-template-connection-linear-nach-UfaB-vereinfacht
+      author: nguyen
+      changes:
+        - insert:
+            tableName: project_approach_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: project_approach_id
+                  value: 4
+              - column:
+                  name: plan_template_id
+                  value: 6
+  - changeSet:
+      id: insert-project-approach-plan-template-connection-swe-iterative-non-standard-1
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_approach_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 6
+              - column:
+                  name: project_approach_id
+                  value: 3
+              - column:
+                  name: plan_template_id
+                  value: 7
+  - changeSet:
+      id: insert-project-approach-plan-template-connection-swe-iterative-non-standard-2
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_approach_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 7
+              - column:
+                  name: project_approach_id
+                  value: 3
+              - column:
+                  name: plan_template_id
+                  value: 8
+  - changeSet:
+      id: insert-project-approach-plan-template-connection-routeraustausch
+      author: nguyen
+      context: ba
+      changes:
+        - insert:
+            tableName: project_approach_plan_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 8
+              - column:
+                  name: project_approach_id
+                  value: 5
+              - column:
+                  name: plan_template_id
+                  value: 1

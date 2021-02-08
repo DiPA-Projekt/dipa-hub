@@ -1,6 +1,8 @@
 import * as d3 from 'd3';
 
 export class Increments {
+  public onClickAddButton?: () => void;
+  public onClickDeleteButton?: () => void;
 
   svg;
   readonly xScale;
@@ -19,16 +21,11 @@ export class Increments {
     this.setData(data);
   }
 
-  public onClickAddButton?: () => void;
-  public onClickDeleteButton?: () => void;
-
   setData(data): void {
-
     this.data = data;
 
     const dataGroup = this.svg.select('g' + '#incrementsArea' + this.incrementsAreaId + '.increment-group');
-    dataGroup.selectAll('g.incrementEntry')
-      .data(this.data);
+    dataGroup.selectAll('g.incrementEntry').data(this.data);
   }
 
   reset(offset): void {
@@ -39,20 +36,19 @@ export class Increments {
   }
 
   draw(offset): void {
-
     const dataGroup = this.svg.select('g' + '#incrementsArea' + this.incrementsAreaId + '.increment-group');
 
-    const incrementGroup = dataGroup.selectAll('g.incrementEntry')
+    const incrementGroup = dataGroup
+      .selectAll('g.incrementEntry')
       .data(this.data)
       .enter()
       .append('g')
       .attr('class', 'incrementEntry')
       .attr('id', (d) => 'incrementEntry_' + d.id)
-      .attr('transform', d => {
+      .attr('transform', (d) => {
         const incrementStartDate = new Date(d.start);
         incrementStartDate.setHours(0, 0, 0, 0);
-        return 'translate(' + (offset.left + this.xScale(incrementStartDate)) + ','
-          + offset.top + ')';
+        return 'translate(' + (offset.left + this.xScale(incrementStartDate)) + ',' + offset.top + ')';
       });
 
     // increment background
@@ -62,7 +58,7 @@ export class Increments {
       .style('fill', d3.rgb(this.elementColor).brighter())
       .style('stroke', d3.rgb(this.elementColor).darker())
       .attr('x', 0)
-      .attr('width', d => this.calculateBarWidth(d))
+      .attr('width', (d) => this.calculateBarWidth(d))
       .attr('y', 0)
       .attr('height', this.height);
 
@@ -73,14 +69,14 @@ export class Increments {
       .style('fill', this.elementColor)
       .style('stroke', d3.rgb(this.elementColor).darker())
       .attr('x', 0)
-      .attr('width', d => this.calculateBarWidth(d))
+      .attr('width', (d) => this.calculateBarWidth(d))
       .attr('y', 0)
       .attr('height', 24);
 
     // increment label
     incrementGroup
       .append('text')
-      .text(d => d.name)
+      .text((d) => d.name)
       .attr('class', 'incrementName')
       .attr('y', 12)
       .attr('text-anchor', 'middle')
@@ -90,7 +86,7 @@ export class Increments {
     const incrementActionsButton = incrementGroup
       .append('text')
       .attr('class', 'incrementActions')
-      .attr('x', d => this.calculateBarWidth(d))
+      .attr('x', (d) => this.calculateBarWidth(d))
       .attr('y', 12)
       .attr('text-anchor', 'end')
       .attr('dominant-baseline', 'central');
@@ -119,30 +115,23 @@ export class Increments {
   }
 
   redraw(offset): void {
-
     const dataGroup = this.svg.select('g' + '#incrementsArea' + this.incrementsAreaId + '.increment-group');
 
     // increment entry
-    const incrementGroup = dataGroup.selectAll('g.incrementEntry')
-      .attr('transform', d => {
-        const incrementStartDate = new Date(d.start);
-        incrementStartDate.setHours(0, 0, 0, 0);
-        return 'translate(' + (offset.left + this.xScale(incrementStartDate)) + ','
-          + offset.top + ')';
-      });
+    const incrementGroup = dataGroup.selectAll('g.incrementEntry').attr('transform', (d) => {
+      const incrementStartDate = new Date(d.start);
+      incrementStartDate.setHours(0, 0, 0, 0);
+      return 'translate(' + (offset.left + this.xScale(incrementStartDate)) + ',' + offset.top + ')';
+    });
 
-    incrementGroup.select('rect.increment')
-      .attr('width', d => this.calculateBarWidth(d));
+    incrementGroup.select('rect.increment').attr('width', (d) => this.calculateBarWidth(d));
 
-    incrementGroup.select('rect.incrementHeader')
-      .attr('width', d => this.calculateBarWidth(d));
+    incrementGroup.select('rect.incrementHeader').attr('width', (d) => this.calculateBarWidth(d));
 
-    incrementGroup.select('text.incrementActions')
-      .attr('x', d => this.calculateBarWidth(d));
+    incrementGroup.select('text.incrementActions').attr('x', (d) => this.calculateBarWidth(d));
 
     // increment labels
-    incrementGroup.select('text.incrementName')
-      .attr('x', d =>  this.calculateBarWidth(d) / 2);
+    incrementGroup.select('text.incrementName').attr('x', (d) => this.calculateBarWidth(d) / 2);
   }
 
   private calculateBarWidth(increment: any): number {

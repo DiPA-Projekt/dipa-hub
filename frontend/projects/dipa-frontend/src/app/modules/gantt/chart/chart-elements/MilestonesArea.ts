@@ -1,12 +1,12 @@
 import * as d3 from 'd3';
-import {parseSvg} from 'd3-interpolate/src/transform/parse';
-import {IChartElement} from './IChartElement';
-import {Milestone} from '../../../../../../../dipa-api-client/src';
-import {Timeline} from 'dipa-api-client';
+import { parseSvg } from 'd3-interpolate/src/transform/parse';
+import { Timeline, Milestone } from 'dipa-api-client';
+
+import { IChartElement } from './IChartElement';
+
 import ProjectTypeEnum = Timeline.ProjectTypeEnum;
 
 export class MilestonesArea implements IChartElement {
-
   svg;
   readonly xScale;
   data: any[];
@@ -34,7 +34,16 @@ export class MilestonesArea implements IChartElement {
   milestonesAreaId: number;
   timelineData: any;
 
-  constructor(svg: any, chartElement: any, xScale: any, data: any[],  modifiable: boolean, showMenu: boolean, milestonesAreaId: number, timelineData: Timeline) {
+  constructor(
+    svg: any,
+    chartElement: any,
+    xScale: any,
+    data: any[],
+    modifiable: boolean,
+    showMenu: boolean,
+    milestonesAreaId: number,
+    timelineData: Timeline
+  ) {
     this.svg = svg;
     this.xScale = xScale;
     this.data = data;
@@ -58,18 +67,13 @@ export class MilestonesArea implements IChartElement {
     const r1bb = r1.getBoundingClientRect();
     const r2bb = r2.getBoundingClientRect();
 
-    return !(r2bb.left > r1bb.right ||
-      r2bb.right < r1bb.left ||
-      r2bb.top > r1bb.bottom ||
-      r2bb.bottom < r1bb.top);
+    return !(r2bb.left > r1bb.right || r2bb.right < r1bb.left || r2bb.top > r1bb.bottom || r2bb.bottom < r1bb.top);
   }
 
   setData(data): void {
     this.data = data;
-
     const dataGroup = this.svg.select('g' + '#milestonesArea' + this.milestonesAreaId + '.data-group');
-    dataGroup.selectAll('g.milestoneEntry')
-      .data(this.data);
+    dataGroup.selectAll('g.milestoneEntry').data(this.data);
   }
 
   reset(offset): void {
@@ -82,19 +86,18 @@ export class MilestonesArea implements IChartElement {
   }
 
   draw(offset): void {
-
     const dataGroup = this.svg.select('g' + '#milestonesArea' + this.milestonesAreaId + '.data-group');
 
-    const drag = d3.drag()
+    const drag = d3
+      .drag()
       .on('drag', (event: d3.D3DragEvent<any, any, any>) => {
-
         // milestones
         const eventMilestone = dataGroup.select('#milestoneEntry_' + event.subject.id);
 
         const xTransformValue = parseSvg(eventMilestone.attr('transform')).translateX;
         const yTransformValue = parseSvg(eventMilestone.attr('transform')).translateY;
 
-        const xValueNew = (xTransformValue + event.dx);
+        const xValueNew = xTransformValue + event.dx;
 
         eventMilestone.attr('transform', 'translate(' + xValueNew + ',' + yTransformValue + ')');
 
@@ -103,12 +106,10 @@ export class MilestonesArea implements IChartElement {
         this.showTooltip(event.subject, event.sourceEvent.clientX, event.sourceEvent.clientY);
       })
       .on('start', (event: d3.D3DragEvent<any, any, any>) => {
-
-        this.initMilestoneDate = new Date(this.data.find(d => d.id === event.subject.id).date);
+        this.initMilestoneDate = new Date(this.data.find((d) => d.id === event.subject.id).date);
         this.initMilestoneDate.setHours(0, 0, 0, 0);
       })
       .on('end', (event: d3.D3DragEvent<any, any, any>) => {
-
         this.adjustMilestonePosition(event.subject);
 
         const milestoneDate: any = new Date(event.subject.date);
@@ -118,17 +119,19 @@ export class MilestonesArea implements IChartElement {
       });
 
     // milestones
-    const milestone = dataGroup.selectAll('g.milestoneEntry')
+    const milestone = dataGroup
+      .selectAll('g.milestoneEntry')
       .data(this.data)
       .enter()
       .append('g')
       .attr('class', 'milestoneEntry')
       .attr('id', (d) => 'milestoneEntry_' + d.id)
-      .attr('transform', d => {
+      .attr('transform', (d) => {
         const milestoneDate = new Date(d.date);
         milestoneDate.setHours(0, 0, 0, 0);
-        return 'translate(' + (offset.left + this.xScale(milestoneDate)) + ','
-          + (offset.top + this.elementHeight / 2) + ')';
+        return (
+          'translate(' + (offset.left + this.xScale(milestoneDate)) + ',' + (offset.top + this.elementHeight / 2) + ')'
+        );
       });
 
     const milestoneIcon = milestone
@@ -144,13 +147,7 @@ export class MilestonesArea implements IChartElement {
         this.showTooltip(d, event.clientX, event.clientY);
       })
       .on('mouseout', () => {
-        this.tooltip
-          .transition()
-          .duration(500)
-          .style('opacity', 0)
-          .transition()
-          .delay(500)
-          .style('display', 'none');
+        this.tooltip.transition().duration(500).style('opacity', 0).transition().delay(500).style('display', 'none');
       });
 
     if (this.modifiable) {
@@ -158,21 +155,16 @@ export class MilestonesArea implements IChartElement {
     }
 
     if (this.showMenu) {
-
       milestoneIcon.on('click', (event, d) => {
-
         if (d.id !== this.selectedMilestoneId) {
-
           this.resetMilestoneStyle();
 
           this.selectedMilestoneId = d.id;
 
           this.updateMilestoneStyle(d.id);
-
         }
 
         this.onSelectMilestone(d);
-
       });
     }
 
@@ -183,16 +175,14 @@ export class MilestonesArea implements IChartElement {
       .attr('class', 'material-icons milestoneStatusIcon')
       .attr('x', 0)
       .attr('y', 6)
-      .style('opacity', d => {
-        return d.status === Milestone.StatusEnum.Offen ? 0 : 1;
-    });
+      .style('opacity', (d: { status: Milestone.StatusEnum }) => (d.status === Milestone.StatusEnum.Open ? 0 : 1));
 
     const maxLabelWidth = 30;
 
     // milestone labels
     milestone
       .append('text')
-      .text(d => d.name)
+      .text((d) => d.name)
       .attr('class', 'milestoneLabel')
       .attr('x', 0)
       .attr('y', this.elementHeight)
@@ -206,24 +196,26 @@ export class MilestonesArea implements IChartElement {
     // milestones
     const dataGroup = this.svg.select('g' + '#milestonesArea' + this.milestonesAreaId + '.data-group');
 
-    dataGroup.selectAll('g.milestoneEntry')
+    dataGroup
+      .selectAll('g.milestoneEntry')
       .transition()
       .ease(d3.easeCubic)
       .duration(animationDuration)
-      .attr('transform', d => {
+      .attr('transform', (d) => {
         const milestoneDate = new Date(d.date);
         milestoneDate.setHours(0, 0, 0, 0);
-        return 'translate(' + (offset.left + this.xScale(milestoneDate)) + ','
-        + (offset.top + this.elementHeight / 2) + ')';
+        return (
+          'translate(' + (offset.left + this.xScale(milestoneDate)) + ',' + (offset.top + this.elementHeight / 2) + ')'
+        );
       });
 
     // update tooltip
-    dataGroup.selectAll('g.milestoneEntry')
+    dataGroup
+      .selectAll('g.milestoneEntry')
       .select('path.milestone')
       .on('mouseover', (event, d) => {
         this.showTooltip(d, event.clientX, event.clientY);
       });
-
   }
 
   public arrangeLabels(): void {
@@ -232,7 +224,7 @@ export class MilestonesArea implements IChartElement {
     const step = this.elementHeight / 2;
     const lastBBoxes = [];
 
-    dataGroup.selectAll('g.milestoneEntry text.milestoneLabel')._groups[0].forEach(x => {
+    dataGroup.selectAll('g.milestoneEntry text.milestoneLabel')._groups[0].forEach((x) => {
       // reset y value of each milestone
       x.setAttribute('y', this.elementHeight);
 
@@ -241,8 +233,7 @@ export class MilestonesArea implements IChartElement {
       while (MilestonesArea.intersectArray(x, lastBBoxes)) {
         const currentY = parseFloat(x.getAttribute('y'));
 
-        dataGroup.select('#' + x.parentElement.id + ' text.milestoneLabel')
-          .attr('y', currentY + step);
+        dataGroup.select('#' + x.parentElement.id + ' text.milestoneLabel').attr('y', currentY + step);
 
         x.setAttribute('y', currentY + step);
 
@@ -253,7 +244,8 @@ export class MilestonesArea implements IChartElement {
 
       if (showLine) {
         // draw line between milestone and label if they are drawn at a distance
-        dataGroup.select('#' + x.parentElement.id)
+        dataGroup
+          .select('#' + x.parentElement.id)
           .append('line')
           .attr('class', 'labelLine')
           .attr('x1', x.getAttribute('x'))
@@ -267,33 +259,27 @@ export class MilestonesArea implements IChartElement {
 
   showTooltip(d, x, y): void {
     this.tooltip
-      .style('top', (y + 20) + 'px')
-      .style('left', (x) + 'px')
+      .style('top', y + 20 + 'px')
+      .style('left', x + 'px')
       .style('display', 'block')
       .attr('font-size', 11)
-      .html(this.tooltipContent(d) )
+      .html(this.tooltipContent(d))
       .transition()
       .duration(500)
       .style('opacity', 1);
   }
 
   wrapLabel(svgText, maxWidth): void {
-
-    svgText.each(function(): void {
+    svgText.each(function (): void {
       const text = d3.select(this);
       const words = text.text().split(/\s+/);
 
       let line = [];
       const dy = text.attr('dy');
 
-      let tspan = text
-        .text(null)
-        .append('tspan')
-        .attr('x', 0)
-        .attr('dy', dy);
+      let tspan = text.text(null).append('tspan').attr('x', 0).attr('dy', dy);
 
       for (const word of words) {
-
         line.push(word);
 
         if (tspan.node().getComputedTextLength() > maxWidth) {
@@ -301,11 +287,7 @@ export class MilestonesArea implements IChartElement {
           tspan.text(line.join(' '));
           line = [word];
 
-          tspan = text
-            .append('tspan')
-            .attr('x', 0)
-            .attr('dy', '10')
-            .text(word);
+          tspan = text.append('tspan').attr('x', 0).attr('dy', '10').text(word);
         } else {
           tspan.text(line.join(' '));
         }
@@ -340,36 +322,33 @@ export class MilestonesArea implements IChartElement {
     const dataGroup = this.svg.select('g' + '#milestonesArea' + this.milestonesAreaId + '.data-group');
 
     dataGroup
-    .select('#milestoneEntry_' + milestoneId)
-    .select('path.milestone')
-    .attr('transform', 'scale(1.85 1.25)')
-    .style('stroke', d3.rgb('#2b41ff').darker());
+      .select('#milestoneEntry_' + milestoneId)
+      .select('path.milestone')
+      .attr('transform', 'scale(1.85 1.25)')
+      .style('stroke', d3.rgb('#2b41ff').darker());
 
     dataGroup
-    .select('#milestoneEntry_' + milestoneId)
-    .select('text.milestoneLabel')
-    .style('fill', d3.rgb('#2b41ff').darker());
+      .select('#milestoneEntry_' + milestoneId)
+      .select('text.milestoneLabel')
+      .style('fill', d3.rgb('#2b41ff').darker());
   }
 
   private resetMilestoneStyle(): void {
     const dataGroup = this.svg.select('g' + '#milestonesArea' + this.milestonesAreaId + '.data-group');
 
     if (this.selectedMilestoneId !== null) {
+      dataGroup
+        .select('#milestoneEntry_' + this.selectedMilestoneId)
+        .select('path.milestone')
+        .attr('transform', 'scale(1.75 1.2)')
+        .style('fill', this.elementColor)
+        .style('stroke', d3.rgb(this.elementColor).darker());
 
       dataGroup
-      .select('#milestoneEntry_' + this.selectedMilestoneId)
-      .select('path.milestone')
-      .attr('transform', 'scale(1.75 1.2)')
-      .style('fill', this.elementColor)
-      .style('stroke', d3.rgb(this.elementColor).darker());
-
-      dataGroup
-      .selectAll('g.milestoneEntry')
-      .select('text.milestoneLabel')
-      .style('fill', d3.rgb(this.elementColor).darker());
-
+        .selectAll('g.milestoneEntry')
+        .select('text.milestoneLabel')
+        .style('fill', d3.rgb(this.elementColor).darker());
     }
-
   }
 
   public onCloseMenu(): void {
@@ -378,10 +357,10 @@ export class MilestonesArea implements IChartElement {
   }
 
   public tooltipContent(data): any {
-    let tooltip = `${data.name}<br>` + `Fällig: ${new Date(data.date).toLocaleDateString('de-DE', this.dateOptions)}<br>`;
+    let tooltip =
+      `${data.name}<br>` + `Fällig: ${new Date(data.date).toLocaleDateString('de-DE', this.dateOptions)}<br>`;
     // alle Meilensteine der agilen Softwareentwicklung im ITZBund
     if (data.id >= 22 && data.id <= 27) {
-
       let projectType = '';
 
       if (this.timelineData.projectType === ProjectTypeEnum.InternesProjekt) {
@@ -403,5 +382,4 @@ export class MilestonesArea implements IChartElement {
 
     return tooltip;
   }
-
 }
