@@ -13,10 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.SessionScope;
 
+import online.dipa.hub.SessionState;
 import online.dipa.hub.TimelineState;
 import online.dipa.hub.api.model.Increment;
 import online.dipa.hub.api.model.Milestone;
-import online.dipa.hub.api.model.Timeline;
 import online.dipa.hub.api.model.TimelineTemplate;
 import online.dipa.hub.persistence.entities.ProjectApproachEntity;
 import online.dipa.hub.persistence.repositories.ProjectRepository;
@@ -27,15 +27,10 @@ import static java.time.temporal.ChronoUnit.DAYS;
 @Service
 @SessionScope
 @Transactional
-public class IncrementService {
-
-    private SessionService sessionService;
+public class IncrementService extends SessionState {
 
     @Autowired
     private ProjectRepository projectRespository;
-
-    @Autowired
-    private TimelineService timelineService;
 
     @Autowired
     private MilestoneService milestoneService;
@@ -44,14 +39,14 @@ public class IncrementService {
 
         initializeIncrements(timelineId);
 
-        List<Increment> result = sessionService.sessionTimelines.get(timelineId).getIncrements();
+        List<Increment> result = getSessionTimelines().get(timelineId).getIncrements();
 
         return Objects.requireNonNullElse(result, Collections.emptyList());
     }
 
     void initializeIncrements(final Long timelineId) {
-        TimelineState sessionTimeline = timelineService.findTimelineState(timelineId);
-        List<TimelineTemplate> currentSessionTemplates = sessionService.sessionTimelineTemplates.get(timelineId);
+        TimelineState sessionTimeline = findTimelineState(timelineId);
+        List<TimelineTemplate> currentSessionTemplates = getSessionTimelineTemplates().get(timelineId);
 
         if (sessionTimeline.getIncrements() == null) {
             final ProjectApproachEntity projectApproach = projectRespository.findAll().stream()
@@ -69,7 +64,7 @@ public class IncrementService {
     }
 
     public void addIncrement(Long timelineId) {
-        TimelineState sessionTimeline = timelineService.findTimelineState(timelineId);
+        TimelineState sessionTimeline = findTimelineState(timelineId);
 
         int incrementCount = sessionTimeline.getIncrements().size();
 
@@ -78,7 +73,7 @@ public class IncrementService {
     }
 
     public void deleteIncrement(Long timelineId) {
-        TimelineState sessionTimeline = timelineService.findTimelineState(timelineId);
+        TimelineState sessionTimeline = findTimelineState(timelineId);
 
         int incrementCount = sessionTimeline.getIncrements().size();
 
@@ -149,7 +144,7 @@ public class IncrementService {
 
     void updateIncrements(final Long timelineId) {
 
-        TimelineState sessionTimeline = sessionService.getSessionTimelines().get(timelineId);
+        TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
 
         List<Increment> increments = sessionTimeline.getIncrements();
 

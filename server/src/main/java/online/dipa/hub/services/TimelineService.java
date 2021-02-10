@@ -2,6 +2,7 @@ package online.dipa.hub.services;
 
 import net.fortuna.ical4j.model.TimeZone;
 import online.dipa.hub.IcsCalendar;
+import online.dipa.hub.SessionState;
 import online.dipa.hub.TimelineState;
 import online.dipa.hub.api.model.*;
 import online.dipa.hub.persistence.entities.PlanTemplateEntity;
@@ -28,9 +29,7 @@ import static online.dipa.hub.api.model.Timeline.ProjectTypeEnum;
 @Service
 @SessionScope
 @Transactional
-public class TimelineService {
-
-    private SessionService sessionService;
+public class TimelineService extends SessionState {
 
     @Autowired
     private ConversionService conversionService;
@@ -52,43 +51,37 @@ public class TimelineService {
     public List<Timeline> getTimelines() {
         initializeTimelines();
 
-        return sessionService.getSessionTimelines().values().stream().map(TimelineState::getTimeline).collect(Collectors.toList());
+        return getSessionTimelines().values().stream().map(TimelineState::getTimeline).collect(Collectors.toList());
     }
 
     public Timeline getTimeline(final Long timelineId) {
         initializeTimelines();
 
-        return sessionService.getSessionTimelines().values().stream().map(TimelineState::getTimeline)
+        return getSessionTimelines().values().stream().map(TimelineState::getTimeline)
                 .filter(t -> t.getId().equals(timelineId)).findFirst().orElseThrow(() -> new EntityNotFoundException(
                         String.format("Timeline with id: %1$s not found.", timelineId)));
     }
 
     private void initializeTimelines() {
+        Map<Long, TimelineState> listTimelines = new HashMap<>();
 
         projectRespository.findAll().stream().map(p -> conversionService.convert(p, Timeline.class))
                 .forEach(t -> {
                     TimelineState sessionTimeline = findTimelineState(t.getId());
+
                     if (sessionTimeline.getTimeline() == null) {
                         sessionTimeline.setTimeline(t);
                     }
+                    listTimelines.put(t.getId(), sessionTimeline);
                 });
+
+        setSessionTimelines(listTimelines);
     }
 
     ProjectApproachEntity findProjectApproach(Long projectApproachId) {
         return projectRespository.findAll().stream()
         .filter(p -> p.getProjectApproach().getId().equals(projectApproachId)).findFirst().orElseThrow(() -> new EntityNotFoundException(
                         String.format("Project approach with id: %1$s not found.", projectApproachId))).getProjectApproach();
-    }
-
-    public TimelineState findTimelineState(Long timelineId) {
-        return getSessionTimelines().computeIfAbsent(timelineId, t -> new TimelineState());
-    }
-
-    Map<Long, TimelineState> getSessionTimelines() {
-        if (sessionService.getSessionTimelines() == null) {
-            sessionService.setSessionTimelines(new HashMap<>());
-        }
-        return sessionService.getSessionTimelines();
     }
 
     public void moveTimelineByDays(final Long timelineId, final Long days) {
@@ -268,7 +261,7 @@ public class TimelineService {
         sessionTimeline.setIncrements(null);
         sessionTimeline.setTempIncrementMilestones(null);
 
-        sessionService.getSessionTimelineTemplates().remove(timeline.getId());
+        getSessionTimelineTemplates().remove(timeline.getId());
 
         milestoneService.initializeMilestones(timeline.getId());
         milestoneService.updateMilestonesAndIncrement(timeline);

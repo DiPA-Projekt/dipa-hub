@@ -1,6 +1,14 @@
 import { ResizedEvent } from 'angular-resize-event';
 import * as d3 from 'd3';
-import { IncrementsService, MilestonesService, TasksService, TimelinesService } from 'dipa-api-client';
+import { Increment,
+        IncrementsService,
+        Milestone,
+        MilestonesService,
+        Task,
+        TasksService,
+        Timeline,
+        TimelinesService,
+        } from 'dipa-api-client';
 import { forkJoin, Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 

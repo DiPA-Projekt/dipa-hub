@@ -1,5 +1,6 @@
 package online.dipa.hub.services;
 
+import online.dipa.hub.SessionState;
 import online.dipa.hub.TimelineState;
 import online.dipa.hub.persistence.entities.ProjectApproachEntity;
 
@@ -23,18 +24,18 @@ import static java.time.temporal.ChronoUnit.DAYS;
 @Service
 @SessionScope
 @Transactional
-public class MilestoneService extends TimelineService {
+public class MilestoneService extends SessionState {
     
     protected static final long FIRST_MASTER_MILESTONE_ID = 21;
     protected static final long LAST_MASTER_MILESTONE_ID = 28;
-
-    private SessionService sessionService;
-
     @Autowired
     private PlanTemplateRepository planTemplateRepository;
     
     @Autowired
     private ConversionService conversionService;
+
+    @Autowired
+    private TimelineService timelineService;
 
     @Autowired
     private IncrementService incrementService;
@@ -43,13 +44,13 @@ public class MilestoneService extends TimelineService {
     public List<Milestone> getMilestonesForTimeline(final Long timelineId) {
         initializeMilestones(timelineId);
 
-        return sessionService.getSessionTimelines().get(timelineId).getMilestones();
+        return getSessionTimelines().get(timelineId).getMilestones();
     }
 
     void initializeMilestones(final Long timelineId) {
         TimelineState sessionTimeline = findTimelineState(timelineId);
 
-        final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
+        final ProjectApproachEntity projectApproach = timelineService.findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
 
         if (projectApproach != null && sessionTimeline.getMilestones() == null) {
             if (projectApproach.isIterative()) {
@@ -98,7 +99,7 @@ public class MilestoneService extends TimelineService {
             milestones.removeIf(m -> m.getId().equals(FIRST_MASTER_MILESTONE_ID));
             milestones.removeIf(m -> m.getId().equals(LAST_MASTER_MILESTONE_ID));
 
-            this.getValuesFromHashMap( getIncrementMilestones(milestones, timelineId,
+            timelineService.getValuesFromHashMap( getIncrementMilestones(milestones, timelineId,
             incrementCount), incrementMilestones);
 
             return sortMilestones(incrementMilestones);
@@ -186,7 +187,7 @@ public class MilestoneService extends TimelineService {
     List<Milestone> getMilestonesFromRespository(final Long timelineId) {
         TimelineState sessionTimeline = findTimelineState(timelineId);
 
-        final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
+        final ProjectApproachEntity projectApproach = timelineService.findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
 
         List<Milestone> milestones = new ArrayList<>();
 
@@ -195,14 +196,14 @@ public class MilestoneService extends TimelineService {
             Long operationTypeId = projectApproach.getOperationType().getId();
 
             Optional<PlanTemplateEntity> masterPlanTemplate = planTemplateRepository.findAll().stream()
-                .filter(template -> filterOperationType(template, operationTypeId)).findFirst();
+                .filter(template -> timelineService.filterOperationType(template, operationTypeId)).findFirst();
 
             masterPlanTemplate.ifPresent(planTemplate -> milestones.addAll(convertMilestones(planTemplate)));
 
 
             Optional<PlanTemplateEntity> planTemplate = planTemplateRepository.findAll().stream()
                     .filter(template -> template.getProjectApproaches() != null)
-                    .filter(template -> filterProjectApproach(template, projectApproach.getId()))
+                    .filter(template -> timelineService.filterProjectApproach(template, projectApproach.getId()))
                     .filter(PlanTemplateEntity::getDefaultTemplate)
                     .findFirst();
 
@@ -282,4 +283,5 @@ public class MilestoneService extends TimelineService {
             incrementService.updateIncrements(timeline.getId());
         }
     }
+
 }

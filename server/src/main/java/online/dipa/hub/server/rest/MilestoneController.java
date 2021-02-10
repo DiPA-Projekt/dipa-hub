@@ -4,6 +4,8 @@ import online.dipa.hub.api.rest.MilestonesApi;
 
 import online.dipa.hub.api.model.*;
 import online.dipa.hub.services.MilestoneService;
+import online.dipa.hub.services.TimelineService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
@@ -15,6 +17,9 @@ public class MilestoneController implements MilestonesApi{
 
     @Autowired
     MilestoneService milestoneService;
+
+    @Autowired
+    TimelineService timelineService;
     
     @Override
     public ResponseEntity<List<Milestone>> getMilestonesForTimeline(final Long timelineId) {
@@ -33,7 +38,7 @@ public class MilestoneController implements MilestonesApi{
 
     @Override
     public ResponseEntity<List<DownloadFile>> getFilesForMilestone(final Long timelineId, final Long milestoneId) {
-        final List<DownloadFile> attachedFilesList = milestoneService.getFilesForMilestone(timelineId, milestoneId);
+        final List<DownloadFile> attachedFilesList = timelineService.getFilesForMilestone(timelineId, milestoneId);
         return ResponseEntity.ok(attachedFilesList);
     }
 
