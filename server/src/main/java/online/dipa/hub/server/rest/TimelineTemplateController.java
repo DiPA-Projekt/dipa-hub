@@ -12,19 +12,19 @@ import java.util.List;
 @RestApiController
 public class TimelineTemplateController implements TimelineTemplatesApi {
 
-   @Autowired
-   TimelineTemplateService timelineTemplateService;
+    @Autowired
+    TimelineTemplateService timelineTemplateService;
 
-   @Override
-   public ResponseEntity<List<TimelineTemplate>> getTemplatesForTimeline(final Long timelineId) {
-       final List<TimelineTemplate> timelineTemplates = timelineTemplateService.getTemplatesForTimeline(timelineId);
-       return ResponseEntity.ok(timelineTemplates);
-   }
+    @Override
+    public ResponseEntity<List<TimelineTemplate>> getTemplatesForTimeline(final Long timelineId) {
+        final List<TimelineTemplate> timelineTemplates = timelineTemplateService.getTemplatesForTimeline(timelineId);
+        return ResponseEntity.ok(timelineTemplates);
+    }
 
-   @Override
-   public ResponseEntity<Void> updateTemplate(final Long timelineId, final Long templateId) {
-       timelineTemplateService.updateTemplateForProject(timelineId, templateId);
-       return ResponseEntity.noContent().build();
-   }
+    @Override
+    public ResponseEntity<Void> updateTemplate(final Long timelineId, final Long templateId) {
+        timelineTemplateService.updateTemplateForProject(timelineId, templateId);
+        return ResponseEntity.noContent().build();
+    }
 
 }

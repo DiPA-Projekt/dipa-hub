@@ -22,14 +22,14 @@ import java.io.IOException;
 @RestApiController
 public class TimelineController implements TimelinesApi {
 
-   @Autowired
-   private TimelineService timelineService;
+    @Autowired
+    private TimelineService timelineService;
 
-   @Override
-   public ResponseEntity<List<Timeline>> getTimelines() {
-       final List<Timeline> timelines = timelineService.getTimelines();
-       return ResponseEntity.ok(timelines);
-   }
+    @Override
+    public ResponseEntity<List<Timeline>> getTimelines() {
+        final List<Timeline> timelines = timelineService.getTimelines();
+        return ResponseEntity.ok(timelines);
+    }
 
     @Override
     public ResponseEntity<Void> applyOperation(Long timelineId, InlineObject inlineObject) {

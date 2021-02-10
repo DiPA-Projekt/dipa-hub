@@ -11,12 +11,12 @@ import java.util.List;
 @RestApiController
 public class ProjectFlowController implements ProjectFlowApi {
 
-   @Autowired
-   private ProjectFlowService projectFlowService;
+    @Autowired
+    private ProjectFlowService projectFlowService;
 
-   @Override
-   public ResponseEntity<List<ProjectFlowStep>> getProjectFlow() {
-       final List<ProjectFlowStep> projectFlow = projectFlowService.getProjectFlow();
-       return ResponseEntity.ok(projectFlow);
-   }
+    @Override
+    public ResponseEntity<List<ProjectFlowStep>> getProjectFlow() {
+        final List<ProjectFlowStep> projectFlow = projectFlowService.getProjectFlow();
+        return ResponseEntity.ok(projectFlow);
+    }
 }

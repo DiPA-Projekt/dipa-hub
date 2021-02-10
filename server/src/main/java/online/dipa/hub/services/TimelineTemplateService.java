@@ -42,14 +42,14 @@ public class TimelineTemplateService extends TimelineService {
         final TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
         long count = 0;
 
-        TimelineTemplate currentTemplate = this.initializeCurrentTimelineTemplate(timelineId)
-                                    .id(count++);
+        TimelineTemplate currentTimelineTemplate = this.initializeCurrentTimelineTemplate(timelineId)
+                                                    .id(count++);
 
-        timelineTemplates.add(currentTemplate);
+        timelineTemplates.add(currentTimelineTemplate);
 
         final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
 
-        List<TimelineTemplate> timelineTemplatesFromRepo = getAllTimelineTemplates(timelineId, projectApproach, count);
+        List<TimelineTemplate> timelineTemplatesFromRepo = getTimelineTemplatesFromRepo(timelineId, projectApproach, count);
         
         timelineTemplates.addAll(timelineTemplatesFromRepo);
 
@@ -67,7 +67,7 @@ public class TimelineTemplateService extends TimelineService {
 
     }
 
-    private List<TimelineTemplate> getAllTimelineTemplates (final Long timelineId, final ProjectApproachEntity projectApproach, Long timelineTemplateId) {
+    private List<TimelineTemplate> getTimelineTemplatesFromRepo(final Long timelineId, final ProjectApproachEntity projectApproach, Long timelineTemplateId) {
 
         List<TimelineTemplate> timelineTemplatesFromRepo = new ArrayList<>();
 

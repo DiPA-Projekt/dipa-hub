@@ -11,21 +11,21 @@ import org.springframework.http.ResponseEntity;
 @RestApiController
 public class ProjectController implements ProjectApi {
 
-   @Autowired
-   private ProjectService projectService;
+    @Autowired
+    private ProjectService projectService;
 
 
-   @Override
-   public ResponseEntity<Project> getProjectData(final Long timelineId) {
-       final Project project = projectService.getProjectData(timelineId);
-       return ResponseEntity.ok(project);
-   }
+    @Override
+    public ResponseEntity<Project> getProjectData(final Long timelineId) {
+        final Project project = projectService.getProjectData(timelineId);
+        return ResponseEntity.ok(project);
+    }
 
-   @Override
-   public ResponseEntity<Void> updateProjectData(final Long timelineId, Project project) {
-       projectService.updateProjectData(timelineId, project);
-       return ResponseEntity.noContent().build();
-   }
+    @Override
+    public ResponseEntity<Void> updateProjectData(final Long timelineId, Project project) {
+        projectService.updateProjectData(timelineId, project);
+        return ResponseEntity.noContent().build();
+    }
 
 
 }

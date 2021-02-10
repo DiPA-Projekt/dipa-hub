@@ -70,18 +70,18 @@ export class SidenavComponent implements OnInit, OnDestroy {
       },
     ];
 
-    // this.favoriteLinksSubscription = this.externalLinksService.getFavoriteLinks().subscribe((data) => {
-    //   this.favoriteLinkItems = [
-    //     {
-    //       name: 'Favoriten-Links',
-    //       icon: 'bookmarks',
-    //       children: data.map((x) => ({
-    //         name: x.name,
-    //         icon: 'star',
-    //         url: x.url,
-    //       })),
-    //     },
-    //   ];
-    // });
+    this.favoriteLinksSubscription = this.externalLinksService.getFavoriteLinks().subscribe((data) => {
+      this.favoriteLinkItems = [
+        {
+          name: 'Favoriten-Links',
+          icon: 'bookmarks',
+          children: data.map((x) => ({
+            name: x.name,
+            icon: 'star',
+            url: x.url,
+          })),
+        },
+      ];
+    });
   }
 }

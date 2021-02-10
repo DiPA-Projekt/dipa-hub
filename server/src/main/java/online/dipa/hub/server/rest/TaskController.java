@@ -11,9 +11,9 @@ import online.dipa.hub.api.rest.TasksApi;
 @RestApiController
 public class TaskController implements TasksApi {
 
-   @Override
-   public ResponseEntity<List<Task>> getTasksForTimeline(final Long timelineId) {
-       return ResponseEntity.ok(Collections.emptyList());
-   }
+    @Override
+    public ResponseEntity<List<Task>> getTasksForTimeline(final Long timelineId) {
+        return ResponseEntity.ok(Collections.emptyList());
+    }
     
 }

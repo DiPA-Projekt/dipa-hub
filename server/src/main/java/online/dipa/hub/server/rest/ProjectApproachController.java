@@ -14,11 +14,11 @@ public class ProjectApproachController implements ProjectApproachesApi{
     
     @Autowired
     private ProjectApproachService projectApproachService;
-    
-   @Override
-   public ResponseEntity<List<ProjectApproach>> getProjectApproaches() {
-       final List<ProjectApproach> projectApproachList = projectApproachService.getProjectApproaches();
-       return ResponseEntity.ok(projectApproachList);
-   }
+
+    @Override
+    public ResponseEntity<List<ProjectApproach>> getProjectApproaches() {
+        final List<ProjectApproach> projectApproachList = projectApproachService.getProjectApproaches();
+        return ResponseEntity.ok(projectApproachList);
+    }
 
 }

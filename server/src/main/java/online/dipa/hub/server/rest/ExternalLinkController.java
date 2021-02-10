@@ -12,19 +12,19 @@ import java.util.List;
 @RestApiController
 public class ExternalLinkController implements ExternalLinksApi {
 
-   @Autowired
-   private ExternalLinkService externalLinkService;
+    @Autowired
+    private ExternalLinkService externalLinkService;
 
-   @Override
-   public ResponseEntity<List<ExternalLink>> getExternalLinks() {
-       final List<ExternalLink> externalLinks = externalLinkService.getExternalLinks();
-       return ResponseEntity.ok(externalLinks);
-   }
+    @Override
+    public ResponseEntity<List<ExternalLink>> getExternalLinks() {
+        final List<ExternalLink> externalLinks = externalLinkService.getExternalLinks();
+        return ResponseEntity.ok(externalLinks);
+    }
 
-   @Override
-   public ResponseEntity<List<ExternalLink>> getFavoriteLinks() {
-       final List<ExternalLink> favoriteLinks = externalLinkService.getFavoriteLinks();
-       return ResponseEntity.ok(favoriteLinks);
-   }
+    @Override
+    public ResponseEntity<List<ExternalLink>> getFavoriteLinks() {
+        final List<ExternalLink> favoriteLinks = externalLinkService.getFavoriteLinks();
+        return ResponseEntity.ok(favoriteLinks);
+    }
 
 }
