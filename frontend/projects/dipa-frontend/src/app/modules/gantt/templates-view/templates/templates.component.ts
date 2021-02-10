@@ -247,6 +247,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     // only resize if width was changed, height is not relevant here
     if (event.newWidth !== this.viewBoxWidth) {
       this.resizeChart(event.newWidth);
+      this.rearrangeMilestoneLabels(0);
     }
   }
 
@@ -555,14 +556,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
         this.redrawChart(0);
       } else {
         this.redrawChart(200);
-
-        clearTimeout(this.arrangeLabelTimeout);
-
-        this.arrangeLabelTimeout = setTimeout(() => {
-          for (const milestoneViewItem of this.milestonesArea) {
-            milestoneViewItem.arrangeLabels();
-          }
-        }, 200);
+        this.rearrangeMilestoneLabels(200);
       }
     } else {
       this.redrawChart(0);
@@ -573,6 +567,16 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
     this.periodStartDate = xScaleTransformed.invert(xScaleTransformed.range()[0]);
     this.periodEndDate = xScaleTransformed.invert(xScaleTransformed.range()[1]);
+  }
+
+  private rearrangeMilestoneLabels(timeout: number): void {
+    clearTimeout(this.arrangeLabelTimeout);
+
+    this.arrangeLabelTimeout = setTimeout(() => {
+      for (const milestoneViewItem of this.milestonesArea) {
+        milestoneViewItem.arrangeLabels();
+      }
+    }, timeout);
   }
 
   // set minimum and maximum zoom levels
