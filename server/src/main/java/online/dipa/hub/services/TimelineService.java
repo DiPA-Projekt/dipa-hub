@@ -30,8 +30,7 @@ import static online.dipa.hub.api.model.Timeline.ProjectTypeEnum;
 @Transactional
 public class TimelineService {
 
-    protected static Map<Long, TimelineState> sessionTimelines = new HashMap<>();
-    protected static Map<Long, List<TimelineTemplate>> sessionTimelineTemplates = new HashMap<>();
+    private SessionService sessionService;
 
     @Autowired
     private ConversionService conversionService;
@@ -53,13 +52,13 @@ public class TimelineService {
     public List<Timeline> getTimelines() {
         initializeTimelines();
 
-        return sessionTimelines.values().stream().map(TimelineState::getTimeline).collect(Collectors.toList());
+        return sessionService.getSessionTimelines().values().stream().map(TimelineState::getTimeline).collect(Collectors.toList());
     }
 
     public Timeline getTimeline(final Long timelineId) {
         initializeTimelines();
 
-        return sessionTimelines.values().stream().map(TimelineState::getTimeline)
+        return sessionService.getSessionTimelines().values().stream().map(TimelineState::getTimeline)
                 .filter(t -> t.getId().equals(timelineId)).findFirst().orElseThrow(() -> new EntityNotFoundException(
                         String.format("Timeline with id: %1$s not found.", timelineId)));
     }
@@ -82,14 +81,14 @@ public class TimelineService {
     }
 
     public TimelineState findTimelineState(Long timelineId) {
-        return sessionTimelines.computeIfAbsent(timelineId, t -> new TimelineState());
+        return getSessionTimelines().computeIfAbsent(timelineId, t -> new TimelineState());
     }
 
     Map<Long, TimelineState> getSessionTimelines() {
-        if (sessionTimelines == null) {
-            sessionTimelines = new HashMap<>();
+        if (sessionService.getSessionTimelines() == null) {
+            sessionService.setSessionTimelines(new HashMap<>());
         }
-        return sessionTimelines;
+        return sessionService.getSessionTimelines();
     }
 
     public void moveTimelineByDays(final Long timelineId, final Long days) {
@@ -269,7 +268,7 @@ public class TimelineService {
         sessionTimeline.setIncrements(null);
         sessionTimeline.setTempIncrementMilestones(null);
 
-        sessionTimelineTemplates.remove(timeline.getId());
+        sessionService.getSessionTimelineTemplates().remove(timeline.getId());
 
         milestoneService.initializeMilestones(timeline.getId());
         milestoneService.updateMilestonesAndIncrement(timeline);

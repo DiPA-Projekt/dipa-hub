@@ -23,9 +23,14 @@ import static java.time.temporal.ChronoUnit.DAYS;
 @Service
 @SessionScope
 @Transactional
-public class TimelineTemplateService extends TimelineService {
+public class TimelineTemplateService {
 
     private static final String CURRENT_TEMPLATE_NAME = "aktuell";
+
+    private SessionService sessionService;
+
+    @Autowired
+    private TimelineService timelineService;
 
     @Autowired
     private PlanTemplateRepository planTemplateRepository;
@@ -39,7 +44,8 @@ public class TimelineTemplateService extends TimelineService {
     public List<TimelineTemplate> getTemplatesForTimeline(final Long timelineId) {
 
         List<TimelineTemplate> timelineTemplates = new ArrayList<>();
-        final TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+        final TimelineState sessionTimeline = sessionService.getSessionTimelines()
+                                                            .get(timelineId);
         long count = 0;
 
         TimelineTemplate currentTimelineTemplate = this.initializeCurrentTimelineTemplate(timelineId)
@@ -47,13 +53,13 @@ public class TimelineTemplateService extends TimelineService {
 
         timelineTemplates.add(currentTimelineTemplate);
 
-        final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
+        final ProjectApproachEntity projectApproach = timelineService.findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
 
         List<TimelineTemplate> timelineTemplatesFromRepo = getTimelineTemplatesFromRepo(timelineId, projectApproach, count);
         
         timelineTemplates.addAll(timelineTemplatesFromRepo);
 
-        sessionTimelineTemplates.put(timelineId, timelineTemplates);
+        sessionService.getSessionTimelineTemplates().put(timelineId, timelineTemplates);
 
         return timelineTemplates;
     }
@@ -74,12 +80,12 @@ public class TimelineTemplateService extends TimelineService {
         Long operationTypeId = projectApproach.getOperationType().getId();
 
         Optional<PlanTemplateEntity> masterPlanTemplate = planTemplateRepository.findAll().stream()
-                                                                                .filter(template -> filterOperationType(template, operationTypeId))
+                                                                                .filter(template -> timelineService.filterOperationType(template, operationTypeId))
                                                                                 .findFirst();
 
         List<PlanTemplateEntity> projectApproachPlanTemplates = planTemplateRepository.findAll().stream()
                                                                                       .filter(template -> template.getProjectApproaches() != null)
-                                                                                      .filter(template -> filterProjectApproach(template, projectApproach.getId()))
+                                                                                      .filter(template -> timelineService.filterProjectApproach(template, projectApproach.getId()))
                                                                                       .collect(Collectors.toList());
 
         for (PlanTemplateEntity temp: projectApproachPlanTemplates) {
@@ -99,7 +105,7 @@ public class TimelineTemplateService extends TimelineService {
                 milestones = updateMilestonesTemplate(timelineId, milestones);
                 List<Milestone> tempMilestones = new ArrayList<>(milestoneService.convertMilestones(temp));
 
-                this.getValuesFromHashMap(milestoneService.getIncrementMilestones(tempMilestones,timelineId, 1), milestones);
+                timelineService.getValuesFromHashMap(milestoneService.getIncrementMilestones(tempMilestones,timelineId, 1), milestones);
 
                 template.milestones(milestoneService.sortMilestones(milestones));
 
@@ -121,9 +127,9 @@ public class TimelineTemplateService extends TimelineService {
     }
 
     public void updateTemplateForProject(final Long timelineId, final Long templateId) {
-        TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+        TimelineState sessionTimeline = sessionService.getSessionTimelines().get(timelineId);
 
-        List<TimelineTemplate> currentSessionTemplates = sessionTimelineTemplates.get(timelineId);
+        List<TimelineTemplate> currentSessionTemplates = sessionService.getSessionTimelineTemplates().get(timelineId);
         Optional<TimelineTemplate> selectedTemplateOptional = currentSessionTemplates.stream().filter(t -> t.getId().equals(templateId)).findFirst();
 
         if (selectedTemplateOptional.isPresent()) {
@@ -139,7 +145,7 @@ public class TimelineTemplateService extends TimelineService {
 
     private List<Milestone> updateMilestonesTemplate(final Long timelineId, List<Milestone> milestones) {
 
-        TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+        TimelineState sessionTimeline = sessionService.getSessionTimelines().get(timelineId);
         milestones = milestoneService.sortMilestones(milestones);
 
         LocalDate initTimelineStart = LocalDate.now();

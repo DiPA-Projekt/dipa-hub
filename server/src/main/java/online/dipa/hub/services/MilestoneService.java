@@ -27,7 +27,9 @@ public class MilestoneService extends TimelineService {
     
     protected static final long FIRST_MASTER_MILESTONE_ID = 21;
     protected static final long LAST_MASTER_MILESTONE_ID = 28;
-    
+
+    private SessionService sessionService;
+
     @Autowired
     private PlanTemplateRepository planTemplateRepository;
     
@@ -41,7 +43,7 @@ public class MilestoneService extends TimelineService {
     public List<Milestone> getMilestonesForTimeline(final Long timelineId) {
         initializeMilestones(timelineId);
 
-        return sessionTimelines.get(timelineId).getMilestones();
+        return sessionService.getSessionTimelines().get(timelineId).getMilestones();
     }
 
     void initializeMilestones(final Long timelineId) {
