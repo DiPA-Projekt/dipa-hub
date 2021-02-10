@@ -15,7 +15,7 @@
         <p>Status</p>
         <mat-radio-group
           [(ngModel)]="selectedMilestoneDataMenu.status"
-          *ngFor="let status of statusList | keyvalue: 0"
+          *ngFor="let status of statusList | keyvalue: returnZero"
           color="primary"
         >
           <div class="row">
