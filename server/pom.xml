@@ -158,6 +158,7 @@
                                 <apiPackage>online.dipa.hub.api.rest</apiPackage>
                                 <modelPackage>online.dipa.hub.api.model</modelPackage>
                                 <interfaceOnly>true</interfaceOnly>
+                                <useTags>true</useTags>
                                 <generateSupportingFiles>false</generateSupportingFiles>
                                 <generateModelTests>false</generateModelTests>
                                 <generateModelDocumentation>false</generateModelDocumentation>

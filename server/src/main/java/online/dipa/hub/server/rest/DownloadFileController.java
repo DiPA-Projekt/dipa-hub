@@ -1,6 +1,6 @@
 package online.dipa.hub.server.rest;
 
-import online.dipa.hub.api.rest.DownloadFileApi;
+import online.dipa.hub.api.rest.FilesApi;
 import online.dipa.hub.services.DownloadFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -11,26 +11,26 @@ import org.springframework.http.ResponseEntity;
 
 
 @RestApiController
-public class DownloadFileController implements DownloadFileApi {
+public class DownloadFileController implements FilesApi {
 
-    @Autowired
-    private DownloadFileService downloadFileService;
+   @Autowired
+   private DownloadFileService downloadFileService;
 
-    @Override
-    public ResponseEntity<Resource> getFile(final Long fileId) {
+   @Override
+   public ResponseEntity<Resource> getFile(final Long fileId) {
 
-        Resource urlResource = downloadFileService.getFile(fileId);
+       Resource urlResource = downloadFileService.getFile(fileId);
 
-        if (urlResource != null) {
-            // Access-Control-Expose-Headers
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType("application/octet-stream"))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + urlResource.getFilename() + "\"")
-                    .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
-                    .body(urlResource);
-        } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
+       if (urlResource != null) {
+           // Access-Control-Expose-Headers
+           return ResponseEntity.ok()
+                   .contentType(MediaType.parseMediaType("application/octet-stream"))
+                   .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + urlResource.getFilename() + "\"")
+                   .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
+                   .body(urlResource);
+       } else {
+           return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+       }
+   }
 
 }

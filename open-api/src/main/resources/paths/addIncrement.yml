@@ -1,6 +1,6 @@
 patch:
   tags:
-    - timelines-increment
+    - increments
   summary: Add increment for timeline
   description: Add increment for timeline
   operationId: addIncrement

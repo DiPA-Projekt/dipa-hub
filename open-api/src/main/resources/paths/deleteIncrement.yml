@@ -1,6 +1,6 @@
 patch:
   tags:
-    - timelines-increment
+    - increments
   summary: Delete increment for timeline
   description: Delete increment for timeline
   operationId: deleteIncrement

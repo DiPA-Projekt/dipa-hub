@@ -1,12 +1,6 @@
 import { ResizedEvent } from 'angular-resize-event';
 import * as d3 from 'd3';
-import {
-  IncrementsService,
-  MilestonesService,
-  TasksService,
-  TimelinesIncrementService,
-  TimelinesService,
-} from 'dipa-api-client';
+import { IncrementsService, MilestonesService, TasksService, TimelinesService } from 'dipa-api-client';
 import { forkJoin, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
@@ -104,8 +98,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     private milestonesService: MilestonesService,
     private tasksService: TasksService,
     private timelinesService: TimelinesService,
-    private incrementService: IncrementsService,
-    private timelinesIncrementService: TimelinesIncrementService,
+    private incrementsService: IncrementsService,
     private elementRef: ElementRef
   ) {
     d3.formatLocale({
@@ -432,11 +425,11 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.incrementsViewItem.draw({ left: 0, top: this.taskViewItem.getAreaHeight() });
 
     this.incrementsViewItem.onClickAddButton = () => {
-      const addIncrement$ = this.timelinesIncrementService.addIncrement(this.timelineData.id);
+      const addIncrement$ = this.incrementsService.addIncrement(this.timelineData.id);
       this.addIncrementSubscription = this.subscribeForReset(addIncrement$);
     };
     this.incrementsViewItem.onClickDeleteButton = () => {
-      const deleteIncrement$ = this.timelinesIncrementService.deleteIncrement(this.timelineData.id);
+      const deleteIncrement$ = this.incrementsService.deleteIncrement(this.timelineData.id);
       this.deleteIncrementSubscription = this.subscribeForReset(deleteIncrement$);
     };
   }
@@ -685,7 +678,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
             this.timelinesService.getTimelines(),
             this.tasksService.getTasksForTimeline(this.timelineData.id),
             this.milestonesService.getMilestonesForTimeline(this.timelineData.id),
-            this.incrementService.getIncrementsForTimeline(this.timelineData.id),
+            this.incrementsService.getIncrementsForTimeline(this.timelineData.id),
           ])
         )
       )
@@ -708,7 +701,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
             this.timelinesService.getTimelines(),
             this.tasksService.getTasksForTimeline(this.timelineData.id),
             this.milestonesService.getMilestonesForTimeline(this.timelineData.id),
-            this.incrementService.getIncrementsForTimeline(this.timelineData.id),
+            this.incrementsService.getIncrementsForTimeline(this.timelineData.id),
           ])
         )
       )

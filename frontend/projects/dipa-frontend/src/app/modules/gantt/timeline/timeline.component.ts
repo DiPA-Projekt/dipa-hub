@@ -8,7 +8,6 @@ import {
   OperationTypesService,
   ProjectApproachesService,
   TasksService,
-  TimelinesIncrementService,
   TimelinesService,
 } from 'dipa-api-client';
 import { ActivatedRoute } from '@angular/router';
@@ -53,7 +52,6 @@ export class TimelineComponent implements OnInit, OnDestroy {
     private timelinesService: TimelinesService,
     private milestonesService: MilestonesService,
     private tasksService: TasksService,
-    private timelinesIncrementService: TimelinesIncrementService,
     private incrementService: IncrementsService,
     private operationTypesService: OperationTypesService,
     private projectApproachesService: ProjectApproachesService,

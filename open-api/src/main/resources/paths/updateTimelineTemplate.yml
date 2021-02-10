@@ -1,6 +1,6 @@
 patch:
   tags:
-    - templates
+    - timelineTemplates
   summary: Update template for a project
   description: Apply a template for a project
   operationId: updateTemplate
@@ -13,7 +13,7 @@ patch:
       required: true
       description: Numeric ID of the timeline.
     - in: path
-      name: templateId
+      name: timelineTemplateId
       schema:
         type: integer
         format: int64

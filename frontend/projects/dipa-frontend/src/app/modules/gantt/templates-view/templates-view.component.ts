@@ -3,7 +3,12 @@ import { ActivatedRoute } from '@angular/router';
 import { GanttControlsService } from '../gantt-controls.service';
 import { TemplatesComponent } from './templates/templates.component';
 
-import { OperationTypesService, ProjectApproachesService, TemplatesService, TimelinesService } from 'dipa-api-client';
+import {
+  OperationTypesService,
+  ProjectApproachesService,
+  TimelineTemplatesService,
+  TimelinesService,
+} from 'dipa-api-client';
 
 import { forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
@@ -57,7 +62,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
     private operationTypesService: OperationTypesService,
     private projectApproachesService: ProjectApproachesService,
     public activatedRoute: ActivatedRoute,
-    private templateService: TemplatesService
+    private timelineTemplatesService: TimelineTemplatesService
   ) {}
 
   ngOnInit(): void {
@@ -101,7 +106,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
   setData(): void {
     this.vm$ = forkJoin([
       this.timelinesService.getTimelines(),
-      this.templateService.getTemplatesForTimeline(this.selectedTimelineId),
+      this.timelineTemplatesService.getTemplatesForTimeline(this.selectedTimelineId),
     ]).pipe(
       map(([timelinesData, templatesData]) => {
         this.selectedTemplatesList = [];
@@ -264,7 +269,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
   updateTemplateStandard(event): void {
     const templateId = this.standardTemplatesList[this.selectedStandardTemplateIndex].id;
 
-    this.updateTemplateSubscription = this.templateService
+    this.updateTemplateSubscription = this.timelineTemplatesService
       .updateTemplate(this.selectedTimelineId, templateId)
       .subscribe((data) => {
         this.setData();
@@ -274,7 +279,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
   updateTemplateNonStandard(event): void {
     const templateId = this.nonStandardTemplatesList[this.selectedNonStandardTemplateIndex].id;
 
-    this.updateTemplateSubscription = this.templateService
+    this.updateTemplateSubscription = this.timelineTemplatesService
       .updateTemplate(this.selectedTimelineId, templateId)
       .subscribe((data) => {
         this.setData();

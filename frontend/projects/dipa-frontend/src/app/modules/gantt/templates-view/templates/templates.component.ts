@@ -1,6 +1,6 @@
 import { ResizedEvent } from 'angular-resize-event';
 import * as d3 from 'd3';
-import { TemplatesService, TimelinesService } from 'dipa-api-client';
+import { TimelineTemplatesService, TimelinesService } from 'dipa-api-client';
 import { forkJoin, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
@@ -91,7 +91,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
   constructor(
     public templatesViewControlsService: TemplatesViewControlsService,
     private timelinesService: TimelinesService,
-    private templateService: TemplatesService,
+    private timelineTemplatesService: TimelineTemplatesService,
     private elementRef: ElementRef
   ) {
     d3.formatLocale({
@@ -623,7 +623,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
         switchMap(() =>
           forkJoin([
             this.timelinesService.getTimelines(),
-            this.templateService.getTemplatesForTimeline(this.timelineData.id),
+            this.timelineTemplatesService.getTemplatesForTimeline(this.timelineData.id),
           ])
         )
       )
