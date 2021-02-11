@@ -1,6 +1,5 @@
 package online.dipa.hub;
 
-import online.dipa.hub.TimelineState;
 import online.dipa.hub.api.model.*;
 import java.util.*;
 
@@ -14,7 +13,7 @@ public class SessionState {
     }
 
     public void setSessionTimelineTemplates(Map<Long, List<TimelineTemplate>> sessionTimelineTemplates) {
-        this.sessionTimelineTemplates = sessionTimelineTemplates;
+        SessionState.sessionTimelineTemplates = sessionTimelineTemplates;
     }
 
     public Map<Long, TimelineState> getSessionTimelines() {
@@ -25,13 +24,12 @@ public class SessionState {
     }
 
     public void setSessionTimelines(Map<Long, TimelineState> sessionTimelines) {
-        this.sessionTimelines = sessionTimelines;
+        SessionState.sessionTimelines = sessionTimelines;
     }
 
     public TimelineState findTimelineState(Long timelineId) {
         return getSessionTimelines().computeIfAbsent(timelineId, t -> new TimelineState());
     }
-
 
 
 }

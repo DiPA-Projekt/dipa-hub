@@ -21,6 +21,7 @@ public class IncrementController implements IncrementsApi {
         return ResponseEntity.ok(incrementsList);
     }
     
+    @Override
     public ResponseEntity<Void> addIncrement(final Long timelineId) {
         incrementService.addIncrement(timelineId);
         return ResponseEntity.noContent().build();
