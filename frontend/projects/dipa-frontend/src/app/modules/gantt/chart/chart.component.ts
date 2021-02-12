@@ -1,3 +1,4 @@
+import { EventEmitter } from '@angular/core';
 import { ResizedEvent } from 'angular-resize-event';
 import * as d3 from 'd3';
 import {
@@ -22,6 +23,7 @@ import {
   OnChanges,
   OnDestroy,
   OnInit,
+  Output,
   SimpleChanges,
   ViewChild,
   ViewEncapsulation,
@@ -36,6 +38,7 @@ import { XAxis } from './chart-elements/XAxis';
 import { MatRadioChange } from '@angular/material/radio';
 import { ScaleTime } from 'd3-scale';
 import { ZoomBehavior } from 'd3-zoom';
+import StatusEnum = Milestone.StatusEnum;
 
 @Component({
   selector: 'app-chart',
@@ -44,16 +47,21 @@ import { ZoomBehavior } from 'd3-zoom';
   encapsulation: ViewEncapsulation.None,
 })
 export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
+  @Input() isAdmin: boolean;
+  @Input() showActions: boolean;
   @Input() incrementsData: Increment[];
   @Input() milestoneData: Milestone[];
   @Input() taskData: Task[];
   @Input() timelineData: Timeline;
   @Input() projectStartDate: Date;
   @Input() projectEndDate: Date;
+  @Output() projectTypeChanged = new EventEmitter();
+  @Output() operationTypeChanged = new EventEmitter();
+  @Output() projectApproachChanged = new EventEmitter();
 
   @ViewChild('chart')
   chartFigure: ElementRef;
-  chartElement: HTMLElement = this.elementRef.nativeElement;
+  chartElement: HTMLElement = this.elementRef.nativeElement as HTMLElement;
 
   periodStartDate: Date;
   periodEndDate: Date;
@@ -89,7 +97,16 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   selectedMilestoneDataMenu: Milestone;
   selectedMilestoneId: number;
 
-  statusList = { open: 'offen', done: 'erledigt' };
+  statusList = [
+    {
+      value: StatusEnum.Open,
+      name: 'offen',
+    },
+    {
+      value: StatusEnum.Done,
+      name: 'erledigt',
+    },
+  ];
 
   // element for chart
   private svg: d3.Selection<any, any, any, any>;
@@ -188,7 +205,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
         if (this.xScale) {
           switch (data) {
             case 'DAYS': {
-              this.headerX.formatDate = this.headerX.formatDateDay;
+              this.headerX.formatDate = (d: Date) => this.headerX.formatDateDay(d);
 
               this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
                 this.onZoom(event, this.oneDayTick / 5);
@@ -199,7 +216,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
               break;
             }
             case 'WEEKS': {
-              this.headerX.formatDate = this.headerX.formatDateWeek;
+              this.headerX.formatDate = (d: Date) => this.headerX.formatDateWeek(d);
 
               this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
                 this.onZoom(event, (this.oneDayTick * 7) / 12);
@@ -210,7 +227,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
               break;
             }
             case 'MONTHS': {
-              this.headerX.formatDate = this.headerX.formatDateMonth;
+              this.headerX.formatDate = (d: Date) => this.headerX.formatDateMonth(d);
 
               this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
                 this.onZoom(event, (this.oneDayTick * 30) / 12);
@@ -221,7 +238,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
               break;
             }
             case 'YEARS': {
-              this.headerX.formatDate = this.headerX.formatDateYear;
+              this.headerX.formatDate = (d: Date) => this.headerX.formatDateYear(d);
 
               this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
                 this.onZoom(event, (this.oneDayTick * 365) / 12);
@@ -231,7 +248,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
               break;
             }
             case null: {
-              this.headerX.formatDate = this.headerX.formatDateFull;
+              this.headerX.formatDate = (d: Date) => this.headerX.formatDateFull(d);
               this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
                 this.onZoom(event, this.oneDayTick);
               });
@@ -274,7 +291,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   }
 
   ngAfterViewInit(): void {
-    this.resizeChart(this.chartFigure.nativeElement.offsetWidth);
+    const newSize = (this.chartFigure.nativeElement as HTMLElement).offsetWidth;
+    this.resizeChart(newSize);
   }
 
   getDate(date: string): any {
@@ -288,7 +306,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       this.timelineData.id,
       this.selectedMilestoneDataMenu.id,
       {
-        status: event.value,
+        status: event.value as Milestone.StatusEnum,
       }
     );
 
@@ -308,7 +326,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     }
   }
 
-  public createSvg(element: HTMLElement, id: number): d3.Selection<any, any, any, any> {
+  public createSvg(element: HTMLElement, id: string): d3.Selection<any, any, any, any> {
     const svg = d3
       .select(element)
       .select('figure')
@@ -344,21 +362,21 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
   private drawChart(): void {
     if (!this.svg) {
-      this.svg = this.createSvg(this.chartElement, +this.chartElement.id);
+      this.svg = this.createSvg(this.chartElement, this.chartElement.id);
       this.initializeSvgGraphElements();
 
       // zoom out a bit to show all data at start
       this.svg
         .transition()
         .duration(0)
-        .call(this.zoom.scaleBy, 0.8)
+        .call(this.zoom.scaleBy.bind(this), 0.8)
         .on('end', () => this.refreshXScale());
     }
 
     this.initializeXScale();
 
     this.headerX = new XAxis(this.svg, this.chartElement, this.xScale);
-    this.headerX.formatDate = this.headerX.formatDateFull;
+    this.headerX.formatDate = (d: Date) => this.headerX.formatDateFull(d);
     this.headerX.draw();
 
     this.projectDuration = new ProjectDuration(this.svg, this.chartElement, this.xScale, this.timelineData, true);
@@ -639,7 +657,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     }
 
     // reset the transform so the scale can be changed from other elements like dropdown menu
-    this.zoomElement.call(this.zoom.transform, d3.zoomIdentity);
+    this.zoomElement.call(this.zoom.transform.bind(this), d3.zoomIdentity);
 
     this.periodStartDate = xScaleTransformed.invert(xScaleTransformed.range()[0]);
     this.periodEndDate = xScaleTransformed.invert(xScaleTransformed.range()[1]);

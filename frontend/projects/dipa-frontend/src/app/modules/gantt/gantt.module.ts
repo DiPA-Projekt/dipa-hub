@@ -30,6 +30,8 @@ import { MatRadioModule } from '@angular/material/radio';
 import { TimelineComponent } from './timeline/timeline.component';
 import { VerticalStepperComponent } from './vertical-stepper/vertical-stepper.component';
 import { MatStepperModule } from '@angular/material/stepper';
+import { ChartHeaderComponent } from './chart/chart-header/chart-header.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @NgModule({
   declarations: [
@@ -44,6 +46,7 @@ import { MatStepperModule } from '@angular/material/stepper';
     ChartComponent,
     TimelineComponent,
     VerticalStepperComponent,
+    ChartHeaderComponent,
   ],
   exports: [ChartComponent, FilesComponent, NavMenuListItemComponent],
   imports: [
@@ -68,6 +71,7 @@ import { MatStepperModule } from '@angular/material/stepper';
     MatListModule,
     ReactiveFormsModule,
     MatStepperModule,
+    MatToolbarModule,
   ],
 })
 export class GanttModule {}
