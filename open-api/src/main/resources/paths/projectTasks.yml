@@ -1,0 +1,23 @@
+get:
+  tags:
+    - projectTasks
+  summary: Milestone List for Timeline
+  description: Retrieves the list of Milestones in a timeline.
+  operationId: getProjectTasks
+  parameters:
+    - in: path
+      name: timelineId
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: Numeric ID of the timeline to get.
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../models/projectTask.yml#/ProjectTask"

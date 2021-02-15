@@ -50,6 +50,9 @@ public class TimelineService {
     @Autowired
     private PlanTemplateRepository planTemplateRepository;
 
+    @Autowired
+    private ProjectTaskRepository projectTaskRepository;
+
     private static final long FIRST_MASTER_MILESTONE_ID = 21;
     private static final long LAST_MASTER_MILESTONE_ID = 28;
     private static final String CURRENT_TEMPLATE_NAME = "aktuell";
@@ -835,4 +838,10 @@ public class TimelineService {
 
     }
 
+    public List<ProjectTask> getProjectTasks (final Long timelineId) {
+        return projectTaskRepository.findAll()
+                .stream()
+                .map(p -> conversionService.convert(p, ProjectTask.class))
+                .collect(Collectors.toList());
+    }
 }

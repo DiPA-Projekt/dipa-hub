@@ -162,5 +162,12 @@ public class TimelineController implements TimelinesApi {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
+    public ResponseEntity<List<ProjectTask>> getProjectTasks(final Long timelineId) {
+        List<ProjectTask> projectTasks =  timelineService.getProjectTasks(timelineId);
+        return ResponseEntity.ok(projectTasks);
+    }
+
+
 
 }

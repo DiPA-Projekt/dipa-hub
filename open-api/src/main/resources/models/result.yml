@@ -15,6 +15,7 @@ Result:
       TYPE_CONTACT_PERS: "#/schemas/ContactPersonResult"
       TYPE_APPT_SERIES: "#/schemas/AppointmentSeriesResult"
       TYPE_RISK: "#/schemas/RiskResult"
+      TYPE_SINGLE_APPOINTMENT: "#/schemas/SingleAppointmentResult"
 schemas:
   StandardResult:
     allOf:
@@ -107,5 +108,26 @@ schemas:
             description: The solution to reduce this risk
             type: string
             example: "schätzen mit Punkten"
+          status:
+            $ref: "statusTypes/standardStatus.yml#/StandardStatus"
+  SingleAppointmentResult:
+    allOf:
+      - $ref: "result.yml#/Result"
+      - type: object
+        required:
+          - resultType
+        properties:
+          date:
+            description: The date of this appointment
+            type: string
+            example: "20.11.2021"
+          goal:
+            description: The goal of this appointment
+            type: string
+            example: "Budget Entscheidung treffen"
+          responsiblePerson:
+            description: Who is responsible for this appointment
+            type: string
+            example: "Frau Müller"
           status:
             $ref: "statusTypes/standardStatus.yml#/StandardStatus"
