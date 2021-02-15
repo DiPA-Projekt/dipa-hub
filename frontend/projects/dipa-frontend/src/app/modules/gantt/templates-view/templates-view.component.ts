@@ -1,13 +1,22 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 import { GanttControlsService } from '../gantt-controls.service';
 import { TemplatesComponent } from './templates/templates.component';
 
-import { OperationTypesService, ProjectApproachesService, TemplatesService, TimelinesService } from 'dipa-api-client';
+import {
+  OperationTypesService,
+  ProjectApproachesService,
+  Template,
+  TemplatesService,
+  Timeline,
+  TimelinesService,
+} from 'dipa-api-client';
 
-import { forkJoin, Observable } from 'rxjs';
+import { forkJoin, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
 import { TemplatesViewControlsService } from './templates-view-controls.service';
+import { MatButtonToggleChange, MatButtonToggleGroup } from '@angular/material/button-toggle';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-templates-view',
@@ -22,33 +31,25 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
   periodStartDate = new Date(2020, 0, 1);
   periodEndDate = new Date(2020, 11, 31);
 
-  operationTypesSubscription;
-  projectApproachesSubscription;
-
   vm$: Observable<any>;
 
-  timelineData = [];
+  timelineData: Timeline[] = [];
 
-  timelinesSubscription;
-  activatedRouteSubscription;
-  updateTemplateSubscription;
+  timelinesSubscription: Subscription;
+  activatedRouteSubscription: Subscription;
+  updateTemplateSubscription: Subscription;
 
   selectedTimelineId: number;
-  selectedProjectApproachId: number;
   selectedOperationTypeId: number;
-  selectedOperationTypeName: string;
-  selectedProjectApproachName: string;
 
-  selectedTemplatesList = [];
+  selectedTemplatesList: Template[] = [];
   selectedTemplatesIdList: any[];
 
-  standardTemplatesList = [];
+  standardTemplatesList: Template[] = [];
   selectedStandardTemplateIndex: number;
 
-  nonStandardTemplatesList = [];
+  nonStandardTemplatesList: Template[] = [];
   selectedNonStandardTemplateIndex: number;
-
-  projectApproachesList: any;
 
   constructor(
     public templatesViewControlsService: TemplatesViewControlsService,
@@ -63,38 +64,29 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.selectedStandardTemplateIndex = null;
 
-    this.projectApproachesSubscription = this.projectApproachesService.getProjectApproaches().subscribe((data) => {
-      this.projectApproachesList = data;
-    });
-
-    this.activatedRouteSubscription = this.activatedRoute.parent.params.subscribe((param) => {
-      this.selectedTimelineId = param.id;
-
-      this.timelinesSubscription = this.timelinesService.getTimelines().subscribe((data) => {
+    this.timelinesSubscription = this.activatedRoute.parent.params
+      .pipe(
+        switchMap(
+          (params: Params): Observable<Timeline[]> => {
+            this.selectedTimelineId = parseInt(params.id, 10);
+            return this.timelinesService.getTimelines();
+          }
+        )
+      )
+      .subscribe((data: Timeline[]) => {
         this.timelineData = data;
+
         this.setData();
 
         this.selectedOperationTypeId = this.timelineData.find(
           (item) => item.id === Number(this.selectedTimelineId)
         ).operationTypeId;
-        this.selectedProjectApproachId = this.timelineData.find(
-          (item) => item.id === Number(this.selectedTimelineId)
-        ).projectApproachId;
-
-        this.operationTypesSubscription = this.operationTypesService.getOperationTypes().subscribe((resOperation) => {
-          this.selectedOperationTypeName = resOperation.find(
-            (item) => item.id === Number(this.selectedOperationTypeId)
-          ).name;
-        });
       });
-    });
   }
 
   ngOnDestroy(): void {
     this.activatedRouteSubscription?.unsubscribe();
     this.timelinesSubscription?.unsubscribe();
-    this.projectApproachesSubscription?.unsubscribe();
-    this.operationTypesSubscription?.unsubscribe();
     this.updateTemplateSubscription?.unsubscribe();
   }
 
@@ -122,7 +114,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
         }
 
         const selectedTemplates = this.selectedTemplatesList;
-        this.selectedTemplatesIdList = this.selectedTemplatesList.map((t) => t.id);
+        this.selectedTemplatesIdList = this.selectedTemplatesList.map((t: Template) => t.id);
 
         const selectedTimeline = timelinesData.find((c) => c.id === Number(this.selectedTimelineId));
 
@@ -135,63 +127,59 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
     );
   }
 
-  onPrevStandard(event): void {
+  onPrevStandard(): void {
     if (this.standardTemplatesList.length > 0) {
       this.selectedStandardTemplateIndex = this.getPrevItemList(
         this.standardTemplatesList,
         this.selectedStandardTemplateIndex
       );
 
-      const id = this.standardTemplatesList[this.selectedStandardTemplateIndex].id;
-      this.selectedTemplatesIdList[1] = id;
+      this.selectedTemplatesIdList[1] = this.standardTemplatesList[this.selectedStandardTemplateIndex].id;
 
       this.templatesViewControlsService.setTemplatesList(this.selectedTemplatesIdList);
     }
   }
 
-  onNextStandard(event): void {
+  onNextStandard(): void {
     if (this.standardTemplatesList.length > 0) {
       this.selectedStandardTemplateIndex = this.getNextItemList(
         this.standardTemplatesList,
         this.selectedStandardTemplateIndex
       );
 
-      const id = this.standardTemplatesList[this.selectedStandardTemplateIndex].id;
-      this.selectedTemplatesIdList[1] = id;
+      this.selectedTemplatesIdList[1] = this.standardTemplatesList[this.selectedStandardTemplateIndex].id;
 
       this.templatesViewControlsService.setTemplatesList(this.selectedTemplatesIdList);
     }
   }
 
-  onPrevNonStandard(event): void {
+  onPrevNonStandard(): void {
     if (this.nonStandardTemplatesList.length > 0) {
       this.selectedNonStandardTemplateIndex = this.getPrevItemList(
         this.nonStandardTemplatesList,
         this.selectedNonStandardTemplateIndex
       );
 
-      const id = this.nonStandardTemplatesList[this.selectedNonStandardTemplateIndex].id;
-      this.selectedTemplatesIdList[2] = id;
+      this.selectedTemplatesIdList[2] = this.nonStandardTemplatesList[this.selectedNonStandardTemplateIndex].id;
 
       this.templatesViewControlsService.setTemplatesList(this.selectedTemplatesIdList);
     }
   }
 
-  onNextNonStandard(event): void {
+  onNextNonStandard(): void {
     if (this.nonStandardTemplatesList.length > 0) {
       this.selectedNonStandardTemplateIndex = this.getNextItemList(
         this.nonStandardTemplatesList,
         this.selectedNonStandardTemplateIndex
       );
 
-      const id = this.nonStandardTemplatesList[this.selectedNonStandardTemplateIndex].id;
-      this.selectedTemplatesIdList[2] = id;
+      this.selectedTemplatesIdList[2] = this.nonStandardTemplatesList[this.selectedNonStandardTemplateIndex].id;
 
       this.templatesViewControlsService.setTemplatesList(this.selectedTemplatesIdList);
     }
   }
 
-  getNextItemList(listItems, currentIndex): number {
+  getNextItemList(listItems: Template[], currentIndex: number): number {
     if (currentIndex + 1 < listItems.length) {
       currentIndex++;
     } else {
@@ -201,7 +189,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
     return currentIndex;
   }
 
-  getPrevItemList(listItems, currentIndex): number {
+  getPrevItemList(listItems: Template[], currentIndex: number): number {
     if (currentIndex - 1 >= 0) {
       currentIndex--;
     } else {
@@ -211,7 +199,24 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
     return currentIndex;
   }
 
-  createDateAtMidnight(date: any): Date {
+  changeViewType(event: MatButtonToggleChange): void {
+    const toggle = event.source;
+
+    if (toggle) {
+      const group: MatButtonToggleGroup = toggle.buttonToggleGroup;
+
+      const selectedValue = toggle.value as string;
+
+      if ((event.value as string[]).some((item: string) => item === selectedValue)) {
+        group.value = [selectedValue];
+        this.templatesViewControlsService.setViewType(selectedValue);
+      }
+    } else {
+      this.templatesViewControlsService.setViewType(null);
+    }
+  }
+
+  createDateAtMidnight(date: string | Date): Date {
     const dateAtMidnight = new Date(date);
     dateAtMidnight.setHours(0, 0, 0, 0);
     return dateAtMidnight;
@@ -222,61 +227,22 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
     return new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
   }
 
-  changeViewType(event): void {
-    const toggle = event.source;
-
-    if (toggle) {
-      const group = toggle.buttonToggleGroup;
-
-      if (event.value.some((item) => item === toggle.value)) {
-        group.value = [toggle.value];
-      }
-      this.templatesViewControlsService.setViewType(group.value[0]);
-    } else {
-      this.templatesViewControlsService.setViewType(null);
-    }
-  }
-
-  changeProjectApproach(event): void {
-    const selectedTimeline = this.timelineData.find((item) => item.id === Number(this.selectedTimelineId));
-
-    selectedTimeline.projectApproachId = event.value;
-
-    this.timelinesService.updateTimeline(selectedTimeline.id, selectedTimeline).subscribe((d) => {
-      this.timelinesSubscription = this.timelinesService.getTimelines().subscribe((data) => {
-        this.timelineData = data;
-
-        this.selectedProjectApproachId = this.timelineData.find(
-          (item) => item.id === Number(this.selectedTimelineId)
-        ).projectApproachId;
-
-        this.setData();
-      });
-    });
-  }
-
-  filterProjectApproaches(): any[] {
-    return this.projectApproachesList.filter(
-      (projectApproach) => projectApproach.operationTypeId === this.selectedOperationTypeId
-    );
-  }
-
-  updateTemplateStandard(event): void {
+  updateTemplateStandard(): void {
     const templateId = this.standardTemplatesList[this.selectedStandardTemplateIndex].id;
 
     this.updateTemplateSubscription = this.templateService
       .updateTemplate(this.selectedTimelineId, templateId)
-      .subscribe((data) => {
+      .subscribe(() => {
         this.setData();
       });
   }
 
-  updateTemplateNonStandard(event): void {
+  updateTemplateNonStandard(): void {
     const templateId = this.nonStandardTemplatesList[this.selectedNonStandardTemplateIndex].id;
 
     this.updateTemplateSubscription = this.templateService
       .updateTemplate(this.selectedTimelineId, templateId)
-      .subscribe((data) => {
+      .subscribe(() => {
         this.setData();
       });
   }

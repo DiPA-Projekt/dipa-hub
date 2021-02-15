@@ -206,7 +206,7 @@ export class MilestonesArea implements IChartElement {
       .attr('x', 0)
       .attr('y', this.elementHeight)
       .style('fill', d3.rgb(this.elementColor).darker().formatHex())
-      .call(this.wrapLabel, maxLabelWidth);
+      .call(this.wrapLabel.bind(this), maxLabelWidth);
 
     setTimeout(() => {
       this.arrangeLabels();

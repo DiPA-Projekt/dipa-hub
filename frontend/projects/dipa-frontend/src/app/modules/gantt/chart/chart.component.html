@@ -15,12 +15,12 @@
         <p>Status</p>
         <mat-radio-group
           [(ngModel)]="selectedMilestoneDataMenu.status"
-          *ngFor="let status of statusList | keyvalue: returnZero"
+          *ngFor="let status of statusList"
           color="primary"
         >
           <div class="row">
-            <mat-radio-button [value]="status.key" (change)="changeStatus($event)">
-              {{ status.value }}
+            <mat-radio-button [value]="status.value" (change)="changeStatus($event)">
+              {{ status.name }}
             </mat-radio-button>
           </div>
           <br />
@@ -31,6 +31,14 @@
     </div>
   </mat-sidenav>
   <mat-sidenav-content>
+    <app-chart-header
+      [timelineData]="timelineData"
+      [isAdmin]="isAdmin"
+      [showActions]="showActions"
+      (projectTypeChanged)="projectTypeChanged.emit($event)"
+      (operationTypeChanged)="operationTypeChanged.emit($event)"
+      (projectApproachChanged)="projectApproachChanged.emit($event)"
+    ></app-chart-header>
     <div class="chart">
       <figure id="chart" (resized)="onResized($event)" #chart></figure>
     </div>
