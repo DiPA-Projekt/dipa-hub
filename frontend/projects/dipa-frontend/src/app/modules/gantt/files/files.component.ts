@@ -1,18 +1,19 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { MilestonesService } from 'dipa-api-client';
 import { NavItem } from '../../../nav-item';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-files',
   templateUrl: './files.component.html',
 })
 export class FilesComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() timelineId;
-  @Input() milestoneId;
+  @Input() timelineId: number;
+  @Input() milestoneId: number;
 
   fileItems: NavItem[] = [];
 
-  downloadFilesSubscription;
+  downloadFilesSubscription: Subscription;
 
   constructor(private milestonesService: MilestonesService) {}
 
@@ -25,7 +26,7 @@ export class FilesComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.downloadFilesSubscription.unsubscribe();
+    this.downloadFilesSubscription?.unsubscribe();
   }
 
   setFileList(): void {

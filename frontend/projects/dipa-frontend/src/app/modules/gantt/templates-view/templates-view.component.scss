@@ -1,3 +1,7 @@
+.full-width-spacer {
+  flex: 1 1 auto;
+}
+
 .mat-form-field--inline .mat-form-field {
   margin-right: 10px;
 }
@@ -46,13 +50,19 @@ mat-sidenav-content {
 }
 
 .template-controller {
+  position: absolute;
   text-align: center;
   justify-content: center;
   margin: auto;
-  padding-top: 140px;
+  width: 100%;
 }
 
 .template-controller-container {
+  position: relative;
+  width: 160px;
+}
+
+.template-controller-column {
   display: inline-flex;
 }
 

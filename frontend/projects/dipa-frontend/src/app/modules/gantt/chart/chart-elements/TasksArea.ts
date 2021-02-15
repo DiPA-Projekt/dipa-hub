@@ -1,14 +1,25 @@
 import * as d3 from 'd3';
 import { parseSvg } from 'd3-interpolate/src/transform/parse';
 import { IChartElement } from './IChartElement';
+import { ScaleTime } from 'd3-scale';
+import { Task } from 'dipa-api-client';
+
+interface SvgParse {
+  translateX: number;
+  translateY: number;
+  rotate: number;
+  skewX: number;
+  scaleX: number;
+  scaleY: number;
+}
 
 export class TasksArea implements IChartElement {
-  svg;
-  readonly xScale;
-  data: any[];
-  tooltip;
+  svg: d3.Selection<any, any, any, any>;
+  tooltip: d3.Selection<any, any, any, any>;
+  readonly xScale: ScaleTime<any, any>;
+  data: Task[];
 
-  animationDuration;
+  animationDuration: number;
 
   dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
 
@@ -21,7 +32,7 @@ export class TasksArea implements IChartElement {
   dragDxStack = 0;
   dragBarWidth = 5;
 
-  constructor(svg: any, xScale: any, data: any[]) {
+  constructor(svg: d3.Selection<any, any, any, any>, xScale: ScaleTime<any, any>, data: Task[]) {
     this.svg = svg;
     this.xScale = xScale;
     this.data = data;
@@ -29,37 +40,40 @@ export class TasksArea implements IChartElement {
     this.tooltip = d3.select('figure#chart .tooltip');
   }
 
-  setData(data): void {
+  setData(data: Task[]): void {
     this.data = data;
 
     const dataGroup = this.svg.select('g.data-group');
     dataGroup.selectAll('g.taskEntry').data(this.data);
   }
 
-  reset(offset): void {
+  reset(offset: { [key: string]: number }): void {
     const dataGroup = this.svg.select('g.data-group');
     dataGroup.selectAll('g.taskEntry').remove();
     this.draw(offset);
     this.redraw(offset);
   }
 
-  draw(offset): void {
+  draw(offset: { [key: string]: number }): void {
     const dataGroup = this.svg.select('g.data-group');
 
-    const drag = d3.drag().on('drag', (event: d3.D3DragEvent<any, any, any>) => {
+    const drag = d3.drag().on('drag', (event: d3.D3DragEvent<any, any, Task>) => {
       // tasks
-      const eventTask = dataGroup.select('#taskEntry_' + event.subject.id);
+      const eventTask = dataGroup.select(`#taskEntry_${event.subject.id}`);
 
-      const xTransformValue = parseSvg(eventTask.attr('transform')).translateX;
-      const yTransformValue = parseSvg(eventTask.attr('transform')).translateY;
+      const transform = eventTask.attr('transform');
+      const transformSVGElement = parseSvg(transform) as SvgParse;
+
+      const xTransformValue = transformSVGElement.translateX;
+      const yTransformValue = transformSVGElement.translateY;
 
       const xValueStartNew = xTransformValue + event.dx;
       const xValueEndNew = xValueStartNew + this.calculateBarWidth(event.subject);
 
-      eventTask.attr('transform', () => 'translate(' + xValueStartNew + ',' + yTransformValue + ')');
+      eventTask.attr('transform', () => `translate(${xValueStartNew},${yTransformValue})`);
 
-      event.subject.start = this.xScale.invert(xValueStartNew);
-      event.subject.end = this.xScale.invert(xValueEndNew);
+      event.subject.start = this.xScale.invert(xValueStartNew).toISOString();
+      event.subject.end = this.xScale.invert(xValueEndNew).toISOString();
 
       this.refreshLabelPosition(eventTask);
 
@@ -68,11 +82,11 @@ export class TasksArea implements IChartElement {
 
     const dragRight = d3
       .drag()
-      .on('drag', (event: d3.D3DragEvent<any, any, any>) => {
+      .on('drag', (event: d3.D3DragEvent<any, any, Task>) => {
         let dragDx = event.dx;
 
         // task
-        const eventTask = dataGroup.select('#taskEntry_' + event.subject.id);
+        const eventTask = dataGroup.select(`#taskEntry_${event.subject.id}`);
 
         const width = eventTask.select('rect.task').attr('width');
         const xTransformValue = parseSvg(eventTask.attr('transform')).translateX;
@@ -95,7 +109,7 @@ export class TasksArea implements IChartElement {
 
         eventTask.select('rect.task').attr('width', widthNew);
 
-        event.subject.end = this.xScale.invert(xTransformValue + widthNew);
+        event.subject.end = this.xScale.invert(xTransformValue + widthNew).toISOString();
 
         // update right drag bar handle position
         const xValueDragBarRight = eventTask.select('rect.dragBarRight').attr('x');
@@ -106,17 +120,17 @@ export class TasksArea implements IChartElement {
 
         this.showTooltip(event.subject, event.sourceEvent.layerX, event.sourceEvent.layerY);
       })
-      .on('end', (event: d3.D3DragEvent<any, any, any>) => {
+      .on('end', (event: d3.D3DragEvent<any, any, Task>) => {
         this.dragDxStack = 0;
       });
 
     const dragLeft = d3
       .drag()
-      .on('drag', (event: d3.D3DragEvent<any, any, any>) => {
+      .on('drag', (event: d3.D3DragEvent<any, any, Task>) => {
         let dragDx = event.dx;
 
         // task
-        const eventTask = dataGroup.select('#taskEntry_' + event.subject.id);
+        const eventTask = dataGroup.select(`#taskEntry_${event.subject.id}`);
 
         const oldX = parseFloat(eventTask.select('rect.task').attr('x'));
 
@@ -144,7 +158,7 @@ export class TasksArea implements IChartElement {
 
         eventTask.select('rect.task').attr('x', +oldX + dragDx);
 
-        event.subject.start = this.xScale.invert(xValueNew + oldX);
+        event.subject.start = this.xScale.invert(xValueNew + oldX).toISOString();
 
         eventTask.select('rect.task').attr('width', widthNew);
 
@@ -163,7 +177,7 @@ export class TasksArea implements IChartElement {
         this.dragDxStack = 0;
 
         // task
-        const eventTask = dataGroup.select('#taskEntry_' + event.subject.id);
+        const eventTask = dataGroup.select(`#taskEntry_${event.subject.id}`);
 
         const oldX = parseFloat(eventTask.select('rect.task').attr('x'));
 
@@ -172,7 +186,7 @@ export class TasksArea implements IChartElement {
 
         const xValueNew = xTransformValue + oldX;
 
-        eventTask.attr('transform', 'translate(' + xValueNew + ',' + yTransformValue + ')');
+        eventTask.attr('transform', `translate(${xValueNew},${yTransformValue})`);
 
         eventTask.select('rect.task').attr('x', 0);
 
@@ -195,17 +209,13 @@ export class TasksArea implements IChartElement {
       .enter()
       .append('g')
       .attr('class', 'taskEntry')
-      .attr('id', (d) => 'taskEntry_' + d.id)
+      .attr('id', (d) => `taskEntry_${d.id}`)
       .attr('transform', (d, i) => {
         const taskStartDate = new Date(d.start);
         taskStartDate.setHours(0, 0, 0, 0);
-        return (
-          'translate(' +
-          (offset.left + this.xScale(taskStartDate)) +
-          ',' +
-          (offset.top + this.elementHeightWithMargin * i + this.elementHeight / 2) +
-          ')'
-        );
+        return `translate(${offset.left + parseInt(this.xScale(taskStartDate), 10)},${
+          offset.top + this.elementHeightWithMargin * i + this.elementHeight / 2
+        })`;
       })
       .call(drag);
 
@@ -213,7 +223,7 @@ export class TasksArea implements IChartElement {
       .append('rect')
       .attr('class', 'task')
       .style('fill', this.elementColor)
-      .style('stroke', d3.rgb(this.elementColor).darker())
+      .style('stroke', d3.rgb(this.elementColor).darker().formatHex())
       .attr('x', 0)
       .attr('width', (d) => this.calculateBarWidth(d))
       .attr('y', 0)
@@ -227,7 +237,7 @@ export class TasksArea implements IChartElement {
       .attr('class', 'dragBarLeft')
       .attr('width', this.dragBarWidth)
       .attr('fill', this.elementColor)
-      .attr('stroke', d3.rgb(this.elementColor).darker())
+      .attr('stroke', d3.rgb(this.elementColor).darker().formatHex())
       .call(dragLeft);
 
     taskGroup
@@ -238,12 +248,12 @@ export class TasksArea implements IChartElement {
       .attr('height', this.elementHeight)
       .attr('width', this.dragBarWidth)
       .attr('fill', this.elementColor)
-      .attr('stroke', d3.rgb(this.elementColor).darker())
+      .attr('stroke', d3.rgb(this.elementColor).darker().formatHex())
       .call(dragRight);
 
     taskGroup
       .on('mouseover', (event, d) => {
-        const eventTask = dataGroup.select('#taskEntry_' + d.id);
+        const eventTask = dataGroup.select(`#taskEntry_${d.id}`);
         eventTask.select('rect.dragBarLeft').transition().duration(500).style('opacity', 1);
 
         eventTask.select('rect.dragBarRight').transition().duration(500).style('opacity', 1);
@@ -251,7 +261,7 @@ export class TasksArea implements IChartElement {
         this.showTooltip(d, event.clientX, event.clientY);
       })
       .on('mouseout', (event, d) => {
-        const eventTask = dataGroup.select('#taskEntry_' + d.id);
+        const eventTask = dataGroup.select(`#taskEntry_${d.id}`);
         eventTask.select('rect.dragBarLeft').transition().duration(500).style('opacity', 0);
 
         eventTask.select('rect.dragBarRight').transition().duration(500).style('opacity', 0);
@@ -265,7 +275,7 @@ export class TasksArea implements IChartElement {
       .text((d) => d.name)
       .attr('class', 'taskLabel')
       .attr('x', (d) => {
-        const eventTask = dataGroup.select('#taskEntry_' + d.id);
+        const eventTask = dataGroup.select(`#taskEntry_${d.id}`);
 
         const xTransformValue = parseSvg(eventTask.attr('transform')).translateX;
 
@@ -278,32 +288,28 @@ export class TasksArea implements IChartElement {
       .attr('text-height', this.elementHeight);
   }
 
-  redraw(offset): void {
+  redraw(offset: { [key: string]: number }): void {
     // tasks
     const dataGroup = this.svg.select('g.data-group');
 
-    const taskGroup = dataGroup.selectAll('g.taskEntry').attr('transform', (d, i) => {
+    const taskGroup = dataGroup.selectAll('g.taskEntry').attr('transform', (d: Task, i: number) => {
       const taskStartDate = new Date(d.start);
       taskStartDate.setHours(0, 0, 0, 0);
-      return (
-        'translate(' +
-        (offset.left + this.xScale(taskStartDate)) +
-        ',' +
-        (offset.top + this.elementHeightWithMargin * i + this.elementHeight / 2) +
-        ')'
-      );
+      return `translate(${offset.left + parseInt(this.xScale(taskStartDate), 10)},${
+        offset.top + this.elementHeightWithMargin * i + this.elementHeight / 2
+      })`;
     });
 
-    taskGroup.selectAll('rect.task').attr('width', (d) => this.calculateBarWidth(d));
+    taskGroup.selectAll('rect.task').attr('width', (d: Task) => this.calculateBarWidth(d));
 
-    taskGroup.selectAll('rect.dragBarRight').attr('x', (d) => this.calculateBarWidth(d) + 5);
+    taskGroup.selectAll('rect.dragBarRight').attr('x', (d: Task) => this.calculateBarWidth(d) + 5);
 
     // task labels
-    taskGroup.selectAll('text.taskLabel').attr('x', (d) => {
+    taskGroup.selectAll('text.taskLabel').attr('x', (d: Task) => {
       let xValueToAdd = 0;
 
       if (this.isVisible(d)) {
-        const eventTask = dataGroup.select('#taskEntry_' + d.id);
+        const eventTask = dataGroup.select(`#taskEntry_${d.id}`);
 
         const xTransformValue = parseSvg(eventTask.attr('transform')).translateX;
         const xValue = parseFloat(eventTask.select('rect.task').attr('x'));
@@ -315,22 +321,7 @@ export class TasksArea implements IChartElement {
     });
   }
 
-  private calculateBarWidth(task: any): number {
-    return this.xScale(new Date(task.end)) - this.xScale(new Date(task.start));
-  }
-
-  // get label position of a task depending on chart range so it is displayed centered on the visible part of the bar
-  private calculateTaskLabelPosition(d: any): number {
-    const xScaleStart = this.xScale(new Date(d.start));
-    const xScaleEnd = this.xScale(new Date(d.end));
-
-    const startPosition = Math.max(xScaleStart, this.xScale.range()[0]);
-    const endPosition = Math.min(xScaleEnd, this.xScale.range()[1]);
-
-    return (endPosition - startPosition) / 2;
-  }
-
-  refreshLabelPosition(eventTask): void {
+  refreshLabelPosition(eventTask: d3.Selection<any, any, any, any>): void {
     const xTransformValue = parseSvg(eventTask.attr('transform')).translateX;
 
     const xValue = parseFloat(eventTask.select('rect.task').attr('x'));
@@ -342,16 +333,16 @@ export class TasksArea implements IChartElement {
       .attr('y', (this.elementHeight + this.elementMargin) / 2);
   }
 
-  isVisible(d): boolean {
+  isVisible(d: Task): boolean {
     return !(
       this.xScale(new Date(d.end)) < this.xScale.range()[0] || this.xScale(new Date(d.start)) > this.xScale.range()[1]
     );
   }
 
-  showTooltip(d, x, y): void {
+  showTooltip(d: Task, x: number, y: number): void {
     this.tooltip
-      .style('top', y + 20 + 'px')
-      .style('left', x + 'px')
+      .style('top', `${y + 20}px`)
+      .style('left', `${x}px`)
       .style('display', 'block')
       .html(
         `${d.name}<br>` +
@@ -366,5 +357,20 @@ export class TasksArea implements IChartElement {
 
   getAreaHeight(): number {
     return this.data.length * this.elementHeightWithMargin;
+  }
+
+  private calculateBarWidth(task: Task): number {
+    return this.xScale(new Date(task.end)) - this.xScale(new Date(task.start));
+  }
+
+  // get label position of a task depending on chart range so it is displayed centered on the visible part of the bar
+  private calculateTaskLabelPosition(d: Task): number {
+    const xScaleStart = this.xScale(new Date(d.start));
+    const xScaleEnd = this.xScale(new Date(d.end));
+
+    const startPosition = Math.max(xScaleStart, this.xScale.range()[0]);
+    const endPosition = Math.min(xScaleEnd, this.xScale.range()[1]);
+
+    return (endPosition - startPosition) / 2;
   }
 }
