@@ -1,4 +1,3 @@
-import { EventEmitter } from '@angular/core';
 import { ResizedEvent } from 'angular-resize-event';
 import * as d3 from 'd3';
 import {
@@ -26,6 +25,7 @@ import {
   SimpleChanges,
   ViewChild,
   ViewEncapsulation,
+  EventEmitter,
 } from '@angular/core';
 
 import { GanttControlsService } from '../gantt-controls.service';

@@ -46,7 +46,6 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
   @ViewChild('templateChart') templateChart: ElementRef;
 
   standardTemplatesList = null;
-  // allTemplates = null;
   selectedTemplatesIdList: number[] = [];
 
   chartFigure: ElementRef;
