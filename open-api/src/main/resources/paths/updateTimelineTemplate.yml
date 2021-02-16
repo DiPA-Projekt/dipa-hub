@@ -3,7 +3,7 @@ patch:
     - timelineTemplates
   summary: Update template for a project
   description: Apply a template for a project
-  operationId: updateTemplate
+  operationId: updateTimelineTemplate
   parameters:
     - in: path
       name: timelineId

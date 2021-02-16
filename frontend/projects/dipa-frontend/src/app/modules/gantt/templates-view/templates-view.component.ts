@@ -231,7 +231,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
     const templateId = this.standardTemplatesList[this.selectedStandardTemplateIndex].id;
 
     this.updateTemplateSubscription = this.timelineTemplatesService
-      .updateTemplate(this.selectedTimelineId, templateId)
+      .updateTimelineTemplate(this.selectedTimelineId, templateId)
       .subscribe(() => {
         this.setData();
       });
@@ -241,7 +241,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
     const templateId = this.nonStandardTemplatesList[this.selectedNonStandardTemplateIndex].id;
 
     this.updateTemplateSubscription = this.timelineTemplatesService
-      .updateTemplate(this.selectedTimelineId, templateId)
+      .updateTimelineTemplate(this.selectedTimelineId, templateId)
       .subscribe(() => {
         this.setData();
       });
