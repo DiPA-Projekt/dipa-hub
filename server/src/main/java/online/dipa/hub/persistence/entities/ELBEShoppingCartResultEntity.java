@@ -13,8 +13,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ELBEShoppingCartResultEntity extends BaseEntity {
 
-    private String shopingCartNumber;
-    private String shopingCartContent;
+    private String shoppingCartNumber;
+    private String shoppingCartContent;
 
     private String status;
 
@@ -23,19 +23,19 @@ public class ELBEShoppingCartResultEntity extends BaseEntity {
     private ProjectTaskEntity projectTask;
 
     public String getShoppingCartNumber() {
-        return shopingCartNumber;
+        return shoppingCartNumber;
     }
 
-    public void setShoppingCartNumber(final String shopingCartNumber) {
-        this.shopingCartNumber = shopingCartNumber;
+    public void setShoppingCartNumber(final String shoppingCartNumber) {
+        this.shoppingCartNumber = shoppingCartNumber;
     }
 
     public String getShoppingCartContent() {
-        return shopingCartContent;
+        return shoppingCartContent;
     }
 
-    public void setShoppingCartContent(final String shopingCartContent) {
-        this.shopingCartContent = shopingCartContent;
+    public void setShoppingCartContent(final String shoppingCartContent) {
+        this.shoppingCartContent = shoppingCartContent;
     }
     
     public String getStatus() {

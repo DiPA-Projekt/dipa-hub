@@ -41,7 +41,7 @@ schemas:
             description: name
             type: string
             example: "Herr Mustermann"
-          deparment:
+          department:
             description: responsible department
             type: string
             example: "II A 1"
@@ -58,11 +58,11 @@ schemas:
         required:
           - resultType
         properties:
-          shopingCartNumber:
+          shoppingCartNumber:
             description: number of shopping cart
             type: string
             example: "2345"
-          shopingCartContent:
+          shoppingCartContent:
             description: content of shopping cart
             type: string
             example: "Bericht ABC"

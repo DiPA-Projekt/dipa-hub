@@ -27,9 +27,15 @@ ProjectTask:
       type: string
       example: "II A 1"
     results:
-      description: The list of results
-      type: array
-      items:
-        $ref: "../models/result.yml#/Result"
+      type: object
+      properties:
+        type:
+          description: the type of this result array
+          type: string
+          example: "TYPE_STD"
+        data:
+          type: array
+          items:
+            $ref: "../models/result.yml#/Result"
   required:
     - id

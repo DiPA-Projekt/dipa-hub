@@ -930,11 +930,11 @@ databaseChangeLog:
                   name: id
                   value: 1
               - column:
-                  name: shoping_cart_number
+                  name: shopping_cart_number
                   value:
               - column:
-                  name: shoping_cart_content
-                  type:
+                  name: shopping_cart_content
+                  type: shopping_cart_content111
               - column:
                   name: status
                   type:
