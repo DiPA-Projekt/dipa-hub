@@ -1,26 +1,27 @@
 import * as d3 from 'd3';
+import { ScaleTime } from 'd3-scale';
 
 export class XAxis {
-  svg;
-  readonly xScale;
+  svg: d3.Selection<any, any, any, any>;
+  tooltip: d3.Selection<any, any, any, any>;
+  readonly xScale: ScaleTime<any, any>;
 
-  svgBbox;
+  svgBbox: DOMRect;
 
   height = 28;
 
-  formatDate;
+  formatDate: (date: Date) => string;
 
-  tickSetting;
+  tickSetting: d3.TimeInterval;
 
-  tooltip;
   dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
 
   today = new Date();
 
-  constructor(svg: any, chartElement: any, xScale: any) {
+  constructor(svg: d3.Selection<any, any, any, any>, chartElement: HTMLElement, xScale: ScaleTime<any, any>) {
     this.svg = svg;
     this.xScale = xScale;
-    this.svgBbox = this.svg.node().getBBox();
+    this.svgBbox = (this.svg.node() as SVGGraphicsElement).getBBox();
     this.tooltip = d3.select(chartElement).select('figure#chart .tooltip');
   }
 
@@ -46,7 +47,7 @@ export class XAxis {
       .append('text')
       .attr('class', 'xAxisLabel')
       .text((d) => this.formatDate(d))
-      .attr('x', (d) => this.xScale(d) + 4)
+      .attr('x', (d) => parseInt(this.xScale(d), 10) + 4)
       .attr('y', 18);
 
     this.drawVerticalGridLines();
@@ -66,7 +67,7 @@ export class XAxis {
       .append('text')
       .attr('class', 'xAxisLabel')
       .text((d) => this.formatDate(d))
-      .attr('x', (d) => this.xScale(d) + 4)
+      .attr('x', (d) => parseInt(this.xScale(d), 10) + 4)
       .attr('y', 18);
 
     this.redrawVerticalGridLines();
@@ -74,30 +75,11 @@ export class XAxis {
     this.redrawVerticalLineCurrentDate();
   }
 
-  resize(newSize): void {
+  resize(newSize: number): void {
     const xGroup = this.svg.select('g.x-group');
 
     // x-axis header background
     xGroup.select('rect.headerX').attr('width', newSize);
-  }
-
-  private drawVerticalGridLines(): void {
-    const xGroup = this.svg.select('g.x-group');
-
-    const viewBoxHeight = this.svgBbox.height;
-
-    // vertical grid lines
-    xGroup
-      .selectAll('line.xGridLines')
-      .data(this.xScale.ticks(this.tickSetting))
-      .enter()
-      .append('line')
-      .attr('class', 'xGridLines')
-      .attr('x1', (d) => this.xScale(d))
-      .attr('x2', (d) => this.xScale(d))
-      .attr('y1', 0)
-      .attr('y2', viewBoxHeight)
-      .style('stroke', '#eee');
   }
 
   redrawVerticalGridLines(): void {
@@ -109,7 +91,7 @@ export class XAxis {
   }
 
   // Define filter conditions
-  formatDateFull(date): any {
+  formatDateFull(date: Date): string {
     return (d3.timeSecond(date) < date
       ? d3.timeFormat('.%L')
       : d3.timeMinute(date) < date
@@ -127,7 +109,7 @@ export class XAxis {
       : d3.timeFormat('%Y'))(date);
   }
 
-  formatDateDay(date): any {
+  formatDateDay(date: Date): string {
     return (d3.timeYear(date) < date
       ? d3.timeMonth(date) < date
         ? d3.timeFormat('%a, %d.')
@@ -135,16 +117,35 @@ export class XAxis {
       : d3.timeFormat('%d.%m.%y'))(date);
   }
 
-  formatDateWeek(date): any {
+  formatDateWeek(date: Date): string {
     return (d3.timeFormat('%V')(date) === '01' ? d3.timeFormat('KW %V-%y') : d3.timeFormat('KW %V'))(date);
   }
 
-  formatDateMonth(date): any {
+  formatDateMonth(date: Date): string {
     return (d3.timeYear(date) < date ? d3.timeFormat('%B') : d3.timeFormat('%b %y'))(date);
   }
 
-  formatDateYear(date): any {
+  formatDateYear(date: Date): string {
     return d3.timeFormat('%Y')(date);
+  }
+
+  private drawVerticalGridLines(): void {
+    const xGroup = this.svg.select('g.x-group');
+
+    const viewBoxHeight = this.svgBbox.height;
+
+    // vertical grid lines
+    xGroup
+      .selectAll('line.xGridLines')
+      .data(this.xScale.ticks(this.tickSetting))
+      .enter()
+      .append('line')
+      .attr('class', 'xGridLines')
+      .attr('x1', (d) => parseInt(this.xScale(d), 10))
+      .attr('x2', (d) => parseInt(this.xScale(d), 10))
+      .attr('y1', 0)
+      .attr('y2', viewBoxHeight)
+      .style('stroke', '#eee');
   }
 
   private drawVerticalLineCurrentDate(): void {
@@ -178,11 +179,11 @@ export class XAxis {
       .attr('x2', this.xScale(this.today))
       .attr('y1', 0)
       .attr('y2', viewBoxHeight + distanceFromTop)
-      .attr('stroke', d3.rgb(lightColor).darker());
+      .attr('stroke', d3.rgb(lightColor).darker().formatHex());
 
     this.svg
       .select('g.current-date-group')
-      .on('mouseover', (event) => {
+      .on('mouseover', (event: MouseEvent) => {
         currentLine.attr('stroke-width', 1.5).style('stroke', darkColor);
 
         point.style('stroke', darkColor).style('fill', darkColor);
@@ -202,17 +203,6 @@ export class XAxis {
       });
   }
 
-  showLineTooltip(x, y): void {
-    this.tooltip
-      .style('top', y + 15 + 'px')
-      .style('left', x + 10 + 'px')
-      .style('display', 'block')
-      .html('Heute: ' + `${new Date().toLocaleDateString('de-DE', this.dateOptions)}<br>`)
-      .transition()
-      .duration(300)
-      .style('opacity', 1);
-  }
-
   private redrawVerticalLineCurrentDate(): void {
     this.svg
       .select('g.current-date-group')
@@ -223,5 +213,16 @@ export class XAxis {
     this.svg.select('g.current-date-group').select('circle.currentDateCircle').attr('cx', this.xScale(this.today));
 
     this.svg.select('g.current-date-group').select('circle.currentDatePoint').attr('cx', this.xScale(this.today));
+  }
+
+  private showLineTooltip(x: number, y: number): void {
+    this.tooltip
+      .style('top', `${y + 15}px`)
+      .style('left', `${x + 10}px`)
+      .style('display', 'block')
+      .html('Heute: ' + `${new Date().toLocaleDateString('de-DE', this.dateOptions)}<br>`)
+      .transition()
+      .duration(300)
+      .style('opacity', 1);
   }
 }

@@ -1,17 +1,19 @@
 import { ResizedEvent } from 'angular-resize-event';
 import * as d3 from 'd3';
-import { TimelineTemplatesService, TimelinesService } from 'dipa-api-client';
-import { forkJoin, Observable } from 'rxjs';
+import { Increment, TimelineTemplate, TimelineTemplatesService, Timeline, TimelinesService } from 'dipa-api-client';
+import { forkJoin, Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 import {
   AfterViewInit,
   Component,
   ElementRef,
+  EventEmitter,
   Input,
   OnChanges,
   OnDestroy,
   OnInit,
+  Output,
   SimpleChanges,
   ViewChild,
   ViewEncapsulation,
@@ -23,6 +25,8 @@ import { ProjectDuration } from '../../chart/chart-elements/ProjectDuration';
 import { TasksArea } from '../../chart/chart-elements/TasksArea';
 import { XAxis } from '../../chart/chart-elements/XAxis';
 import { TemplatesViewControlsService } from '../templates-view-controls.service';
+import { ScaleTime } from 'd3-scale';
+import { ZoomBehavior } from 'd3-zoom';
 
 @Component({
   selector: 'app-templates',
@@ -31,18 +35,22 @@ import { TemplatesViewControlsService } from '../templates-view-controls.service
   encapsulation: ViewEncapsulation.None,
 })
 export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
-  @Input() timelineData: any = {};
-  @Input() templateData = [];
-  @Input() allTemplates: any = {};
+  @Input() isAdmin;
+  @Input() timelineData: Timeline;
+  @Input() templateData: TimelineTemplate[] = [];
+  @Input() allTemplates: TimelineTemplate[];
+  @Output() projectTypeChanged = new EventEmitter();
+  @Output() operationTypeChanged = new EventEmitter();
+  @Output() projectApproachChanged = new EventEmitter();
 
   @ViewChild('templateChart') templateChart: ElementRef;
 
   standardTemplatesList = null;
   // allTemplates = null;
-  selectedTemplatesIdList = [];
+  selectedTemplatesIdList: number[] = [];
 
   chartFigure: ElementRef;
-  chartElement = this.elementRef.nativeElement;
+  chartElement: HTMLElement = this.elementRef.nativeElement as HTMLElement;
 
   periodStartDate: Date;
   periodEndDate: Date;
@@ -51,40 +59,40 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
   arrangeLabelTimeout;
 
-  viewTypeSubscription;
-  templateSubscription;
-  templatesListSubscription;
+  viewTypeSubscription: Subscription;
+  templateSubscription: Subscription;
+  templatesListSubscription: Subscription;
 
   headerX: XAxis;
   projectDuration: ProjectDuration;
   milestonesArea: MilestonesArea[];
-  incrementsArea: any[];
+  incrementsArea: Increments[];
 
   // milestoneViewItem: MilestonesArea;
   taskViewItem: TasksArea;
-  incrementsViewItem: Increments;
+  incrementsViewItem: Increment;
 
-  addIncrementSubscription;
-  deleteIncrementSubscription;
-  timelineSubscription;
-  timelineStartSubscription;
-  timelineEndSubscription;
+  addIncrementSubscription: Subscription;
+  deleteIncrementSubscription: Subscription;
+  timelineSubscription: Subscription;
+  timelineStartSubscription: Subscription;
+  timelineEndSubscription: Subscription;
 
   modifiable: boolean;
 
   listAreasId = [1, 2, 3];
 
   // element for chart
-  private svg;
-  private zoomElement;
+  private svg: d3.Selection<any, any, any, any>;
+  private zoomElement: d3.Selection<any, any, any, any>;
 
   private viewBoxHeight = 290;
   private viewBoxWidth = 750;
 
   private padding = { top: 40, left: 0 };
 
-  private xScale;
-  private zoom;
+  private xScale: ScaleTime<any, any>;
+  private zoom: ZoomBehavior<any, any>;
 
   private oneDayTick = 1.2096e9;
 
@@ -141,16 +149,18 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
     this.selectedTemplatesIdList = this.templateData.map((t) => t.id);
 
-    this.templatesListSubscription = this.templatesViewControlsService.getTemplatesList().subscribe((data) => {
-      if (this.milestonesArea.length > 0) {
-        if (data !== null) {
-          this.selectedTemplatesIdList = data;
-          const newTemplates = this.allTemplates.filter((t) => data.includes(t.id));
+    this.templatesListSubscription = this.templatesViewControlsService
+      .getTemplatesList()
+      .subscribe((data: number[]) => {
+        if (this.milestonesArea.length > 0) {
+          if (data !== null) {
+            this.selectedTemplatesIdList = data;
+            const newTemplates = this.allTemplates.filter((t) => data.includes(t.id));
 
-          this.setDataReset(this.timelineData, newTemplates);
+            this.setDataReset(this.timelineData, newTemplates);
+          }
         }
-      }
-    });
+      });
 
     this.viewTypeSubscription = this.templatesViewControlsService.getViewType().subscribe((data) => {
       if (this.viewType !== data) {
@@ -158,7 +168,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
         if (this.xScale) {
           switch (data) {
             case 'DAYS': {
-              this.headerX.formatDate = this.headerX.formatDateDay;
+              this.headerX.formatDate = (d: Date) => this.headerX.formatDateDay(d);
 
               this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
                 this.onZoom(event, this.oneDayTick / 5);
@@ -169,7 +179,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
               break;
             }
             case 'WEEKS': {
-              this.headerX.formatDate = this.headerX.formatDateWeek;
+              this.headerX.formatDate = (d: Date) => this.headerX.formatDateWeek(d);
 
               this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
                 this.onZoom(event, (this.oneDayTick * 7) / 12);
@@ -180,7 +190,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
               break;
             }
             case 'MONTHS': {
-              this.headerX.formatDate = this.headerX.formatDateMonth;
+              this.headerX.formatDate = (d: Date) => this.headerX.formatDateMonth(d);
 
               this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
                 this.onZoom(event, (this.oneDayTick * 30) / 12);
@@ -191,7 +201,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
               break;
             }
             case 'YEARS': {
-              this.headerX.formatDate = this.headerX.formatDateYear;
+              this.headerX.formatDate = (d: Date) => this.headerX.formatDateYear(d);
 
               this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
                 this.onZoom(event, (this.oneDayTick * 365) / 12);
@@ -201,7 +211,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
               break;
             }
             case null: {
-              this.headerX.formatDate = this.headerX.formatDateFull;
+              this.headerX.formatDate = (d: Date) => this.headerX.formatDateFull(d);
               this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
                 this.onZoom(event, this.oneDayTick);
               });
@@ -240,7 +250,8 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
   }
 
   ngAfterViewInit(): void {
-    this.resizeChart(this.templateChart.nativeElement.offsetWidth);
+    const newSize = (this.templateChart.nativeElement as HTMLElement).offsetWidth;
+    this.resizeChart(newSize);
   }
 
   onResized(event: ResizedEvent): void {
@@ -253,20 +264,19 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
   private drawChart(): void {
     this.svg = this.createSvg(this.chartElement, this.chartElement.id);
-
     this.initializeSvgGraphElements();
 
     // zoom out a bit to show all data at start
     this.svg
       .transition()
       .duration(0)
-      .call(this.zoom.scaleBy, 0.8)
+      .call(this.zoom.scaleBy.bind(this), 0.8)
       .on('end', () => this.refreshXScale());
 
     this.initializeXScale();
 
     this.headerX = new XAxis(this.svg, this.chartElement, this.xScale);
-    this.headerX.formatDate = this.headerX.formatDateFull;
+    this.headerX.formatDate = (d: Date) => this.headerX.formatDateFull(d);
     this.headerX.draw();
 
     this.projectDuration = new ProjectDuration(this.svg, this.chartElement, this.xScale, this.timelineData, true);
@@ -439,7 +449,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     });
   }
 
-  private resizeChart(newSize): void {
+  private resizeChart(newSize: number): void {
     this.resizeXScale(newSize);
     this.resizeZoomElement(newSize);
     this.resizeSvg(newSize);
@@ -450,7 +460,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     this.redrawChart(0);
   }
 
-  private createSvg(element, id): any {
+  private createSvg(element: HTMLElement, id: string): d3.Selection<any, any, any, any> {
     const svg = d3
       .select(element)
       .select('figure')
@@ -458,7 +468,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       .attr('id', id)
       .attr('width', '100%')
       // .attr('height', '100vh')
-      .attr('viewBox', '0 0 ' + this.viewBoxWidth + ' ' + this.viewBoxHeight * this.templateData.length);
+      .attr('viewBox', `0 0 ${this.viewBoxWidth} ${this.viewBoxHeight * this.templateData.length}`);
 
     svg
       .append('defs')
@@ -473,15 +483,15 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     return svg;
   }
 
-  private resizeSvg(newSize): void {
-    this.svg.attr('viewBox', '0 0 ' + newSize + ' ' + this.viewBoxHeight * this.templateData.length);
+  private resizeSvg(newSize: number): void {
+    this.svg.attr('viewBox', `0 0 ${newSize} ${this.viewBoxHeight * this.templateData.length}`);
 
     this.svg.select('#dataMask rect').attr('width', newSize - this.padding.left);
   }
 
   private initializeSvgGraphElements(): void {
     const xGroup = this.svg.append('g').attr('class', 'x-group');
-    xGroup.attr('transform', 'translate(' + this.padding.left + ',20)');
+    xGroup.attr('transform', `translate(${this.padding.left},20)`);
 
     this.zoom = d3.zoom().on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
       this.onZoom(event, this.oneDayTick);
@@ -494,27 +504,21 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       .attr('height', this.viewBoxHeight * this.templateData.length - this.padding.top)
       .style('fill', 'none')
       .style('pointer-events', 'all')
-      .attr('transform', 'translate(' + this.padding.left + ',' + this.padding.top + ')')
+      .attr('transform', `translate(${this.padding.left},${this.padding.top})`)
       .call(this.zoom);
 
     const projectGroup = this.svg.append('g').attr('class', 'project-group');
-    projectGroup.attr('transform', 'translate(' + this.padding.left + ',45)');
+    projectGroup.attr('transform', `translate(${this.padding.left},45)`);
 
     let milestoneHeight = 120;
     let incrementHeight = 80;
 
     for (const id of this.listAreasId) {
-      const incrementGroup = this.svg
-        .append('g')
-        .attr('class', 'increment-group')
-        .attr('id', 'incrementsArea' + id);
-      incrementGroup.attr('transform', 'translate(' + this.padding.left + ',' + incrementHeight + ')');
+      const incrementGroup = this.svg.append('g').attr('class', 'increment-group').attr('id', `incrementsArea${id}`);
+      incrementGroup.attr('transform', `translate(${this.padding.left},${incrementHeight})`);
 
-      const dataGroup = this.svg
-        .append('g')
-        .attr('class', 'data-group')
-        .attr('id', 'milestonesArea' + id);
-      dataGroup.attr('transform', 'translate(' + this.padding.left + ',' + milestoneHeight + ')');
+      const dataGroup = this.svg.append('g').attr('class', 'data-group').attr('id', `milestonesArea${id}`);
+      dataGroup.attr('transform', `translate(${this.padding.left},${milestoneHeight})`);
 
       milestoneHeight = milestoneHeight + 240;
       incrementHeight = incrementHeight + 240;
@@ -523,10 +527,10 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     }
 
     const currentDateGroup = this.svg.append('g').attr('class', 'current-date-group');
-    currentDateGroup.attr('transform', 'translate(' + this.padding.left + ',0)');
+    currentDateGroup.attr('transform', `translate(${this.padding.left},0)`);
   }
 
-  private onZoom(event: d3.D3ZoomEvent<any, any>, minTimeMs): void {
+  private onZoom(event: d3.D3ZoomEvent<any, any>, minTimeMs: number): void {
     const eventTransform: d3.ZoomTransform = event.transform;
 
     if (eventTransform.k === 1 && eventTransform.x === 0 && eventTransform.y === 0) {
@@ -536,13 +540,13 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     // this check is needed to prevent additional zooming on the minimum/maximum zoom level
     // because zoom.transform is reset and the zoom levels are reinitiated every time
     if (event.sourceEvent) {
-      const deltaY = event.sourceEvent.deltaY;
+      const deltaY = (event.sourceEvent as WheelEvent).deltaY;
       if ((deltaY < 0 && eventTransform.y > 0) || (deltaY > 0 && eventTransform.y < 0)) {
         return;
       }
     }
 
-    const xScaleTransformed = eventTransform.rescaleX<any>(this.xScale);
+    const xScaleTransformed = eventTransform.rescaleX<ScaleTime<any, any>>(this.xScale);
 
     const start = xScaleTransformed.domain()[0];
     const end = xScaleTransformed.domain()[1];
@@ -552,7 +556,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     this.xScale.domain([start, end]);
 
     if (event.sourceEvent) {
-      if (event.sourceEvent.type === 'mousemove') {
+      if ((event.sourceEvent as MouseEvent).type === 'mousemove') {
         this.redrawChart(0);
       } else {
         this.redrawChart(200);
@@ -563,7 +567,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     }
 
     // reset the transform so the scale can be changed from other elements like dropdown menu
-    this.zoomElement.call(this.zoom.transform, d3.zoomIdentity);
+    this.zoomElement.call(this.zoom.transform.bind(this), d3.zoomIdentity);
 
     this.periodStartDate = xScaleTransformed.invert(xScaleTransformed.range()[0]);
     this.periodEndDate = xScaleTransformed.invert(xScaleTransformed.range()[1]);
@@ -621,7 +625,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     }
   }
 
-  private subscribeForRedraw(obs): Observable<any> {
+  private subscribeForRedraw(obs: Observable<any>): Subscription {
     return obs
       .pipe(
         switchMap(() =>
@@ -658,7 +662,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       });
   }
 
-  private setDataReset(timelineData, templatesData): void {
+  private setDataReset(timelineData: Timeline, templatesData: TimelineTemplate[]): void {
     this.templateData = templatesData;
 
     this.projectDuration.setData(timelineData);
@@ -677,7 +681,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     });
   }
 
-  private createIncrementsArea(data, index, incrementsArea) {
+  private createIncrementsArea(data: Increment[], index: number, incrementsArea: Increments[]) {
     if (data !== null) {
       const incrementsViewItem = new Increments(this.svg, this.xScale, data, index);
       incrementsViewItem.draw({ left: 0, top: 0 });

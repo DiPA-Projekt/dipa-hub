@@ -1,0 +1,30 @@
+.full-width-spacer {
+  flex: 1 1 auto;
+}
+
+.chart-toolbar {
+
+  mat-form-field {
+    div.mat-form-field-flex {
+      align-items: flex-end;
+    }
+
+    div.mat-form-field-prefix {
+      padding-right: 12px !important;
+    }
+  }
+}
+
+.timelineName {
+  font-size: 20px;
+  margin-right: 15px;
+}
+
+.mat-toolbar {
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.mat-form-field-wrapper {
+  padding-top: 1.25em;
+}

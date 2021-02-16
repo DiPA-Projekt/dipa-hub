@@ -5,45 +5,6 @@
   <ng-container *ngFor="let vm of vmAll$ | async">
     <div class="content-container" style="padding-right: 15px">
       <div class="row">
-        <div class="col col-md-auto">
-          <div class="mat-card-title">
-            {{ vm.timeline.name }}
-          </div>
-          <div class="mat-card-subtitle">
-            {{ vm.timeline.projectType }}
-          </div>
-        </div>
-        <div *ngIf="timelineData" class="col col-md-auto">
-          <mat-form-field appearance="fill" floatLabel="always" id="operationType-{{ vm.timeline.id }}">
-            <mat-label>Vorhabensart</mat-label>
-            <mat-select
-              [(value)]="vm.timeline.operationTypeId"
-              (selectionChange)="changeOperationType($event, vm.timeline.id)"
-            >
-              <mat-option *ngFor="let operationType of operationTypesList" [value]="operationType.id">
-                {{ operationType.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-        <div *ngIf="timelineData" class="col col-md-auto">
-          <mat-form-field appearance="fill" floatLabel="always" id="projectApproach-{{ vm.timeline.id }}">
-            <mat-label>Vorgehensweise</mat-label>
-            <mat-select
-              [(value)]="vm.timeline.projectApproachId"
-              (selectionChange)="changeProjectApproach($event, vm.timeline.id)"
-            >
-              <mat-option
-                *ngFor="let projectApproach of filterProjectApproaches(vm.timeline.operationTypeId)"
-                [value]="projectApproach.id"
-              >
-                {{ projectApproach.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-      </div>
-      <div class="row">
         <div class="col">
           <div id="gantt{{ vm.timeline.id }}" class="gantt">
             <app-chart
@@ -53,6 +14,8 @@
               [taskData]="vm.taskData"
               [incrementsData]="vm.incrementsData"
               id="overview{{ vm.timeline.id }}"
+              [isAdmin]="true"
+              (projectApproachChanged)="loadTimelines()"
             ></app-chart>
           </div>
         </div>
