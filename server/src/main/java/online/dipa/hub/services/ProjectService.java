@@ -1,6 +1,6 @@
 package online.dipa.hub.services;
 
-import online.dipa.hub.ProjectState;
+import online.dipa.hub.state.ProjectState;
 import online.dipa.hub.api.model.Project;
 import online.dipa.hub.persistence.repositories.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,19 +1,24 @@
-package online.dipa.hub;
+package online.dipa.hub.state;
 
 import online.dipa.hub.api.model.*;
 import java.util.*;
 
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.SessionScope;
+
+@Component
+@SessionScope
 public class SessionState {
 
-    protected static Map<Long, TimelineState> sessionTimelines;
-    protected static Map<Long, List<TimelineTemplate>> sessionTimelineTemplates = new HashMap<>();
+    public Map<Long, TimelineState> sessionTimelines;
+    public Map<Long, List<TimelineTemplate>> sessionTimelineTemplates = new HashMap<>();
 
     public Map<Long, List<TimelineTemplate>> getSessionTimelineTemplates() {
         return sessionTimelineTemplates;
     }
 
     public void setSessionTimelineTemplates(Map<Long, List<TimelineTemplate>> sessionTimelineTemplates) {
-        SessionState.sessionTimelineTemplates = sessionTimelineTemplates;
+        this.sessionTimelineTemplates = sessionTimelineTemplates;
     }
 
     public Map<Long, TimelineState> getSessionTimelines() {
@@ -24,7 +29,7 @@ public class SessionState {
     }
 
     public void setSessionTimelines(Map<Long, TimelineState> sessionTimelines) {
-        SessionState.sessionTimelines = sessionTimelines;
+        this.sessionTimelines = sessionTimelines;
     }
 
     public TimelineState findTimelineState(Long timelineId) {

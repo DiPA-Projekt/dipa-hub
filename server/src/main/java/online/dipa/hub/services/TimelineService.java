@@ -2,8 +2,8 @@ package online.dipa.hub.services;
 
 import net.fortuna.ical4j.model.TimeZone;
 import online.dipa.hub.IcsCalendar;
-import online.dipa.hub.SessionState;
-import online.dipa.hub.TimelineState;
+import online.dipa.hub.state.SessionState;
+import online.dipa.hub.state.TimelineState;
 import online.dipa.hub.api.model.*;
 import online.dipa.hub.persistence.entities.PlanTemplateEntity;
 import online.dipa.hub.persistence.entities.ProjectApproachEntity;
@@ -29,7 +29,10 @@ import static online.dipa.hub.api.model.Timeline.ProjectTypeEnum;
 @Service
 @SessionScope
 @Transactional
-public class TimelineService extends SessionState {
+public class TimelineService {
+
+    @Autowired
+    private SessionState sessionState;
 
     @Autowired
     private ConversionService conversionService;
@@ -51,13 +54,13 @@ public class TimelineService extends SessionState {
     public List<Timeline> getTimelines() {
         initializeTimelines();
 
-        return getSessionTimelines().values().stream().map(TimelineState::getTimeline).collect(Collectors.toList());
+        return sessionState.getSessionTimelines().values().stream().map(TimelineState::getTimeline).collect(Collectors.toList());
     }
 
     public Timeline getTimeline(final Long timelineId) {
         initializeTimelines();
 
-        return getSessionTimelines().values().stream().map(TimelineState::getTimeline)
+        return sessionState.getSessionTimelines().values().stream().map(TimelineState::getTimeline)
                 .filter(t -> t.getId().equals(timelineId)).findFirst().orElseThrow(() -> new EntityNotFoundException(
                         String.format("Timeline with id: %1$s not found.", timelineId)));
     }
@@ -67,7 +70,7 @@ public class TimelineService extends SessionState {
 
         projectRespository.findAll().stream().map(p -> conversionService.convert(p, Timeline.class))
                 .forEach(t -> {
-                    TimelineState sessionTimeline = findTimelineState(t.getId());
+                    TimelineState sessionTimeline = sessionState.findTimelineState(t.getId());
 
                     if (sessionTimeline.getTimeline() == null) {
                         sessionTimeline.setTimeline(t);
@@ -75,7 +78,7 @@ public class TimelineService extends SessionState {
                     listTimelines.put(t.getId(), sessionTimeline);
                 });
 
-        setSessionTimelines(listTimelines);
+        sessionState.setSessionTimelines(listTimelines);
     }
 
     ProjectApproachEntity findProjectApproach(Long projectApproachId) {
@@ -86,7 +89,7 @@ public class TimelineService extends SessionState {
 
     public void moveTimelineByDays(final Long timelineId, final Long days) {
 
-        TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+        TimelineState sessionTimeline = sessionState.getSessionTimelines().get(timelineId);
 
         milestoneService.updateTempMilestones(timelineId);
 
@@ -110,7 +113,7 @@ public class TimelineService extends SessionState {
 
     public void moveTimelineStartByDays(final Long timelineId, final Long days) {
 
-        TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+        TimelineState sessionTimeline = sessionState.getSessionTimelines().get(timelineId);
 
         milestoneService.updateTempMilestones(timelineId);
 
@@ -146,7 +149,7 @@ public class TimelineService extends SessionState {
 
     public void moveTimelineEndByDays(final Long timelineId, final Long days) {
 
-        TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+        TimelineState sessionTimeline = sessionState.getSessionTimelines().get(timelineId);
 
         milestoneService.updateTempMilestones(timelineId);
 
@@ -179,7 +182,7 @@ public class TimelineService extends SessionState {
     }
 
     public void moveMileStoneByDays(final Long timelineId, final Long days, final Long movedMilestoneId) {
-        TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+        TimelineState sessionTimeline = sessionState.getSessionTimelines().get(timelineId);
 
         Optional<LocalDate> oldFirstMilestoneOptionalDate = sessionTimeline.getMilestones().stream().map(Milestone::getDate)
                 .min(LocalDate::compareTo);
@@ -226,7 +229,7 @@ public class TimelineService extends SessionState {
     }
 
     public File getCalendarFileForTimeline(final Long timelineId) throws IOException {
-        TimelineState sessionTimeline = findTimelineState(timelineId);
+        TimelineState sessionTimeline = sessionState.findTimelineState(timelineId);
 
         IcsCalendar icsCalendar = new IcsCalendar();
         TimeZone timezone = icsCalendar.createTimezoneEurope();
@@ -253,7 +256,7 @@ public class TimelineService extends SessionState {
 
     public void updateTimeline(final Timeline timeline) {
 
-        TimelineState sessionTimeline = getSessionTimelines().get(timeline.getId());
+        TimelineState sessionTimeline = sessionState.getSessionTimelines().get(timeline.getId());
         sessionTimeline.getTimeline().setOperationTypeId(timeline.getOperationTypeId());
         sessionTimeline.getTimeline().setProjectApproachId(timeline.getProjectApproachId());
 
@@ -261,7 +264,7 @@ public class TimelineService extends SessionState {
         sessionTimeline.setIncrements(null);
         sessionTimeline.setTempIncrementMilestones(null);
 
-        getSessionTimelineTemplates().remove(timeline.getId());
+        sessionState.getSessionTimelineTemplates().remove(timeline.getId());
 
         milestoneService.initializeMilestones(timeline.getId());
         milestoneService.updateMilestonesAndIncrement(timeline);
@@ -280,7 +283,7 @@ public class TimelineService extends SessionState {
 
     private List<Long> getDownloadFileIds(final Long timelineId, final Long milestoneId) {
 
-        final TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+        final TimelineState sessionTimeline = sessionState.getSessionTimelines().get(timelineId);
         final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
 
         if (milestoneId != FIRST_MASTER_MILESTONE_ID || projectApproach == null) {

@@ -1,4 +1,4 @@
-package online.dipa.hub;
+package online.dipa.hub.state;
 
 import online.dipa.hub.api.model.Increment;
 import online.dipa.hub.api.model.Milestone;

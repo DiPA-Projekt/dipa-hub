@@ -1,7 +1,7 @@
 package online.dipa.hub.services;
 
-import online.dipa.hub.SessionState;
-import online.dipa.hub.TimelineState;
+import online.dipa.hub.state.SessionState;
+import online.dipa.hub.state.TimelineState;
 import online.dipa.hub.persistence.entities.ProjectApproachEntity;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +24,14 @@ import static java.time.temporal.ChronoUnit.DAYS;
 @Service
 @SessionScope
 @Transactional
-public class MilestoneService extends SessionState {
+public class MilestoneService {
     
     protected static final long FIRST_MASTER_MILESTONE_ID = 21;
     protected static final long LAST_MASTER_MILESTONE_ID = 28;
+
+    @Autowired
+    private SessionState sessionState;
+
     @Autowired
     private PlanTemplateRepository planTemplateRepository;
     
@@ -44,11 +48,11 @@ public class MilestoneService extends SessionState {
     public List<Milestone> getMilestonesForTimeline(final Long timelineId) {
         initializeMilestones(timelineId);
 
-        return getSessionTimelines().get(timelineId).getMilestones();
+        return sessionState.getSessionTimelines().get(timelineId).getMilestones();
     }
 
     void initializeMilestones(final Long timelineId) {
-        TimelineState sessionTimeline = findTimelineState(timelineId);
+        TimelineState sessionTimeline = sessionState.findTimelineState(timelineId);
 
         final ProjectApproachEntity projectApproach = timelineService.findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
 
@@ -63,7 +67,7 @@ public class MilestoneService extends SessionState {
     }
 
     protected List<Milestone> loadMilestones(final Long timelineId, final int incrementCount) {
-        TimelineState sessionTimeline = findTimelineState(timelineId);
+        TimelineState sessionTimeline = sessionState.findTimelineState(timelineId);
 
         List<Milestone> milestones;
 
@@ -111,7 +115,7 @@ public class MilestoneService extends SessionState {
 
         HashMap<Increment, List<Milestone>> hashmapIncrementMilestones = new HashMap<>();
 
-        TimelineState sessionTimeline = findTimelineState(timelineId);
+        TimelineState sessionTimeline = sessionState.findTimelineState(timelineId);
 
         List<Increment> incrementsList = incrementService.loadIncrementsTemplate(timelineId, incrementCount, tempMilestones, sessionTimeline.getMilestones());
 
@@ -185,7 +189,7 @@ public class MilestoneService extends SessionState {
     }
 
     List<Milestone> getMilestonesFromRespository(final Long timelineId) {
-        TimelineState sessionTimeline = findTimelineState(timelineId);
+        TimelineState sessionTimeline = sessionState.findTimelineState(timelineId);
 
         final ProjectApproachEntity projectApproach = timelineService.findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
 
@@ -227,7 +231,7 @@ public class MilestoneService extends SessionState {
 
     void updateTempMilestones(final Long timelineId) {
 
-        TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+        TimelineState sessionTimeline = sessionState.getSessionTimelines().get(timelineId);
 
         if (sessionTimeline.getTempIncrementMilestones() == null) {
 
@@ -237,7 +241,7 @@ public class MilestoneService extends SessionState {
     }
 
     public void updateMilestoneStatus(final Long timelineId, final Long milestoneId, final Milestone.StatusEnum status) {
-        final TimelineState sessionTimeline = getSessionTimelines().get(timelineId);
+        final TimelineState sessionTimeline = sessionState.getSessionTimelines().get(timelineId);
         final Milestone updatedMilestone = sessionTimeline.getMilestones().stream().filter(m -> m.getId().equals(milestoneId)).findFirst().orElseThrow(() -> new EntityNotFoundException(
                 String.format("Milestone with id: %1$s not found.", milestoneId)));
 
@@ -246,7 +250,7 @@ public class MilestoneService extends SessionState {
 
     public void updateMilestonesAndIncrement(final Timeline timeline) {
 
-        TimelineState sessionTimeline = getSessionTimelines().get(timeline.getId());
+        TimelineState sessionTimeline = sessionState.getSessionTimelines().get(timeline.getId());
 
         this.updateTempMilestones(timeline.getId());
 
