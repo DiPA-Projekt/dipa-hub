@@ -12,13 +12,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.SessionScope;
 
-import online.dipa.hub.state.SessionState;
-import online.dipa.hub.state.TimelineState;
 import online.dipa.hub.api.model.Milestone;
 import online.dipa.hub.api.model.TimelineTemplate;
 import online.dipa.hub.persistence.entities.PlanTemplateEntity;
 import online.dipa.hub.persistence.entities.ProjectApproachEntity;
 import online.dipa.hub.persistence.repositories.PlanTemplateRepository;
+import online.dipa.hub.session.model.SessionTimeline;
+import online.dipa.hub.session.state.SessionTimelineState;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -30,7 +30,7 @@ public class TimelineTemplateService {
     private static final String CURRENT_TEMPLATE_NAME = "aktuell";
 
     @Autowired
-    private SessionState sessionState;
+    private SessionTimelineState sessionTimelineState;
 
     @Autowired
     private TimelineService timelineService;
@@ -47,7 +47,7 @@ public class TimelineTemplateService {
     public List<TimelineTemplate> getTemplatesForTimeline(final Long timelineId) {
 
         List<TimelineTemplate> timelineTemplates = new ArrayList<>();
-        final TimelineState sessionTimeline = sessionState.getSessionTimelines()
+        final SessionTimeline sessionTimeline = sessionTimelineState.getSessionTimelines()
                                                             .get(timelineId);
         long count = 0;
 
@@ -62,7 +62,7 @@ public class TimelineTemplateService {
         
         timelineTemplates.addAll(timelineTemplatesFromRepo);
 
-        sessionState.getSessionTimelineTemplates().put(timelineId, timelineTemplates);
+        sessionTimelineState.getSessionTimelineTemplates().put(timelineId, timelineTemplates);
 
         return timelineTemplates;
     }
@@ -130,9 +130,9 @@ public class TimelineTemplateService {
     }
 
     public void updateTimelineTemplate(final Long timelineId, final Long templateId) {
-        TimelineState sessionTimeline = sessionState.getSessionTimelines().get(timelineId);
+        SessionTimeline sessionTimeline = sessionTimelineState.getSessionTimelines().get(timelineId);
 
-        List<TimelineTemplate> currentSessionTemplates = sessionState.getSessionTimelineTemplates().get(timelineId);
+        List<TimelineTemplate> currentSessionTemplates = sessionTimelineState.getSessionTimelineTemplates().get(timelineId);
         Optional<TimelineTemplate> selectedTemplateOptional = currentSessionTemplates.stream().filter(t -> t.getId().equals(templateId)).findFirst();
 
         if (selectedTemplateOptional.isPresent()) {
@@ -148,7 +148,7 @@ public class TimelineTemplateService {
 
     private List<Milestone> updateMilestonesTimelineTemplate(final Long timelineId, List<Milestone> milestones) {
 
-        TimelineState sessionTimeline = sessionState.getSessionTimelines().get(timelineId);
+        SessionTimeline sessionTimeline = sessionTimelineState.getSessionTimelines().get(timelineId);
         milestones = milestoneService.sortMilestones(milestones);
 
         LocalDate initTimelineStart = LocalDate.now();

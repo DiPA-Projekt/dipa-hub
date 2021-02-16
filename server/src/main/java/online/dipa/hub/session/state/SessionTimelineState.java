@@ -1,6 +1,8 @@
-package online.dipa.hub.state;
+package online.dipa.hub.session.state;
 
 import online.dipa.hub.api.model.*;
+import online.dipa.hub.session.model.SessionTimeline;
+
 import java.util.*;
 
 import org.springframework.stereotype.Component;
@@ -8,10 +10,10 @@ import org.springframework.web.context.annotation.SessionScope;
 
 @Component
 @SessionScope
-public class SessionState {
+public class SessionTimelineState {
 
-    public Map<Long, TimelineState> sessionTimelines;
-    public Map<Long, List<TimelineTemplate>> sessionTimelineTemplates = new HashMap<>();
+    private Map<Long, SessionTimeline> sessionTimelines;
+    private Map<Long, List<TimelineTemplate>> sessionTimelineTemplates = new HashMap<>();
 
     public Map<Long, List<TimelineTemplate>> getSessionTimelineTemplates() {
         return sessionTimelineTemplates;
@@ -21,19 +23,19 @@ public class SessionState {
         this.sessionTimelineTemplates = sessionTimelineTemplates;
     }
 
-    public Map<Long, TimelineState> getSessionTimelines() {
+    public Map<Long, SessionTimeline> getSessionTimelines() {
         if (sessionTimelines == null) {
             setSessionTimelines(new HashMap<>());
-         }
+        }
         return sessionTimelines;
     }
 
-    public void setSessionTimelines(Map<Long, TimelineState> sessionTimelines) {
+    public void setSessionTimelines(Map<Long, SessionTimeline> sessionTimelines) {
         this.sessionTimelines = sessionTimelines;
     }
 
-    public TimelineState findTimelineState(Long timelineId) {
-        return getSessionTimelines().computeIfAbsent(timelineId, t -> new TimelineState());
+    public SessionTimeline findTimelineState(Long timelineId) {
+        return getSessionTimelines().computeIfAbsent(timelineId, t -> new SessionTimeline());
     }
 
 

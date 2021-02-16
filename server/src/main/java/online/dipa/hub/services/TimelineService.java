@@ -2,12 +2,12 @@ package online.dipa.hub.services;
 
 import net.fortuna.ical4j.model.TimeZone;
 import online.dipa.hub.IcsCalendar;
-import online.dipa.hub.state.SessionState;
-import online.dipa.hub.state.TimelineState;
 import online.dipa.hub.api.model.*;
 import online.dipa.hub.persistence.entities.PlanTemplateEntity;
 import online.dipa.hub.persistence.entities.ProjectApproachEntity;
 import online.dipa.hub.persistence.repositories.*;
+import online.dipa.hub.session.model.SessionTimeline;
+import online.dipa.hub.session.state.SessionTimelineState;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
@@ -32,7 +32,7 @@ import static online.dipa.hub.api.model.Timeline.ProjectTypeEnum;
 public class TimelineService {
 
     @Autowired
-    private SessionState sessionState;
+    private SessionTimelineState sessionTimelineState;
 
     @Autowired
     private ConversionService conversionService;
@@ -54,23 +54,23 @@ public class TimelineService {
     public List<Timeline> getTimelines() {
         initializeTimelines();
 
-        return sessionState.getSessionTimelines().values().stream().map(TimelineState::getTimeline).collect(Collectors.toList());
+        return sessionTimelineState.getSessionTimelines().values().stream().map(SessionTimeline::getTimeline).collect(Collectors.toList());
     }
 
     public Timeline getTimeline(final Long timelineId) {
         initializeTimelines();
 
-        return sessionState.getSessionTimelines().values().stream().map(TimelineState::getTimeline)
+        return sessionTimelineState.getSessionTimelines().values().stream().map(SessionTimeline::getTimeline)
                 .filter(t -> t.getId().equals(timelineId)).findFirst().orElseThrow(() -> new EntityNotFoundException(
                         String.format("Timeline with id: %1$s not found.", timelineId)));
     }
 
     private void initializeTimelines() {
-        Map<Long, TimelineState> listTimelines = new HashMap<>();
+        Map<Long, SessionTimeline> listTimelines = new HashMap<>();
 
         projectRespository.findAll().stream().map(p -> conversionService.convert(p, Timeline.class))
                 .forEach(t -> {
-                    TimelineState sessionTimeline = sessionState.findTimelineState(t.getId());
+                    SessionTimeline sessionTimeline = sessionTimelineState.findTimelineState(t.getId());
 
                     if (sessionTimeline.getTimeline() == null) {
                         sessionTimeline.setTimeline(t);
@@ -78,7 +78,7 @@ public class TimelineService {
                     listTimelines.put(t.getId(), sessionTimeline);
                 });
 
-        sessionState.setSessionTimelines(listTimelines);
+        sessionTimelineState.setSessionTimelines(listTimelines);
     }
 
     ProjectApproachEntity findProjectApproach(Long projectApproachId) {
@@ -89,7 +89,7 @@ public class TimelineService {
 
     public void moveTimelineByDays(final Long timelineId, final Long days) {
 
-        TimelineState sessionTimeline = sessionState.getSessionTimelines().get(timelineId);
+        SessionTimeline sessionTimeline = sessionTimelineState.getSessionTimelines().get(timelineId);
 
         milestoneService.updateTempMilestones(timelineId);
 
@@ -113,7 +113,7 @@ public class TimelineService {
 
     public void moveTimelineStartByDays(final Long timelineId, final Long days) {
 
-        TimelineState sessionTimeline = sessionState.getSessionTimelines().get(timelineId);
+        SessionTimeline sessionTimeline = sessionTimelineState.getSessionTimelines().get(timelineId);
 
         milestoneService.updateTempMilestones(timelineId);
 
@@ -149,7 +149,7 @@ public class TimelineService {
 
     public void moveTimelineEndByDays(final Long timelineId, final Long days) {
 
-        TimelineState sessionTimeline = sessionState.getSessionTimelines().get(timelineId);
+        SessionTimeline sessionTimeline = sessionTimelineState.getSessionTimelines().get(timelineId);
 
         milestoneService.updateTempMilestones(timelineId);
 
@@ -182,7 +182,7 @@ public class TimelineService {
     }
 
     public void moveMileStoneByDays(final Long timelineId, final Long days, final Long movedMilestoneId) {
-        TimelineState sessionTimeline = sessionState.getSessionTimelines().get(timelineId);
+        SessionTimeline sessionTimeline = sessionTimelineState.getSessionTimelines().get(timelineId);
 
         Optional<LocalDate> oldFirstMilestoneOptionalDate = sessionTimeline.getMilestones().stream().map(Milestone::getDate)
                 .min(LocalDate::compareTo);
@@ -229,7 +229,7 @@ public class TimelineService {
     }
 
     public File getCalendarFileForTimeline(final Long timelineId) throws IOException {
-        TimelineState sessionTimeline = sessionState.findTimelineState(timelineId);
+        SessionTimeline sessionTimeline = sessionTimelineState.findTimelineState(timelineId);
 
         IcsCalendar icsCalendar = new IcsCalendar();
         TimeZone timezone = icsCalendar.createTimezoneEurope();
@@ -256,7 +256,7 @@ public class TimelineService {
 
     public void updateTimeline(final Timeline timeline) {
 
-        TimelineState sessionTimeline = sessionState.getSessionTimelines().get(timeline.getId());
+        SessionTimeline sessionTimeline = sessionTimelineState.getSessionTimelines().get(timeline.getId());
 
         sessionTimeline.getTimeline().setProjectType(timeline.getProjectType());
         sessionTimeline.getTimeline().setOperationTypeId(timeline.getOperationTypeId());
@@ -266,7 +266,7 @@ public class TimelineService {
         sessionTimeline.setIncrements(null);
         sessionTimeline.setTempIncrementMilestones(null);
 
-        sessionState.getSessionTimelineTemplates().remove(timeline.getId());
+        sessionTimelineState.getSessionTimelineTemplates().remove(timeline.getId());
 
         milestoneService.initializeMilestones(timeline.getId());
         milestoneService.updateMilestonesAndIncrement(timeline);
@@ -285,7 +285,7 @@ public class TimelineService {
 
     private List<Long> getDownloadFileIds(final Long timelineId, final Long milestoneId) {
 
-        final TimelineState sessionTimeline = sessionState.getSessionTimelines().get(timelineId);
+        final SessionTimeline sessionTimeline = sessionTimelineState.getSessionTimelines().get(timelineId);
         final ProjectApproachEntity projectApproach = findProjectApproach(sessionTimeline.getTimeline().getProjectApproachId());
 
         if (milestoneId != FIRST_MASTER_MILESTONE_ID || projectApproach == null) {

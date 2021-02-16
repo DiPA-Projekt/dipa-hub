@@ -1,8 +1,8 @@
-package online.dipa.hub.state;
+package online.dipa.hub.session.model;
 
 import online.dipa.hub.api.model.*;
 
-public class ProjectState {
+public class SessionProject {
 
     private Project project;
 

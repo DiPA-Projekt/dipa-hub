@@ -1,8 +1,11 @@
 package online.dipa.hub.services;
 
-import online.dipa.hub.state.ProjectState;
 import online.dipa.hub.api.model.Project;
+
 import online.dipa.hub.persistence.repositories.ProjectRepository;
+import online.dipa.hub.session.model.SessionProject;
+import online.dipa.hub.session.state.SessionProjectState;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
@@ -10,8 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.SessionScope;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 
@@ -19,9 +20,10 @@ import java.util.Objects;
 @SessionScope
 @Transactional
 public class ProjectService {
-    
-    private Map<Long, ProjectState> sessionProjects;
 
+    @Autowired
+    private SessionProjectState sessionProjectState;
+    
     @Autowired
     private ProjectRepository projectRespository;
 
@@ -31,7 +33,7 @@ public class ProjectService {
     public Project getProjectData(final Long projectId) {
         initializeProjects();
 
-		return this.sessionProjects.values().stream().map(ProjectState::getProject)
+		return sessionProjectState.getSessionProjects().values().stream().map(SessionProject::getProject)
                 .filter(t -> t.getId().equals(projectId)).findFirst().orElseThrow(() -> new EntityNotFoundException(
                         String.format("Project with id: %1$s not found.", projectId)));
     }
@@ -42,27 +44,16 @@ public class ProjectService {
         projectRespository.findAll().stream().map(p -> conversionService.convert(p, Project.class))
                 .filter(Objects::nonNull)
                 .forEach(t -> {
-                    ProjectState sessionProject = findProjectState(t.getId());
+                    SessionProject sessionProject = sessionProjectState.findProjectState(t.getId());
                     if (sessionProject.getProject() == null) {
                         sessionProject.setProject(t);
                     }
                 });
     }
 
-    
-    private ProjectState findProjectState(final Long projectId) {
-        return getSessionProjects().computeIfAbsent(projectId, t -> new ProjectState());
-    }
-
-    private Map<Long, ProjectState> getSessionProjects() {
-        if (this.sessionProjects == null) {
-            this.sessionProjects = new HashMap<>();
-        }
-        return this.sessionProjects;
-    }
 
     public void updateProjectData(final Long projectId, final Project project) {
-        ProjectState sessionProject = findProjectState(projectId);
+        SessionProject sessionProject = sessionProjectState.findProjectState(projectId);
         sessionProject.setProject(project);
     }
 }
