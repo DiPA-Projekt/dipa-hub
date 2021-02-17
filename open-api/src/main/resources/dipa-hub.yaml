@@ -36,10 +36,6 @@ paths:
     $ref: "paths/updateTimelineTemplate.yml"
   /timelines/{timelineId}/increments:
     $ref: "paths/increments.yml"
-  /timelines/{timelineId}/increments/add:
-    $ref: "paths/addIncrement.yml"
-  /timelines/{timelineId}/increments/delete:
-    $ref: "paths/deleteIncrement.yml"
   /timelines/{timelineId}/ical:
     $ref: "paths/ical.yml"
   /timelines/{timelineId}/milestones:
