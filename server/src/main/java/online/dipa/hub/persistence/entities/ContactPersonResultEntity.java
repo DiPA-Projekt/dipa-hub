@@ -12,6 +12,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ContactPersonResultEntity extends BaseEntity {
 
+    private String resultTypeId;
     private String name;
     private String department;
     private String taskArea;
@@ -21,6 +22,16 @@ public class ContactPersonResultEntity extends BaseEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private ProjectTaskEntity projectTask;
+
+
+
+    public String getResultTypeId() {
+        return resultTypeId;
+    }
+
+    public void setResultTypeId(final String resultTypeId) {
+        this.resultTypeId = resultTypeId;
+    }
 
     public String getName() {
         return name;

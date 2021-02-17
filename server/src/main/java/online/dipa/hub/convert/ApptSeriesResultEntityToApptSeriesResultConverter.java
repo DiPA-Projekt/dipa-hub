@@ -10,10 +10,13 @@ public class ApptSeriesResultEntityToApptSeriesResultConverter implements Conver
     @Override
     public AppointmentSeriesResult convert(final AppointmentSeriesResultEntity entity) {
 
-        return new AppointmentSeriesResult()
-                    .appointment(entity.getAppointment())
-                    .link(entity.getLink())
-                    .participants(entity.getParticipants());
+        AppointmentSeriesResult appointmentSeriesResult =  new AppointmentSeriesResult()
+                                                            .appointment(entity.getAppointment())
+                                                            .link(entity.getLink())
+                                                            .participants(entity.getParticipants());
+
+
+        return (AppointmentSeriesResult) appointmentSeriesResult.resultTypeId(String.valueOf(entity.getResultTypeId()));
 
     }
 }

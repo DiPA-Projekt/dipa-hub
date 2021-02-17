@@ -10,9 +10,11 @@ public class ElbeShoppingCartResultEntityToElbeShoppingCartResultConverter imple
     @Override
     public ELBEshoppingCartResult convert(final ELBEShoppingCartResultEntity entity) {
 
-        return new ELBEshoppingCartResult()
-                    .shoppingCartNumber(entity.getShoppingCartNumber())
-                    .shoppingCartContent(entity.getShoppingCartContent());
+        ELBEshoppingCartResult elbeShoppingCartResult = new ELBEshoppingCartResult()
+                                                            .shoppingCartNumber(entity.getShoppingCartNumber())
+                                                            .shoppingCartContent(entity.getShoppingCartContent());
+
+        return (ELBEshoppingCartResult) elbeShoppingCartResult.resultTypeId(String.valueOf(entity.getResultTypeId()));
 
     }
 }

@@ -12,6 +12,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class RiskResultEntity extends BaseEntity {
 
+    private String resultTypeId;
+
     private String description;
     private String value;
     private String solution;
@@ -21,6 +23,15 @@ public class RiskResultEntity extends BaseEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private ProjectTaskEntity projectTask;
+
+
+    public String getResultTypeId() {
+        return resultTypeId;
+    }
+
+    public void setResultTypeId(final String resultTypeId) {
+        this.resultTypeId = resultTypeId;
+    }
 
     public String getDescription() {
         return description;

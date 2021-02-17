@@ -1,5 +1,19 @@
 databaseChangeLog:
   - changeSet:
+      id: insert-project-task-template-01
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_task_template
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: name
+                  value: Projekt Aufgaben Vorlage
+  - changeSet:
       id: insert-project-task-01
       author: nguyen
       context: itzbund
@@ -25,6 +39,9 @@ databaseChangeLog:
               - column:
                   name: documentation_link
                   value:
+              - column:
+                  name: project_task_template_id
+                  value: 1
   - changeSet:
       id: insert-project-task-02
       author: nguyen
@@ -51,6 +68,9 @@ databaseChangeLog:
               - column:
                   name: documentation_link
                   value:
+              - column:
+                  name: project_task_template_id
+                  value: 1
   - changeSet:
       id: insert-project-task-03
       author: nguyen
@@ -77,6 +97,9 @@ databaseChangeLog:
               - column:
                   name: documentation_link
                   value:
+              - column:
+                  name: project_task_template_id
+                  value: 1
   - changeSet:
       id: insert-project-task-04
       author: nguyen
@@ -103,6 +126,9 @@ databaseChangeLog:
               - column:
                   name: documentation_link
                   value:
+              - column:
+                  name: project_task_template_id
+                  value: 1
   - changeSet:
       id: insert-project-task-05
       author: nguyen
@@ -129,6 +155,9 @@ databaseChangeLog:
               - column:
                   name: documentation_link
                   value:
+              - column:
+                  name: project_task_template_id
+                  value: 1
   - changeSet:
       id: insert-project-task-06
       author: nguyen
@@ -155,6 +184,9 @@ databaseChangeLog:
               - column:
                   name: documentation_link
                   value:
+              - column:
+                  name: project_task_template_id
+                  value: 1
   - changeSet:
       id: insert-project-task-07
       author: nguyen
@@ -181,6 +213,9 @@ databaseChangeLog:
               - column:
                   name: documentation_link
                   value:
+              - column:
+                  name: project_task_template_id
+                  value: 1
   - changeSet:
       id: insert-project-task-08
       author: nguyen
@@ -207,6 +242,9 @@ databaseChangeLog:
               - column:
                   name: documentation_link
                   value:
+              - column:
+                  name: project_task_template_id
+                  value: 1
   - changeSet:
       id: insert-project-task-09
       author: nguyen
@@ -233,6 +271,9 @@ databaseChangeLog:
               - column:
                   name: documentation_link
                   value:
+              - column:
+                  name: project_task_template_id
+                  value: 1
   - changeSet:
       id: insert-project-task-10
       author: nguyen
@@ -259,6 +300,9 @@ databaseChangeLog:
               - column:
                   name: documentation_link
                   value:
+              - column:
+                  name: project_task_template_id
+                  value: 1
   - changeSet:
       id: insert-project-task-11
       author: nguyen
@@ -285,6 +329,9 @@ databaseChangeLog:
               - column:
                   name: documentation_link
                   value:
+              - column:
+                  name: project_task_template_id
+                  value: 1
   - changeSet:
       id: insert-project-task-12
       author: nguyen
@@ -311,6 +358,9 @@ databaseChangeLog:
               - column:
                   name: documentation_link
                   value:
+              - column:
+                  name: project_task_template_id
+                  value: 1
   - changeSet:
       id: insert-project-task-13
       author: nguyen
@@ -337,6 +387,9 @@ databaseChangeLog:
               - column:
                   name: documentation_link
                   value:
+              - column:
+                  name: project_task_template_id
+                  value: 1
   - changeSet:
       id: insert-project-task-14
       author: nguyen
@@ -363,6 +416,9 @@ databaseChangeLog:
               - column:
                   name: documentation_link
                   value:
+              - column:
+                  name: project_task_template_id
+                  value: 1
   - changeSet:
       id: insert-project-task-15
       author: nguyen
@@ -389,6 +445,9 @@ databaseChangeLog:
               - column:
                   name: documentation_link
                   value:
+              - column:
+                  name: project_task_template_id
+                  value: 1
   - changeSet:
       id: insert-project-task-16
       author: nguyen
@@ -415,6 +474,9 @@ databaseChangeLog:
               - column:
                   name: documentation_link
                   value:
+              - column:
+                  name: project_task_template_id
+                  value: 1
   - changeSet:
       id: insert-project-task-17
       author: nguyen
@@ -441,6 +503,9 @@ databaseChangeLog:
               - column:
                   name: documentation_link
                   value:
+              - column:
+                  name: project_task_template_id
+                  value: 1
   - changeSet:
       id: insert-project-task-17
       author: nguyen
@@ -467,6 +532,9 @@ databaseChangeLog:
               - column:
                   name: documentation_link
                   value:
+              - column:
+                  name: project_task_template_id
+                  value: 1
   - changeSet:
       id: insert-standard-result-01
       author: nguyen
@@ -479,8 +547,11 @@ databaseChangeLog:
                   name: id
                   value: 1
               - column:
+                  name: result_type_id
+                  value: 1
+              - column:
                   name: content
-                  value: content1
+                  value:
               - column:
                   name: status
                   value:
@@ -495,6 +566,9 @@ databaseChangeLog:
               - column:
                   name: id
                   value: 2
+              - column:
+                  name: result_type_id
+                  value: 1
               - column:
                   name: content
                   value:
@@ -513,6 +587,9 @@ databaseChangeLog:
                   name: id
                   value: 3
               - column:
+                  name: result_type_id
+                  value: 1
+              - column:
                   name: content
                   value:
               - column:
@@ -529,6 +606,9 @@ databaseChangeLog:
               - column:
                   name: id
                   value: 4
+              - column:
+                  name: result_type_id
+                  value: 1
               - column:
                   name: content
                   value:
@@ -547,6 +627,9 @@ databaseChangeLog:
                   name: id
                   value: 5
               - column:
+                  name: result_type_id
+                  value: 1
+              - column:
                   name: content
                   value:
               - column:
@@ -563,6 +646,9 @@ databaseChangeLog:
               - column:
                   name: id
                   value: 6
+              - column:
+                  name: result_type_id
+                  value: 1
               - column:
                   name: content
                   value:
@@ -581,6 +667,9 @@ databaseChangeLog:
                   name: id
                   value: 7
               - column:
+                  name: result_type_id
+                  value: 1
+              - column:
                   name: content
                   value:
               - column:
@@ -597,6 +686,9 @@ databaseChangeLog:
               - column:
                   name: id
                   value: 8
+              - column:
+                  name: result_type_id
+                  value: 1
               - column:
                   name: content
                   value:
@@ -615,6 +707,9 @@ databaseChangeLog:
                   name: id
                   value: 9
               - column:
+                  name: result_type_id
+                  value: 1
+              - column:
                   name: content
                   value:
               - column:
@@ -631,6 +726,9 @@ databaseChangeLog:
               - column:
                   name: id
                   value: 10
+              - column:
+                  name: result_type_id
+                  value: 1
               - column:
                   name: content
                   value:
@@ -649,6 +747,9 @@ databaseChangeLog:
                   name: id
                   value: 11
               - column:
+                  name: result_type_id
+                  value: 1
+              - column:
                   name: content
                   value:
               - column:
@@ -666,6 +767,9 @@ databaseChangeLog:
                   name: id
                   value: 12
               - column:
+                  name: result_type_id
+                  value: 1
+              - column:
                   name: content
                   value:
               - column:
@@ -682,6 +786,9 @@ databaseChangeLog:
               - column:
                   name: id
                   value: 13
+              - column:
+                  name: result_type_id
+                  value: 1
               - column:
                   name: content
                   value:
@@ -904,14 +1011,17 @@ databaseChangeLog:
                   name: id
                   value: 1
               - column:
+                  name: result_type_id
+                  value: 3
+              - column:
                   name: name
-                  value: abc
+                  value:
               - column:
                   name: department
-                  value: def
+                  value:
               - column:
                   name: task_area
-                  value: 124
+                  value:
               - column:
                   name: status
                   value:
@@ -930,11 +1040,14 @@ databaseChangeLog:
                   name: id
                   value: 1
               - column:
+                  name: result_type_id
+                  value: 2
+              - column:
                   name: shopping_cart_number
                   value:
               - column:
                   name: shopping_cart_content
-                  type: shopping_cart_content111
+                  type:
               - column:
                   name: status
                   type:
@@ -952,6 +1065,9 @@ databaseChangeLog:
               - column:
                   name: id
                   value: 1
+              - column:
+                  name: result_type_id
+                  value: 4
               - column:
                   name: appointment
                   value:
@@ -979,6 +1095,9 @@ databaseChangeLog:
                   name: id
                   value: 1
               - column:
+                  name: result_type_id
+                  value: 5
+              - column:
                   name: description
                   value:
               - column:
@@ -1005,6 +1124,9 @@ databaseChangeLog:
                   name: id
                   value: 1
               - column:
+                  name: result_type_id
+                  value: 6
+              - column:
                   name: date
                   value:
               - column:
@@ -1019,3 +1141,37 @@ databaseChangeLog:
               - column:
                   name: project_task_id
                   value: 13
+  - changeSet:
+      id: insert-project-project-task-template-connection-Feldberg
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_project_task_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: project_id
+                  value: 3
+              - column:
+                  name: project_task_template_id
+                  value: 1
+  - changeSet:
+      id: insert-project-project-task-template-connection-Zugspitze
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_project_task_template_connection
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: project_id
+                  value: 4
+              - column:
+                  name: project_task_template_id
+                  value: 1

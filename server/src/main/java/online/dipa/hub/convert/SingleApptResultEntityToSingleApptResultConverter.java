@@ -11,10 +11,10 @@ public class SingleApptResultEntityToSingleApptResultConverter implements Conver
     @Override
     public SingleAppointmentResult convert(final SingleAppointmentResultEntity entity) {
 
-        return new SingleAppointmentResult()
-                    .date(entity.getDate())
-                    .goal(entity.getGoal())
-                    .responsiblePerson(entity.getResponsiblePerson());
-
+        SingleAppointmentResult singleAppointmentResult = new SingleAppointmentResult()
+                                                            .date(entity.getDate())
+                                                            .goal(entity.getGoal())
+                                                            .responsiblePerson(entity.getResponsiblePerson());
+        return (SingleAppointmentResult) singleAppointmentResult.resultTypeId(String.valueOf(entity.getResultTypeId()));
     }
 }

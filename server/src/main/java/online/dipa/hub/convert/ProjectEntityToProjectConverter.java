@@ -19,10 +19,12 @@ public class ProjectEntityToProjectConverter implements Converter<ProjectEntity,
                              .client(template.getClient())
                              .department(template.getDepartment())
                              .projectOwner(template.getProjectOwner());
-        
+
+
         if (template.getProjectSize() != null) {
             project.projectSize(Project.ProjectSizeEnum.fromValue(template.getProjectSize()));
         }
         return project;
     }
+
 }

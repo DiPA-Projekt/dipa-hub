@@ -11,10 +11,11 @@ public class RiskResultEntityToRiskResultConverter implements Converter<RiskResu
     @Override
     public RiskResult convert(final RiskResultEntity entity) {
 
-        return new RiskResult()
-                    .description(entity.getDescription())
-                    .solution(entity.getSolution())
-                    .value(entity.getValue());
+        RiskResult riskResult =  new RiskResult()
+                                    .description(entity.getDescription())
+                                    .solution(entity.getSolution())
+                                    .value(entity.getValue());
 
+        return (RiskResult) riskResult.resultTypeId(String.valueOf(entity.getResultTypeId()));
     }
 }

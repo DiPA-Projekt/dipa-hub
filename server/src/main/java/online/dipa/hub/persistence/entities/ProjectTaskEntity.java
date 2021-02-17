@@ -6,7 +6,6 @@ import javax.validation.constraints.Size;
 import static javax.persistence.CascadeType.ALL;
 import java.util.HashSet;
 import java.util.Set;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -27,6 +26,10 @@ public class ProjectTaskEntity extends BaseEntity {
 
     private String contactPerson;
     private String documentationLink;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER)
+    private ProjectTaskTemplateEntity projectTaskTemplate;
 
     @ManyToMany(mappedBy = "projectTasks", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -52,6 +55,14 @@ public class ProjectTaskEntity extends BaseEntity {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<SingleAppointmentResultEntity> singleAppointmentResults = new HashSet<>();
     
+    public ProjectTaskTemplateEntity getProjectTaskTemplate() {
+        return projectTaskTemplate;
+    }
+
+    public void setProjectTaskTemplate(final ProjectTaskTemplateEntity projectTaskTemplate) {
+        this.projectTaskTemplate = projectTaskTemplate;
+    }
+
     public String getTitle() {
         return title;
     }

@@ -10,9 +10,12 @@ public class ContactPersonResultEntityToContactPersonResultConverter implements 
     @Override
     public ContactPersonResult convert(final ContactPersonResultEntity entity) {
 
-        return new ContactPersonResult()
-                .name(entity.getName())
-                .department(entity.getDepartment())
-                .taskArea(entity.getTaskAre());
+        ContactPersonResult contactPersonResult =  new ContactPersonResult()
+                                                    .name(entity.getName())
+                                                    .department(entity.getDepartment())
+                                                    .taskArea(entity.getTaskAre());
+                                                    
+        return (ContactPersonResult) contactPersonResult.resultTypeId(String.valueOf(entity.getResultTypeId()));
+
     }
 }

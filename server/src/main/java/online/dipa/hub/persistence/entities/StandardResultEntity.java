@@ -1,13 +1,8 @@
 package online.dipa.hub.persistence.entities;
 
-import static javax.persistence.CascadeType.ALL;
-
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -30,6 +25,15 @@ public class StandardResultEntity extends BaseEntity {
     )
     private Set<ProjectTaskEntity> projectTasks;
 
+    private String resultTypeId;
+
+    public String getResultTypeId() {
+        return resultTypeId;
+    }
+
+    public void setResultTypeId(final String resultTypeId) {
+        this.resultTypeId = resultTypeId;
+    }
 
     public String getContent() {
         return content;
