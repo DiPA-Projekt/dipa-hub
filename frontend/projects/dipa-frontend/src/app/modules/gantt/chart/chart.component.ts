@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 import {
   Increment,
   IncrementsService,
+  InlineObject,
   Milestone,
   MilestonesService,
   Task,
@@ -300,13 +301,10 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   }
 
   changeStatus(event: MatRadioChange): void {
-    const changeMilestoneStatus$ = this.milestonesService.updateMilestoneData(
-      this.timelineData.id,
-      this.selectedMilestoneDataMenu.id,
-      {
-        status: event.value as Milestone.StatusEnum,
-      }
-    );
+    const changeMilestoneStatus$ = this.milestonesService.updateMilestoneData(this.timelineData.id, {
+      id: this.selectedMilestoneDataMenu.id,
+      status: event.value as Milestone.StatusEnum,
+    });
 
     this.milestoneSubscription = this.subscribeForReset(changeMilestoneStatus$);
   }
@@ -383,7 +381,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.projectDuration.onDragEnd = (offsetDays: number) => {
       if (offsetDays !== 0) {
         const moveTimeline$ = this.timelinesService.applyOperation(this.timelineData.id, {
-          operation: 'moveTimeline',
+          operation: InlineObject.OperationEnum.Movetimeline,
           days: offsetDays,
         });
         this.timelineSubscription = this.subscribeForRedraw(moveTimeline$);
@@ -395,7 +393,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.projectDuration.onDragEndProjectStart = (offsetDays: number) => {
       if (offsetDays !== 0) {
         const moveTimelineStart$ = this.timelinesService.applyOperation(this.timelineData.id, {
-          operation: 'moveTimelineStart',
+          operation: InlineObject.OperationEnum.Movetimelinestart,
           days: offsetDays,
         });
         this.timelineStartSubscription = this.subscribeForRedraw(moveTimelineStart$);
@@ -407,7 +405,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.projectDuration.onDragEndProjectEnd = (offsetDays: number) => {
       if (offsetDays !== 0) {
         const moveTimelineEnd$ = this.timelinesService.applyOperation(this.timelineData.id, {
-          operation: 'moveTimelineEnd',
+          operation: InlineObject.OperationEnum.Movetimelineend,
           days: offsetDays,
         });
         this.timelineEndSubscription = this.subscribeForRedraw(moveTimelineEnd$);
@@ -434,7 +432,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.milestoneViewItem.onDragEndMilestone = (offsetDays: number, id: number) => {
       if (offsetDays !== 0) {
         const moveMilestone$ = this.timelinesService.applyOperation(this.timelineData.id, {
-          operation: 'moveMilestone',
+          operation: InlineObject.OperationEnum.Movemilestone,
           days: offsetDays,
           movedMilestoneId: id,
         });

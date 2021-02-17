@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.annotation.SessionScope;
 
 import online.dipa.hub.api.model.Milestone;
 import online.dipa.hub.api.model.TimelineTemplate;
@@ -23,7 +22,6 @@ import online.dipa.hub.session.state.SessionTimelineState;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
-@SessionScope
 @Transactional
 public class TimelineTemplateService {
 

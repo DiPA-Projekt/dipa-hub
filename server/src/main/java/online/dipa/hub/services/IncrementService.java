@@ -11,7 +11,6 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.annotation.SessionScope;
 
 import online.dipa.hub.api.model.*;
 import online.dipa.hub.session.model.*;
@@ -23,7 +22,6 @@ import static java.time.temporal.ChronoUnit.DAYS;
 
 
 @Service
-@SessionScope
 @Transactional
 public class IncrementService {
 

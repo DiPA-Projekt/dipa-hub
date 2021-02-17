@@ -7,13 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.annotation.SessionScope;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@SessionScope
 @Transactional
 public class ProjectApproachService {
     

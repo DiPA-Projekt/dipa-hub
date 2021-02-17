@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.annotation.SessionScope;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.File;
@@ -27,7 +26,6 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import static online.dipa.hub.api.model.Timeline.ProjectTypeEnum;
 
 @Service
-@SessionScope
 @Transactional
 public class TimelineService {
 

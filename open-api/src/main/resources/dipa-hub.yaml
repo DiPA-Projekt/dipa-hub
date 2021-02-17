@@ -23,13 +23,9 @@ paths:
   /timelines/projectApproaches:
     $ref: "paths/projectApproaches.yml"
   /timelines/{timelineId}:
-    $ref: "paths/timeline-ops.yml"
-  /timelines/{timelineId}/update:
     $ref: "paths/updateTimeline.yml"
   /timelines/{timelineId}/project:
     $ref: "paths/projectData.yml"
-  /timelines/{timelineId}/project/update:
-    $ref: "paths/updateProjectData.yml"
   /timelines/{timelineId}/timelineTemplates:
     $ref: "paths/timelineTemplates.yml"
   /timelines/{timelineId}/timelineTemplates/{timelineTemplateId}:
@@ -40,8 +36,6 @@ paths:
     $ref: "paths/ical.yml"
   /timelines/{timelineId}/milestones:
     $ref: "paths/milestones.yml"
-  /timelines/{timelineId}/milestones/{milestoneId}:
-    $ref: "paths/updateMilestone.yml"
   /timelines/{timelineId}/milestones/{milestoneId}/files:
     $ref: "paths/milestoneFiles.yml"
   /timelines/{timelineId}/tasks:

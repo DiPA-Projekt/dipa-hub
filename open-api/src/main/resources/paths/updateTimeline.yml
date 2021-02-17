@@ -1,3 +1,42 @@
+put:
+  tags:
+    - timelines
+  summary: Apply operation for timeline
+  description: Apply an operation for a timeline and its milestones.
+  operationId: applyOperation
+  parameters:
+    - in: path
+      name: timelineId
+      schema:
+        type: integer
+        format: int64
+      required: true
+      description: Numeric ID of the timeline.
+  requestBody:
+    description: operation type with parameters
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            operation:
+              type: string
+              enum:
+                - MOVETIMELINE
+                - MOVETIMELINESTART
+                - MOVETIMELINEEND
+                - MOVEMILESTONE
+              example: MOVETIMELINE
+            days:
+              type: integer
+              format: int64
+            movedMilestoneId:
+              type: integer
+              format: int64
+  responses:
+    204:
+      description: The operation was applied successfully.
 patch:
   tags:
     - timelines

@@ -1,6 +1,13 @@
 import { ResizedEvent } from 'angular-resize-event';
 import * as d3 from 'd3';
-import { Increment, TimelineTemplate, TimelineTemplatesService, Timeline, TimelinesService } from 'dipa-api-client';
+import {
+  Increment,
+  TimelineTemplate,
+  TimelineTemplatesService,
+  Timeline,
+  TimelinesService,
+  InlineObject,
+} from 'dipa-api-client';
 import { forkJoin, Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
@@ -284,7 +291,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     this.projectDuration.onDragEnd = (offsetDays: number) => {
       if (offsetDays !== 0) {
         const moveTimeline$ = this.timelinesService.applyOperation(this.timelineData.id, {
-          operation: 'moveTimeline',
+          operation: InlineObject.OperationEnum.Movetimeline,
           days: offsetDays,
         });
         this.timelineSubscription = this.subscribeForRedraw(moveTimeline$);
@@ -296,7 +303,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     this.projectDuration.onDragEndProjectStart = (offsetDays: number) => {
       if (offsetDays !== 0) {
         const moveTimelineStart$ = this.timelinesService.applyOperation(this.timelineData.id, {
-          operation: 'moveTimelineStart',
+          operation: InlineObject.OperationEnum.Movetimelinestart,
           days: offsetDays,
         });
 
@@ -309,7 +316,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     this.projectDuration.onDragEndProjectEnd = (offsetDays: number) => {
       if (offsetDays !== 0) {
         const moveTimelineEnd$ = this.timelinesService.applyOperation(this.timelineData.id, {
-          operation: 'moveTimelineEnd',
+          operation: InlineObject.OperationEnum.Movetimelineend,
           days: offsetDays,
         });
 

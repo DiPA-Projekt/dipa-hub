@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.annotation.SessionScope;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -23,7 +22,6 @@ import javax.persistence.EntityNotFoundException;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
-@SessionScope
 @Transactional
 public class MilestoneService {
     
