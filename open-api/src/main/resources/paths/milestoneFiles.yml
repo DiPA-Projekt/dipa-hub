@@ -5,20 +5,8 @@ get:
   description: Retrieves the list of Milestone attached files.
   operationId: getFilesForMilestone
   parameters:
-    - in: path
-      name: timelineId
-      schema:
-        type: integer
-        format: int64
-      required: true
-      description: Numeric ID of the timeline.
-    - in: path
-      name: milestoneId
-      schema:
-        type: integer
-        format: int64
-      required: true
-      description: Numeric ID of the milestone.
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
+    - $ref: "./params/milestoneIdParam.yml#/milestoneIdParam"
   responses:
     200:
       description: OK

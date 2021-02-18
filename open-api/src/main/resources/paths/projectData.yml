@@ -5,13 +5,7 @@ get:
   description: Retrieves the project's information
   operationId: getProjectData
   parameters:
-    - in: path
-      name: timelineId
-      schema:
-        type: integer
-        format: int64
-      required: true
-      description: Numeric ID of the timeline to get.
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
   responses:
     200:
       description: OK
@@ -26,13 +20,7 @@ patch:
   description: Update project's information
   operationId: updateProjectData
   parameters:
-    - in: path
-      name: timelineId
-      schema:
-        type: integer
-        format: int64
-      required: true
-      description: Numeric ID of the timeline.
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
   requestBody:
     description: timeline as requestBody
     required: true

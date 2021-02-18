@@ -5,20 +5,8 @@ patch:
   description: Apply a template for a project
   operationId: updateTimelineTemplate
   parameters:
-    - in: path
-      name: timelineId
-      schema:
-        type: integer
-        format: int64
-      required: true
-      description: Numeric ID of the timeline.
-    - in: path
-      name: timelineTemplateId
-      schema:
-        type: integer
-        format: int64
-      required: true
-      description: Numeric ID of the template.
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
+    - $ref: "./params/timelineTemplateIdParam.yml#/timelineTemplateIdParam"
   responses:
     204:
       description: The update was applied successfully.

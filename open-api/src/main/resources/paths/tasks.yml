@@ -5,13 +5,7 @@ get:
   description: Retrieves the list of tasks in a timeline.
   operationId: getTasksForTimeline
   parameters:
-    - in: path
-      name: timelineId
-      schema:
-        type: integer
-        format: int64
-      required: true
-      description: Numeric ID of the timeline to get.
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
   responses:
     200:
       description: OK

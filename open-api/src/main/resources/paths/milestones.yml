@@ -5,13 +5,7 @@ get:
   description: Retrieves the list of Milestones in a timeline.
   operationId: getMilestonesForTimeline
   parameters:
-    - in: path
-      name: timelineId
-      schema:
-        type: integer
-        format: int64
-      required: true
-      description: Numeric ID of the timeline to get.
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
   responses:
     200:
       description: OK
@@ -28,13 +22,7 @@ patch:
   description: Apply an operation for a milestone
   operationId: updateMilestoneData
   parameters:
-    - in: path
-      name: timelineId
-      schema:
-        type: integer
-        format: int64
-      required: true
-      description: Numeric ID of the timeline.
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
   requestBody:
     description: operation type with parameters
     required: true

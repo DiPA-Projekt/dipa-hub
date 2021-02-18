@@ -5,13 +5,7 @@ get:
   description: Retrieves the list of Increments in a timeline.
   operationId: getIncrementsForTimeline
   parameters:
-    - in: path
-      name: timelineId
-      schema:
-        type: integer
-        format: int64
-      required: true
-      description: Numeric ID of the timeline to get.
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
   responses:
     200:
       description: OK
@@ -28,12 +22,7 @@ put:
   description: Add increment for timeline
   operationId: addIncrement
   parameters:
-    - in: path
-      name: timelineId
-      schema:
-        type: integer
-        format: int64
-      description: Numeric ID of the timeline.
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
   responses:
     200:
       description: OK
@@ -44,12 +33,7 @@ delete:
   description: Delete increment for timeline
   operationId: deleteIncrement
   parameters:
-    - in: path
-      name: timelineId
-      schema:
-        type: integer
-        format: int64
-      description: Numeric ID of the timeline.
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
   responses:
     200:
       description: OK

@@ -1,0 +1,8 @@
+timelineTemplateIdParam:
+  in: query
+  name: timelineTemplateId
+  schema:
+    type: integer
+    format: int64
+  required: true
+  description: Numeric ID of the template.
