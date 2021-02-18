@@ -1,0 +1,12 @@
+patch:
+  tags:
+    - timelineTemplates
+  summary: Update template for a project
+  description: Apply a template for a project
+  operationId: updateTimelineTemplate
+  parameters:
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
+    - $ref: "./params/timelineTemplateIdParam.yml#/timelineTemplateIdParam"
+  responses:
+    204:
+      description: The update was applied successfully.

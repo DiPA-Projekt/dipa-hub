@@ -1,4 +1,4 @@
-package online.dipa.hub;
+package online.dipa.hub.session.model;
 
 
 import java.util.HashMap;
@@ -6,7 +6,7 @@ import java.util.Map;
 
 import online.dipa.hub.api.model.*;
 
-public class ProjectState {
+public class SessionProject {
 
     private Project project;
     private Map<Long, ProjectTask> projectTasks;

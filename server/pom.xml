@@ -165,6 +165,7 @@
                                 <generateApiTests>false</generateApiTests>
                                 <serializableModel>true</serializableModel>
                                 <snapshotVersion>true</snapshotVersion>
+                                <useTags>true</useTags>
                             </configOptions>
 
                         </configuration>

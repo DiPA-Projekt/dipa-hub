@@ -6,8 +6,8 @@ import { TemplatesComponent } from './templates/templates.component';
 import {
   OperationTypesService,
   ProjectApproachesService,
-  Template,
-  TemplatesService,
+  TimelineTemplatesService,
+  TimelineTemplate,
   Timeline,
   TimelinesService,
 } from 'dipa-api-client';
@@ -42,13 +42,13 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
   selectedTimelineId: number;
   selectedOperationTypeId: number;
 
-  selectedTemplatesList: Template[] = [];
+  selectedTemplatesList: TimelineTemplate[] = [];
   selectedTemplatesIdList: any[];
 
-  standardTemplatesList: Template[] = [];
+  standardTemplatesList: TimelineTemplate[] = [];
   selectedStandardTemplateIndex: number;
 
-  nonStandardTemplatesList: Template[] = [];
+  nonStandardTemplatesList: TimelineTemplate[] = [];
   selectedNonStandardTemplateIndex: number;
 
   constructor(
@@ -58,7 +58,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
     private operationTypesService: OperationTypesService,
     private projectApproachesService: ProjectApproachesService,
     public activatedRoute: ActivatedRoute,
-    private templateService: TemplatesService
+    private timelineTemplatesService: TimelineTemplatesService
   ) {}
 
   ngOnInit(): void {
@@ -93,7 +93,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
   setData(): void {
     this.vm$ = forkJoin([
       this.timelinesService.getTimelines(),
-      this.templateService.getTemplatesForTimeline(this.selectedTimelineId),
+      this.timelineTemplatesService.getTemplatesForTimeline(this.selectedTimelineId),
     ]).pipe(
       map(([timelinesData, templatesData]) => {
         this.selectedTemplatesList = [];
@@ -114,7 +114,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
         }
 
         const selectedTemplates = this.selectedTemplatesList;
-        this.selectedTemplatesIdList = this.selectedTemplatesList.map((t: Template) => t.id);
+        this.selectedTemplatesIdList = this.selectedTemplatesList.map((t: TimelineTemplate) => t.id);
 
         const selectedTimeline = timelinesData.find((c) => c.id === Number(this.selectedTimelineId));
 
@@ -179,7 +179,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  getNextItemList(listItems: Template[], currentIndex: number): number {
+  getNextItemList(listItems: TimelineTemplate[], currentIndex: number): number {
     if (currentIndex + 1 < listItems.length) {
       currentIndex++;
     } else {
@@ -189,7 +189,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
     return currentIndex;
   }
 
-  getPrevItemList(listItems: Template[], currentIndex: number): number {
+  getPrevItemList(listItems: TimelineTemplate[], currentIndex: number): number {
     if (currentIndex - 1 >= 0) {
       currentIndex--;
     } else {
@@ -230,8 +230,8 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
   updateTemplateStandard(): void {
     const templateId = this.standardTemplatesList[this.selectedStandardTemplateIndex].id;
 
-    this.updateTemplateSubscription = this.templateService
-      .updateTemplate(this.selectedTimelineId, templateId)
+    this.updateTemplateSubscription = this.timelineTemplatesService
+      .updateTimelineTemplate(this.selectedTimelineId, templateId)
       .subscribe(() => {
         this.setData();
       });
@@ -240,8 +240,8 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
   updateTemplateNonStandard(): void {
     const templateId = this.nonStandardTemplatesList[this.selectedNonStandardTemplateIndex].id;
 
-    this.updateTemplateSubscription = this.templateService
-      .updateTemplate(this.selectedTimelineId, templateId)
+    this.updateTemplateSubscription = this.timelineTemplatesService
+      .updateTimelineTemplate(this.selectedTimelineId, templateId)
       .subscribe(() => {
         this.setData();
       });

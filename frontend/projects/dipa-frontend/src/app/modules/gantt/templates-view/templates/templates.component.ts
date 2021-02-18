@@ -1,6 +1,13 @@
 import { ResizedEvent } from 'angular-resize-event';
 import * as d3 from 'd3';
-import { Increment, Template, TemplatesService, Timeline, TimelinesService } from 'dipa-api-client';
+import {
+  Increment,
+  TimelineTemplate,
+  TimelineTemplatesService,
+  Timeline,
+  TimelinesService,
+  InlineObject,
+} from 'dipa-api-client';
 import { forkJoin, Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
@@ -37,8 +44,8 @@ import { ZoomBehavior } from 'd3-zoom';
 export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
   @Input() isAdmin;
   @Input() timelineData: Timeline;
-  @Input() templateData: Template[] = [];
-  @Input() allTemplates: Template[];
+  @Input() templateData: TimelineTemplate[] = [];
+  @Input() allTemplates: TimelineTemplate[];
   @Output() projectTypeChanged = new EventEmitter();
   @Output() operationTypeChanged = new EventEmitter();
   @Output() projectApproachChanged = new EventEmitter();
@@ -46,7 +53,6 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
   @ViewChild('templateChart') templateChart: ElementRef;
 
   standardTemplatesList = null;
-  // allTemplates = null;
   selectedTemplatesIdList: number[] = [];
 
   chartFigure: ElementRef;
@@ -99,7 +105,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
   constructor(
     public templatesViewControlsService: TemplatesViewControlsService,
     private timelinesService: TimelinesService,
-    private templateService: TemplatesService,
+    private timelineTemplatesService: TimelineTemplatesService,
     private elementRef: ElementRef
   ) {
     d3.formatLocale({
@@ -285,7 +291,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     this.projectDuration.onDragEnd = (offsetDays: number) => {
       if (offsetDays !== 0) {
         const moveTimeline$ = this.timelinesService.applyOperation(this.timelineData.id, {
-          operation: 'moveTimeline',
+          operation: InlineObject.OperationEnum.Movetimeline,
           days: offsetDays,
         });
         this.timelineSubscription = this.subscribeForRedraw(moveTimeline$);
@@ -297,7 +303,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     this.projectDuration.onDragEndProjectStart = (offsetDays: number) => {
       if (offsetDays !== 0) {
         const moveTimelineStart$ = this.timelinesService.applyOperation(this.timelineData.id, {
-          operation: 'moveTimelineStart',
+          operation: InlineObject.OperationEnum.Movetimelinestart,
           days: offsetDays,
         });
 
@@ -310,7 +316,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     this.projectDuration.onDragEndProjectEnd = (offsetDays: number) => {
       if (offsetDays !== 0) {
         const moveTimelineEnd$ = this.timelinesService.applyOperation(this.timelineData.id, {
-          operation: 'moveTimelineEnd',
+          operation: InlineObject.OperationEnum.Movetimelineend,
           days: offsetDays,
         });
 
@@ -631,7 +637,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
         switchMap(() =>
           forkJoin([
             this.timelinesService.getTimelines(),
-            this.templateService.getTemplatesForTimeline(this.timelineData.id),
+            this.timelineTemplatesService.getTemplatesForTimeline(this.timelineData.id),
           ])
         )
       )
@@ -662,7 +668,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
       });
   }
 
-  private setDataReset(timelineData: Timeline, templatesData: Template[]): void {
+  private setDataReset(timelineData: Timeline, templatesData: TimelineTemplate[]): void {
     this.templateData = templatesData;
 
     this.projectDuration.setData(timelineData);

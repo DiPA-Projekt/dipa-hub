@@ -23,8 +23,6 @@ paths:
   /timelines/projectApproaches:
     $ref: "paths/projectApproaches.yml"
   /timelines/{timelineId}:
-    $ref: "paths/timeline-ops.yml"
-  /timelines/{timelineId}/update:
     $ref: "paths/updateTimeline.yml"
   /timelines/{timelineId}/project:
     $ref: "paths/projectData.yml"
@@ -32,24 +30,16 @@ paths:
     $ref: "paths/projectTasks.yml"
   /timelines/{timelineId}/projectTasks/{projectTaskId}:
     $ref: "paths/updateProjectTask.yml"
-  /timelines/{timelineId}/project/update:
-    $ref: "paths/updateProjectData.yml"
-  /timelines/{timelineId}/templates:
-    $ref: "paths/templates.yml"
-  /timelines/{timelineId}/templates/{templateId}:
-    $ref: "paths/updateTemplate.yml"
+  /timelines/{timelineId}/timelineTemplates:
+    $ref: "paths/timelineTemplates.yml"
+  /timelines/{timelineId}/timelineTemplates/{timelineTemplateId}:
+    $ref: "paths/updateTimelineTemplate.yml"
   /timelines/{timelineId}/increments:
     $ref: "paths/increments.yml"
-  /timelines/{timelineId}/increments/add:
-    $ref: "paths/addIncrement.yml"
-  /timelines/{timelineId}/increments/delete:
-    $ref: "paths/deleteIncrement.yml"
   /timelines/{timelineId}/ical:
     $ref: "paths/ical.yml"
   /timelines/{timelineId}/milestones:
     $ref: "paths/milestones.yml"
-  /timelines/{timelineId}/milestones/{milestoneId}:
-    $ref: "paths/updateMilestone.yml"
   /timelines/{timelineId}/milestones/{milestoneId}/files:
     $ref: "paths/milestoneFiles.yml"
   /timelines/{timelineId}/tasks:

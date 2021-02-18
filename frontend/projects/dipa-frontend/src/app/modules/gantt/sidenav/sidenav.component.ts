@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavItem } from '../../../nav-item';
-import { ExternalLinksUserService, Timeline, TimelinesService } from 'dipa-api-client';
+import { ExternalLinksService, Timeline, TimelinesService } from 'dipa-api-client';
 import { ActivatedRoute, Params } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { Observable, Subscription } from 'rxjs';
@@ -25,7 +25,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   constructor(
     private timelinesService: TimelinesService,
-    private externalLinksUserService: ExternalLinksUserService,
+    private externalLinksService: ExternalLinksService,
     public activatedRoute: ActivatedRoute
   ) {}
 
@@ -70,7 +70,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       },
     ];
 
-    this.favoriteLinksSubscription = this.externalLinksUserService.getFavoriteLinks().subscribe((data) => {
+    this.favoriteLinksSubscription = this.externalLinksService.getFavoriteLinks().subscribe((data) => {
       this.favoriteLinkItems = [
         {
           name: 'Favoriten-Links',

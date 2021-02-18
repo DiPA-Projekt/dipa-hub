@@ -1,4 +1,4 @@
-package online.dipa.hub;
+package online.dipa.hub.session.model;
 
 import online.dipa.hub.api.model.Increment;
 import online.dipa.hub.api.model.Milestone;
@@ -7,7 +7,7 @@ import online.dipa.hub.api.model.Timeline;
 
 import java.util.List;
 
-public class TimelineState {
+public class SessionTimeline {
 
     private Timeline timeline;
 
