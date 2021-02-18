@@ -15,7 +15,6 @@ import online.dipa.hub.persistence.entities.ProjectTaskEntity;
 
 @Component
 public class ProjectTaskEntityToProjectTaskConverter implements Converter<ProjectTaskEntity, ProjectTask> {
-
     
     @Autowired
     private StandardResultEntityToStandardResult standardResultConverter;
@@ -48,7 +47,7 @@ public class ProjectTaskEntityToProjectTaskConverter implements Converter<Projec
         if (!template.getStandardResult().isEmpty()) {
             List<Result> standardResults = template.getStandardResult().stream().map(p -> standardResultConverter.convert(p)).collect(Collectors.toList());
             projectTask.results(new ProjectTaskResults().type("TYPE_STD").data(standardResults));
-            
+
         }
         else if (!template.getContactPersonResult().isEmpty()) {
             List<Result> contactPersonResults = template.getContactPersonResult().stream().map(p -> contactPersonResultConverter.convert(p)).collect(Collectors.toList());
@@ -63,14 +62,17 @@ public class ProjectTaskEntityToProjectTaskConverter implements Converter<Projec
         else if (!template.getELBEShoppingCartResults().isEmpty()) {
             List<Result> elbeShoppingCaResults = template.getELBEShoppingCartResults().stream().map(p -> elbeShoppingCartResultConverter.convert(p)).collect(Collectors.toList());
             projectTask.results(new ProjectTaskResults().type("TYPE_ELBE_SC").data(elbeShoppingCaResults));
+
         }
         else if (!template.getSingleAppointmentResults().isEmpty()) {
             List<Result> singleApptResults = template.getSingleAppointmentResults().stream().map(p -> singleApptResultConverter.convert(p)).collect(Collectors.toList());
             projectTask.results(new ProjectTaskResults().type("TYPE_SINGLE_APPOINTMENT").data(singleApptResults));
+
         }
         else if (!template.getRiskResults().isEmpty()) {
             List<Result> riskResults = template.getRiskResults().stream().map(p -> riskResultConverter.convert(p)).collect(Collectors.toList());
             projectTask.results(new ProjectTaskResults().type("TYPE_RISK").data(riskResults));
+            
         }
                 
         return projectTask;

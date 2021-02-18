@@ -23,8 +23,6 @@ public class ContactPersonResultEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     private ProjectTaskEntity projectTask;
 
-
-
     public String getResultTypeId() {
         return resultTypeId;
     }

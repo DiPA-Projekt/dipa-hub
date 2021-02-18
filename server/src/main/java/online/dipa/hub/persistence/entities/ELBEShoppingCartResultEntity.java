@@ -1,6 +1,5 @@
 package online.dipa.hub.persistence.entities;
 
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
