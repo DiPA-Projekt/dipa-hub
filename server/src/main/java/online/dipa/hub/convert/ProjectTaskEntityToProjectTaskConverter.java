@@ -42,7 +42,7 @@ public class ProjectTaskEntityToProjectTaskConverter implements Converter<Projec
                              .optional(template.getOptional())
                              .explanation(template.getExplanation())
                              .contactPerson(template.getContactPerson())
-                             .documentationLink(template.getDocumationLink());
+                             .documentationLink(template.getDocumentationLink());
                             
         if (!template.getStandardResult().isEmpty()) {
             List<Result> standardResults = template.getStandardResult().stream().map(p -> standardResultConverter.convert(p)).collect(Collectors.toList());
@@ -60,8 +60,8 @@ public class ProjectTaskEntityToProjectTaskConverter implements Converter<Projec
 
         }
         else if (!template.getELBEShoppingCartResults().isEmpty()) {
-            List<Result> elbeShoppingCaResults = template.getELBEShoppingCartResults().stream().map(p -> elbeShoppingCartResultConverter.convert(p)).collect(Collectors.toList());
-            projectTask.results(new ProjectTaskResults().type("TYPE_ELBE_SC").data(elbeShoppingCaResults));
+            List<Result> elbeShoppingCartResults = template.getELBEShoppingCartResults().stream().map(p -> elbeShoppingCartResultConverter.convert(p)).collect(Collectors.toList());
+            projectTask.results(new ProjectTaskResults().type("TYPE_ELBE_SC").data(elbeShoppingCartResults));
 
         }
         else if (!template.getSingleAppointmentResults().isEmpty()) {

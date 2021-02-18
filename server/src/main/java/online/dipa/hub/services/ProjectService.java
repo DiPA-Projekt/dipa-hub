@@ -14,12 +14,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -62,7 +63,7 @@ public class ProjectService {
 
     private void initializeProjectTasks() {
 
-        projectRespository.findAll().stream().forEach(t -> {
+        projectRespository.findAll().forEach(t -> {
             
             Optional<ProjectTaskTemplateEntity> projectTaskTemplate = t.getProjectTaskTemplates().stream().findFirst();
 
@@ -77,9 +78,7 @@ public class ProjectService {
                 projectTasks.getProjectTasks().stream()
                     .map(p -> conversionService.convert(p, ProjectTask.class))
                     .filter(Objects::nonNull)
-                    .forEach(task -> {
-                        projectTasksMap.put(task.getId(), task);
-                    });
+                    .forEach(task -> projectTasksMap.put(task.getId(), task));
 
                 sessionProject.setProjectTasks(projectTasksMap);
         
@@ -91,12 +90,9 @@ public class ProjectService {
         
         initializeProjectTasks();
 
-        return sessionProjectState.findProjectState(projectId)
+        return new ArrayList<>(sessionProjectState.findProjectState(projectId)
             .getProjectTasks()
-            .entrySet()
-            .stream()
-            .map(t -> t.getValue())
-            .collect(Collectors.toList());
+            .values());
 
     }
 

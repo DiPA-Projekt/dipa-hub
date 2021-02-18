@@ -47,11 +47,11 @@ public class ContactPersonResultEntity extends BaseEntity {
         this.department = department;
     }
 
-    public String getTaskAre() {
+    public String getTaskArea() {
         return taskArea;
     }
 
-    public void setTaskAre(final String taskArea) {
+    public void setTaskArea(final String taskArea) {
         this.taskArea = taskArea;
     }
     

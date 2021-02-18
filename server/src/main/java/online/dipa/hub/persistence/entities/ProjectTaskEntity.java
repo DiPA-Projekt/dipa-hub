@@ -95,11 +95,11 @@ public class ProjectTaskEntity extends BaseEntity {
         this.contactPerson = contactPerson;
     }
 
-    public String getDocumationLink() {
+    public String getDocumentationLink() {
         return documentationLink;
     }
     
-    public void setDocumationLink(final String documentationLink) {
+    public void setDocumentationLink(final String documentationLink) {
         this.documentationLink = documentationLink;
     }
 

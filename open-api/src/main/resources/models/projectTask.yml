@@ -2,16 +2,16 @@ ProjectTask:
   type: object
   properties:
     id:
-      description: Unique identifier of the taks
+      description: Unique identifier of the task
       type: integer
       format: int64
       example: 2
     title:
-      description: The title of the taks
+      description: The title of the task
       type: string
       example: "Übergabe TLM-->PL"
     optional:
-      description: if this task is opional
+      description: if this task is optional
       type: boolean
       example: true
     explanation:
