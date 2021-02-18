@@ -9,7 +9,6 @@ import {
   ProjectApproach,
   TasksService,
   Timeline,
-  TimelinesIncrementService,
   TimelinesService,
 } from 'dipa-api-client';
 import { ActivatedRoute, Params } from '@angular/router';
@@ -49,8 +48,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
     private timelinesService: TimelinesService,
     private milestonesService: MilestonesService,
     private tasksService: TasksService,
-    private timelinesIncrementService: TimelinesIncrementService,
-    private incrementService: IncrementsService,
+    private incrementsService: IncrementsService,
     public activatedRoute: ActivatedRoute
   ) {}
 
@@ -100,7 +98,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
     this.vm$ = forkJoin([
       this.tasksService.getTasksForTimeline(this.selectedTimelineId),
       this.milestonesService.getMilestonesForTimeline(this.selectedTimelineId),
-      this.incrementService.getIncrementsForTimeline(this.selectedTimelineId),
+      this.incrementsService.getIncrementsForTimeline(this.selectedTimelineId),
     ]).pipe(
       map(([taskData, milestoneData, incrementsData]) => {
         const milestoneDates = milestoneData.map((x) => this.createDateAtMidnight(x.date));

@@ -5,13 +5,7 @@ get:
   description: Retrieves the list of Milestones in a timeline as .ics file.
   operationId: getTimelineCalendar
   parameters:
-    - in: path
-      name: timelineId
-      schema:
-        type: integer
-        format: int64
-      required: true
-      description: Numeric ID of the timeline.
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
   responses:
     200:
       description: OK

@@ -1,17 +1,11 @@
 get:
   tags:
-    - templates
+    - timelineTemplates
   summary: Templates List for Timeline
   description: Retrieves the list of Templates in a timeline.
   operationId: getTemplatesForTimeline
   parameters:
-    - in: path
-      name: timelineId
-      schema:
-        type: integer
-        format: int64
-      required: true
-      description: Numeric ID of the timeline to get.
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
   responses:
     200:
       description: OK
@@ -20,4 +14,4 @@ get:
           schema:
             type: array
             items:
-              $ref: "../models/template.yml#/Template"
+              $ref: "../models/timelineTemplate.yml#/TimelineTemplate"

@@ -1,6 +1,6 @@
 package online.dipa.hub.server.rest;
 
-import online.dipa.hub.api.rest.DownloadFileApi;
+import online.dipa.hub.api.rest.FilesApi;
 import online.dipa.hub.services.DownloadFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 
 
 @RestApiController
-public class DownloadFileController implements DownloadFileApi {
+public class DownloadFileController implements FilesApi {
 
     @Autowired
     private DownloadFileService downloadFileService;

@@ -1,13 +1,13 @@
-Template:
+TimelineTemplate:
   type: object
   properties:
     id:
-      description: Unique identifier of the template
+      description: Unique identifier of the timeline template
       type: integer
       format: int64
       example: 2
     name:
-      description: The name of the template
+      description: The name of the timeline template
       type: string
       example: "Serveraustausch PlanTemplate"
     standard:
