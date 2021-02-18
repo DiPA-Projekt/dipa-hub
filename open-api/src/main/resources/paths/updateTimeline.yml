@@ -17,11 +17,11 @@ put:
             operation:
               type: string
               enum:
-                - MOVETIMELINE
-                - MOVETIMELINESTART
-                - MOVETIMELINEEND
-                - MOVEMILESTONE
-              example: MOVETIMELINE
+                - MOVE_TIMELINE
+                - MOVE_TIMELINE_START
+                - MOVE_TIMELINE_END
+                - MOVE_MILESTONE
+              example: MOVE_TIMELINE
             days:
               type: integer
               format: int64

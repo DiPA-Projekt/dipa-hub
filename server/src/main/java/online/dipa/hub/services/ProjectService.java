@@ -1,6 +1,8 @@
 package online.dipa.hub.services;
 
 import online.dipa.hub.api.model.Project;
+import online.dipa.hub.api.model.ProjectTask;
+import online.dipa.hub.persistence.entities.ProjectTaskTemplateEntity;
 
 import online.dipa.hub.persistence.repositories.ProjectRepository;
 import online.dipa.hub.session.model.SessionProject;
@@ -12,7 +14,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 
 @Service
@@ -38,7 +46,6 @@ public class ProjectService {
 
     
     private void initializeProjects() {
-
         projectRespository.findAll().stream().map(p -> conversionService.convert(p, Project.class))
                 .filter(Objects::nonNull)
                 .forEach(t -> {
@@ -48,10 +55,50 @@ public class ProjectService {
                     }
                 });
     }
-
-
+    
     public void updateProjectData(final Long projectId, final Project project) {
         SessionProject sessionProject = sessionProjectState.findProjectState(projectId);
         sessionProject.setProject(project);
+    }
+
+    private void initializeProjectTasks() {
+
+        projectRespository.findAll().forEach(t -> {
+            
+            Optional<ProjectTaskTemplateEntity> projectTaskTemplate = t.getProjectTaskTemplates().stream().findFirst();
+
+            SessionProject sessionProject = sessionProjectState.findProjectState(t.getId());
+
+            if (projectTaskTemplate.isPresent() && sessionProject.getProjectTasks().isEmpty()) {
+
+                ProjectTaskTemplateEntity projectTasks = projectTaskTemplate.get();
+
+                Map<Long, ProjectTask> projectTasksMap = new HashMap<>();
+
+                projectTasks.getProjectTasks().stream()
+                    .map(p -> conversionService.convert(p, ProjectTask.class))
+                    .filter(Objects::nonNull)
+                    .forEach(task -> projectTasksMap.put(task.getId(), task));
+
+                sessionProject.setProjectTasks(projectTasksMap);
+        
+            }
+        });
+    }
+
+    public List<ProjectTask> getProjectTasks (final Long projectId) {
+        
+        initializeProjectTasks();
+
+        return new ArrayList<>(sessionProjectState.findProjectState(projectId)
+            .getProjectTasks()
+            .values());
+
+    }
+
+    public void updateProjectTask (final Long projectId, final ProjectTask projectTask) {
+
+        sessionProjectState.findProjectState(projectId).getProjectTasks().replace(projectTask.getId(), projectTask);
+        
     }
 }

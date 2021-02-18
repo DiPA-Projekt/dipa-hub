@@ -1,0 +1,41 @@
+ProjectTask:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the task
+      type: integer
+      format: int64
+      example: 2
+    title:
+      description: The title of the task
+      type: string
+      example: "Übergabe TLM-->PL"
+    optional:
+      description: if this task is optional
+      type: boolean
+      example: true
+    explanation:
+      description: what is this task about
+      type: string
+      example: "angelegtes iSAR-Projekt mit vorausgefülltem PSB"
+    contactPerson:
+      description: contact person
+      type: string
+      example: "Frau Müller"
+    documentationLink:
+      description: the link for this task
+      type: string
+      example: "II A 1"
+    results:
+      type: object
+      properties:
+        type:
+          description: the type of this result array
+          type: string
+          example: "TYPE_STD"
+        data:
+          type: array
+          items:
+            $ref: "../models/result.yml#/Result"
+  required:
+    - id

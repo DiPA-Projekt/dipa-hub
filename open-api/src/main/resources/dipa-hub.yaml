@@ -26,6 +26,8 @@ paths:
     $ref: "paths/updateTimeline.yml"
   /timelines/{timelineId}/project:
     $ref: "paths/projectData.yml"
+  /timelines/{timelineId}/projectTasks:
+    $ref: "paths/projectTasks.yml"
   /timelines/{timelineId}/timelineTemplates:
     $ref: "paths/timelineTemplates.yml"
   /timelines/{timelineId}/timelineTemplates/{timelineTemplateId}:

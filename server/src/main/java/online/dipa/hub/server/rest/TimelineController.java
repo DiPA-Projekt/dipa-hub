@@ -35,13 +35,13 @@ public class TimelineController implements TimelinesApi {
     public ResponseEntity<Void> applyOperation(Long timelineId, InlineObject inlineObject) {
 
         switch (inlineObject.getOperation()) {
-            case MOVETIMELINE: timelineService.moveTimelineByDays(timelineId, inlineObject.getDays());
+            case MOVE_TIMELINE: timelineService.moveTimelineByDays(timelineId, inlineObject.getDays());
                 break;
-            case MOVETIMELINESTART: timelineService.moveTimelineStartByDays(timelineId, inlineObject.getDays());
+            case MOVE_TIMELINE_START: timelineService.moveTimelineStartByDays(timelineId, inlineObject.getDays());
                 break;
-            case MOVETIMELINEEND: timelineService.moveTimelineEndByDays(timelineId, inlineObject.getDays());
+            case MOVE_TIMELINE_END: timelineService.moveTimelineEndByDays(timelineId, inlineObject.getDays());
                 break;
-            case MOVEMILESTONE: timelineService.moveMileStoneByDays(timelineId, inlineObject.getDays(), inlineObject.getMovedMilestoneId());
+            case MOVE_MILESTONE: timelineService.moveMileStoneByDays(timelineId, inlineObject.getDays(), inlineObject.getMovedMilestoneId());
                 break;
             default:
                 return ResponseEntity.notFound().build();
