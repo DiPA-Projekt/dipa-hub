@@ -102,10 +102,9 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
   private oneDayTick = 1.2096e9;
 
-  private operationMoveTimeline: InlineObject.OperationEnum = 'MOVETIMELINE';
-  private operationMoveTimelineStart: InlineObject.OperationEnum = 'MOVETIMELINESTART';
-  private operationMoveTimelineEnd: InlineObject.OperationEnum = 'MOVETIMELINEEND';
-  private operationMoveMilestone: InlineObject.OperationEnum = 'MOVEMILESTONE';
+  private operationMoveTimeline: InlineObject.OperationEnum = 'MOVE_TIMELINE';
+  private operationMoveTimelineStart: InlineObject.OperationEnum = 'MOVE_TIMELINE_START';
+  private operationMoveTimelineEnd: InlineObject.OperationEnum = 'MOVE_TIMELINE_END';
 
   constructor(
     public templatesViewControlsService: TemplatesViewControlsService,
