@@ -13,7 +13,7 @@ public class ContactPersonResultEntityToContactPersonResultConverter implements 
         ContactPersonResult contactPersonResult = new ContactPersonResult()
                                                     .name(entity.getName())
                                                     .department(entity.getDepartment())
-                                                    .taskArea(entity.getTaskAre());
+                                                    .taskArea(entity.getTaskArea());
                                                     
         return (ContactPersonResult) contactPersonResult.resultTypeId(String.valueOf(entity.getResultTypeId()));
 
