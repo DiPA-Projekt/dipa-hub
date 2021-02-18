@@ -153,6 +153,7 @@
                             <enablePostProcessFile>false</enablePostProcessFile>
 
                             <generatorName>spring</generatorName>
+                            <additionalProperties>removeEnumValuePrefix=false</additionalProperties>
 
                             <configOptions>
                                 <apiPackage>online.dipa.hub.api.rest</apiPackage>

@@ -102,6 +102,11 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
   private oneDayTick = 1.2096e9;
 
+  private operationMoveTimeline: InlineObject.OperationEnum = 'MOVETIMELINE';
+  private operationMoveTimelineStart: InlineObject.OperationEnum = 'MOVETIMELINESTART';
+  private operationMoveTimelineEnd: InlineObject.OperationEnum = 'MOVETIMELINEEND';
+  private operationMoveMilestone: InlineObject.OperationEnum = 'MOVEMILESTONE';
+
   constructor(
     public templatesViewControlsService: TemplatesViewControlsService,
     private timelinesService: TimelinesService,
@@ -291,7 +296,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     this.projectDuration.onDragEnd = (offsetDays: number) => {
       if (offsetDays !== 0) {
         const moveTimeline$ = this.timelinesService.applyOperation(this.timelineData.id, {
-          operation: InlineObject.OperationEnum.Movetimeline,
+          operation: this.operationMoveTimeline,
           days: offsetDays,
         });
         this.timelineSubscription = this.subscribeForRedraw(moveTimeline$);
@@ -303,7 +308,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     this.projectDuration.onDragEndProjectStart = (offsetDays: number) => {
       if (offsetDays !== 0) {
         const moveTimelineStart$ = this.timelinesService.applyOperation(this.timelineData.id, {
-          operation: InlineObject.OperationEnum.Movetimelinestart,
+          operation: this.operationMoveTimelineStart,
           days: offsetDays,
         });
 
@@ -316,7 +321,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     this.projectDuration.onDragEndProjectEnd = (offsetDays: number) => {
       if (offsetDays !== 0) {
         const moveTimelineEnd$ = this.timelinesService.applyOperation(this.timelineData.id, {
-          operation: InlineObject.OperationEnum.Movetimelineend,
+          operation: this.operationMoveTimelineEnd,
           days: offsetDays,
         });
 

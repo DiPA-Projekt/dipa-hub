@@ -122,6 +122,11 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
   private oneDayTick = 1.2096e9;
 
+  private operationMoveTimeline: InlineObject.OperationEnum = 'MOVETIMELINE';
+  private operationMoveTimelineStart: InlineObject.OperationEnum = 'MOVETIMELINESTART';
+  private operationMoveTimelineEnd: InlineObject.OperationEnum = 'MOVETIMELINEEND';
+  private operationMoveMilestone: InlineObject.OperationEnum = 'MOVEMILESTONE';
+
   constructor(
     public ganttControlsService: GanttControlsService,
     private milestonesService: MilestonesService,
@@ -381,7 +386,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.projectDuration.onDragEnd = (offsetDays: number) => {
       if (offsetDays !== 0) {
         const moveTimeline$ = this.timelinesService.applyOperation(this.timelineData.id, {
-          operation: InlineObject.OperationEnum.Movetimeline,
+          operation: this.operationMoveTimeline,
           days: offsetDays,
         });
         this.timelineSubscription = this.subscribeForRedraw(moveTimeline$);
@@ -393,7 +398,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.projectDuration.onDragEndProjectStart = (offsetDays: number) => {
       if (offsetDays !== 0) {
         const moveTimelineStart$ = this.timelinesService.applyOperation(this.timelineData.id, {
-          operation: InlineObject.OperationEnum.Movetimelinestart,
+          operation: this.operationMoveTimelineStart,
           days: offsetDays,
         });
         this.timelineStartSubscription = this.subscribeForRedraw(moveTimelineStart$);
@@ -405,7 +410,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.projectDuration.onDragEndProjectEnd = (offsetDays: number) => {
       if (offsetDays !== 0) {
         const moveTimelineEnd$ = this.timelinesService.applyOperation(this.timelineData.id, {
-          operation: InlineObject.OperationEnum.Movetimelineend,
+          operation: this.operationMoveTimelineEnd,
           days: offsetDays,
         });
         this.timelineEndSubscription = this.subscribeForRedraw(moveTimelineEnd$);
@@ -432,7 +437,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.milestoneViewItem.onDragEndMilestone = (offsetDays: number, id: number) => {
       if (offsetDays !== 0) {
         const moveMilestone$ = this.timelinesService.applyOperation(this.timelineData.id, {
-          operation: InlineObject.OperationEnum.Movemilestone,
+          operation: this.operationMoveMilestone,
           days: offsetDays,
           movedMilestoneId: id,
         });

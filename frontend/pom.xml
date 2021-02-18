@@ -44,6 +44,7 @@
               <inputSpec>dipa-hub.yaml</inputSpec>
               <generatorName>typescript-angular</generatorName>
               <output>${project.basedir}/projects/dipa-api-client/src</output>
+              <additionalProperties>removeEnumValuePrefix=false</additionalProperties>
               <configOptions>
               </configOptions>
             </configuration>
