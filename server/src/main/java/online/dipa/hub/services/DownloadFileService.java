@@ -8,7 +8,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.annotation.SessionScope;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -16,7 +15,6 @@ import java.net.URL;
 import java.util.Optional;
 
 @Service
-@SessionScope
 @Transactional
 public class DownloadFileService {
 
