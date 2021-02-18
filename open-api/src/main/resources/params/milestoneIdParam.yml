@@ -1,5 +1,5 @@
 milestoneIdParam:
-  in: query
+  in: path
   name: milestoneId
   schema:
     type: integer

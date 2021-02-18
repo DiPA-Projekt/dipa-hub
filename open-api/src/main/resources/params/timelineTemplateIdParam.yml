@@ -1,5 +1,5 @@
 timelineTemplateIdParam:
-  in: query
+  in: path
   name: timelineTemplateId
   schema:
     type: integer

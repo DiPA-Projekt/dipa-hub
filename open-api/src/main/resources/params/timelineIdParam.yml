@@ -1,5 +1,5 @@
 timelineIdParam:
-  in: query
+  in: path
   name: timelineId
   required: true
   schema:
