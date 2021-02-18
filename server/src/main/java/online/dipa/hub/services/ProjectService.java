@@ -54,6 +54,11 @@ public class ProjectService {
                     }
                 });
     }
+    
+    public void updateProjectData(final Long projectId, final Project project) {
+        SessionProject sessionProject = sessionProjectState.findProjectState(projectId);
+        sessionProject.setProject(project);
+    }
 
     private void initializeProjectTasks() {
 
@@ -61,7 +66,7 @@ public class ProjectService {
             
             Optional<ProjectTaskTemplateEntity> projectTaskTemplate = t.getProjectTaskTemplates().stream().findFirst();
 
-            ProjectState sessionProject = findProjectState(t.getId());
+            SessionProject sessionProject = sessionProjectState.findProjectState(t.getId());
 
             if (projectTaskTemplate.isPresent() && sessionProject.getProjectTasks().isEmpty()) {
 
@@ -82,28 +87,11 @@ public class ProjectService {
         });
     }
 
-    
-    private ProjectState findProjectState(final Long projectId) {
-        return getSessionProjects().computeIfAbsent(projectId, t -> new ProjectState());
-    }
-
-    private Map<Long, ProjectState> getSessionProjects() {
-        if (this.sessionProjects == null) {
-            this.sessionProjects = new HashMap<>();
-        }
-        return this.sessionProjects;
-    }
-
-    public void updateProjectData(final Long projectId, final Project project) {
-        SessionProject sessionProject = sessionProjectState.findProjectState(projectId);
-        sessionProject.setProject(project);
-    }
-
     public List<ProjectTask> getProjectTasks (final Long projectId) {
         
         initializeProjectTasks();
 
-        return findProjectState(projectId)
+        return sessionProjectState.findProjectState(projectId)
             .getProjectTasks()
             .entrySet()
             .stream()
@@ -112,10 +100,9 @@ public class ProjectService {
 
     }
 
-    public void updateProjectTask (final Long projectId, final Long taskId, final ProjectTask projectTask) {
+    public void updateProjectTask (final Long projectId, final ProjectTask projectTask) {
 
-        ProjectState sessionProject = findProjectState(projectId);
-        sessionProject.getProjectTasks().replace(taskId, projectTask);
+        sessionProjectState.findProjectState(projectId).getProjectTasks().replace(projectTask.getId(), projectTask);
         
     }
 }

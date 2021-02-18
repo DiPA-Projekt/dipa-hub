@@ -1,17 +1,11 @@
 get:
   tags:
-    - projectTasks
+    - project
   summary: Milestone List for Timeline
   description: Retrieves the list of Milestones in a timeline.
   operationId: getProjectTasks
   parameters:
-    - in: path
-      name: timelineId
-      schema:
-        type: integer
-        format: int64
-      required: true
-      description: Numeric ID of the timeline to get.
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
   responses:
     200:
       description: OK
@@ -21,3 +15,21 @@ get:
             type: array
             items:
               $ref: "../models/projectTask.yml#/ProjectTask"
+patch:
+  tags:
+    - project
+  summary: Update data for projectTask
+  description: Update new data for projectTask
+  operationId: updateProjectTask
+  parameters:
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
+  requestBody:
+    description: projectTask as requestBody
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../models/projectTask.yml#/ProjectTask"
+  responses:
+    204:
+      description: The update was applied successfully.

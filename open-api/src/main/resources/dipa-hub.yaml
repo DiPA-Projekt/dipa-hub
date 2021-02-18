@@ -28,8 +28,6 @@ paths:
     $ref: "paths/projectData.yml"
   /timelines/{timelineId}/projectTasks:
     $ref: "paths/projectTasks.yml"
-  /timelines/{timelineId}/projectTasks/{projectTaskId}:
-    $ref: "paths/updateProjectTask.yml"
   /timelines/{timelineId}/timelineTemplates:
     $ref: "paths/timelineTemplates.yml"
   /timelines/{timelineId}/timelineTemplates/{timelineTemplateId}:
