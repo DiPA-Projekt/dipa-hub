@@ -1,1 +1,8 @@
+<app-chart-header
+  [timelineData]="timelineData"
+  [isAdmin]="isAdmin"
+  (projectTypeChanged)="projectTypeChanged.emit($event)"
+  (operationTypeChanged)="operationTypeChanged.emit($event)"
+  (projectApproachChanged)="projectApproachChanged.emit($event)"
+></app-chart-header>
 <figure id="chart" (resized)="onResized($event)" #templateChart></figure>

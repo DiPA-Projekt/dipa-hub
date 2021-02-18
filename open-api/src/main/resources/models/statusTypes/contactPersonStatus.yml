@@ -1,0 +1,15 @@
+ContactPersonStatus:
+  type: object
+  properties:
+    status:
+      description: status
+      type: string
+      enum:
+        - OPEN
+        - CONTACTED
+        - ANSWER_RECEIVED
+        - DONE
+      default: null
+      example: OPEN
+  required:
+    - status

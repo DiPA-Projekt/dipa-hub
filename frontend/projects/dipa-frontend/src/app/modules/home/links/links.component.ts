@@ -10,13 +10,13 @@ import { Subscription } from 'rxjs';
 export class LinksComponent implements OnInit, OnDestroy {
   externalLinksSubscription: Subscription;
 
-  externalLinkGroups;
+  externalLinkGroups: { [key: string]: ExternalLink[] };
 
   constructor(private externalLinksService: ExternalLinksService) {}
 
   ngOnInit(): void {
     this.externalLinksSubscription = this.externalLinksService.getExternalLinks().subscribe((data: ExternalLink[]) => {
-      this.externalLinkGroups = Object.create(null);
+      this.externalLinkGroups = {};
 
       data.forEach((link) => {
         this.externalLinkGroups[link.category] = this.externalLinkGroups[link.category] || [];

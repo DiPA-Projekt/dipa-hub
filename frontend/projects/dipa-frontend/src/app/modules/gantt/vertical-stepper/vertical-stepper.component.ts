@@ -121,7 +121,8 @@ export class VerticalStepperComponent implements OnInit {
       title: 'AeDL einrichten und monatliche Leistungsnachweise freigeben',
       optional: true,
       explanation:
-        'sofern ext. Dienstleistung eingesetzt wird, muss AeDL dafür administriert werden und die monatlichen Leistungsnachweise der Externen sind freizugeben und an den DL weiterzuleiten',
+        'sofern ext. Dienstleistung eingesetzt wird, muss AeDL dafür administriert werden und die monatlichen ' +
+        'Leistungsnachweise der Externen sind freizugeben und an den DL weiterzuleiten',
       contactPerson: '',
       documentationLink: '',
       result: '',
@@ -150,7 +151,8 @@ export class VerticalStepperComponent implements OnInit {
       title: 'monatlichen Statusbericht erstellen und versenden',
       optional: false,
       explanation:
-        'bis zum 10. eines Kalendermonats muss in iSAR ein Statusbericht für den vorangegangenen Berichtsmonat erstell und durch den PE freigegeben werden',
+        'bis zum 10. eines Kalendermonats muss in iSAR ein Statusbericht für den vorangegangenen Berichtsmonat erstellt ' +
+        'und durch den PE freigegeben werden',
       contactPerson: '',
       documentationLink: '',
       result: '',
@@ -160,7 +162,8 @@ export class VerticalStepperComponent implements OnInit {
       title: 'Termine setzen und steuern',
       optional: true,
       explanation:
-        'Projektablauf mit internen Terminen strukturieren, Termineinhaltung überprüfen und Auswirkungen von Terminüberschreitungen steuern',
+        'Projektablauf mit internen Terminen strukturieren, Termineinhaltung überprüfen und ' +
+        'Auswirkungen von Terminüberschreitungen steuern',
       contactPerson: '',
       documentationLink: '',
       result: '',

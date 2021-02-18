@@ -1,0 +1,54 @@
+<p>
+  <mat-toolbar>
+    <span *ngIf="isAdmin" class="timelineName">
+      {{ timelineData.name }}
+    </span>
+    <mat-form-field *ngIf="timelineData" floatLabel="always" id="projectType-{{ timelineData.id }}">
+      <mat-label>Projekttyp</mat-label>
+      <mat-select
+        [(value)]="timelineData.projectType"
+        (selectionChange)="changeProjectType($event)"
+        [disabled]="!isAdmin"
+      >
+        <mat-option *ngFor="let projectType of projectTypesList" [value]="projectType">
+          {{ projectType }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field *ngIf="timelineData" floatLabel="always" id="operationType-{{ timelineData.id }}">
+      <mat-label>Vorhabensart</mat-label>
+      <mat-select
+        [(value)]="timelineData.operationTypeId"
+        (selectionChange)="changeOperationType($event)"
+        [disabled]="!isAdmin"
+      >
+        <mat-option *ngFor="let operationType of operationTypesList" [value]="operationType.id">
+          {{ operationType.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field *ngIf="timelineData" floatLabel="always" id="projectApproach-{{ timelineData.id }}">
+      <mat-label>Vorgehensweise</mat-label>
+      <mat-select [(value)]="timelineData.projectApproachId" (selectionChange)="changeProjectApproach($event)">
+        <mat-option
+          *ngFor="let projectApproach of filterProjectApproaches(timelineData.operationTypeId)"
+          [value]="projectApproach.id"
+        >
+          {{ projectApproach.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <span class="full-width-spacer"></span>
+    <button
+      *ngIf="showActions"
+      (click)="getIcsCalendarFile()"
+      mat-stroked-button
+      title="Exportiere Meilensteine im iCal Format"
+      aria-label="Exportiere Meilensteine im iCal Format"
+      style="margin-bottom: 3px"
+    >
+      <mat-icon>event_note</mat-icon>
+      Export
+    </button>
+  </mat-toolbar>
+</p>
