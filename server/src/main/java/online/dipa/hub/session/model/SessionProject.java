@@ -20,9 +20,6 @@ public class SessionProject {
     }
 
     public Map<Long, ProjectTask> getProjectTasks() {
-        if (projectTasks == null) {
-            setProjectTasks(new HashMap<>());
-        }
         return projectTasks;
     }
 

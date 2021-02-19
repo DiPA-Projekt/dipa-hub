@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,13 +66,9 @@ public class ProjectService {
     public void updateProjectData(final Long projectId, final Project project) {
         SessionProject sessionProject = sessionProjectState.findProjectState(projectId);
 
-        System.out.println(project.getProjectSize());
+        if (project.getProjectSize() != sessionProject.getProject().getProjectSize()) {
 
-        if (sessionProject.getProject().getProjectSize() != project.getProjectSize()) {
-
-            Optional<ProjectTaskTemplateEntity> projectTaskTemplate = projectTaskTemplateRepository.findAll().stream().filter(template -> filterProjectSize(template,  project.getProjectSize())).findFirst();
-            System.out.println(project.getProjectSize());
-            sessionProject.setProjectTasks(projectTasksListToHashMap(projectTaskTemplate));
+            sessionProject.setProjectTasks(getProjecTasksFromRespo(project.getProjectSize()));
         }
         sessionProject.setProject(project);
 
@@ -82,29 +79,28 @@ public class ProjectService {
         projectRespository.findAll().forEach(t -> {
 
             if (t.getProjectSize() != null) {
-            
-            // Optional<ProjectTaskTemplateEntity> projectTaskTemplate = t.getProjectTaskTemplates().stream().findFirst();
 
-            SessionProject sessionProject = sessionProjectState.findProjectState(t.getId());
+                SessionProject sessionProject = sessionProjectState.findProjectState(t.getId());
 
-            if (sessionProject.getProjectTasks().isEmpty()) {
+                if (sessionProject.getProjectTasks() == null) {
+                    sessionProject.setProjectTasks(getProjecTasksFromRespo(ProjectSizeEnum.fromValue(t.getProjectSize().getName())));
+                }
 
-                Optional<ProjectTaskTemplateEntity> projectTaskTemplate = t.getProjectSize().getProjectTaskTemplates().stream().filter(Objects::nonNull).findFirst();
-
-                sessionProject.setProjectTasks(projectTasksListToHashMap(projectTaskTemplate));
-        
-            }
             }
         });
     }
 
     public List<ProjectTask> getProjectTasks (final Long projectId) {
-        
+
+        SessionProject sessionProject = sessionProjectState.findProjectState(projectId);
+
         initializeProjectTasks();
 
-        return new ArrayList<>(sessionProjectState.findProjectState(projectId)
-            .getProjectTasks()
-            .values());
+        if (sessionProject.getProjectTasks() == null) {
+            return new ArrayList<ProjectTask>();
+        }
+
+        return new ArrayList<>(sessionProject.getProjectTasks().values());
 
     }
 
@@ -114,11 +110,17 @@ public class ProjectService {
         
     }
 
-    private Map<Long, ProjectTask> projectTasksListToHashMap(Optional<ProjectTaskTemplateEntity> projectTaskTemplate) {
+    private Map<Long, ProjectTask> getProjecTasksFromRespo (ProjectSizeEnum projectSizeEnum) {
 
         Map<Long, ProjectTask> projectTasksMap = new HashMap<>();
 
-        if (projectTaskTemplate.isPresent()) { 
+        Optional<ProjectTaskTemplateEntity> projectTaskTemplate = projectTaskTemplateRepository
+                .findAll()
+                .stream()
+                .filter(template -> filterProjectSize(template, projectSizeEnum))
+                .findFirst();
+
+        if (projectTaskTemplate.isPresent()) {
 
             projectTaskTemplate.get().getProjectTasks().stream()
                 .map(p -> conversionService.convert(p, ProjectTask.class))
