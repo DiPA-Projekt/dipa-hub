@@ -131,7 +131,7 @@ databaseChangeLog:
                   name: id
                   type: BIGINT
               - column:
-                  name: result_type_id
+                  name: result_type
                   type: VARCHAR(255)
               - column:
                   name: content
@@ -180,7 +180,7 @@ databaseChangeLog:
                   name: id
                   type: BIGINT
               - column:
-                  name: result_type_id
+                  name: result_type
                   type: VARCHAR(255)
               - column:
                   name: name
@@ -215,7 +215,7 @@ databaseChangeLog:
                   name: id
                   type: BIGINT
               - column:
-                  name: result_type_id
+                  name: result_type
                   type: VARCHAR(255)
               - column:
                   name: shopping_cart_number
@@ -247,7 +247,7 @@ databaseChangeLog:
                   name: id
                   type: BIGINT
               - column:
-                  name: result_type_id
+                  name: result_type
                   type: VARCHAR(255)
               - column:
                   name: appointment
@@ -282,7 +282,7 @@ databaseChangeLog:
                   name: id
                   type: BIGINT
               - column:
-                  name: result_type_id
+                  name: result_type
                   type: VARCHAR(255)
               - column:
                   name: description
@@ -317,7 +317,7 @@ databaseChangeLog:
                   name: id
                   type: BIGINT
               - column:
-                  name: result_type_id
+                  name: result_type
                   type: VARCHAR(255)
               - column:
                   name: date

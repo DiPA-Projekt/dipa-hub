@@ -15,8 +15,7 @@ public class ApptSeriesResultEntityToApptSeriesResultConverter implements Conver
                                                             .link(entity.getLink())
                                                             .participants(entity.getParticipants());
 
-
-        return (AppointmentSeriesResult) appointmentSeriesResult.resultTypeId(String.valueOf(entity.getResultTypeId()));
+        return (AppointmentSeriesResult) appointmentSeriesResult.resultType(String.valueOf(entity.getResultType()));
 
     }
 }

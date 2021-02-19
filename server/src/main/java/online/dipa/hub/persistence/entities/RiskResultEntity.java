@@ -12,7 +12,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class RiskResultEntity extends BaseEntity {
 
-    private String resultTypeId;
+    private String resultType;
 
     private String description;
     private String value;
@@ -25,12 +25,12 @@ public class RiskResultEntity extends BaseEntity {
     private ProjectTaskEntity projectTask;
 
 
-    public String getResultTypeId() {
-        return resultTypeId;
+    public String getResultType() {
+        return resultType;
     }
 
-    public void setResultTypeId(final String resultTypeId) {
-        this.resultTypeId = resultTypeId;
+    public void setResultType(final String resultType) {
+        this.resultType = resultType;
     }
 
     public String getDescription() {

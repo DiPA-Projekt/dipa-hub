@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 public class StandardResultEntityToStandardResult implements Converter<StandardResultEntity, StandardResult> {
     @Override
     public StandardResult convert(final StandardResultEntity entity) {
-    
+
         StandardResult standardResult = new StandardResult().result(entity.getContent());
-        return (StandardResult) standardResult.resultTypeId(String.valueOf(entity.getResultTypeId()));
+        return (StandardResult) standardResult.resultType(String.valueOf(entity.getResultType()));
     }
 }
