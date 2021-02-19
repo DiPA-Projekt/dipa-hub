@@ -14,6 +14,7 @@ import {
 import { ActivatedRoute, Params } from '@angular/router';
 import { ChartComponent } from '../chart/chart.component';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
+import Utils from '../../../shared/utils';
 
 @Component({
   selector: 'app-timeline',
@@ -101,9 +102,9 @@ export class TimelineComponent implements OnInit, OnDestroy {
       this.incrementsService.getIncrementsForTimeline(this.selectedTimelineId),
     ]).pipe(
       map(([taskData, milestoneData, incrementsData]) => {
-        const milestoneDates = milestoneData.map((x) => this.createDateAtMidnight(x.date));
-        const taskStartDates = taskData.map((x) => this.createDateAtMidnight(x.start));
-        const taskEndDates = taskData.map((x) => this.createDateAtMidnight(x.end));
+        const milestoneDates = milestoneData.map((x) => Utils.createDateAtMidnight(x.date));
+        const taskStartDates = taskData.map((x) => Utils.createDateAtMidnight(x.start));
+        const taskEndDates = taskData.map((x) => Utils.createDateAtMidnight(x.end));
 
         const datesArray: Date[] = [...milestoneDates, ...taskStartDates, ...taskEndDates];
 
@@ -143,16 +144,5 @@ export class TimelineComponent implements OnInit, OnDestroy {
     } else {
       this.ganttControlsService.setViewType(null);
     }
-  }
-
-  createDateAtMidnight(date: string | Date): Date {
-    const dateAtMidnight = new Date(date);
-    dateAtMidnight.setHours(0, 0, 0, 0);
-    return dateAtMidnight;
-  }
-
-  parseGermanDate(input: string): Date {
-    const parts = input.match(/(\d+)/g);
-    return new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
   }
 }

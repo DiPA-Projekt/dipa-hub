@@ -293,7 +293,7 @@ databaseChangeLog:
                   value: true
               - column:
                   name: explanation
-                  value: Abfluss der Aufwände und Zahlungen tracke
+                  value: Abfluss der Aufwände und Zahlungen tracken
               - column:
                   name: contact_person
                   value:

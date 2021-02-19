@@ -53,7 +53,7 @@ schemas:
             description: responsible department
             type: string
             example: "II A 1"
-          task_area:
+          taskArea:
             description: task area
             type: string
             example: "Projektmanagement"
