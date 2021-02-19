@@ -16,6 +16,6 @@ public class RiskResultEntityToRiskResultConverter implements Converter<RiskResu
                                     .solution(entity.getSolution())
                                     .value(entity.getValue());
 
-        return (RiskResult) riskResult.resultTypeId(String.valueOf(entity.getResultTypeId()));
+        return (RiskResult) riskResult.resultType(String.valueOf(entity.getResultType()));
     }
 }
