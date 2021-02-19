@@ -1,98 +1,78 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
-import { ActivatedRoute, Params } from '@angular/router';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
+import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { switchMap } from 'rxjs/operators';
-import { Project, ProjectService } from 'dipa-api-client';
-
-interface ProjectSize {
-  value: string;
-  display: string;
-  description: string;
-}
+import { ActivatedRoute, Params } from '@angular/router';
+import { Observable, Subscription } from 'rxjs';
+import { ProjectService, ProjectTask } from 'dipa-api-client';
 
 @Component({
-  selector: 'app-project-checklist',
+  selector: 'app-vertical-stepper',
   templateUrl: './project-checklist.component.html',
   styleUrls: ['./project-checklist.component.scss'],
+  providers: [
+    {
+      provide: STEPPER_GLOBAL_OPTIONS,
+      useValue: { displayDefaultIndicatorType: false },
+    },
+  ],
 })
 export class ProjectChecklistComponent implements OnInit, OnDestroy {
-  projectDataSubscription: Subscription;
+  projectChecklistSubscription: Subscription;
 
   selectedTimelineId: number;
 
-  projectData: Project;
+  isLinear = false;
 
-  public myForm: FormGroup;
+  formGroup: FormGroup;
 
-  public sizes: ProjectSize[] = [
+  statusList = [
     {
-      value: 'SMALL',
-      display: 'klein',
-      description: 'Aufwand < 250 PT',
+      value: 'IN_PROGRESS',
+      name: 'in Bearbeitung',
     },
     {
-      value: 'MIDDLE',
-      display: 'mittel',
-      description: 'Aufwand 250 - 1.500 PT',
+      value: 'OPEN',
+      name: 'offen',
     },
     {
-      value: 'BIG',
-      display: 'groß',
-      description: 'Aufwand > 1.500 PT',
+      value: 'CLOSED',
+      name: 'geschlossen',
+    },
+    {
+      value: 'ASSIGNED',
+      name: 'zugewiesen',
+    },
+    {
+      value: 'PLANNED',
+      name: 'geplant',
+    },
+    {
+      value: 'DONE',
+      name: 'fertiggestellt',
     },
   ];
 
-  constructor(private projectService: ProjectService, public activatedRoute: ActivatedRoute, public fb: FormBuilder) {
-    this.setReactiveForm({
-      id: -1,
-      akz: '',
-      name: '',
-      projectSize: null,
-      client: '',
-      department: '',
-      projectOwner: '',
-    });
-  }
+  projectTasks: ProjectTask[];
+
+  constructor(private projectService: ProjectService, public activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.projectDataSubscription = this.activatedRoute.parent.params
+    this.projectChecklistSubscription = this.activatedRoute.parent.params
       .pipe(
         switchMap(
-          (params: Params): Observable<Project> => {
+          (params: Params): Observable<ProjectTask[]> => {
             this.selectedTimelineId = parseInt(params.id, 10);
-            return this.projectService.getProjectData(this.selectedTimelineId);
+            return this.projectService.getProjectTasks(this.selectedTimelineId);
           }
         )
       )
-      .subscribe((data: Project) => {
-        this.setReactiveForm(data);
+      .subscribe((data: ProjectTask[]) => {
+        this.projectTasks = data;
       });
   }
 
   ngOnDestroy(): void {
-    this.projectDataSubscription?.unsubscribe();
-  }
-
-  setReactiveForm(data: Project): void {
-    this.myForm = this.fb.group({
-      id: [data?.id],
-      akz: [data?.akz],
-      name: [data?.name],
-      projectSize: [data?.projectSize],
-      client: [data?.client],
-      department: [data?.department],
-      projectOwner: [data?.projectOwner],
-    });
-  }
-
-  displayProjectSize(size: string): string {
-    return this.sizes.find((x: ProjectSize) => x.value === size)?.display;
-  }
-
-  onSubmit(form: FormGroup): void {
-    this.projectService.updateProjectData(this.selectedTimelineId, form.value).subscribe(() => {
-      form.reset(form.value);
-    });
+    this.projectChecklistSubscription?.unsubscribe();
   }
 }

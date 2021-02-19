@@ -15,6 +15,6 @@ public class SingleApptResultEntityToSingleApptResultConverter implements Conver
                                                             .date(entity.getDate())
                                                             .goal(entity.getGoal())
                                                             .responsiblePerson(entity.getResponsiblePerson());
-        return (SingleAppointmentResult) singleAppointmentResult.resultTypeId(String.valueOf(entity.getResultTypeId()));
+        return (SingleAppointmentResult) singleAppointmentResult.resultType(String.valueOf(entity.getResultType()));
     }
 }

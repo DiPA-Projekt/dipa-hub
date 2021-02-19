@@ -1,0 +1,65 @@
+<ng-container [formGroup]="controlContainer.control">
+  <div formArrayName="data">
+    <ng-container *ngFor="let singleAppointment of singleAppointmentsArray.controls; let i = index">
+      <div [formGroupName]="i">
+        <ng-container>
+          <div class="singleAppointment">
+            <mat-form-field>
+              <mat-label>Datum</mat-label>
+              <input
+                matInput
+                [matDatepicker]="picker"
+                formControlName="date"
+                [value]="singleAppointment.get('date')?.value"
+              />
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Zielzustand</mat-label>
+              <input
+                matInput
+                placeholder="Zielzustand"
+                formControlName="goal"
+                [value]="singleAppointment.get('goal')?.value"
+              />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Verantwortung</mat-label>
+              <input
+                matInput
+                placeholder="Verantwortung"
+                formControlName="responsiblePerson"
+                [value]="singleAppointment.get('responsiblePerson')?.value"
+              />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Status</mat-label>
+              <mat-select formControlName="status" (selectionChange)="this.dataChanged.emit()">
+                <mat-option *ngFor="let status of statusList" [value]="status.value">
+                  {{ status.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <button
+              mat-button
+              type="button"
+              class="roundedButton"
+              (click)="deleteSingleAppointment(i)"
+              title="Termin entfernen"
+              aria-label="Termin entfernen"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+    <span class="">
+      <button type="button" mat-button (click)="addSingleAppointment()">
+        <mat-icon>add_circle</mat-icon>
+        Neuer Termin
+      </button>
+    </span>
+  </div>
+</ng-container>

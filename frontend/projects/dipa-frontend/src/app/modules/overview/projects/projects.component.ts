@@ -65,12 +65,6 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     );
   }
 
-  createDateAtMidnight(date: string | Date): Date {
-    const dateAtMidnight = new Date(date);
-    dateAtMidnight.setHours(0, 0, 0, 0);
-    return dateAtMidnight;
-  }
-
   loadTimelines(): void {
     this.observablesList = [];
     this.timelinesSubscription = this.timelinesService.getTimelines().subscribe((data) => {

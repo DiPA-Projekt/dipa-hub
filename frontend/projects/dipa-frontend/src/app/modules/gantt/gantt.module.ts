@@ -20,7 +20,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { NavMenuListItemComponent } from '../../shared/nav-menu-list-item/nav-menu-list-item.component';
-import { ProjectChecklistComponent } from './project-checklist/project-checklist.component';
+import { ProjectDataComponent } from './project-data/project-data.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { TemplatesComponent } from './templates-view/templates/templates.component';
 import { TemplatesViewComponent } from './templates-view/templates-view.component';
@@ -28,16 +28,23 @@ import { FilesComponent } from './files/files.component';
 import { ChartComponent } from './chart/chart.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { TimelineComponent } from './timeline/timeline.component';
-import { VerticalStepperComponent } from './vertical-stepper/vertical-stepper.component';
+import { ProjectChecklistComponent } from './project-checklist/project-checklist.component';
 import { MatStepperModule } from '@angular/material/stepper';
 import { ChartHeaderComponent } from './chart/chart-header/chart-header.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { ProjectTaskFormComponent } from './project-checklist/project-task-form/project-task-form.component';
+import { CartFormComponent } from './project-checklist/cart-form/cart-form.component';
+import { RiskFormComponent } from './project-checklist/risk-form/risk-form.component';
+import { SingleAppointmentFormComponent } from './project-checklist/single-appointment-form/single-appointment-form.component';
+import { AppointmentSeriesFormComponent } from './project-checklist/appointment-series-form/appointment-series-form.component';
+import { ContactPersonFormComponent } from './project-checklist/contact-person-form/contact-person-form.component';
+import { StandardTaskFormComponent } from './project-checklist/standard-form/standard-task-form.component';
 
 @NgModule({
   declarations: [
     GanttComponent,
     NavMenuListItemComponent,
-    ProjectChecklistComponent,
+    ProjectDataComponent,
     SidenavComponent,
     TemplatesComponent,
     TemplatesViewComponent,
@@ -45,8 +52,15 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     FilesComponent,
     ChartComponent,
     TimelineComponent,
-    VerticalStepperComponent,
+    ProjectChecklistComponent,
     ChartHeaderComponent,
+    ProjectTaskFormComponent,
+    CartFormComponent,
+    RiskFormComponent,
+    SingleAppointmentFormComponent,
+    AppointmentSeriesFormComponent,
+    ContactPersonFormComponent,
+    StandardTaskFormComponent,
   ],
   exports: [ChartComponent, FilesComponent, NavMenuListItemComponent],
   imports: [

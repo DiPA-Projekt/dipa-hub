@@ -1,0 +1,66 @@
+<ng-container [formGroup]="controlContainer.control">
+  <div formArrayName="data">
+    <ng-container *ngFor="let risk of risksArray.controls; let i = index">
+      <div [formGroupName]="i">
+        <ng-container>
+          <div class="risk">
+            <mat-form-field>
+              <mat-label>Risikobezeichnung</mat-label>
+              <input
+                matInput
+                placeholder="Bezeichnung"
+                formControlName="description"
+                [value]="risk.get('description')?.value"
+                (change)="this.dataChanged.emit()"
+              />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Risikowert</mat-label>
+              <input
+                matInput
+                placeholder="Wert"
+                formControlName="value"
+                [value]="risk.get('value')?.value"
+                (change)="this.dataChanged.emit()"
+              />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Abstellmaßnahme</mat-label>
+              <input
+                matInput
+                placeholder="Maßnahme"
+                formControlName="solution"
+                [value]="risk.get('solution')?.value"
+                (change)="this.dataChanged.emit()"
+              />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Status</mat-label>
+              <mat-select formControlName="status" (selectionChange)="this.dataChanged.emit()">
+                <mat-option *ngFor="let status of statusList" [value]="status.value">
+                  {{ status.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <button
+              mat-button
+              type="button"
+              class="roundedButton"
+              (click)="deleteRisk(i)"
+              title="Risiko entfernen"
+              aria-label="Risiko entfernen"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+    <span class="">
+      <button type="button" mat-button (click)="addRisk()">
+        <mat-icon>add_circle</mat-icon>
+        Neues Risiko
+      </button>
+    </span>
+  </div>
+</ng-container>

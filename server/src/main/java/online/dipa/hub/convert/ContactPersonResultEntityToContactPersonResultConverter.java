@@ -14,8 +14,8 @@ public class ContactPersonResultEntityToContactPersonResultConverter implements 
                                                     .name(entity.getName())
                                                     .department(entity.getDepartment())
                                                     .taskArea(entity.getTaskArea());
-                                                    
-        return (ContactPersonResult) contactPersonResult.resultTypeId(String.valueOf(entity.getResultTypeId()));
+
+        return (ContactPersonResult) contactPersonResult.resultType(String.valueOf(entity.getResultType()));
 
     }
 }
