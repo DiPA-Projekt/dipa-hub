@@ -1,0 +1,56 @@
+<ng-container [formGroup]="controlContainer.control">
+  <div formArrayName="data">
+    <ng-container *ngFor="let cart of cartsArray.controls; let i = index">
+      <div [formGroupName]="i">
+        <ng-container>
+          <div class="cart">
+            <mat-form-field>
+              <mat-label>EKW - Nummer</mat-label>
+              <input
+                matInput
+                placeholder="Nr"
+                formControlName="shoppingCartNumber"
+                [value]="cart.get('shoppingCartNumber')?.value"
+                (change)="this.dataChanged.emit()"
+              />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>EKW - Inhalt</mat-label>
+              <input
+                matInput
+                placeholder="Inhalt"
+                formControlName="shoppingCartContent"
+                [value]="cart.get('shoppingCartContent')?.value"
+                (change)="this.dataChanged.emit()"
+              />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Status</mat-label>
+              <mat-select formControlName="status" (selectionChange)="this.dataChanged.emit()">
+                <mat-option *ngFor="let status of statusList" [value]="status.value">
+                  {{ status.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <button
+              mat-button
+              type="button"
+              class="roundedButton"
+              (click)="deleteCart(i)"
+              title="Einkaufswagen entfernen"
+              aria-label="Einkaufswagen entfernen"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+    <span class="">
+      <button type="button" mat-button (click)="addCart()">
+        <mat-icon>add_circle</mat-icon>
+        Neuer Einkaufswagen
+      </button>
+    </span>
+  </div>
+</ng-container>

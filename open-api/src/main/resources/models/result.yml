@@ -1,21 +1,18 @@
 Result:
   type: object
   properties:
-    resultTypeId:
-      description: Unique identifier of the result
+    resultType:
       type: string
       example: "TYPE_STD"
-  required:
-    - resultTypeId
   discriminator:
-    propertyName: resultTypeId
+    propertyName: resultType
     mapping:
-      1: "#/schemas/StandardResult"
-      2: "#/schemas/ELBEshoppingCartResult"
-      3: "#/schemas/ContactPersonResult"
-      4: "#/schemas/AppointmentSeriesResult"
-      5: "#/schemas/RiskResult"
-      6: "#/schemas/SingleAppointmentResult"
+      TYPE_STD: "#/schemas/StandardResult"
+      TYPE_ELBE_SC: "#/schemas/ELBEshoppingCartResult"
+      TYPE_CONTACT_PERS: "#/schemas/ContactPersonResult"
+      TYPE_APPT_SERIES: "#/schemas/AppointmentSeriesResult"
+      TYPE_RISK: "#/schemas/RiskResult"
+      TYPE_SINGLE_APPOINTMENT: "#/schemas/SingleAppointmentResult"
 schemas:
   StandardResult:
     allOf:
@@ -56,7 +53,7 @@ schemas:
             description: responsible department
             type: string
             example: "II A 1"
-          task_area:
+          taskArea:
             description: task area
             type: string
             example: "Projektmanagement"

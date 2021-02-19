@@ -293,7 +293,7 @@ databaseChangeLog:
                   value: true
               - column:
                   name: explanation
-                  value: Abfluss der Aufwände und Zahlungen tracke
+                  value: Abfluss der Aufwände und Zahlungen tracken
               - column:
                   name: contact_person
                   value:
@@ -547,8 +547,8 @@ databaseChangeLog:
                   name: id
                   value: 1
               - column:
-                  name: result_type_id
-                  value: 1
+                  name: result_type
+                  value: "TYPE_STD"
               - column:
                   name: content
                   value:
@@ -567,8 +567,8 @@ databaseChangeLog:
                   name: id
                   value: 2
               - column:
-                  name: result_type_id
-                  value: 1
+                  name: result_type
+                  value: "TYPE_STD"
               - column:
                   name: content
                   value:
@@ -587,8 +587,8 @@ databaseChangeLog:
                   name: id
                   value: 3
               - column:
-                  name: result_type_id
-                  value: 1
+                  name: result_type
+                  value: "TYPE_STD"
               - column:
                   name: content
                   value:
@@ -607,8 +607,8 @@ databaseChangeLog:
                   name: id
                   value: 4
               - column:
-                  name: result_type_id
-                  value: 1
+                  name: result_type
+                  value: "TYPE_STD"
               - column:
                   name: content
                   value:
@@ -627,8 +627,8 @@ databaseChangeLog:
                   name: id
                   value: 5
               - column:
-                  name: result_type_id
-                  value: 1
+                  name: result_type
+                  value: "TYPE_STD"
               - column:
                   name: content
                   value:
@@ -647,8 +647,8 @@ databaseChangeLog:
                   name: id
                   value: 6
               - column:
-                  name: result_type_id
-                  value: 1
+                  name: result_type
+                  value: "TYPE_STD"
               - column:
                   name: content
                   value:
@@ -667,8 +667,8 @@ databaseChangeLog:
                   name: id
                   value: 7
               - column:
-                  name: result_type_id
-                  value: 1
+                  name: result_type
+                  value: "TYPE_STD"
               - column:
                   name: content
                   value:
@@ -687,8 +687,8 @@ databaseChangeLog:
                   name: id
                   value: 8
               - column:
-                  name: result_type_id
-                  value: 1
+                  name: result_type
+                  value: "TYPE_STD"
               - column:
                   name: content
                   value:
@@ -707,8 +707,8 @@ databaseChangeLog:
                   name: id
                   value: 9
               - column:
-                  name: result_type_id
-                  value: 1
+                  name: result_type
+                  value: "TYPE_STD"
               - column:
                   name: content
                   value:
@@ -727,8 +727,8 @@ databaseChangeLog:
                   name: id
                   value: 10
               - column:
-                  name: result_type_id
-                  value: 1
+                  name: result_type
+                  value: "TYPE_STD"
               - column:
                   name: content
                   value:
@@ -747,8 +747,8 @@ databaseChangeLog:
                   name: id
                   value: 11
               - column:
-                  name: result_type_id
-                  value: 1
+                  name: result_type
+                  value: "TYPE_STD"
               - column:
                   name: content
                   value:
@@ -767,8 +767,8 @@ databaseChangeLog:
                   name: id
                   value: 12
               - column:
-                  name: result_type_id
-                  value: 1
+                  name: result_type
+                  value: "TYPE_STD"
               - column:
                   name: content
                   value:
@@ -787,8 +787,8 @@ databaseChangeLog:
                   name: id
                   value: 13
               - column:
-                  name: result_type_id
-                  value: 1
+                  name: result_type
+                  value: "TYPE_STD"
               - column:
                   name: content
                   value:
@@ -1011,8 +1011,8 @@ databaseChangeLog:
                   name: id
                   value: 1
               - column:
-                  name: result_type_id
-                  value: 3
+                  name: result_type
+                  value: "TYPE_CONTACT_PERS"
               - column:
                   name: name
                   value:
@@ -1040,8 +1040,8 @@ databaseChangeLog:
                   name: id
                   value: 1
               - column:
-                  name: result_type_id
-                  value: 2
+                  name: result_type
+                  value: "TYPE_ELBE_SC"
               - column:
                   name: shopping_cart_number
                   value:
@@ -1066,8 +1066,8 @@ databaseChangeLog:
                   name: id
                   value: 1
               - column:
-                  name: result_type_id
-                  value: 4
+                  name: result_type
+                  value: "TYPE_APPT_SERIES"
               - column:
                   name: appointment
                   value:
@@ -1095,8 +1095,8 @@ databaseChangeLog:
                   name: id
                   value: 1
               - column:
-                  name: result_type_id
-                  value: 5
+                  name: result_type
+                  value: "TYPE_RISK"
               - column:
                   name: description
                   value:
@@ -1124,8 +1124,8 @@ databaseChangeLog:
                   name: id
                   value: 1
               - column:
-                  name: result_type_id
-                  value: 6
+                  name: result_type
+                  value: "TYPE_SINGLE_APPOINTMENT"
               - column:
                   name: date
                   value:
