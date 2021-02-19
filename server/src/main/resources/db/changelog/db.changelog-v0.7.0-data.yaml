@@ -1,5 +1,57 @@
 databaseChangeLog:
   - changeSet:
+      id: insert-project-size-small
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_size
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: name
+                  value: SMALL
+  - changeSet:
+      id: insert-project-size-medium
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_size
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: name
+                  value: MEDIUM
+  - changeSet:
+      id: update-project-projectSize-Feldberg-new
+      context: itzbund
+      author: nguyen
+      changes:
+        - update:
+            tableName: project
+            columns:
+              - column:
+                  name: project_size_id
+                  value: 1
+            where: id=3
+  - changeSet:
+      id: update-project-projectSize-Zugspitze-new
+      context: itzbund
+      author: nguyen
+      changes:
+        - update:
+            tableName: project
+            columns:
+              - column:
+                  name: project_size_id
+                  value: 2
+            where: id=4
+  - changeSet:
       id: insert-project-task-template-01
       author: nguyen
       context: itzbund
@@ -1142,36 +1194,36 @@ databaseChangeLog:
                   name: project_task_id
                   value: 13
   - changeSet:
-      id: insert-project-project-task-template-connection-Feldberg
+      id: insert-project-task-template-project-size-connection-small
       author: nguyen
       context: itzbund
       changes:
         - insert:
-            tableName: project_project_task_template_connection
+            tableName: project_task_template_project_size_connection
             columns:
               - column:
                   name: id
                   value: 1
               - column:
-                  name: project_id
-                  value: 3
-              - column:
                   name: project_task_template_id
                   value: 1
+              - column:
+                  name: project_size_id
+                  value: 1
   - changeSet:
-      id: insert-project-project-task-template-connection-Zugspitze
+      id: insert-project-task-template-project-size-connection-medium
       author: nguyen
       context: itzbund
       changes:
         - insert:
-            tableName: project_project_task_template_connection
+            tableName: project_task_template_project_size_connection
             columns:
               - column:
                   name: id
                   value: 2
               - column:
-                  name: project_id
-                  value: 4
-              - column:
                   name: project_task_template_id
                   value: 1
+              - column:
+                  name: project_size_id
+                  value: 2

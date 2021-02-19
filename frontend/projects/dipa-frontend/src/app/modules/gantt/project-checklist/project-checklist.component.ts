@@ -32,7 +32,7 @@ export class ProjectChecklistComponent implements OnInit, OnDestroy {
       description: 'Aufwand < 250 PT',
     },
     {
-      value: 'MIDDLE',
+      value: 'MEDIUM',
       display: 'mittel',
       description: 'Aufwand 250 - 1.500 PT',
     },
