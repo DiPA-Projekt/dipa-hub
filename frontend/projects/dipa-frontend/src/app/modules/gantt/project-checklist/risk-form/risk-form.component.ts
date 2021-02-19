@@ -5,7 +5,7 @@ import { RiskResult } from 'dipa-api-client';
 @Component({
   selector: 'app-risk-form',
   templateUrl: './risk-form.component.html',
-  styleUrls: ['./risk-form.component.scss'],
+  styleUrls: ['../project-task-form/project-task-form.component.scss'],
 })
 export class RiskFormComponent implements OnInit {
   @Input() formData;

@@ -5,7 +5,6 @@ import { StandardResult } from 'dipa-api-client';
 @Component({
   selector: 'app-default-task-form',
   templateUrl: './standard-task-form.component.html',
-  styleUrls: ['./standard-task-form.component.scss'],
 })
 export class StandardTaskFormComponent implements OnInit {
   @Input() formData;

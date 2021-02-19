@@ -5,7 +5,7 @@ import { ELBEshoppingCartResult } from 'dipa-api-client';
 @Component({
   selector: 'app-cart-form',
   templateUrl: './cart-form.component.html',
-  styleUrls: ['./cart-form.component.scss'],
+  styleUrls: ['../project-task-form/project-task-form.component.scss'],
 })
 export class CartFormComponent implements OnInit {
   @Input() formData;

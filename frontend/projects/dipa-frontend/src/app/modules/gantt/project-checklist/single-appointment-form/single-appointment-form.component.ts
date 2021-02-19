@@ -6,7 +6,7 @@ import Utils from '../../../../shared/utils';
 @Component({
   selector: 'app-single-appointment-form',
   templateUrl: './single-appointment-form.component.html',
-  styleUrls: ['./single-appointment-form.component.scss'],
+  styleUrls: ['../project-task-form/project-task-form.component.scss'],
 })
 export class SingleAppointmentFormComponent implements OnInit {
   @Input() formData;

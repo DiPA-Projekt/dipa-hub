@@ -5,7 +5,7 @@ import { ContactPersonResult } from 'dipa-api-client';
 @Component({
   selector: 'app-contact-person-form',
   templateUrl: './contact-person-form.component.html',
-  styleUrls: ['./contact-person-form.component.scss'],
+  styleUrls: ['../project-task-form/project-task-form.component.scss'],
 })
 export class ContactPersonFormComponent implements OnInit {
   @Input() formData;

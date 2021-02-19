@@ -5,7 +5,7 @@ import { AppointmentSeriesResult } from 'dipa-api-client';
 @Component({
   selector: 'app-appointment-series-form',
   templateUrl: './appointment-series-form.component.html',
-  styleUrls: ['./appointment-series-form.component.scss'],
+  styleUrls: ['../project-task-form/project-task-form.component.scss'],
 })
 export class AppointmentSeriesFormComponent implements OnInit {
   @Input() formData;
