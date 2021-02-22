@@ -1,5 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
-import { GanttMenuComponent } from './menus/gantt-menu/gantt-menu.component';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -7,6 +6,5 @@ import { GanttMenuComponent } from './menus/gantt-menu/gantt-menu.component';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  @ViewChild(GanttMenuComponent) ganttMenuComponent: GanttMenuComponent;
-  title = 'dipa-frontend';
+ 
 }
