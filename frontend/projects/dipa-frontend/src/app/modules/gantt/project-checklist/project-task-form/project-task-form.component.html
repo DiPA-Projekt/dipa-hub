@@ -1,0 +1,66 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup)">
+  <mat-form-field>
+    <mat-label>Ansprechpartner</mat-label>
+    <input
+      matInput
+      placeholder="Name, Vorname"
+      formControlName="contactPerson"
+      [value]="formGroup.get('contactPerson').value"
+      (change)="onSubmit(formGroup)"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Dokumentationsort</mat-label>
+    <input
+      matInput
+      placeholder="Link"
+      formControlName="documentationLink"
+      [value]="formGroup.get('documentationLink').value"
+      (change)="onSubmit(formGroup)"
+    />
+  </mat-form-field>
+
+  <ng-container formGroupName="results">
+    <ng-container [ngSwitch]="taskData.results.type">
+      <app-cart-form
+        *ngSwitchCase="'TYPE_ELBE_SC'"
+        [formData]="taskData.results.data"
+        [statusList]="cartStatusList"
+        (dataChanged)="onSubmit(formGroup)"
+      >
+      </app-cart-form>
+      <app-risk-form
+        *ngSwitchCase="'TYPE_RISK'"
+        [formData]="taskData.results.data"
+        [statusList]="standardStatusList"
+        (dataChanged)="onSubmit(formGroup)"
+      >
+      </app-risk-form>
+      <app-contact-person-form
+        *ngSwitchCase="'TYPE_CONTACT_PERS'"
+        [formData]="taskData.results.data"
+        [statusList]="personStatusList"
+        (dataChanged)="onSubmit(formGroup)"
+      ></app-contact-person-form>
+      <app-single-appointment-form
+        *ngSwitchCase="'TYPE_SINGLE_APPOINTMENT'"
+        [formData]="taskData.results.data"
+        [statusList]="standardStatusList"
+        (dataChanged)="onSubmit(formGroup)"
+      ></app-single-appointment-form>
+      <app-appointment-series-form
+        *ngSwitchCase="'TYPE_APPT_SERIES'"
+        [formData]="taskData.results.data"
+        [statusList]="standardStatusList"
+        (dataChanged)="onSubmit(formGroup)"
+      ></app-appointment-series-form>
+      <app-default-task-form
+        *ngSwitchDefault
+        [formData]="taskData.results.data"
+        [statusList]="standardStatusList"
+        (dataChanged)="onSubmit(formGroup)"
+      >
+      </app-default-task-form>
+    </ng-container>
+  </ng-container>
+</form>

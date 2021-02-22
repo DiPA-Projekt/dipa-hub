@@ -172,7 +172,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.showMenu = true;
 
     // TODO: this is just temporary
-    this.modifiable = this.timelineData.projectApproachId !== 3;
+    this.modifiable = this.timelineData?.projectApproachId !== 3;
 
     this.periodStartDateSubscription = this.ganttControlsService.getPeriodStartDate().subscribe((data) => {
       if (this.periodStartDate !== data) {
