@@ -1,21 +1,21 @@
 <mat-toolbar class="mat-elevation-z6" color="primary">
-    <mat-toolbar-row>
-      <img class="logo" src="/assets/img/dipa-logo-weiss.svg" alt="DiPA" />
-      <span class="menu-spacer"></span>
-      <div>
-        <a mat-button [routerLink]="'/home/tour'"><mat-icon>home</mat-icon>Home</a>
-        <a mat-button [matMenuTriggerFor]="ganttMenu.menu">
-          <mat-icon>bar_chart</mat-icon>Meine Projekte
-          <app-gantt-menu #ganttMenu="menuComponent"></app-gantt-menu>
-          <mat-icon>arrow_drop_down</mat-icon>
-        </a>
-        <a mat-button [routerLink]="'/overview/projects'"><mat-icon>supervisor_account</mat-icon>Projektübersicht</a>
-      </div>
-      <span class="full-width-spacer"></span>
-      <div>
-        <a mat-button (click)="logout()"><mat-icon>logout</mat-icon>Logout</a>
-      </div>
-      <div id="version" class="mat-small">Version: TBD</div>
-    </mat-toolbar-row>
-  </mat-toolbar>
-  <router-outlet></router-outlet>
+  <mat-toolbar-row>
+    <img class="logo" src="/assets/img/dipa-logo-weiss.svg" alt="DiPA" />
+    <span class="menu-spacer"></span>
+    <div>
+      <a mat-button [routerLink]="'/home/tour'"><mat-icon>home</mat-icon>Home</a>
+      <a mat-button [matMenuTriggerFor]="ganttMenu.menu">
+        <mat-icon>bar_chart</mat-icon>Meine Projekte
+        <app-gantt-menu #ganttMenu="menuComponent"></app-gantt-menu>
+        <mat-icon>arrow_drop_down</mat-icon>
+      </a>
+      <a mat-button [routerLink]="'/overview/projects'"><mat-icon>supervisor_account</mat-icon>Projektübersicht</a>
+    </div>
+    <span class="full-width-spacer"></span>
+    <div>
+      <a mat-button (click)="logout()"><mat-icon>logout</mat-icon>Logout</a>
+    </div>
+    <div id="version" class="mat-small">Version: TBD</div>
+  </mat-toolbar-row>
+</mat-toolbar>
+<router-outlet></router-outlet>

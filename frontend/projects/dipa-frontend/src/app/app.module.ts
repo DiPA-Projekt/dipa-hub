@@ -27,20 +27,17 @@ import { RootComponent } from './root/root.component';
     OAuthModule.forRoot({
       resourceServer: {
         allowedUrls: ['/'],
-        sendAccessToken: true
-      }
-    })
+        sendAccessToken: true,
+      },
+    }),
   ],
-  providers: [
-    NavService,     
-    { provide: LOCALE_ID, useValue: 'de-DE' }, 
-   ],
+  providers: [NavService, { provide: LOCALE_ID, useValue: 'de-DE' }],
   bootstrap: [AppComponent],
 })
 export class AppModule {
   static getApiConfiguration(): Configuration {
-    return new Configuration({ 
-      basePath: '/api/v1'
+    return new Configuration({
+      basePath: '/api/v1',
     });
   }
 }
