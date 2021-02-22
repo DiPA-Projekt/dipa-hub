@@ -678,7 +678,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
   // set minimum and maximum zoom levels
   private setZoomScaleExtent(minTimeMs: number): void {
-    // const minTimeMs = 1.2096e+9; // 14 days to show 1 day ticks
     const maxTimeMs = 3.1536e11; // ~ 10 years
 
     const widthMs = this.periodEndDate.getTime() - this.periodStartDate.getTime();
