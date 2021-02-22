@@ -6,7 +6,7 @@
     <parent>
         <groupId>online.dipa.hub</groupId>
         <artifactId>dipa-parent</artifactId>
-        <version>0.6.0</version>
+        <version>0.7.1</version>
     </parent>
     <artifactId>dipa-server</artifactId>
     <name>DiPA :: Server</name>
@@ -153,6 +153,7 @@
                             <enablePostProcessFile>false</enablePostProcessFile>
 
                             <generatorName>spring</generatorName>
+                            <additionalProperties>removeEnumValuePrefix=false</additionalProperties>
 
                             <configOptions>
                                 <apiPackage>online.dipa.hub.api.rest</apiPackage>
@@ -165,6 +166,7 @@
                                 <generateApiTests>false</generateApiTests>
                                 <serializableModel>true</serializableModel>
                                 <snapshotVersion>true</snapshotVersion>
+                                <useTags>true</useTags>
                             </configOptions>
 
                         </configuration>

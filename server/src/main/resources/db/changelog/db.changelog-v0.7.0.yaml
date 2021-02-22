@@ -1,0 +1,443 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-projectTask-template-table-01
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: projectTaskTemplatePK
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+            tableName: project_task_template
+  - changeSet:
+      id: create-project-task-table
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: taskPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+              - column:
+                  name: optional
+                  type: boolean
+              - column:
+                  name: explanation
+                  type: VARCHAR(2000)
+              - column:
+                  name: contact_person
+                  type: VARCHAR(255)
+              - column:
+                  name: documentation_link
+                  type: VARCHAR(2000)
+              - column:
+                  name: project_task_template_id
+                  type: BIGINT
+            tableName: project_task
+  - changeSet:
+      id: create-standard-result-table
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: standardResultPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: result_type
+                  type: VARCHAR(255)
+              - column:
+                  name: content
+                  type: VARCHAR(1000)
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+            tableName: standard_result
+  - changeSet:
+      id: create-standard-result-project-task-connection
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: standardResultTask
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_task_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: standard_result_id
+                  type: BIGINT
+            tableName: standard_result_project_task_connection
+  - changeSet:
+      id: create-contact-person-result-table
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: contactPersonResultPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: result_type
+                  type: VARCHAR(255)
+              - column:
+                  name: name
+                  type: VARCHAR(200)
+              - column:
+                  name: department
+                  type: VARCHAR(200)
+              - column:
+                  name: task_area
+                  type: VARCHAR(1000)
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_task_id
+                  type: BIGINT
+            tableName: contact_person_result
+  - changeSet:
+      id: create-elbe-shopping-cart-table
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: elbeShoppingCartPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: result_type
+                  type: VARCHAR(255)
+              - column:
+                  name: shopping_cart_number
+                  type: VARCHAR(255)
+              - column:
+                  name: shopping_cart_content
+                  type: VARCHAR(1000)
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_task_id
+                  type: BIGINT
+            tableName: elbe_shopping_cart_result
+  - changeSet:
+      id: create-appointment-series-result-table
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: appointmentSeriesResultPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: result_type
+                  type: VARCHAR(255)
+              - column:
+                  name: appointment
+                  type: VARCHAR(1000)
+              - column:
+                  name: participants
+                  type: VARCHAR(1000)
+              - column:
+                  name: link
+                  type: VARCHAR(2000)
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_task_id
+                  type: BIGINT
+            tableName: appointment_series_result
+  - changeSet:
+      id: create-risk-result-table
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: riskResultPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: result_type
+                  type: VARCHAR(255)
+              - column:
+                  name: description
+                  type: VARCHAR(1000)
+              - column:
+                  name: value
+                  type: VARCHAR(255)
+              - column:
+                  name: solution
+                  type: VARCHAR(2000)
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_task_id
+                  type: BIGINT
+            tableName: risk_result
+  - changeSet:
+      id: create-single-appointment-result-table
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: singleAppointmentResultPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: result_type
+                  type: VARCHAR(255)
+              - column:
+                  name: date
+                  type: VARCHAR(255)
+              - column:
+                  name: goal
+                  type: VARCHAR(1000)
+              - column:
+                  name: responsible_person
+                  type: VARCHAR(255)
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_task_id
+                  type: BIGINT
+            tableName: single_appointment_result
+  - changeSet:
+      id: create-project-projectTask-template-connection
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: project-projectTask-templatePK
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_task_template_id
+                  type: BIGINT
+            tableName: project_project_task_template_connection
+  - changeSet:
+      id: createForeignKeyConstraint-standardResultConnectionId
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: standard_result_id
+            baseTableName: standard_result_project_task_connection
+            constraintName: FKstandardResultConnection
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: standard_result
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-projectTaskConnectionId
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_task_id
+            baseTableName: standard_result_project_task_connection
+            constraintName: FKprojectTaskConnection
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_task
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-projectTaskIdElbeShoppingCartResult
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_task_id
+            baseTableName: elbe_shopping_cart_result
+            constraintName: FKprojectTaskElbeShoppingCartResultConnection
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_task
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-projectTaskIdElbeShoppingCartResult
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_task_id
+            baseTableName: elbe_shopping_cart_result
+            constraintName: FKprojectTaskElbeShoppingCartResultConnection
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_task
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-projectTaskIdApptSeriesResult
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_task_id
+            baseTableName: appointment_series_result
+            constraintName: FKprojectTaskApptSeriesResult
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_task
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-projectTaskIdSingleApptResult
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_task_id
+            baseTableName: single_appointment_result
+            constraintName: FKprojectTaskSingleApptResult
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_task
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-projectTaskIdRiskResult
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_task_id
+            baseTableName: risk_result
+            constraintName: FKprojectTaskRiskResult
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_task
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-projectTaskIdContactPersonResult
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_task_id
+            baseTableName: contact_person_result
+            constraintName: FKprojectTaskContactPersonResult
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_task
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-projectTaskTemplateProjectTask
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_task_template_id
+            baseTableName: project_task
+            constraintName: FKprojectTaskTemplateId
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_task_template
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-ProjectConnection
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_id
+            baseTableName: project_project_task_template_connection
+            constraintName: FKprojectConnection
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-projectTaskTemplateConnection
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_task_template_id
+            baseTableName: project_project_task_template_connection
+            constraintName: FKprojectTaskTemplateConnection
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_task_template
+            validate: true

@@ -1,3 +1,36 @@
+put:
+  tags:
+    - timelines
+  summary: Apply operation for timeline
+  description: Apply an operation for a timeline and its milestones.
+  operationId: applyOperation
+  parameters:
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
+  requestBody:
+    description: operation type with parameters
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            operation:
+              type: string
+              enum:
+                - MOVE_TIMELINE
+                - MOVE_TIMELINE_START
+                - MOVE_TIMELINE_END
+                - MOVE_MILESTONE
+              example: MOVE_TIMELINE
+            days:
+              type: integer
+              format: int64
+            movedMilestoneId:
+              type: integer
+              format: int64
+  responses:
+    204:
+      description: The operation was applied successfully.
 patch:
   tags:
     - timelines
@@ -5,13 +38,7 @@ patch:
   description: Update operation type and project approach for a timeline
   operationId: updateTimeline
   parameters:
-    - in: path
-      name: timelineId
-      schema:
-        type: integer
-        format: int64
-      required: true
-      description: Numeric ID of the timeline.
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
   requestBody:
     description: timeline as requestBody
     required: true

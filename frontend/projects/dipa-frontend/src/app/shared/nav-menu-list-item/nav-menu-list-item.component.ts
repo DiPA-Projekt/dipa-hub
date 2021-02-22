@@ -47,7 +47,7 @@ export class NavMenuListItemComponent implements OnInit {
   onItemSelected(item: NavItem): void {
     if (!item.children || !item.children.length) {
       if (item.route) {
-        this.router.navigate([item.route]);
+        void this.router.navigate([item.route]);
       } else if (item.url) {
         window.open(item.url, '_blank');
       }

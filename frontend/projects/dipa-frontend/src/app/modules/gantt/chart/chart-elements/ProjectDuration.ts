@@ -1,40 +1,42 @@
 import * as d3 from 'd3';
+import { ScaleTime } from 'd3-scale';
+import { Timeline } from 'dipa-api-client';
 
 export class ProjectDuration {
-  svg;
-  readonly xScale;
+  svg: d3.Selection<any, any, any, any>;
+  tooltip: d3.Selection<any, any, any, any>;
+  readonly xScale: ScaleTime<any, any>;
 
-  svgBbox;
-  projectGroup;
+  svgBbox: DOMRect;
+  projectGroup: d3.Selection<any, any, any, any>;
 
   dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
 
-  elementColor;
+  elementColor: string;
 
   noRiskColor = '#4aed5a';
   middleRiskColor = '#f7ec1b';
   highRiskColor = '#f73b3b';
 
-  projectStartDate: any;
-  projectEndDate: any;
+  projectStartDate: Date;
+  projectEndDate: Date;
 
-  startDateText;
-  endDateText;
+  startDateText: d3.Selection<any, any, any, any>;
+  endDateText: d3.Selection<any, any, any, any>;
 
-  riskAlarmText;
-  riskAlarmStatus;
-  riskAlarmIcon;
-  riskTooltip;
+  riskAlarmText: d3.Selection<any, any, any, any>;
+  riskAlarmStatus: string;
+  riskAlarmIcon: string;
+  riskTooltip: string;
 
   dx = 3;
   height = 18;
 
   dragDxStack = 0;
 
-  projectDurationYears;
+  projectDurationYears: number;
 
-  timelineOperationTypeId;
-  tooltip;
+  timelineOperationTypeId: number;
 
   riskInformation = [
     {
@@ -84,19 +86,26 @@ export class ProjectDuration {
     },
   ];
 
-  dragStartDate;
+  dragStartDate: Date;
+
   public onDragEnd?: (days: number) => void;
   public onDragEndProjectStart?: (days: number) => void;
   public onDragEndProjectEnd?: (days: number) => void;
 
   modifiable = false;
 
-  constructor(svg: any, chartElement: any, xScale: any, timelineData: any, modifiable: boolean) {
+  constructor(
+    svg: d3.Selection<any, any, any, any>,
+    chartElement: HTMLElement,
+    xScale: ScaleTime<any, any>,
+    timelineData: Timeline,
+    modifiable: boolean
+  ) {
     this.svg = svg;
     this.xScale = xScale;
     this.timelineOperationTypeId = timelineData.operationTypeId;
     this.modifiable = modifiable;
-    this.svgBbox = this.svg.node().getBBox();
+    this.svgBbox = (this.svg.node() as SVGGraphicsElement).getBBox();
     this.projectGroup = this.svg.select('g.project-group');
 
     this.tooltip = d3.select(chartElement).select('figure#chart .tooltip');
@@ -104,13 +113,59 @@ export class ProjectDuration {
     this.setData(timelineData);
   }
 
-  setData(timelineData): void {
+  private static calculateProjectDuration(startDate: Date, endDate: Date): number {
+    const daysDiff = Math.round(Math.abs((startDate.getTime() - endDate.getTime()) / (24 * 60 * 60 * 1000)));
+    return Math.round((daysDiff / 365) * 10) / 10;
+  }
+
+  redraw(animationDuration: number): void {
+    // get current width of text elements
+    const startDateSvgBbox = (this.startDateText.node() as SVGGraphicsElement).getBBox().width;
+    const endDateSvgBbox = (this.endDateText.node() as SVGGraphicsElement).getBBox().width;
+
+    const visibleProjectStartDatePosition = Math.max(this.xScale(this.projectStartDate), 0);
+    const visibleProjectEndDatePosition = Math.min(this.xScale(this.projectEndDate), this.xScale.range()[1]);
+
+    // position where startDateText will be drawn
+    const leftBorder = Math.min(
+      visibleProjectStartDatePosition,
+      this.xScale.range()[1] - (startDateSvgBbox + endDateSvgBbox + this.dx)
+    );
+    // position where endDateText will be drawn
+    const rightBorder = Math.max(visibleProjectEndDatePosition - (endDateSvgBbox + this.dx), startDateSvgBbox);
+
+    // project duration indicator
+    this.projectGroup
+      .select('rect.projectDuration')
+      .style('fill', this.elementColor)
+      .style('stroke', d3.rgb(this.elementColor).darker().formatHex())
+      .attr('x', this.xScale(this.projectStartDate))
+      .attr('width', this.xScale(this.projectEndDate) - this.xScale(this.projectStartDate));
+
+    this.redrawProjectStartDate(leftBorder, animationDuration);
+    this.redrawProjectEndDate(rightBorder, animationDuration);
+
+    const visible = Math.abs(visibleProjectEndDatePosition - visibleProjectStartDatePosition);
+
+    const connectLeftAndRightDate = rightBorder - leftBorder <= startDateSvgBbox;
+    this.startDateText.select('tspan.minusText').attr('fill', connectLeftAndRightDate ? null : 'none');
+
+    if (connectLeftAndRightDate) {
+      this.projectGroup.select('text.riskAlarmText').remove();
+    } else {
+      this.redrawRiskAlarmText(leftBorder + visible / 2 - 50);
+    }
+
+    this.redrawVerticalProjectDateLines(animationDuration);
+  }
+
+  setData(timelineData: Timeline): void {
     this.projectStartDate = new Date(timelineData.start);
     this.projectEndDate = new Date(timelineData.end);
     this.projectStartDate.setHours(0, 0, 0, 0);
     this.projectEndDate.setHours(0, 0, 0, 0);
 
-    this.projectDurationYears = this.calculateProjectDuration(this.projectStartDate, this.projectEndDate);
+    this.projectDurationYears = ProjectDuration.calculateProjectDuration(this.projectStartDate, this.projectEndDate);
     this.riskCalculate(this.projectDurationYears);
   }
 
@@ -139,14 +194,16 @@ export class ProjectDuration {
         projectDuration.attr('x', xValueStartNew);
         this.redraw(0);
       })
-      .on('start', (event: d3.D3DragEvent<any, any, any>) => {
+      .on('start', () => {
         this.dragStartDate = this.projectStartDate;
       })
-      .on('end', (event: d3.D3DragEvent<any, any, any>) => {
+      .on('end', () => {
         this.projectStartDate.setHours(0, 0, 0, 0);
         this.projectEndDate.setHours(0, 0, 0, 0);
 
-        const dragOffset: number = Math.floor((this.projectStartDate - this.dragStartDate) / (1000 * 60 * 60 * 24));
+        const dragOffset: number = Math.floor(
+          (this.projectStartDate.valueOf() - this.dragStartDate.valueOf()) / (1000 * 60 * 60 * 24)
+        );
 
         this.onDragEnd(dragOffset);
       });
@@ -156,7 +213,7 @@ export class ProjectDuration {
       .append('rect')
       .attr('class', 'projectDuration')
       .style('fill', this.elementColor)
-      .style('stroke', d3.rgb(this.elementColor).darker())
+      .style('stroke', d3.rgb(this.elementColor).darker().formatHex())
       .attr('x', Math.min(visibleProjectStartDatePosition, this.xScale.range()[1]))
       .attr(
         'width',
@@ -181,7 +238,7 @@ export class ProjectDuration {
 
     this.drawVerticalProjectDateLines();
 
-    this.projectDurationYears = this.calculateProjectDuration(this.projectStartDate, this.projectEndDate);
+    this.projectDurationYears = ProjectDuration.calculateProjectDuration(this.projectStartDate, this.projectEndDate);
     this.riskCalculate(this.projectDurationYears);
   }
 
@@ -205,7 +262,7 @@ export class ProjectDuration {
     this.startDateText.append('tspan').attr('class', 'minusText').text(' - ').attr('dx', this.dx);
   }
 
-  private drawProjectEndDate(x): void {
+  private drawProjectEndDate(x: number): void {
     // project end date
     this.endDateText = this.projectGroup
       .append('text')
@@ -254,14 +311,16 @@ export class ProjectDuration {
 
         this.redraw(0);
       })
-      .on('start', (event: d3.D3DragEvent<any, any, any>) => {
+      .on('start', () => {
         this.dragStartDate = this.projectStartDate;
       })
-      .on('end', (event: d3.D3DragEvent<any, any, any>) => {
+      .on('end', () => {
         this.dragDxStack = 0;
         this.projectStartDate.setHours(0, 0, 0, 0);
 
-        const dragOffset: number = Math.floor((this.projectStartDate - this.dragStartDate) / (1000 * 60 * 60 * 24));
+        const dragOffset: number = Math.floor(
+          (this.projectStartDate.valueOf() - this.dragStartDate.valueOf()) / (1000 * 60 * 60 * 24)
+        );
 
         this.onDragEndProjectStart(dragOffset);
       });
@@ -293,14 +352,16 @@ export class ProjectDuration {
 
         this.redraw(0);
       })
-      .on('start', (event: d3.D3DragEvent<any, any, any>) => {
+      .on('start', () => {
         this.dragStartDate = this.projectEndDate;
       })
-      .on('end', (event: d3.D3DragEvent<any, any, any>) => {
+      .on('end', () => {
         this.dragDxStack = 0;
         this.projectEndDate.setHours(0, 0, 0, 0);
 
-        const dragOffset: number = Math.floor((this.projectEndDate - this.dragStartDate) / (1000 * 60 * 60 * 24));
+        const dragOffset: number = Math.floor(
+          (this.projectEndDate.valueOf() - this.dragStartDate.valueOf()) / (1000 * 60 * 60 * 24)
+        );
 
         this.onDragEndProjectEnd(dragOffset);
       });
@@ -313,7 +374,7 @@ export class ProjectDuration {
       .attr('x2', this.xScale(this.projectStartDate))
       .attr('y1', 0)
       .attr('y2', viewBoxHeight)
-      .attr('stroke', d3.rgb(this.elementColor).darker());
+      .attr('stroke', d3.rgb(this.elementColor).darker().formatHex());
 
     if (this.modifiable) {
       projectStartDateLine.call(dragProjectStart);
@@ -329,7 +390,7 @@ export class ProjectDuration {
       .attr('x2', this.xScale(this.projectEndDate))
       .attr('y1', 0)
       .attr('y2', viewBoxHeight)
-      .attr('stroke', d3.rgb(this.elementColor).darker());
+      .attr('stroke', d3.rgb(this.elementColor).darker().formatHex());
 
     if (this.modifiable) {
       projectEndDateLine.call(dragProjectEnd);
@@ -338,60 +399,19 @@ export class ProjectDuration {
     }
   }
 
-  redraw(animationDuration): void {
-    // get current width of text elements
-    const startDateSvgBbox = this.startDateText.node().getBBox().width;
-    const endDateSvgBbox = this.endDateText.node().getBBox().width;
-
-    const visibleProjectStartDatePosition = Math.max(this.xScale(this.projectStartDate), 0);
-    const visibleProjectEndDatePosition = Math.min(this.xScale(this.projectEndDate), this.xScale.range()[1]);
-
-    // position where startDateText will be drawn
-    const leftBorder = Math.min(
-      visibleProjectStartDatePosition,
-      this.xScale.range()[1] - (startDateSvgBbox + endDateSvgBbox + this.dx)
-    );
-    // position where endDateText will be drawn
-    const rightBorder = Math.max(visibleProjectEndDatePosition - (endDateSvgBbox + this.dx), startDateSvgBbox);
-
-    // project duration indicator
-    this.projectGroup
-      .select('rect.projectDuration')
-      .style('fill', this.elementColor)
-      .style('stroke', d3.rgb(this.elementColor).darker())
-      .attr('x', this.xScale(this.projectStartDate))
-      .attr('width', this.xScale(this.projectEndDate) - this.xScale(this.projectStartDate));
-
-    this.redrawProjectStartDate(leftBorder, animationDuration);
-    this.redrawProjectEndDate(rightBorder, animationDuration);
-
-    const visible = Math.abs(visibleProjectEndDatePosition - visibleProjectStartDatePosition);
-
-    const connectLeftAndRightDate = rightBorder - leftBorder <= startDateSvgBbox;
-    this.startDateText.select('tspan.minusText').attr('fill', connectLeftAndRightDate ? null : 'none');
-
-    if (connectLeftAndRightDate) {
-      this.projectGroup.select('text.riskAlarmText').remove();
-    } else {
-      this.redrawRiskAlarmText(leftBorder + visible / 2 - 50, animationDuration);
-    }
-
-    this.redrawVerticalProjectDateLines(animationDuration);
-  }
-
   private redrawProjectStartDate(x, animationDuration): void {
     // project start date
     this.startDateText.transition().ease(d3.easeLinear).duration(animationDuration).attr('x', x);
 
-    const projectStartDateOutsideViewbox = this.xScale(this.projectStartDate) < 0;
-    this.startDateText.select('tspan.triangleLeft').attr('fill', projectStartDateOutsideViewbox ? null : 'none');
+    const projectStartDateOutsideViewBox = this.xScale(this.projectStartDate) < 0;
+    this.startDateText.select('tspan.triangleLeft').attr('fill', projectStartDateOutsideViewBox ? null : 'none');
 
     this.startDateText
       .select('tspan.projectStartDate')
       .text(this.projectStartDate.toLocaleDateString('de-DE', this.dateOptions));
   }
 
-  private redrawProjectEndDate(x, animationDuration): void {
+  private redrawProjectEndDate(x: number, animationDuration: number): void {
     // project end date
     this.endDateText.transition().ease(d3.easeLinear).duration(animationDuration).attr('x', x);
 
@@ -399,18 +419,18 @@ export class ProjectDuration {
       .select('tspan.projectEndDate')
       .text(this.projectEndDate.toLocaleDateString('de-DE', this.dateOptions));
 
-    const projectEndDateOutsideViewbox = this.xScale(this.projectEndDate) > this.xScale.range()[1];
-    this.endDateText.select('tspan.triangleRight').attr('fill', projectEndDateOutsideViewbox ? null : 'none');
+    const projectEndDateOutsideViewBox = this.xScale(this.projectEndDate) > this.xScale.range()[1];
+    this.endDateText.select('tspan.triangleRight').attr('fill', projectEndDateOutsideViewBox ? null : 'none');
   }
 
-  private redrawVerticalProjectDateLines(animationDuration): void {
+  private redrawVerticalProjectDateLines(animationDuration: number): void {
     // projectStartDate grid line
     this.projectGroup
       .select('line.projectStartDateLine')
       .transition()
       .ease(d3.easeLinear)
       .duration(animationDuration)
-      .attr('stroke', d3.rgb(this.elementColor).darker())
+      .attr('stroke', d3.rgb(this.elementColor).darker().formatHex())
       .attr('x1', this.xScale(this.projectStartDate))
       .attr('x2', this.xScale(this.projectStartDate));
 
@@ -420,12 +440,12 @@ export class ProjectDuration {
       .transition()
       .ease(d3.easeLinear)
       .duration(animationDuration)
-      .attr('stroke', d3.rgb(this.elementColor).darker())
+      .attr('stroke', d3.rgb(this.elementColor).darker().formatHex())
       .attr('x1', this.xScale(this.projectEndDate))
       .attr('x2', this.xScale(this.projectEndDate));
   }
 
-  private redrawRiskAlarmText(x, animationDuration): void {
+  private redrawRiskAlarmText(x: number): void {
     //
     this.projectGroup.select('text.riskAlarmText').remove();
 
@@ -447,7 +467,7 @@ export class ProjectDuration {
     this.riskAlarmText.append('tspan').text(this.riskAlarmStatus).attr('dx', this.dx);
 
     this.riskAlarmText
-      .on('mouseover', (event) => {
+      .on('mouseover', (event: MouseEvent) => {
         this.showLineTooltip(event.clientX, event.clientY, this.riskTooltip);
       })
       .on('mouseout', () => {
@@ -455,13 +475,7 @@ export class ProjectDuration {
       });
   }
 
-  private calculateProjectDuration(startDate, endDate): number {
-    const daysDiff = Math.round(Math.abs((startDate.getTime() - endDate.getTime()) / (24 * 60 * 60 * 1000)));
-    const yearsDiff = Math.round((daysDiff / 365) * 10) / 10;
-    return yearsDiff;
-  }
-
-  private riskCalculate(projectDurationYears): void {
+  private riskCalculate(projectDurationYears: number): void {
     const timeText = projectDurationYears < 1 ? 'Monaten' : 'Jahren';
 
     const time = projectDurationYears < 1 ? Math.round(projectDurationYears * 12) : projectDurationYears;
@@ -476,17 +490,19 @@ export class ProjectDuration {
           this.riskAlarmIcon = info.icon;
           this.riskAlarmStatus = `${info.text}: ${info.prob}% +${info.overtime}M`;
           this.elementColor = info.color;
-          this.riskTooltip = `<span class="material-icons">${info.icon}</span> Das Projekt hat eine Laufzeit von ${time} ${timeText} mit ${info.prob}% Wahrscheinlichkeit, dass es um ${info.overtime} ${overtimeText} verlängert wird.`;
+          this.riskTooltip =
+            `<span class="material-icons">${info.icon}</span>` +
+            ` Das Projekt hat eine Laufzeit von ${time} ${timeText} mit ${info.prob}% Wahrscheinlichkeit,` +
+            ` dass es um ${info.overtime} ${overtimeText} verlängert wird.`;
         }
       }
     }
   }
 
-  showLineTooltip(x, y, textTooltip): void {
-    // const per = this.riskPercentage * 100;
+  private showLineTooltip(x: number, y: number, textTooltip: string): void {
     this.tooltip
-      .style('top', y + 15 + 'px')
-      .style('left', x + 12 + 'px')
+      .style('top', `${y + 15}px`)
+      .style('left', `${x + 12}px`)
       .style('display', 'block')
       .html(textTooltip)
       .transition()

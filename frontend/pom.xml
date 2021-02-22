@@ -5,7 +5,7 @@
   <parent>
     <groupId>online.dipa.hub</groupId>
     <artifactId>dipa-parent</artifactId>
-    <version>0.6.0</version>
+    <version>0.7.1</version>
   </parent>
 
   <artifactId>dipa-frontend</artifactId>
@@ -44,6 +44,7 @@
               <inputSpec>dipa-hub.yaml</inputSpec>
               <generatorName>typescript-angular</generatorName>
               <output>${project.basedir}/projects/dipa-api-client/src</output>
+              <additionalProperties>removeEnumValuePrefix=false</additionalProperties>
               <configOptions>
               </configOptions>
             </configuration>
