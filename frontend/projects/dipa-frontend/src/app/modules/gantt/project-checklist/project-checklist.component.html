@@ -1,6 +1,6 @@
-<mat-vertical-stepper [linear]="false" #stepper>
-  <ng-container *ngIf="projectTasks.length; else noProjectTask">
-    <h2 class="project-checklist-header">Projektcheckliste</h2>
+<ng-container *ngIf="projectTasks.length > 0; else noProjectTask">
+  <h2 class="project-checklist-header">Projektcheckliste</h2>
+  <mat-vertical-stepper [linear]="false" #stepper>
     <mat-step
       *ngFor="let task of projectTasks"
       [stepControl]="formGroup"
@@ -18,10 +18,10 @@
         </button>
       </div>
     </mat-step>
-  </ng-container>
-  <ng-container #noProjectTask>
-    <h2 class="project-checklist-header">
-      Es gibt derzeit noch keine Aufgabenliste für diese Projektgröße bzw. diese Vorhabensart
-    </h2>
-  </ng-container>
-</mat-vertical-stepper>
+  </mat-vertical-stepper>
+</ng-container>
+<ng-container #noProjectTask>
+  <h2 class="project-checklist-header">
+    Es gibt derzeit noch keine Aufgabenliste für diese Projektgröße bzw. diese Vorhabensart
+  </h2>
+</ng-container>
