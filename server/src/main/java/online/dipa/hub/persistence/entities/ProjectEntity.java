@@ -6,11 +6,6 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import static javax.persistence.CascadeType.ALL;
-
-import java.util.HashSet;
-import java.util.Set;
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -29,10 +24,6 @@ public class ProjectEntity extends BaseEntity {
     @NotNull
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private ProjectApproachEntity projectApproach;
-
-    // @ManyToMany(mappedBy = "project", cascade = { ALL })
-    // @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    // private Set<ProjectTaskTemplateEntity> projectTaskTemplates = new HashSet<>();
     
     @NotNull
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
@@ -60,14 +51,6 @@ public class ProjectEntity extends BaseEntity {
     public void setProjectApproach(final ProjectApproachEntity projectApproach) {
         this.projectApproach = projectApproach;
     }
-
-    // public Set<ProjectTaskTemplateEntity> getProjectTaskTemplates() {
-    //     return projectTaskTemplates;
-    // }
-
-    // public void setProjectTaskTemplates(final Set<ProjectTaskTemplateEntity> projectTaskTemplates) {
-    //     this.projectTaskTemplates = projectTaskTemplates;
-    // }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public String getProjectType() {

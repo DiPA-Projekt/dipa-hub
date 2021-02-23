@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,8 +67,9 @@ public class ProjectService {
 
         if (project.getProjectSize() != sessionProject.getProject().getProjectSize()) {
 
-            sessionProject.setProjectTasks(getProjecTasksFromRespo(project.getProjectSize()));
+            sessionProject.setProjectTasks(getProjectTasksFromRepo(project.getProjectSize()));
         }
+
         sessionProject.setProject(project);
 
     }
@@ -83,7 +83,7 @@ public class ProjectService {
                 SessionProject sessionProject = sessionProjectState.findProjectState(t.getId());
 
                 if (sessionProject.getProjectTasks() == null) {
-                    sessionProject.setProjectTasks(getProjecTasksFromRespo(ProjectSizeEnum.fromValue(t.getProjectSize().getName())));
+                    sessionProject.setProjectTasks(getProjectTasksFromRepo(ProjectSizeEnum.fromValue(t.getProjectSize().getName())));
                 }
 
             }
@@ -110,19 +110,21 @@ public class ProjectService {
         
     }
 
-    private Map<Long, ProjectTask> getProjecTasksFromRespo (ProjectSizeEnum projectSizeEnum) {
+    private Map<Long, ProjectTask> getProjectTasksFromRepo (ProjectSizeEnum projectSizeEnum) {
 
         Map<Long, ProjectTask> projectTasksMap = new HashMap<>();
 
         Optional<ProjectTaskTemplateEntity> projectTaskTemplate = projectTaskTemplateRepository
-                .findAll()
-                .stream()
-                .filter(template -> filterProjectSize(template, projectSizeEnum))
-                .findFirst();
+                                            .findAll()
+                                            .stream()
+                                            .filter(template -> filterProjectSize(template, projectSizeEnum))
+                                            .findFirst();
 
         if (projectTaskTemplate.isPresent()) {
 
-            projectTaskTemplate.get().getProjectTasks().stream()
+            projectTaskTemplate.get()
+                .getProjectTasks()
+                .stream()
                 .map(p -> conversionService.convert(p, ProjectTask.class))
                 .filter(Objects::nonNull)
                 .forEach(task -> projectTasksMap.put(task.getId(), task));

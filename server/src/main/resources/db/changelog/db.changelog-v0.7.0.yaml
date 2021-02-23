@@ -454,29 +454,42 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: project_task_template
             validate: true
-  # - changeSet:
-  #     id: createForeignKeyConstraint-ProjectConnection
-  #     author: nguyen
-  #     changes:
-  #       - addForeignKeyConstraint:
-  #           baseColumnNames: project_id
-  #           baseTableName: project_project_task_template_connection
-  #           constraintName: FKprojectConnection
-  #           deferrable: false
-  #           initiallyDeferred: false
-  #           referencedColumnNames: id
-  #           referencedTableName: project
-  #           validate: true
-  # - changeSet:
-  #     id: createForeignKeyConstraint-projectTaskTemplateConnection
-  #     author: nguyen
-  #     changes:
-  #       - addForeignKeyConstraint:
-  #           baseColumnNames: project_task_template_id
-  #           baseTableName: project_project_task_template_connection
-  #           constraintName: FKprojectTaskTemplateConnection
-  #           deferrable: false
-  #           initiallyDeferred: false
-  #           referencedColumnNames: id
-  #           referencedTableName: project_task_template
-  #           validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-projectSizeProject
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_size_id
+            baseTableName: project
+            constraintName: FKprojectSizeId
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_size
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-ProjectSizeConnection
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_size_id
+            baseTableName: project_task_template_project_size_connection
+            constraintName: FKprojectSizeConnection
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_size
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-ProjectTaskTemplateConnection
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_task_template_id
+            baseTableName: project_task_template_project_size_connection
+            constraintName: FKprojectTaskTemplateConnection
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_task_template
+            validate: true

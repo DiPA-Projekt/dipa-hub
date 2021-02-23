@@ -1,6 +1,5 @@
 package online.dipa.hub.session.model;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import online.dipa.hub.api.model.*;
