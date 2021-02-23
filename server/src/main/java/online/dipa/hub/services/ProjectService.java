@@ -97,7 +97,7 @@ public class ProjectService {
         initializeProjectTasks();
 
         if (sessionProject.getProjectTasks() == null) {
-            return new ArrayList<ProjectTask>();
+            return new ArrayList<>();
         }
 
         return new ArrayList<>(sessionProject.getProjectTasks().values());
@@ -120,16 +120,14 @@ public class ProjectService {
                                             .filter(template -> filterProjectSize(template, projectSizeEnum))
                                             .findFirst();
 
-        if (projectTaskTemplate.isPresent()) {
 
-            projectTaskTemplate.get()
-                .getProjectTasks()
-                .stream()
-                .map(p -> conversionService.convert(p, ProjectTask.class))
-                .filter(Objects::nonNull)
-                .forEach(task -> projectTasksMap.put(task.getId(), task));
+        projectTaskTemplate.ifPresent(projectTaskTemplateEntity -> projectTaskTemplateEntity
+            .getProjectTasks()
+            .stream()
+            .map(p -> conversionService.convert(p, ProjectTask.class))
+            .filter(Objects::nonNull)
+            .forEach(task -> projectTasksMap.put(task.getId(), task)));
 
-        }
 
         return projectTasksMap;
     }
