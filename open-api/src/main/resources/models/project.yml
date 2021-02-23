@@ -15,7 +15,7 @@ Project:
       type: string
       enum:
         - SMALL
-        - MIDDLE
+        - MEDIUM
         - BIG
       default: null
       example: SMALL

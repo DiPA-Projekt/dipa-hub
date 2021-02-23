@@ -6,11 +6,6 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import static javax.persistence.CascadeType.ALL;
-
-import java.util.HashSet;
-import java.util.Set;
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -29,14 +24,12 @@ public class ProjectEntity extends BaseEntity {
     @NotNull
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private ProjectApproachEntity projectApproach;
-
-    @ManyToMany(mappedBy = "project", cascade = { ALL })
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<ProjectTaskTemplateEntity> projectTaskTemplates = new HashSet<>();
+    
+    @NotNull
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    private ProjectSizeEntity projectSize;
 
     private String projectType;
-    private String projectSize;
-
     private String akz;
     private String client;
     private String department;
@@ -59,14 +52,6 @@ public class ProjectEntity extends BaseEntity {
         this.projectApproach = projectApproach;
     }
 
-    public Set<ProjectTaskTemplateEntity> getProjectTaskTemplates() {
-        return projectTaskTemplates;
-    }
-
-    public void setProjectTaskTemplates(final Set<ProjectTaskTemplateEntity> projectTaskTemplates) {
-        this.projectTaskTemplates = projectTaskTemplates;
-    }
-
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public String getProjectType() {
         return projectType;
@@ -84,14 +69,13 @@ public class ProjectEntity extends BaseEntity {
         return akz;
     }
     
-    public void setProjectSize(final String projectSize) {
+    public void setProjectSize(final ProjectSizeEntity projectSize) {
         this.projectSize = projectSize;
     }
 
-    public String getProjectSize() {
+    public ProjectSizeEntity getProjectSize() {
         return projectSize;
     }
-
 
     public String getClient() {
         return client;

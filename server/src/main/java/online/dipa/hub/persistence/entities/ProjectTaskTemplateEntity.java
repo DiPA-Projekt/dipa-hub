@@ -30,11 +30,11 @@ public class ProjectTaskTemplateEntity extends BaseEntity {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "project_project_task_template_connection",
+            name = "project_task_template_project_size_connection",
             joinColumns = { @JoinColumn(name = "project_task_template_id") },
-            inverseJoinColumns = { @JoinColumn(name = "project_id") }
+            inverseJoinColumns = { @JoinColumn(name = "project_size_id") }
     )
-    private Set<ProjectEntity> project;
+    private Set<ProjectSizeEntity> projectSize;
 
     public String getName() {
         return name;
@@ -52,12 +52,12 @@ public class ProjectTaskTemplateEntity extends BaseEntity {
         this.projectTasks = projectTasks;
     }
 
-    public Set<ProjectEntity> getProject() {
-        return project;
+    public Set<ProjectSizeEntity> getProjectSize() {
+        return projectSize;
     }
 
-    public void setProject(final Set<ProjectEntity> project) {
-        this.project = project;
+    public void getProjectSize(final Set<ProjectSizeEntity> projectSize) {
+        this.projectSize = projectSize;
     }
 
 }
