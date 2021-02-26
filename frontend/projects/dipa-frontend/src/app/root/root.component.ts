@@ -1,17 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
+import { Component } from '@angular/core';
+import { KeycloakService } from 'keycloak-angular';
 
 @Component({
   selector: 'app-root-component',
   templateUrl: './root.component.html',
   styleUrls: ['./root.component.scss'],
 })
-export class RootComponent implements OnInit {
-  ngOnInit(): void {}
+export class RootComponent {
+  constructor(private keycloakAngular: KeycloakService) {}
 
-  constructor(private oauthService: OAuthService) {}
+  public isUserInRole(role: string): boolean {
+    return this.keycloakAngular.isUserInRole(role);
+  }
 
-  public logout() {
-    this.oauthService.logOut();
+  public logout(): void {
+    void this.keycloakAngular.logout();
   }
 }

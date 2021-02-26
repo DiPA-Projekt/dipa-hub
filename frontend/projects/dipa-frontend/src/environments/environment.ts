@@ -4,6 +4,11 @@
 
 export const environment = {
   production: false,
+  keycloakConfig: {
+    clientId: 'dipa-app',
+    realm: 'DiPA',
+    url: 'https://auth.dipa.online/auth/',
+  },
 };
 
 /*

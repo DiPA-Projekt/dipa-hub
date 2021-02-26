@@ -1,47 +1,26 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, CanActivateChild, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
-import { from, Observable } from 'rxjs';
-import { shareReplay, tap } from 'rxjs/operators';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import { KeycloakAuthGuard, KeycloakService } from 'keycloak-angular';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthGuard implements CanActivate, CanActivateChild {
-  private authenticated$: Observable<boolean>;
+export class AuthGuard extends KeycloakAuthGuard {
 
-  constructor(private oauthService: OAuthService) {
-    this.oauthService.configure(this.authConfig);
-    this.oauthService.setupAutomaticSilentRefresh();
-    this.authenticated$ = this.configure().pipe(shareReplay(1));
+  constructor(protected readonly router: Router, protected readonly keycloak: KeycloakService) {
+    super(router, keycloak);
   }
 
-  private configure(): Observable<boolean> {
-    return from(this.oauthService.loadDiscoveryDocumentAndLogin());
-  }
-
-  authConfig: AuthConfig = {
-    issuer: 'https://auth.dipa.online/auth/realms/DiPA',
-    redirectUri: window.location.origin + '/',
-    clientId: 'dipa-app',
-    scope: 'openid profile email offline_access',
-    responseType: 'code',
-    // at_hash is not present in JWT token
-    disableAtHashCheck: true,
-    showDebugInformation: true,
-  };
-
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return this.authenticated$;
-  }
-
-  canActivateChild(
-    childRoute: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return this.canActivate(childRoute, state);
+  public async isAccessAllowed(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
+    if (!this.authenticated) {
+      await this.keycloak.login({
+        redirectUri: window.location.origin + state.url,
+      });
+    }
+    const requiredRoles = route.data.roles as string[];
+    if (!(requiredRoles instanceof Array) || requiredRoles.length === 0) {
+      return true;
+    }
+    return requiredRoles.every((role) => this.roles.includes(role));
   }
 }
