@@ -12,7 +12,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ContactPersonResultEntity extends BaseEntity {
 
-    private String resultTypeId;
+    private String resultType;
     private String name;
     private String department;
     private String taskArea;
@@ -23,12 +23,12 @@ public class ContactPersonResultEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     private ProjectTaskEntity projectTask;
 
-    public String getResultTypeId() {
-        return resultTypeId;
+    public String getResultType() {
+        return resultType;
     }
 
-    public void setResultTypeId(final String resultTypeId) {
-        this.resultTypeId = resultTypeId;
+    public void setResultType(final String resultType) {
+        this.resultType = resultType;
     }
 
     public String getName() {

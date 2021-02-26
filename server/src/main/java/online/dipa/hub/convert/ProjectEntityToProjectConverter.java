@@ -22,7 +22,7 @@ public class ProjectEntityToProjectConverter implements Converter<ProjectEntity,
 
 
         if (template.getProjectSize() != null) {
-            project.projectSize(Project.ProjectSizeEnum.fromValue(template.getProjectSize()));
+            project.projectSize(Project.ProjectSizeEnum.fromValue(template.getProjectSize().getName()));
         }
         return project;
     }

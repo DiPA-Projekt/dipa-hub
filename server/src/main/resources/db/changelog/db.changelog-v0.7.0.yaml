@@ -1,5 +1,44 @@
 databaseChangeLog:
   - changeSet:
+      id: create-projectSize-table
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: project_sizePK
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+            tableName: project_size
+  - changeSet:
+      id: drop-columns-project-size-project
+      author: nguyen
+      changes:
+        - dropColumn:
+            columns:
+              - column:
+                  name: project_size
+            tableName: project
+  - changeSet:
+      id: addColumn-project-size-id
+      author: nguyen
+      changes:
+        - addColumn:
+            tableName: project
+            columns:
+              - column:
+                  name: project_size_id
+                  type: BIGINT
+  - changeSet:
       id: create-projectTask-template-table-01
       author: nguyen
       changes:
@@ -19,6 +58,31 @@ databaseChangeLog:
                   name: name
                   type: VARCHAR(255)
             tableName: project_task_template
+  - changeSet:
+      id: create-project-task-template-project-size-connection
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: PTaskTemplateSizeConnectionPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_task_template_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_size_id
+                  type: BIGINT
+            tableName: project_task_template_project_size_connection
   - changeSet:
       id: create-project-task-table
       author: nguyen
@@ -67,7 +131,7 @@ databaseChangeLog:
                   name: id
                   type: BIGINT
               - column:
-                  name: result_type_id
+                  name: result_type
                   type: VARCHAR(255)
               - column:
                   name: content
@@ -116,7 +180,7 @@ databaseChangeLog:
                   name: id
                   type: BIGINT
               - column:
-                  name: result_type_id
+                  name: result_type
                   type: VARCHAR(255)
               - column:
                   name: name
@@ -151,7 +215,7 @@ databaseChangeLog:
                   name: id
                   type: BIGINT
               - column:
-                  name: result_type_id
+                  name: result_type
                   type: VARCHAR(255)
               - column:
                   name: shopping_cart_number
@@ -183,7 +247,7 @@ databaseChangeLog:
                   name: id
                   type: BIGINT
               - column:
-                  name: result_type_id
+                  name: result_type
                   type: VARCHAR(255)
               - column:
                   name: appointment
@@ -218,7 +282,7 @@ databaseChangeLog:
                   name: id
                   type: BIGINT
               - column:
-                  name: result_type_id
+                  name: result_type
                   type: VARCHAR(255)
               - column:
                   name: description
@@ -253,7 +317,7 @@ databaseChangeLog:
                   name: id
                   type: BIGINT
               - column:
-                  name: result_type_id
+                  name: result_type
                   type: VARCHAR(255)
               - column:
                   name: date
@@ -273,31 +337,6 @@ databaseChangeLog:
                   name: project_task_id
                   type: BIGINT
             tableName: single_appointment_result
-  - changeSet:
-      id: create-project-projectTask-template-connection
-      author: nguyen
-      changes:
-        - createTable:
-            columns:
-              - column:
-                  autoIncrement: true
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                    primaryKeyName: project-projectTask-templatePK
-                  name: id
-                  type: BIGINT
-              - column:
-                  constraints:
-                    nullable: false
-                  name: project_id
-                  type: BIGINT
-              - column:
-                  constraints:
-                    nullable: false
-                  name: project_task_template_id
-                  type: BIGINT
-            tableName: project_project_task_template_connection
   - changeSet:
       id: createForeignKeyConstraint-standardResultConnectionId
       author: nguyen
@@ -416,25 +455,38 @@ databaseChangeLog:
             referencedTableName: project_task_template
             validate: true
   - changeSet:
-      id: createForeignKeyConstraint-ProjectConnection
+      id: createForeignKeyConstraint-projectSizeProject
       author: nguyen
       changes:
         - addForeignKeyConstraint:
-            baseColumnNames: project_id
-            baseTableName: project_project_task_template_connection
-            constraintName: FKprojectConnection
+            baseColumnNames: project_size_id
+            baseTableName: project
+            constraintName: FKprojectSizeId
             deferrable: false
             initiallyDeferred: false
             referencedColumnNames: id
-            referencedTableName: project
+            referencedTableName: project_size
             validate: true
   - changeSet:
-      id: createForeignKeyConstraint-projectTaskTemplateConnection
+      id: createForeignKeyConstraint-ProjectSizeConnection
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_size_id
+            baseTableName: project_task_template_project_size_connection
+            constraintName: FKprojectSizeConnection
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_size
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-ProjectTaskTemplateConnection
       author: nguyen
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: project_task_template_id
-            baseTableName: project_project_task_template_connection
+            baseTableName: project_task_template_project_size_connection
             constraintName: FKprojectTaskTemplateConnection
             deferrable: false
             initiallyDeferred: false

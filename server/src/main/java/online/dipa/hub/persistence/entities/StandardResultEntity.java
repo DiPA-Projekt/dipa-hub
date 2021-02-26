@@ -25,14 +25,14 @@ public class StandardResultEntity extends BaseEntity {
     )
     private Set<ProjectTaskEntity> projectTasks;
 
-    private String resultTypeId;
+    private String resultType;
 
-    public String getResultTypeId() {
-        return resultTypeId;
+    public String getResultType() {
+        return resultType;
     }
 
-    public void setResultTypeId(final String resultTypeId) {
-        this.resultTypeId = resultTypeId;
+    public void setResultType(final String resultType) {
+        this.resultType = resultType;
     }
 
     public String getContent() {

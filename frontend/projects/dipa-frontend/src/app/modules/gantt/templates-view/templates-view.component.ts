@@ -216,17 +216,6 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  createDateAtMidnight(date: string | Date): Date {
-    const dateAtMidnight = new Date(date);
-    dateAtMidnight.setHours(0, 0, 0, 0);
-    return dateAtMidnight;
-  }
-
-  parseGermanDate(input: string): Date {
-    const parts = input.match(/(\d+)/g);
-    return new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
-  }
-
   updateTemplateStandard(): void {
     const templateId = this.standardTemplatesList[this.selectedStandardTemplateIndex].id;
 

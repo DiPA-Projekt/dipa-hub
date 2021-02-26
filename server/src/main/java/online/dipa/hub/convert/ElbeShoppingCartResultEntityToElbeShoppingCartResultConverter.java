@@ -14,7 +14,7 @@ public class ElbeShoppingCartResultEntityToElbeShoppingCartResultConverter imple
                                                             .shoppingCartNumber(entity.getShoppingCartNumber())
                                                             .shoppingCartContent(entity.getShoppingCartContent());
 
-        return (ELBEshoppingCartResult) elbeShoppingCartResult.resultTypeId(String.valueOf(entity.getResultTypeId()));
+        return (ELBEshoppingCartResult) elbeShoppingCartResult.resultType(String.valueOf(entity.getResultType()));
 
     }
 }

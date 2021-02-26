@@ -1,6 +1,5 @@
 package online.dipa.hub.session.model;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import online.dipa.hub.api.model.*;
@@ -20,9 +19,6 @@ public class SessionProject {
     }
 
     public Map<Long, ProjectTask> getProjectTasks() {
-        if (projectTasks == null) {
-            setProjectTasks(new HashMap<>());
-        }
         return projectTasks;
     }
 

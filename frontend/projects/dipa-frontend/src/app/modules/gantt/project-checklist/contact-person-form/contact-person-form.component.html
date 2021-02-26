@@ -1,0 +1,66 @@
+<ng-container [formGroup]="controlContainer.control">
+  <div formArrayName="data">
+    <ng-container *ngFor="let person of personsArray.controls; let i = index">
+      <div [formGroupName]="i">
+        <ng-container>
+          <div class="person">
+            <mat-form-field>
+              <mat-label>Name</mat-label>
+              <input
+                matInput
+                placeholder="Name"
+                formControlName="name"
+                [value]="person.get('name')?.value"
+                (change)="this.dataChanged.emit()"
+              />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Referat</mat-label>
+              <input
+                matInput
+                placeholder="Referat"
+                formControlName="department"
+                [value]="person.get('department')?.value"
+                (change)="this.dataChanged.emit()"
+              />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Aufgabenbereich</mat-label>
+              <input
+                matInput
+                placeholder="Aufgabenbereich"
+                formControlName="taskArea"
+                [value]="person.get('taskArea')?.value"
+                (change)="this.dataChanged.emit()"
+              />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Status</mat-label>
+              <mat-select formControlName="status" (selectionChange)="this.dataChanged.emit()">
+                <mat-option *ngFor="let status of statusList" [value]="status.value">
+                  {{ status.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <button
+              mat-button
+              type="button"
+              class="roundedButton"
+              (click)="deletePerson(i)"
+              title="Kontaktperson entfernen"
+              aria-label="Kontaktperson entfernen"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+    <span class="">
+      <button type="button" mat-button (click)="addPerson()">
+        <mat-icon>add_circle</mat-icon>
+        Neue Kontaktperson
+      </button>
+    </span>
+  </div>
+</ng-container>
