@@ -1,5 +1,5 @@
 <h2 class="project-checklist-header">Projektcheckliste</h2>
-<ng-container *ngIf="projectTasks.length; else noProjectTask">
+<ng-container *ngIf="projectTasks?.length; else noProjectTask">
   <mat-vertical-stepper [linear]="false" #stepper>
     <mat-step
       *ngFor="let task of projectTasks"
