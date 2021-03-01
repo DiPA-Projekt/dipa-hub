@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthConfig } from 'angular-oauth2-oidc';
 import { AuthGuard } from './auth.guard';
 import { RootComponent } from './root/root.component';
 
