@@ -2,9 +2,12 @@ package online.dipa.hub.services;
 
 import online.dipa.hub.api.model.Project;
 import online.dipa.hub.api.model.ProjectTask;
+import online.dipa.hub.api.model.Project.ProjectSizeEnum;
+import online.dipa.hub.persistence.entities.ProjectSizeEntity;
 import online.dipa.hub.persistence.entities.ProjectTaskTemplateEntity;
 
 import online.dipa.hub.persistence.repositories.ProjectRepository;
+import online.dipa.hub.persistence.repositories.ProjectTaskTemplateRepository;
 import online.dipa.hub.session.model.SessionProject;
 import online.dipa.hub.session.state.SessionProjectState;
 
@@ -32,6 +35,9 @@ public class ProjectService {
     
     @Autowired
     private ProjectRepository projectRespository;
+    
+    @Autowired
+    private ProjectTaskTemplateRepository projectTaskTemplateRepository;
 
     @Autowired
     private ConversionService conversionService;
@@ -58,41 +64,43 @@ public class ProjectService {
     
     public void updateProjectData(final Long projectId, final Project project) {
         SessionProject sessionProject = sessionProjectState.findProjectState(projectId);
+
+        if (project.getProjectSize() != sessionProject.getProject().getProjectSize()) {
+
+            sessionProject.setProjectTasks(getProjectTasksFromRepo(project.getProjectSize()));
+        }
+
         sessionProject.setProject(project);
+
     }
 
     private void initializeProjectTasks() {
 
         projectRespository.findAll().forEach(t -> {
-            
-            Optional<ProjectTaskTemplateEntity> projectTaskTemplate = t.getProjectTaskTemplates().stream().findFirst();
 
-            SessionProject sessionProject = sessionProjectState.findProjectState(t.getId());
+            if (t.getProjectSize() != null) {
 
-            if (projectTaskTemplate.isPresent() && sessionProject.getProjectTasks().isEmpty()) {
+                SessionProject sessionProject = sessionProjectState.findProjectState(t.getId());
 
-                ProjectTaskTemplateEntity projectTasks = projectTaskTemplate.get();
+                if (sessionProject.getProjectTasks() == null) {
+                    sessionProject.setProjectTasks(getProjectTasksFromRepo(ProjectSizeEnum.fromValue(t.getProjectSize().getName())));
+                }
 
-                Map<Long, ProjectTask> projectTasksMap = new HashMap<>();
-
-                projectTasks.getProjectTasks().stream()
-                    .map(p -> conversionService.convert(p, ProjectTask.class))
-                    .filter(Objects::nonNull)
-                    .forEach(task -> projectTasksMap.put(task.getId(), task));
-
-                sessionProject.setProjectTasks(projectTasksMap);
-        
             }
         });
     }
 
     public List<ProjectTask> getProjectTasks (final Long projectId) {
-        
+
+        SessionProject sessionProject = sessionProjectState.findProjectState(projectId);
+
         initializeProjectTasks();
 
-        return new ArrayList<>(sessionProjectState.findProjectState(projectId)
-            .getProjectTasks()
-            .values());
+        if (sessionProject.getProjectTasks() == null) {
+            return new ArrayList<>();
+        }
+
+        return new ArrayList<>(sessionProject.getProjectTasks().values());
 
     }
 
@@ -100,5 +108,35 @@ public class ProjectService {
 
         sessionProjectState.findProjectState(projectId).getProjectTasks().replace(projectTask.getId(), projectTask);
         
+    }
+
+    private Map<Long, ProjectTask> getProjectTasksFromRepo (ProjectSizeEnum projectSizeEnum) {
+
+        Map<Long, ProjectTask> projectTasksMap = new HashMap<>();
+
+        Optional<ProjectTaskTemplateEntity> projectTaskTemplate = projectTaskTemplateRepository
+                                            .findAll()
+                                            .stream()
+                                            .filter(template -> filterProjectSize(template, projectSizeEnum))
+                                            .findFirst();
+
+
+        projectTaskTemplate.ifPresent(projectTaskTemplateEntity -> projectTaskTemplateEntity
+            .getProjectTasks()
+            .stream()
+            .map(p -> conversionService.convert(p, ProjectTask.class))
+            .filter(Objects::nonNull)
+            .forEach(task -> projectTasksMap.put(task.getId(), task)));
+
+
+        return projectTasksMap;
+    }
+    
+    boolean filterProjectSize(ProjectTaskTemplateEntity template, final ProjectSizeEnum projectSizeEnum) {
+        Optional<ProjectSizeEntity> projectSizeEntity = template.getProjectSize().stream()
+            .filter(s -> ProjectSizeEnum.fromValue(s.getName()).equals(projectSizeEnum)).findFirst();
+
+        return projectSizeEntity.isPresent();
+
     }
 }

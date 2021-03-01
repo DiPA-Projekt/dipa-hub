@@ -500,7 +500,6 @@ export class ProjectDuration {
   }
 
   private showLineTooltip(x: number, y: number, textTooltip: string): void {
-    // const per = this.riskPercentage * 100;
     this.tooltip
       .style('top', `${y + 15}px`)
       .style('left', `${x + 12}px`)

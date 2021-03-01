@@ -6,7 +6,6 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-gantt-menu',
   templateUrl: './gantt-menu.component.html',
-  styleUrls: ['./gantt-menu.component.scss'],
   exportAs: 'menuComponent',
 })
 export class GanttMenuComponent implements OnInit, OnDestroy {

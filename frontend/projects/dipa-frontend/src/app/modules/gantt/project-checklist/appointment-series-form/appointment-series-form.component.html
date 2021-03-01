@@ -1,0 +1,66 @@
+<ng-container [formGroup]="controlContainer.control">
+  <div formArrayName="data">
+    <ng-container *ngFor="let appointmentSeries of appointmentSeriesArray.controls; let i = index">
+      <div [formGroupName]="i">
+        <ng-container>
+          <div class="appointmentSeries">
+            <mat-form-field>
+              <mat-label>Terminserie</mat-label>
+              <input
+                matInput
+                placeholder="Terminserie"
+                formControlName="appointment"
+                [value]="appointmentSeries.get('appointment')?.value"
+                (change)="this.dataChanged.emit()"
+              />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Teilnehmende</mat-label>
+              <input
+                matInput
+                placeholder="Teilnehmende"
+                formControlName="participants"
+                [value]="appointmentSeries.get('participants')?.value"
+                (change)="this.dataChanged.emit()"
+              />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Link</mat-label>
+              <input
+                matInput
+                placeholder="Link"
+                formControlName="link"
+                [value]="appointmentSeries.get('link')?.value"
+                (change)="this.dataChanged.emit()"
+              />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Status</mat-label>
+              <mat-select formControlName="status" (selectionChange)="this.dataChanged.emit()">
+                <mat-option *ngFor="let status of statusList" [value]="status.value">
+                  {{ status.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <button
+              mat-button
+              type="button"
+              class="roundedButton"
+              (click)="deleteAppointmentSeries(i)"
+              title="Terminserie entfernen"
+              aria-label="Terminserie entfernen"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+    <span class="">
+      <button type="button" mat-button (click)="addAppointmentSeries()">
+        <mat-icon>add_circle</mat-icon>
+        Neue Terminserie
+      </button>
+    </span>
+  </div>
+</ng-container>

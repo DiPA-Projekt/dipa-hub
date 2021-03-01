@@ -9,8 +9,6 @@ import { NavItem } from '../../nav-item';
 export class OverviewComponent implements OnInit {
   navMenuItems: NavItem[] = [];
 
-  constructor() {}
-
   ngOnInit(): void {
     this.setSideNavMenu();
   }
