@@ -37,9 +37,9 @@ dipa:
 logging:
   file:
     name: "./logs/dipa-logfile.log"
-  level:
-    org.springframework.security: DEBUG
-    org.keycloak: DEBUG
+#  level:
+#    org.springframework.security: DEBUG
+#    org.keycloak: DEBUG
 
 
 management:
