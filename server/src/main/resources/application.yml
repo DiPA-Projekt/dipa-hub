@@ -36,7 +36,23 @@ dipa:
         platform: h2
 
 logging:
-  path: "logs"
+  file:
+    name: "./logfile.log"
+  level:
+    org.springframework.security: DEBUG
+    org.keycloak: DEBUG
+
+
+management:
+  endpoint:
+    loggers:
+      enabled: true
+    logfile:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "info,health,loggers,logfile"
 
 #server.port=9080
 #server.use-forward-headers=true
