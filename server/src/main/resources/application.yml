@@ -8,8 +8,7 @@ spring:
   banner:
     location: classpath:dipa-banner.txt
   jpa:
-    database: h2
-    database-platform: org.hibernate.dialect.H2Dialect
+    database: postgresql
     hibernate:
       ddl-auto: validate
     open-in-view: false
@@ -28,11 +27,15 @@ dipa:
   tenants:
     dataSources:
       - tenantId: itzbund
-        url: jdbc:h2:mem:dipahub-itzbund
-        platform: h2
+        url: jdbc:postgresql://itzbund-db:5432/dipa-itzbund
+        platform: postgresql
+        username: dipa
+        password: secret-pwd
       - tenantId: ba
-        url: jdbc:h2:mem:dipahub-ba
-        platform: h2
+        url: jdbc:postgresql://ba-db:5432/dipa-ba
+        platform: postgresql
+        username: dipa
+        password: secret-pwd
 
 logging:
   file:

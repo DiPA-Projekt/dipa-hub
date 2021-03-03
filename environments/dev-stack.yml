@@ -2,14 +2,22 @@ version: '3.1'
 
 services:
 
-  db:
+  itzbund-db:
     environment:
        POSTGRES_USER: 'dipa'
        POSTGRES_PASSWORD: 'secret-pwd'
-       POSTGRES_DB: 'dipa-core'
-    image: postgres:13.0
+       POSTGRES_DB: 'dipa-itzbund'
+    image: postgres:13.2
     ports:
         - "5432:5432"
+  ba-db:
+    environment:
+       POSTGRES_USER: 'dipa'
+       POSTGRES_PASSWORD: 'secret-pwd'
+       POSTGRES_DB: 'dipa-ba'
+    image: postgres:13.2
+    ports:
+        - "5433:5432"
 #  tomcat:
 #    image: docker.4soft.de/4soft/4time/tomcat:9-jre10
 #    ports:
