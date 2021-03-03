@@ -63,13 +63,14 @@ public class ProjectService {
             .filter(t -> t.getId().equals(projectId)).findFirst()
             .ifPresent(projectEntity -> 
                 projectMapper.updateProjectEntity(project, projectEntity)
+                
             );
 
     }
 
     public List<ProjectTask> getProjectTasks (final Long projectId) {
 
-        List<ProjectTask> projectTasks = new ArrayList<ProjectTask>();
+        List<ProjectTask> projectTasks = new ArrayList<>();
 
         projectRespository.findAll().stream().filter(t -> t.getId().equals(projectId))
         .findFirst().ifPresent(project -> {
@@ -92,14 +93,24 @@ public class ProjectService {
 
     public void updateProjectTask (final Long projectId, final ProjectTask projectTask) {
 
-        Optional<ProjectTaskEntity> oldProjectTask = projectRespository.findAll().stream()
-        .filter(t -> t.getId().equals(projectId)).findFirst().get()
-        .getProjectTaskTemplates().stream().findFirst().get().getProjectTasks().stream().filter(t -> t.getId().equals(projectTask.getId())).findFirst();
+        ProjectEntity project = projectRespository.findAll().stream()
+            .filter(t -> t.getId().equals(projectId)).findFirst();
 
-        projectTaskMapper.updateProjectTaskEntity(projectTask, oldProjectTask.get(), 
-        elbeShoppingCartResultRepository, riskResultRepository,
-        contactPersonResultRepository, singleAppointmentResultRepository, apptSeriesResultRepository);
 
+        if (project.isPresent()) {
+
+            project.getProjectTaskTemplates().stream().findFirst().ifPresent(template -> {
+                template.stream().findFirst().get()
+                .getProjectTasks().stream()
+                .filter(t -> t.getId().equals(projectTask.getId()))
+                .findFirst()
+                .ifPresent(oldProjectTask -> 
+                    projectTaskMapper.updateProjectTaskEntity(projectTask, oldProjectTask, 
+                    elbeShoppingCartResultRepository, riskResultRepository,
+                    contactPersonResultRepository, singleAppointmentResultRepository, apptSeriesResultRepository)
+                )
+            });
+        }
     }
     
 }
