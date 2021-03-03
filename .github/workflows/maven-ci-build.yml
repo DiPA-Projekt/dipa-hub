@@ -17,7 +17,7 @@ jobs:
 
     services:
       # Label used to access the service container
-      itzbund-db:
+      itzbunddb:
         # Docker Hub image
         image: postgres:13.2
         # Provide the password for postgres
@@ -31,7 +31,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-      ba-db:
+      badb:
         # Docker Hub image
         image: postgres:13.2
         # Provide the password for postgres
