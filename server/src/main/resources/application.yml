@@ -27,12 +27,12 @@ dipa:
   tenants:
     dataSources:
       - tenantId: itzbund
-        url: jdbc:postgresql://itzbunddb:5432/dipa-itzbund
+        url: jdbc:postgresql://localhost:5432/dipa-itzbund
         platform: postgresql
         username: dipa
         password: secret-pwd
       - tenantId: ba
-        url: jdbc:postgresql://badb:5432/dipa-ba
+        url: jdbc:postgresql://localhost:5433/dipa-ba
         platform: postgresql
         username: dipa
         password: secret-pwd
