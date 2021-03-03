@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 @Transactional
 public class ProjectService {
 
-    
     @Autowired
     private ProjectRepository projectRespository;
 
@@ -61,23 +60,33 @@ public class ProjectService {
     public void updateProjectData(final Long projectId, final Project project) {
 
         projectRespository.findAll().stream()
-            .filter(t -> t.getId().equals(projectId)).findFirst().ifPresent(projectEntity -> {
-
-                projectMapper.updateProjectEntity(project, projectEntity);
-            });
+            .filter(t -> t.getId().equals(projectId)).findFirst()
+            .ifPresent(projectEntity -> 
+                projectMapper.updateProjectEntity(project, projectEntity)
+            );
 
     }
 
     public List<ProjectTask> getProjectTasks (final Long projectId) {
 
-        Optional<ProjectEntity> project = projectRespository.findAll().stream().filter(t -> t.getId().equals(projectId)).findFirst();
-        
-        if (project.isPresent() && project.get().getProjectTaskTemplates().stream().findFirst().isPresent() && !project.get().getProjectSize().equals("BIG")) {
+        List<ProjectTask> projectTasks = new ArrayList<ProjectTask>();
 
-            return project.get().getProjectTaskTemplates().stream().findFirst().get().getProjectTasks().stream().map(p -> conversionService.convert(p, ProjectTask.class)).sorted(Comparator.comparing(ProjectTask::getId)).collect(Collectors.toList());
-        }
+        projectRespository.findAll().stream().filter(t -> t.getId().equals(projectId))
+        .findFirst().ifPresent(project -> {
 
-        return new ArrayList<>();
+            Optional<ProjectTaskTemplateEntity> template = project.getProjectTaskTemplates().stream().findFirst();
+
+            if (template.isPresent() && !project.getProjectSize().equals("BIG")) {
+
+                projectTasks.addAll(template.get().getProjectTasks()
+                .stream().map(p -> conversionService.convert(p, ProjectTask.class))
+                .sorted(Comparator.comparing(ProjectTask::getId))
+                .collect(Collectors.toList()));
+            }
+
+        });
+
+        return projectTasks;
         
     }
 
@@ -87,10 +96,10 @@ public class ProjectService {
         .filter(t -> t.getId().equals(projectId)).findFirst().get()
         .getProjectTaskTemplates().stream().findFirst().get().getProjectTasks().stream().filter(t -> t.getId().equals(projectTask.getId())).findFirst();
 
-        projectTaskMapper.updateProjectTaskEntity(projectTask, oldProjectTask.get(), elbeShoppingCartResultRepository, riskResultRepository,
+        projectTaskMapper.updateProjectTaskEntity(projectTask, oldProjectTask.get(), 
+        elbeShoppingCartResultRepository, riskResultRepository,
         contactPersonResultRepository, singleAppointmentResultRepository, apptSeriesResultRepository);
 
     }
-
     
 }

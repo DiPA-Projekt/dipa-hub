@@ -16,7 +16,7 @@ public interface SingleApptResultMapper {
         }
     }
     
-    SingleAppointmentResultEntity toEnity(SingleAppointmentResult singleApptResult);
+    SingleAppointmentResultEntity toEntity(SingleAppointmentResult singleApptResult);
     
     @InheritConfiguration
     void updateSingleApptResult(SingleAppointmentResult singleApptResult, @MappingTarget SingleAppointmentResultEntity singleApptResultEntity);

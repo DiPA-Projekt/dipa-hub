@@ -16,7 +16,7 @@ public interface RiskResultMapper {
         }
     }
 
-    RiskResultEntity toEnity(RiskResult riskResult);
+    RiskResultEntity toEntity(RiskResult riskResult);
     
     @InheritConfiguration
     void updateRiskResult(RiskResult riskResult, @MappingTarget RiskResultEntity riskResultEntity);

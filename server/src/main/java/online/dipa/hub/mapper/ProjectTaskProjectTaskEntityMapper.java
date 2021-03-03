@@ -12,9 +12,7 @@ import online.dipa.hub.persistence.entities.*;
 import online.dipa.hub.persistence.repositories.*;
 
 
-@Mapper(componentModel = "spring", uses = {StandardResultMapper.class, ElbeShoppingCartResultMapper.class,
-                                ContactPersonResultMapper.class, SingleApptResultMapper.class,
-                                ApptSeriesResultMapper.class, RiskResultMapper.class})
+@Mapper(componentModel = "spring")
 public interface ProjectTaskProjectTaskEntityMapper {
 
     final StandardResultMapper standardResultMapper = Mappers.getMapper(StandardResultMapper.class);
@@ -23,6 +21,7 @@ public interface ProjectTaskProjectTaskEntityMapper {
     final SingleApptResultMapper singleApptResultMapper = Mappers.getMapper(SingleApptResultMapper.class);
     final ApptSeriesResultMapper apptSeriesResultMapper = Mappers.getMapper(ApptSeriesResultMapper.class);
     final RiskResultMapper riskResultMapper = Mappers.getMapper(RiskResultMapper.class);
+
 
     void updateProjectTaskEntity(ProjectTask projectTask, @MappingTarget ProjectTaskEntity projectTaskEntity,@Context ElbeShoppingCartResultRepository elbeShoppingCartResultRepository,
     @Context RiskResultRepository riskResultRepository, @Context ContactPersonResultRepository contactPersonResultRepository,
@@ -37,118 +36,151 @@ public interface ProjectTaskProjectTaskEntityMapper {
         String resultType = projectTask.getResults().getType();
 
         if (resultType.equals("TYPE_STD")) {
-            List<StandardResultEntity> oldList = projectTaskEntity.getStandardResult().stream().collect(Collectors.toList());
-            List<StandardResult> newList = projectTask.getResults().getData().stream().map(res -> (StandardResult) res).collect(Collectors.toList());
-
-            for (int i = 0; i < newList.size(); i++) {
-                standardResultMapper.updateStandardResult(newList.get(i), oldList.get(i));
-            }
+            updateStandardResults(projectTaskEntity, projectTask);
 
         }
         else if (resultType.equals("TYPE_ELBE_SC")) {
-            List<ELBEShoppingCartResultEntity> oldList = projectTaskEntity.getELBEShoppingCartResults().stream().collect(Collectors.toList());
-            List<ELBEshoppingCartResult> newList = projectTask.getResults().getData().stream().map(res -> (ELBEshoppingCartResult) res).collect(Collectors.toList());
-
-            for (int i = 0; i < newList.size(); i++) {
-
-                if (i > oldList.size() - 1) {
-
-                    ELBEShoppingCartResultEntity entity = elbeShoppingCartResultMapper.toEnity(newList.get(i));
-                    entity.setId(Long.valueOf(elbeShoppingCartResultRepository.count() + 1));
-                    entity.setProjectTask(projectTaskEntity);
-   
-                    elbeShoppingCartResultRepository.save(entity);
-
-                }
-                else {
-                    elbeShoppingCartResultMapper.updateShoppingCartResult(newList.get(i), oldList.get(i));
-                }
-
-            }
+            
+            updateShoppingCartResults(projectTaskEntity, projectTask, elbeShoppingCartResultRepository);
 
         }
         else if (resultType.equals("TYPE_CONTACT_PERS")) {
-            List<ContactPersonResultEntity> oldList = projectTaskEntity.getContactPersonResult().stream().collect(Collectors.toList());
-            List<ContactPersonResult> newList = projectTask.getResults().getData().stream().map(res -> (ContactPersonResult) res).collect(Collectors.toList());
 
-            for (int i = 0; i < newList.size(); i++) {
-
-                if (i > oldList.size() -1) {
-
-                    ContactPersonResultEntity entity = contactPersonResultMapper.toEnity(newList.get(i));
-                    entity.setId(Long.valueOf(contactPersonResultRepository.count() + 1));
-                    entity.setProjectTask(projectTaskEntity);
-                    contactPersonResultRepository.save(entity);
-
-                }
-                else {
-                    contactPersonResultMapper.updateContactPersonResult(newList.get(i), oldList.get(i));
-                }
-
-            }
+            updateContactPersonResults(projectTaskEntity, projectTask, contactPersonResultRepository);
         }
         else if (resultType.equals("TYPE_APPT_SERIES")) {
-            List<AppointmentSeriesResultEntity> oldList = projectTaskEntity.getAppointmentSeriesResults().stream().collect(Collectors.toList());
-            List<AppointmentSeriesResult> newList = projectTask.getResults().getData().stream().map(res -> (AppointmentSeriesResult) res).collect(Collectors.toList());
-
-            for (int i = 0; i < newList.size(); i++) {
-
-                if (i > oldList.size() -1) {
-
-                    AppointmentSeriesResultEntity entity = apptSeriesResultMapper.toEnity(newList.get(i));
-                    entity.setId(Long.valueOf(apptSeriesResultRepository.count() + 1));
-                    entity.setProjectTask(projectTaskEntity);
-                    apptSeriesResultRepository.save(entity);
-
-                }
-                else {
-                    apptSeriesResultMapper.updateApptSeriesResult(newList.get(i), oldList.get(i));
-                }
-
-            }
-
+            
+            updateApptSeriesResults(projectTaskEntity, projectTask, apptSeriesResultRepository);
             
         }
         else if (resultType.equals("TYPE_RISK")) {
-            List<RiskResultEntity> oldList = projectTaskEntity.getRiskResults().stream().collect(Collectors.toList());
-            List<RiskResult> newList = projectTask.getResults().getData().stream().map(res -> (RiskResult) res).collect(Collectors.toList());
 
-            for (int i = 0; i < newList.size(); i++) {
-
-                if (i > oldList.size() -1) {
-
-                    RiskResultEntity entity = riskResultMapper.toEnity(newList.get(i));
-                    entity.setId(Long.valueOf(riskResultRepository.count() + 1));
-                    entity.setProjectTask(projectTaskEntity);
-                    riskResultRepository.save(entity);
-   
-                }
-                else {
-                    riskResultMapper.updateRiskResult(newList.get(i), oldList.get(i));
-                }
-
-            }
-
+            updateRiskResults(projectTaskEntity, projectTask, riskResultRepository);
             
         }
         else if (resultType.equals("TYPE_SINGLE_APPOINTMENT")) {
-            List<SingleAppointmentResultEntity> oldList = projectTaskEntity.getSingleAppointmentResults().stream().collect(Collectors.toList());
-            List<SingleAppointmentResult> newList = projectTask.getResults().getData().stream().map(res -> (SingleAppointmentResult) res).collect(Collectors.toList());
+            
+            updateSingleApptResults(projectTaskEntity, projectTask, singleApptResultRepository);
+        }
+    }
 
-            for (int i = 0; i < newList.size(); i++) {
+    default void updateStandardResults(ProjectTaskEntity projectTaskEntity, ProjectTask projectTask) {
+        List<StandardResultEntity> oldList = projectTaskEntity.getStandardResult().stream().collect(Collectors.toList());
+        List<StandardResult> newList = projectTask.getResults().getData().stream().map(StandardResult.class::cast).collect(Collectors.toList());
 
-                if (i > oldList.size() -1) {
+        for (int i = 0; i < newList.size(); i++) {
+            standardResultMapper.updateStandardResult(newList.get(i), oldList.get(i));
+        }
+    }
+    
 
-                    SingleAppointmentResultEntity entity = singleApptResultMapper.toEnity(newList.get(i));
-                    entity.setId(Long.valueOf(singleApptResultRepository.count() + 1));
-                    entity.setProjectTask(projectTaskEntity);
-                    singleApptResultRepository.save(entity);
-   
-                }
-                else {
-                    singleApptResultMapper.updateSingleApptResult(newList.get(i), oldList.get(i));
-                }
+    default void updateShoppingCartResults(ProjectTaskEntity projectTaskEntity, ProjectTask projectTask, ElbeShoppingCartResultRepository elbeShoppingCartResultRepository) {
+    
+        List<ELBEShoppingCartResultEntity> oldList = projectTaskEntity.getELBEShoppingCartResults().stream().collect(Collectors.toList());
+        List<ELBEshoppingCartResult> newList = projectTask.getResults().getData().stream().map(ELBEshoppingCartResult.class::cast).collect(Collectors.toList());
 
+        for (int i = 0; i < newList.size(); i++) {
+
+            if (i > oldList.size() - 1) {
+                
+                ELBEShoppingCartResultEntity entity = elbeShoppingCartResultMapper.toEntity(newList.get(i));
+                entity.setId(Long.valueOf(elbeShoppingCartResultRepository.count() + 1));
+                entity.setProjectTask(projectTaskEntity);
+
+                elbeShoppingCartResultRepository.save(entity);
+
+            }
+            else {
+                elbeShoppingCartResultMapper.updateShoppingCartResult(newList.get(i), oldList.get(i));
+            }
+
+        }
+    }
+
+    default void updateContactPersonResults(ProjectTaskEntity projectTaskEntity, ProjectTask projectTask, ContactPersonResultRepository contactPersonResultRepository) {
+        
+        List<ContactPersonResultEntity> oldList = projectTaskEntity.getContactPersonResult().stream().collect(Collectors.toList());
+        List<ContactPersonResult> newList = projectTask.getResults().getData().stream().map(ContactPersonResult.class::cast).collect(Collectors.toList());
+
+        for (int i = 0; i < newList.size(); i++) {
+
+            if (i > oldList.size() - 1) {
+                
+                ContactPersonResultEntity entity = contactPersonResultMapper.toEntity(newList.get(i));
+                entity.setId(Long.valueOf(contactPersonResultRepository.count() + 1));
+                entity.setProjectTask(projectTaskEntity);
+
+                contactPersonResultRepository.save(entity);
+
+            }
+            else {
+                contactPersonResultMapper.updateContactPersonResult(newList.get(i), oldList.get(i));
+            }
+
+        }
+    }
+
+    default void updateApptSeriesResults(ProjectTaskEntity projectTaskEntity, ProjectTask projectTask, AppointmentSeriesResultRepository apptSeriesResultRepository) {
+        
+        List<AppointmentSeriesResultEntity> oldList = projectTaskEntity.getAppointmentSeriesResults().stream().collect(Collectors.toList());
+        List<AppointmentSeriesResult> newList = projectTask.getResults().getData().stream().map(AppointmentSeriesResult.class::cast).collect(Collectors.toList());
+
+        for (int i = 0; i < newList.size(); i++) {
+
+            if (i > oldList.size() -1) {
+
+                AppointmentSeriesResultEntity entity = apptSeriesResultMapper.toEntity(newList.get(i));
+                entity.setId(Long.valueOf(apptSeriesResultRepository.count() + 1));
+                entity.setProjectTask(projectTaskEntity);
+                apptSeriesResultRepository.save(entity);
+
+            }
+            else {
+                apptSeriesResultMapper.updateApptSeriesResult(newList.get(i), oldList.get(i));
+            }
+
+        }
+    }
+
+    default void updateRiskResults(ProjectTaskEntity projectTaskEntity, ProjectTask projectTask, RiskResultRepository riskResultRepository) {
+        
+        List<RiskResultEntity> oldList = projectTaskEntity.getRiskResults().stream().collect(Collectors.toList());
+        List<RiskResult> newList = projectTask.getResults().getData().stream().map(RiskResult.class::cast).collect(Collectors.toList());
+
+        for (int i = 0; i < newList.size(); i++) {
+
+            if (i > oldList.size() -1) {
+
+                RiskResultEntity entity = riskResultMapper.toEntity(newList.get(i));
+                entity.setId(Long.valueOf(riskResultRepository.count() + 1));
+                entity.setProjectTask(projectTaskEntity);
+                riskResultRepository.save(entity);
+
+            }
+            else {
+                riskResultMapper.updateRiskResult(newList.get(i), oldList.get(i));
+            }
+
+        }
+    }
+
+    default void updateSingleApptResults(ProjectTaskEntity projectTaskEntity, ProjectTask projectTask, SingleAppointmentResultRepository singleApptResultRepository) {
+        
+        List<SingleAppointmentResultEntity> oldList = projectTaskEntity.getSingleAppointmentResults().stream().collect(Collectors.toList());
+        List<SingleAppointmentResult> newList = projectTask.getResults().getData().stream().map(SingleAppointmentResult.class::cast).collect(Collectors.toList());
+
+        for (int i = 0; i < newList.size(); i++) {
+
+            if (i > oldList.size() -1) {
+
+                SingleAppointmentResultEntity entity = singleApptResultMapper.toEntity(newList.get(i));
+                entity.setId(Long.valueOf(singleApptResultRepository.count() + 1));
+                entity.setProjectTask(projectTaskEntity);
+                singleApptResultRepository.save(entity);
+
+            }
+            else {
+                singleApptResultMapper.updateSingleApptResult(newList.get(i), oldList.get(i));
             }
 
         }

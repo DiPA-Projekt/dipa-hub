@@ -87,15 +87,7 @@ public class ProjectEntity extends BaseEntity {
     public String getProjectSize() {
         return projectSize;
     }
-        
-    // public void setProjectSize(final ProjectSizeEntity projectSize) {
-    //     this.projectSize = projectSize;
-    // }
-
-    // public ProjectSizeEntity getProjectSize() {
-    //     return projectSize;
-    // }
-
+    
     public String getClient() {
         return client;
     }

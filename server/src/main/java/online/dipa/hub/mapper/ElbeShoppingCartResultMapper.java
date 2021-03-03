@@ -17,7 +17,7 @@ public interface ElbeShoppingCartResultMapper {
         
     }
 
-    ELBEShoppingCartResultEntity toEnity(ELBEshoppingCartResult shoppingCartResult);
+    ELBEShoppingCartResultEntity toEntity(ELBEshoppingCartResult shoppingCartResult);
     
     @InheritConfiguration
     void updateShoppingCartResult(ELBEshoppingCartResult shoppingCartResult, @MappingTarget ELBEShoppingCartResultEntity shoppingCartResultEntity);
