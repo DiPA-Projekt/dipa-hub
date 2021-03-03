@@ -1,5 +1,7 @@
 package online.dipa.hub.persistence.entities;
 
+import java.util.Set;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -25,11 +27,12 @@ public class ProjectEntity extends BaseEntity {
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private ProjectApproachEntity projectApproach;
     
-    @NotNull
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    private ProjectSizeEntity projectSize;
+    @OneToMany(mappedBy = "project")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<ProjectTaskTemplateEntity> projectTaskTemplates;
 
     private String projectType;
+    private String projectSize;
     private String akz;
     private String client;
     private String department;
@@ -61,21 +64,37 @@ public class ProjectEntity extends BaseEntity {
         this.projectType = projectType;
     }
 
-    public void setAKZ(final String akz) {
+    public void setAkz(final String akz) {
         this.akz = akz;
     }
 
-    public String getAKZ() {
+    public String getAkz() {
         return akz;
     }
+
+    public Set<ProjectTaskTemplateEntity> getProjectTaskTemplates() {
+        return projectTaskTemplates;
+    }
+
+    public void setProjectTaskTemplates(final Set<ProjectTaskTemplateEntity> projectTaskTemplates) {
+        this.projectTaskTemplates = projectTaskTemplates;
+    }
     
-    public void setProjectSize(final ProjectSizeEntity projectSize) {
+    public void setProjectSize(final String projectSize) {
         this.projectSize = projectSize;
     }
 
-    public ProjectSizeEntity getProjectSize() {
+    public String getProjectSize() {
         return projectSize;
     }
+        
+    // public void setProjectSize(final ProjectSizeEntity projectSize) {
+    //     this.projectSize = projectSize;
+    // }
+
+    // public ProjectSizeEntity getProjectSize() {
+    //     return projectSize;
+    // }
 
     public String getClient() {
         return client;
@@ -100,5 +119,6 @@ public class ProjectEntity extends BaseEntity {
     public void setProjectOwner(final String projectOwner) {
         this.projectOwner = projectOwner;
     }
+
 
 }
