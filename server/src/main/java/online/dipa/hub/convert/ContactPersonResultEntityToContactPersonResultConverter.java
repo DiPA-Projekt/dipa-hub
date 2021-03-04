@@ -1,6 +1,7 @@
 package online.dipa.hub.convert;
 
 import online.dipa.hub.api.model.ContactPersonResult;
+import online.dipa.hub.api.model.ContactPersonResult.StatusEnum;
 import online.dipa.hub.persistence.entities.ContactPersonResultEntity;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,10 @@ public class ContactPersonResultEntityToContactPersonResultConverter implements 
                                                     .name(entity.getName())
                                                     .department(entity.getDepartment())
                                                     .taskArea(entity.getTaskArea());
+
+        if (entity.getStatus() != null) {
+            contactPersonResult.status(StatusEnum.fromValue(entity.getStatus()));
+        }
 
         return (ContactPersonResult) contactPersonResult.resultType(String.valueOf(entity.getResultType()));
 
