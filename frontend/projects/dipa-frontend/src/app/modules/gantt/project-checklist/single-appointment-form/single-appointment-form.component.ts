@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ControlContainer, FormArray, FormBuilder, FormGroup, FormGroupDirective } from '@angular/forms';
 import { SingleAppointmentResult } from 'dipa-api-client';
-import Utils from '../../../../shared/utils';
 
 @Component({
   selector: 'app-single-appointment-form',
