@@ -63,7 +63,6 @@ public class ProjectService {
             .filter(t -> t.getId().equals(projectId)).findFirst()
             .ifPresent(projectEntity -> 
                 projectMapper.updateProjectEntity(project, projectEntity)
-                
             );
 
     }
@@ -77,7 +76,7 @@ public class ProjectService {
 
             Optional<ProjectTaskTemplateEntity> template = project.getProjectTaskTemplates().stream().findFirst();
 
-            if (template.isPresent() && !project.getProjectSize().equals("BIG")) {
+            if (template.isPresent() && !project.getProjectSize().equals(Project.ProjectSizeEnum.BIG.toString())) {
 
                 projectTasks.addAll(template.get().getProjectTasks()
                 .stream().map(p -> conversionService.convert(p, ProjectTask.class))
@@ -97,20 +96,15 @@ public class ProjectService {
             .filter(t -> t.getId().equals(projectId)).findFirst();
 
 
-        if (project.isPresent()) {
-
-            project.get().getProjectTaskTemplates().stream().findFirst().ifPresent(template -> 
-                template
-                .getProjectTasks().stream()
-                .filter(t -> t.getId().equals(projectTask.getId()))
-                .findFirst()
-                .ifPresent(oldProjectTask -> 
-                    projectTaskMapper.updateProjectTaskEntity(projectTask, oldProjectTask, 
-                    elbeShoppingCartResultRepository, riskResultRepository,
-                    contactPersonResultRepository, singleAppointmentResultRepository, apptSeriesResultRepository)
+        project.flatMap(projectEntity -> projectEntity.getProjectTaskTemplates().stream().findFirst())
+                .flatMap(template -> template.getProjectTasks().stream()
+                    .filter(t -> t.getId().equals(projectTask.getId()))
+                    .findFirst()
                 )
-            );
-        }
+                .ifPresent(oldProjectTask ->
+                projectTaskMapper.updateProjectTaskEntity(projectTask, oldProjectTask,
+                        elbeShoppingCartResultRepository, riskResultRepository,
+                        contactPersonResultRepository, singleAppointmentResultRepository, apptSeriesResultRepository));
     }
     
 }
