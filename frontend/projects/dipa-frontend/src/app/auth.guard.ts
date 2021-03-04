@@ -1,27 +1,35 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, CanActivateChild, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { from, Observable } from 'rxjs';
-import { shareReplay } from 'rxjs/operators';
-import { environment } from '../environments/environment';
+import { Observable } from 'rxjs';
+import { AuthenticationService } from './authentication.service';
+import { UserService } from 'dipa-api-client';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate, CanActivateChild {
-  private authenticated$: Observable<boolean>;
+  protected authenticated: boolean;
+  protected roles: string[];
 
-  constructor(private oauthService: OAuthService) {
-    this.oauthService.configure(environment.keycloakConfig);
-    this.oauthService.setupAutomaticSilentRefresh();
-    this.authenticated$ = this.configure().pipe(shareReplay(1));
-  }
+  constructor(
+    private oauthService: OAuthService,
+    private userService: UserService,
+    private authenticationService: AuthenticationService
+  ) {}
 
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return this.authenticated$;
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean | UrlTree> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        this.authenticated = this.authenticationService.isLoggedIn();
+        this.roles = this.authenticationService.getUserRoles();
+
+        const result = await this.isAccessAllowed(route);
+        resolve(result);
+      } catch (error) {
+        reject(`An error happened during access validation. Details:${error}`);
+      }
+    });
   }
 
   canActivateChild(
@@ -31,7 +39,14 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     return this.canActivate(childRoute, state);
   }
 
-  private configure(): Observable<boolean> {
-    return from(this.oauthService.loadDiscoveryDocumentAndLogin());
+  public async isAccessAllowed(route: ActivatedRouteSnapshot): Promise<boolean> {
+    if (!this.authenticated) {
+      await this.authenticationService.login();
+    }
+    const requiredRoles = route.data.roles as string[];
+    if (!(requiredRoles instanceof Array) || requiredRoles.length === 0) {
+      return true;
+    }
+    return requiredRoles.every((role) => this.roles.includes(`ROLE_${role}`));
   }
 }

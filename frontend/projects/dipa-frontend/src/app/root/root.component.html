@@ -9,7 +9,10 @@
         <app-gantt-menu #ganttMenu="menuComponent"></app-gantt-menu>
         <mat-icon>arrow_drop_down</mat-icon>
       </a>
-      <a mat-button [routerLink]="'/overview/projects'"><mat-icon>supervisor_account</mat-icon>Projektübersicht</a>
+      <a *ngIf="isUserInRole('supervisor')" mat-button [routerLink]="'/overview/projects'">
+        <mat-icon>supervisor_account</mat-icon>
+        Projektübersicht
+      </a>
     </div>
     <span class="full-width-spacer"></span>
     <div>

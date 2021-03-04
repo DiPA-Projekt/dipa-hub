@@ -7,7 +7,7 @@ import { Observable, Subscription } from 'rxjs';
 import { ProjectService, ProjectTask } from 'dipa-api-client';
 
 @Component({
-  selector: 'app-vertical-stepper',
+  selector: 'app-project-checklist',
   templateUrl: './project-checklist.component.html',
   styleUrls: ['./project-checklist.component.scss'],
   providers: [

@@ -16,6 +16,7 @@ const routes: Routes = [
       {
         path: 'overview',
         loadChildren: () => import('./modules/overview/overview.module').then((m) => m.OverviewModule),
+        data: { roles: ['supervisor'] },
       },
     ],
   },
