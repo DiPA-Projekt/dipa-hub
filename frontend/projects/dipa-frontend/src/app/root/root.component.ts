@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { OAuthService } from 'angular-oauth2-oidc';
+import { AuthenticationService } from '../authentication.service';
 
 @Component({
   selector: 'app-root-component',
@@ -7,9 +7,13 @@ import { OAuthService } from 'angular-oauth2-oidc';
   styleUrls: ['./root.component.scss'],
 })
 export class RootComponent {
-  constructor(private oauthService: OAuthService) {}
+  constructor(private authenticationService: AuthenticationService) {}
+
+  public isUserInRole(role: string): boolean {
+    return this.authenticationService.isUserInRole(role);
+  }
 
   public logout(): void {
-    this.oauthService.logOut();
+    this.authenticationService.logout();
   }
 }

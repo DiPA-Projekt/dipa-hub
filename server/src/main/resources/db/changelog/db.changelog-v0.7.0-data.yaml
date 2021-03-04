@@ -194,7 +194,7 @@ databaseChangeLog:
                   value: 5
               - column:
                   name: title
-                  value: regelmäßiger JourFix vereinbare
+                  value: Regelmäßige Jour Fixe vereinbaren
               - column:
                   name: optional
                   value: true
