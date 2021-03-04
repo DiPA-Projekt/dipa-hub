@@ -1,58 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: insert-project-size-small
-      author: nguyen
-      context: itzbund
-      changes:
-        - insert:
-            tableName: project_size
-            columns:
-              - column:
-                  name: id
-                  value: 1
-              - column:
-                  name: name
-                  value: SMALL
-  - changeSet:
-      id: insert-project-size-medium
-      author: nguyen
-      context: itzbund
-      changes:
-        - insert:
-            tableName: project_size
-            columns:
-              - column:
-                  name: id
-                  value: 2
-              - column:
-                  name: name
-                  value: MEDIUM
-  - changeSet:
-      id: update-project-projectSize-Feldberg-new
-      context: itzbund
-      author: nguyen
-      changes:
-        - update:
-            tableName: project
-            columns:
-              - column:
-                  name: project_size_id
-                  value: 1
-            where: id=3
-  - changeSet:
-      id: update-project-projectSize-Zugspitze-new
-      context: itzbund
-      author: nguyen
-      changes:
-        - update:
-            tableName: project
-            columns:
-              - column:
-                  name: project_size_id
-                  value: 2
-            where: id=4
-  - changeSet:
-      id: insert-project-task-template-01
+      id: insert-project-task-template-Felberg
       author: nguyen
       context: itzbund
       changes:
@@ -64,7 +12,10 @@ databaseChangeLog:
                   value: 1
               - column:
                   name: name
-                  value: Projekt Aufgaben Vorlage
+                  value: Projekt Aufgaben Vorlage Felberg
+              - column:
+                  name: project_id
+                  value: 3
   - changeSet:
       id: insert-project-task-01
       author: nguyen
@@ -559,35 +510,6 @@ databaseChangeLog:
                   name: project_task_template_id
                   value: 1
   - changeSet:
-      id: insert-project-task-17
-      author: nguyen
-      context: itzbund
-      changes:
-        - insert:
-            tableName: project_task
-            columns:
-              - column:
-                  name: id
-                  value: 17
-              - column:
-                  name: title
-                  value: Erledigungsanzeige erstellen und versenden
-              - column:
-                  name: optional
-                  value: false
-              - column:
-                  name: explanation
-                  value: sR bei Ressourcenmanagement und BfdH notwendig
-              - column:
-                  name: contact_person
-                  value:
-              - column:
-                  name: documentation_link
-                  value:
-              - column:
-                  name: project_task_template_id
-                  value: 1
-  - changeSet:
       id: insert-standard-result-01
       author: nguyen
       context: itzbund
@@ -607,6 +529,9 @@ databaseChangeLog:
               - column:
                   name: status
                   value:
+              - column:
+                  name: project_task_id
+                  value: 1
   - changeSet:
       id: insert-standard-result-02
       author: nguyen
@@ -627,6 +552,9 @@ databaseChangeLog:
               - column:
                   name: status
                   value:
+              - column:
+                  name: project_task_id
+                  value: 2
   - changeSet:
       id: insert-standard-result-03
       author: nguyen
@@ -647,6 +575,9 @@ databaseChangeLog:
               - column:
                   name: status
                   value:
+              - column:
+                  name: project_task_id
+                  value: 3
   - changeSet:
       id: insert-standard-result-04
       author: nguyen
@@ -667,6 +598,9 @@ databaseChangeLog:
               - column:
                   name: status
                   value:
+              - column:
+                  name: project_task_id
+                  value: 6
   - changeSet:
       id: insert-standard-result-05
       author: nguyen
@@ -687,6 +621,9 @@ databaseChangeLog:
               - column:
                   name: status
                   value:
+              - column:
+                  name: project_task_id
+                  value: 7
   - changeSet:
       id: insert-standard-result-06
       author: nguyen
@@ -707,6 +644,9 @@ databaseChangeLog:
               - column:
                   name: status
                   value:
+              - column:
+                  name: project_task_id
+                  value: 9
   - changeSet:
       id: insert-standard-result-07
       author: nguyen
@@ -727,6 +667,9 @@ databaseChangeLog:
               - column:
                   name: status
                   value:
+              - column:
+                  name: project_task_id
+                  value: 10
   - changeSet:
       id: insert-standard-result-08
       author: nguyen
@@ -747,6 +690,9 @@ databaseChangeLog:
               - column:
                   name: status
                   value:
+              - column:
+                  name: project_task_id
+                  value: 11
   - changeSet:
       id: insert-standard-result-09
       author: nguyen
@@ -767,6 +713,9 @@ databaseChangeLog:
               - column:
                   name: status
                   value:
+              - column:
+                  name: project_task_id
+                  value: 12
   - changeSet:
       id: insert-standard-result-10
       author: nguyen
@@ -787,6 +736,9 @@ databaseChangeLog:
               - column:
                   name: status
                   value:
+              - column:
+                  name: project_task_id
+                  value: 15
   - changeSet:
       id: insert-standard-result-11
       author: nguyen
@@ -807,6 +759,9 @@ databaseChangeLog:
               - column:
                   name: status
                   value:
+              - column:
+                  name: project_task_id
+                  value: 16
   - changeSet:
       id: insert-standard-result-12
       author: nguyen
@@ -827,230 +782,9 @@ databaseChangeLog:
               - column:
                   name: status
                   value:
-  - changeSet:
-      id: insert-standard-result-13
-      author: nguyen
-      context: itzbund
-      changes:
-        - insert:
-            tableName: standard_result
-            columns:
-              - column:
-                  name: id
-                  value: 13
-              - column:
-                  name: result_type
-                  value: "TYPE_STD"
-              - column:
-                  name: content
-                  value:
-              - column:
-                  name: status
-                  value:
-  - changeSet:
-      id: insert-standard-result-project-task-01
-      author: nguyen
-      context: itzbund
-      changes:
-        - insert:
-            tableName: standard_result_project_task_connection
-            columns:
-              - column:
-                  name: id
-                  value: 1
-              - column:
-                  name: project_task_id
-                  value: 1
-              - column:
-                  name: standard_result_id
-                  value: 1
-  - changeSet:
-      id: insert-standard-result-project-task-02
-      author: nguyen
-      context: itzbund
-      changes:
-        - insert:
-            tableName: standard_result_project_task_connection
-            columns:
-              - column:
-                  name: id
-                  value: 2
-              - column:
-                  name: project_task_id
-                  value: 2
-              - column:
-                  name: standard_result_id
-                  value: 2
-  - changeSet:
-      id: insert-standard-result-project-task-03
-      author: nguyen
-      context: itzbund
-      changes:
-        - insert:
-            tableName: standard_result_project_task_connection
-            columns:
-              - column:
-                  name: id
-                  value: 3
-              - column:
-                  name: project_task_id
-                  value: 3
-              - column:
-                  name: standard_result_id
-                  value: 3
-  - changeSet:
-      id: insert-standard-result-project-task-04
-      author: nguyen
-      context: itzbund
-      changes:
-        - insert:
-            tableName: standard_result_project_task_connection
-            columns:
-              - column:
-                  name: id
-                  value: 4
-              - column:
-                  name: project_task_id
-                  value: 6
-              - column:
-                  name: standard_result_id
-                  value: 4
-  - changeSet:
-      id: insert-standard-result-project-task-05
-      author: nguyen
-      context: itzbund
-      changes:
-        - insert:
-            tableName: standard_result_project_task_connection
-            columns:
-              - column:
-                  name: id
-                  value: 5
-              - column:
-                  name: project_task_id
-                  value: 7
-              - column:
-                  name: standard_result_id
-                  value: 5
-  - changeSet:
-      id: insert-standard-result-project-task-06
-      author: nguyen
-      context: itzbund
-      changes:
-        - insert:
-            tableName: standard_result_project_task_connection
-            columns:
-              - column:
-                  name: id
-                  value: 6
-              - column:
-                  name: project_task_id
-                  value: 9
-              - column:
-                  name: standard_result_id
-                  value: 6
-  - changeSet:
-      id: insert-standard-result-project-task-07
-      author: nguyen
-      context: itzbund
-      changes:
-        - insert:
-            tableName: standard_result_project_task_connection
-            columns:
-              - column:
-                  name: id
-                  value: 7
-              - column:
-                  name: project_task_id
-                  value: 10
-              - column:
-                  name: standard_result_id
-                  value: 7
-  - changeSet:
-      id: insert-standard-result-project-task-08
-      author: nguyen
-      context: itzbund
-      changes:
-        - insert:
-            tableName: standard_result_project_task_connection
-            columns:
-              - column:
-                  name: id
-                  value: 8
-              - column:
-                  name: project_task_id
-                  value: 11
-              - column:
-                  name: standard_result_id
-                  value: 8
-  - changeSet:
-      id: insert-standard-result-project-task-09
-      author: nguyen
-      context: itzbund
-      changes:
-        - insert:
-            tableName: standard_result_project_task_connection
-            columns:
-              - column:
-                  name: id
-                  value: 9
-              - column:
-                  name: project_task_id
-                  value: 12
-              - column:
-                  name: standard_result_id
-                  value: 9
-  - changeSet:
-      id: insert-standard-result-project-task-10
-      author: nguyen
-      context: itzbund
-      changes:
-        - insert:
-            tableName: standard_result_project_task_connection
-            columns:
-              - column:
-                  name: id
-                  value: 10
-              - column:
-                  name: project_task_id
-                  value: 15
-              - column:
-                  name: standard_result_id
-                  value: 10
-  - changeSet:
-      id: insert-standard-result-project-task-11
-      author: nguyen
-      context: itzbund
-      changes:
-        - insert:
-            tableName: standard_result_project_task_connection
-            columns:
-              - column:
-                  name: id
-                  value: 11
-              - column:
-                  name: project_task_id
-                  value: 16
-              - column:
-                  name: standard_result_id
-                  value: 11
-  - changeSet:
-      id: insert-standard-result-project-task-12
-      author: nguyen
-      context: itzbund
-      changes:
-        - insert:
-            tableName: standard_result_project_task_connection
-            columns:
-              - column:
-                  name: id
-                  value: 12
               - column:
                   name: project_task_id
                   value: 17
-              - column:
-                  name: standard_result_id
-                  value: 12
   - changeSet:
       id: insert-contact-person-result
       author: nguyen
@@ -1193,37 +927,3 @@ databaseChangeLog:
               - column:
                   name: project_task_id
                   value: 13
-  - changeSet:
-      id: insert-project-task-template-project-size-connection-small
-      author: nguyen
-      context: itzbund
-      changes:
-        - insert:
-            tableName: project_task_template_project_size_connection
-            columns:
-              - column:
-                  name: id
-                  value: 1
-              - column:
-                  name: project_task_template_id
-                  value: 1
-              - column:
-                  name: project_size_id
-                  value: 1
-  - changeSet:
-      id: insert-project-task-template-project-size-connection-medium
-      author: nguyen
-      context: itzbund
-      changes:
-        - insert:
-            tableName: project_task_template_project_size_connection
-            columns:
-              - column:
-                  name: id
-                  value: 2
-              - column:
-                  name: project_task_template_id
-                  value: 1
-              - column:
-                  name: project_size_id
-                  value: 2

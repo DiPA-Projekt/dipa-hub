@@ -1,6 +1,8 @@
 server:
   port: 9080
   use-forward-headers: true
+  tomcat:
+    internal-proxies: 139\.174\.11\.9|127\.\d{1,3}\.\d{1,3}\.\d{1,3}
 
 spring:
   banner:
@@ -11,9 +13,6 @@ spring:
     hibernate:
       ddl-auto: validate
     open-in-view: false
-  #  datasource:
-  #    platform: h2
-  #    url: "jdbc:h2:mem:dipahub"
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
 
@@ -36,7 +35,23 @@ dipa:
         platform: h2
 
 logging:
-  path: "logs"
+  file:
+    name: "./logs/dipa-logfile.log"
+#  level:
+#    org.springframework.security: DEBUG
+#    org.keycloak: DEBUG
+
+
+management:
+  endpoint:
+    loggers:
+      enabled: true
+    logfile:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "info,health,loggers,logfile"
 
 #server.port=9080
 #server.use-forward-headers=true
@@ -52,4 +67,3 @@ logging:
 #spring.datasource.password=secret-pwd
 #logging.path=logs
 #spring.liquibase.change-log=classpath:db/changelog/db.changelog-master.yaml
-#spring.banner.location=classpath:dipa-banner.txt
