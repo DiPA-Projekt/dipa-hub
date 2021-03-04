@@ -93,14 +93,14 @@ public class ProjectService {
 
     public void updateProjectTask (final Long projectId, final ProjectTask projectTask) {
 
-        ProjectEntity project = projectRespository.findAll().stream()
+        Optional<ProjectEntity> project = projectRespository.findAll().stream()
             .filter(t -> t.getId().equals(projectId)).findFirst();
 
 
         if (project.isPresent()) {
 
-            project.getProjectTaskTemplates().stream().findFirst().ifPresent(template -> {
-                template.stream().findFirst().get()
+            project.get().getProjectTaskTemplates().stream().findFirst().ifPresent(template -> {
+                template
                 .getProjectTasks().stream()
                 .filter(t -> t.getId().equals(projectTask.getId()))
                 .findFirst()
@@ -108,7 +108,7 @@ public class ProjectService {
                     projectTaskMapper.updateProjectTaskEntity(projectTask, oldProjectTask, 
                     elbeShoppingCartResultRepository, riskResultRepository,
                     contactPersonResultRepository, singleAppointmentResultRepository, apptSeriesResultRepository)
-                )
+                );
             });
         }
     }
