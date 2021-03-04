@@ -549,7 +549,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: project_size
-                  value: MIDDLE
+                  value: MEDIUM
             where: id=4
   - changeSet:
       id: insert-external-link-kommunikation-ohne-sina

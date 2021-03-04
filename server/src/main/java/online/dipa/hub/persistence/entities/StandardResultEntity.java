@@ -1,8 +1,7 @@
 package online.dipa.hub.persistence.entities;
 
-import java.util.Set;
-
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -17,13 +16,9 @@ public class StandardResultEntity extends BaseEntity {
 
     private String status;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "standard_result_project_task_connection",
-            joinColumns = { @JoinColumn(name = "standard_result_id") },
-            inverseJoinColumns = { @JoinColumn(name = "project_task_id") }
-    )
-    private Set<ProjectTaskEntity> projectTasks;
+    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER)
+    private ProjectTaskEntity projectTask;
 
     private String resultType;
 
@@ -51,12 +46,12 @@ public class StandardResultEntity extends BaseEntity {
         this.status = status;
     }
 
-    public Set<ProjectTaskEntity> getProjectTasks() {
-        return projectTasks;
+    public ProjectTaskEntity getProjectTasks() {
+        return projectTask;
     }
 
-    public void setProjectTasks(final Set<ProjectTaskEntity> projectTasks) {
-        this.projectTasks = projectTasks;
+    public void setProjectTasks(final ProjectTaskEntity projectTask) {
+        this.projectTask = projectTask;
     }
 
 }
