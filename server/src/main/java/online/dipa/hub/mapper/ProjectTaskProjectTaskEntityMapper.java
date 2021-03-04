@@ -15,18 +15,10 @@ public interface ProjectTaskProjectTaskEntityMapper
         extends StandardResultMapper, ElbeShoppingCartResultMapper, ContactPersonResultMapper,
         SingleApptResultMapper, ApptSeriesResultMapper, RiskResultMapper {
 
-    // final StandardResultMapper standardResultMapper = Mappers.getMapper(StandardResultMapper.class);
-    // final ElbeShoppingCartResultMapper elbeShoppingCartResultMapper = Mappers.getMapper(ElbeShoppingCartResultMapper.class);
-    // final ContactPersonResultMapper contactPersonResultMapper = Mappers.getMapper(ContactPersonResultMapper.class);
-    // final SingleApptResultMapper singleApptResultMapper = Mappers.getMapper(SingleApptResultMapper.class);
-    // final ApptSeriesResultMapper apptSeriesResultMapper = Mappers.getMapper(ApptSeriesResultMapper.class);
-    // final RiskResultMapper riskResultMapper = Mappers.getMapper(RiskResultMapper.class);
-
 
     void updateProjectTaskEntity(ProjectTask projectTask, @MappingTarget ProjectTaskEntity projectTaskEntity,@Context ElbeShoppingCartResultRepository elbeShoppingCartResultRepository,
     @Context RiskResultRepository riskResultRepository, @Context ContactPersonResultRepository contactPersonResultRepository,
     @Context SingleAppointmentResultRepository singleApptResultRepository, @Context AppointmentSeriesResultRepository apptSeriesResultRepository);
-
 
     @AfterMapping
 	default void setResults(ProjectTask projectTask, @MappingTarget ProjectTaskEntity projectTaskEntity, @Context ElbeShoppingCartResultRepository elbeShoppingCartResultRepository,
