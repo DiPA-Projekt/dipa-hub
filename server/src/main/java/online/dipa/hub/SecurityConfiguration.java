@@ -48,7 +48,9 @@ public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter 
             .permitAll()
             .and()
             .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.csrf().disable();
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .csrf()
+            .disable();
     }
 }

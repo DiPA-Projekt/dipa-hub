@@ -16,8 +16,8 @@ public interface ApptSeriesResultMapper {
 
         }
     }
-        
-    AppointmentSeriesResultEntity toEntity(AppointmentSeriesResult apptSeriesResult);
+
+    AppointmentSeriesResultEntity toAppointmentSeriesResultEntity(AppointmentSeriesResult apptSeriesResult);
 
     @InheritConfiguration
     void updateApptSeriesResult(AppointmentSeriesResult apptSeriesResult, @MappingTarget AppointmentSeriesResultEntity apptSeriesResultEntity);

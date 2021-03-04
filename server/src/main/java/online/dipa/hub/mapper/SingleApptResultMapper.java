@@ -1,7 +1,6 @@
 package online.dipa.hub.mapper;
 
 import org.mapstruct.*;
-
 import online.dipa.hub.api.model.SingleAppointmentResult;
 import online.dipa.hub.persistence.entities.SingleAppointmentResultEntity;
 
@@ -15,8 +14,8 @@ public interface SingleApptResultMapper {
             singleApptResultEntity.setStatus(singleApptResult.getStatus().toString());
         }
     }
-    
-    SingleAppointmentResultEntity toEntity(SingleAppointmentResult singleApptResult);
+
+    SingleAppointmentResultEntity toSingleAppointmentResultEntity(SingleAppointmentResult singleApptResult);
     
     @InheritConfiguration
     void updateSingleApptResult(SingleAppointmentResult singleApptResult, @MappingTarget SingleAppointmentResultEntity singleApptResultEntity);

@@ -28,7 +28,7 @@ export class SingleAppointmentFormComponent implements OnInit {
       this.singleAppointmentsArray.push(
         this.fb.group({
           resultType: singleAppointment?.resultType,
-          date: Utils.parseGermanDate(singleAppointment?.date),
+          date: singleAppointment?.date,
           goal: singleAppointment?.goal,
           responsiblePerson: singleAppointment?.responsiblePerson,
           status: singleAppointment?.status,

@@ -1,7 +1,6 @@
 package online.dipa.hub.mapper;
 
 import org.mapstruct.*;
-
 import online.dipa.hub.api.model.ELBEshoppingCartResult;
 import online.dipa.hub.persistence.entities.ELBEShoppingCartResultEntity;
 
@@ -17,7 +16,7 @@ public interface ElbeShoppingCartResultMapper {
         
     }
 
-    ELBEShoppingCartResultEntity toEntity(ELBEshoppingCartResult shoppingCartResult);
+    ELBEShoppingCartResultEntity toELBEShoppingCartResultEntity(ELBEshoppingCartResult shoppingCartResult);
     
     @InheritConfiguration
     void updateShoppingCartResult(ELBEshoppingCartResult shoppingCartResult, @MappingTarget ELBEShoppingCartResultEntity shoppingCartResultEntity);

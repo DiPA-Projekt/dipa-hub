@@ -1,7 +1,6 @@
 package online.dipa.hub.mapper;
 
 import org.mapstruct.*;
-
 import online.dipa.hub.api.model.RiskResult;
 import online.dipa.hub.persistence.entities.RiskResultEntity;
 
@@ -16,7 +15,7 @@ public interface RiskResultMapper {
         }
     }
 
-    RiskResultEntity toEntity(RiskResult riskResult);
+    RiskResultEntity toRiskResultEntity(RiskResult riskResult);
     
     @InheritConfiguration
     void updateRiskResult(RiskResult riskResult, @MappingTarget RiskResultEntity riskResultEntity);

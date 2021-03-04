@@ -99,7 +99,7 @@ public class ProjectService {
 
         if (project.isPresent()) {
 
-            project.get().getProjectTaskTemplates().stream().findFirst().ifPresent(template -> {
+            project.get().getProjectTaskTemplates().stream().findFirst().ifPresent(template -> 
                 template
                 .getProjectTasks().stream()
                 .filter(t -> t.getId().equals(projectTask.getId()))
@@ -108,8 +108,8 @@ public class ProjectService {
                     projectTaskMapper.updateProjectTaskEntity(projectTask, oldProjectTask, 
                     elbeShoppingCartResultRepository, riskResultRepository,
                     contactPersonResultRepository, singleAppointmentResultRepository, apptSeriesResultRepository)
-                );
-            });
+                )
+            );
         }
     }
     

@@ -1,7 +1,6 @@
 package online.dipa.hub.mapper;
 
 import org.mapstruct.*;
-
 import online.dipa.hub.api.model.StandardResult;
 import online.dipa.hub.persistence.entities.StandardResultEntity;
 

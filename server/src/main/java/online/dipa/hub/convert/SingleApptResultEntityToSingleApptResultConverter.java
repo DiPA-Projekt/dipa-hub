@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 public class SingleApptResultEntityToSingleApptResultConverter implements Converter<SingleAppointmentResultEntity, SingleAppointmentResult> {
     @Override
     public SingleAppointmentResult convert(final SingleAppointmentResultEntity entity) {
-
         SingleAppointmentResult singleAppointmentResult = new SingleAppointmentResult()
                                                             .date(entity.getDate())
                                                             .goal(entity.getGoal())

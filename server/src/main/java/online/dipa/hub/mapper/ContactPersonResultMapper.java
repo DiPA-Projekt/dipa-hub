@@ -16,7 +16,7 @@ public interface ContactPersonResultMapper {
         }
     }
 
-    ContactPersonResultEntity toEntity(ContactPersonResult contactPersonResult);
+    ContactPersonResultEntity toContactPersonResultEntity(ContactPersonResult contactPersonResult);
 
     @InheritConfiguration
     void updateContactPersonResult(ContactPersonResult contactPersonResult, @MappingTarget ContactPersonResultEntity contactPersonResultEntity);

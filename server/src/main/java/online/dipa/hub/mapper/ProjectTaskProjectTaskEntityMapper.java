@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.mapstruct.*;
-import org.mapstruct.factory.Mappers;
-
 import online.dipa.hub.api.model.*;
 import online.dipa.hub.persistence.entities.*;
 
@@ -13,14 +11,16 @@ import online.dipa.hub.persistence.repositories.*;
 
 
 @Mapper(componentModel = "spring")
-public interface ProjectTaskProjectTaskEntityMapper {
+public interface ProjectTaskProjectTaskEntityMapper 
+        extends StandardResultMapper, ElbeShoppingCartResultMapper, ContactPersonResultMapper,
+        SingleApptResultMapper, ApptSeriesResultMapper, RiskResultMapper {
 
-    final StandardResultMapper standardResultMapper = Mappers.getMapper(StandardResultMapper.class);
-    final ElbeShoppingCartResultMapper elbeShoppingCartResultMapper = Mappers.getMapper(ElbeShoppingCartResultMapper.class);
-    final ContactPersonResultMapper contactPersonResultMapper = Mappers.getMapper(ContactPersonResultMapper.class);
-    final SingleApptResultMapper singleApptResultMapper = Mappers.getMapper(SingleApptResultMapper.class);
-    final ApptSeriesResultMapper apptSeriesResultMapper = Mappers.getMapper(ApptSeriesResultMapper.class);
-    final RiskResultMapper riskResultMapper = Mappers.getMapper(RiskResultMapper.class);
+    // final StandardResultMapper standardResultMapper = Mappers.getMapper(StandardResultMapper.class);
+    // final ElbeShoppingCartResultMapper elbeShoppingCartResultMapper = Mappers.getMapper(ElbeShoppingCartResultMapper.class);
+    // final ContactPersonResultMapper contactPersonResultMapper = Mappers.getMapper(ContactPersonResultMapper.class);
+    // final SingleApptResultMapper singleApptResultMapper = Mappers.getMapper(SingleApptResultMapper.class);
+    // final ApptSeriesResultMapper apptSeriesResultMapper = Mappers.getMapper(ApptSeriesResultMapper.class);
+    // final RiskResultMapper riskResultMapper = Mappers.getMapper(RiskResultMapper.class);
 
 
     void updateProjectTaskEntity(ProjectTask projectTask, @MappingTarget ProjectTaskEntity projectTaskEntity,@Context ElbeShoppingCartResultRepository elbeShoppingCartResultRepository,
@@ -69,13 +69,13 @@ public interface ProjectTaskProjectTaskEntityMapper {
         List<StandardResult> newList = projectTask.getResults().getData().stream().map(StandardResult.class::cast).collect(Collectors.toList());
 
         for (int i = 0; i < newList.size(); i++) {
-            standardResultMapper.updateStandardResult(newList.get(i), oldList.get(i));
+            updateStandardResult(newList.get(i), oldList.get(i));
         }
     }
     
 
     default void updateShoppingCartResults(ProjectTaskEntity projectTaskEntity, ProjectTask projectTask, ElbeShoppingCartResultRepository elbeShoppingCartResultRepository) {
-    
+            
         List<ELBEShoppingCartResultEntity> oldList = projectTaskEntity.getELBEShoppingCartResults().stream().collect(Collectors.toList());
         List<ELBEshoppingCartResult> newList = projectTask.getResults().getData().stream().map(ELBEshoppingCartResult.class::cast).collect(Collectors.toList());
 
@@ -83,7 +83,7 @@ public interface ProjectTaskProjectTaskEntityMapper {
 
             if (i > oldList.size() - 1) {
                 
-                ELBEShoppingCartResultEntity entity = elbeShoppingCartResultMapper.toEntity(newList.get(i));
+                ELBEShoppingCartResultEntity entity = toELBEShoppingCartResultEntity(newList.get(i));
                 entity.setId(Long.valueOf(elbeShoppingCartResultRepository.count() + 1));
                 entity.setProjectTask(projectTaskEntity);
 
@@ -91,7 +91,7 @@ public interface ProjectTaskProjectTaskEntityMapper {
 
             }
             else {
-                elbeShoppingCartResultMapper.updateShoppingCartResult(newList.get(i), oldList.get(i));
+                updateShoppingCartResult(newList.get(i), oldList.get(i));
             }
 
         }
@@ -106,7 +106,7 @@ public interface ProjectTaskProjectTaskEntityMapper {
 
             if (i > oldList.size() - 1) {
                 
-                ContactPersonResultEntity entity = contactPersonResultMapper.toEntity(newList.get(i));
+                ContactPersonResultEntity entity = toContactPersonResultEntity(newList.get(i));
                 entity.setId(Long.valueOf(contactPersonResultRepository.count() + 1));
                 entity.setProjectTask(projectTaskEntity);
 
@@ -114,7 +114,7 @@ public interface ProjectTaskProjectTaskEntityMapper {
 
             }
             else {
-                contactPersonResultMapper.updateContactPersonResult(newList.get(i), oldList.get(i));
+                updateContactPersonResult(newList.get(i), oldList.get(i));
             }
 
         }
@@ -129,14 +129,14 @@ public interface ProjectTaskProjectTaskEntityMapper {
 
             if (i > oldList.size() -1) {
 
-                AppointmentSeriesResultEntity entity = apptSeriesResultMapper.toEntity(newList.get(i));
+                AppointmentSeriesResultEntity entity = toAppointmentSeriesResultEntity(newList.get(i));
                 entity.setId(Long.valueOf(apptSeriesResultRepository.count() + 1));
                 entity.setProjectTask(projectTaskEntity);
                 apptSeriesResultRepository.save(entity);
 
             }
             else {
-                apptSeriesResultMapper.updateApptSeriesResult(newList.get(i), oldList.get(i));
+                updateApptSeriesResult(newList.get(i), oldList.get(i));
             }
 
         }
@@ -151,16 +151,15 @@ public interface ProjectTaskProjectTaskEntityMapper {
 
             if (i > oldList.size() -1) {
 
-                RiskResultEntity entity = riskResultMapper.toEntity(newList.get(i));
+                RiskResultEntity entity = toRiskResultEntity(newList.get(i));
                 entity.setId(Long.valueOf(riskResultRepository.count() + 1));
                 entity.setProjectTask(projectTaskEntity);
                 riskResultRepository.save(entity);
 
             }
             else {
-                riskResultMapper.updateRiskResult(newList.get(i), oldList.get(i));
+                updateRiskResult(newList.get(i), oldList.get(i));
             }
-
         }
     }
 
@@ -173,14 +172,14 @@ public interface ProjectTaskProjectTaskEntityMapper {
 
             if (i > oldList.size() -1) {
 
-                SingleAppointmentResultEntity entity = singleApptResultMapper.toEntity(newList.get(i));
+                SingleAppointmentResultEntity entity = toSingleAppointmentResultEntity(newList.get(i));
                 entity.setId(Long.valueOf(singleApptResultRepository.count() + 1));
                 entity.setProjectTask(projectTaskEntity);
                 singleApptResultRepository.save(entity);
 
             }
             else {
-                singleApptResultMapper.updateSingleApptResult(newList.get(i), oldList.get(i));
+                updateSingleApptResult(newList.get(i), oldList.get(i));
             }
 
         }
