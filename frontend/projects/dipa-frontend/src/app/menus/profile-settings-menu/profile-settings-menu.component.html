@@ -1,0 +1,16 @@
+<mat-menu menu="settingsMenu">
+  <div class="mat-subheader">{{ userData.name }}</div>
+  <menu mat-menu-item>
+    <mat-icon>manage_accounts</mat-icon>
+    Profil
+  </menu>
+  <menu mat-menu-item>
+    <mat-icon>settings</mat-icon>
+    Einstellungen
+  </menu>
+  <mat-divider></mat-divider>
+  <menu mat-menu-item (click)="logout()">
+    <mat-icon>logout</mat-icon>
+    Ausloggen
+  </menu>
+</mat-menu>

@@ -6,7 +6,7 @@
       <a mat-button [routerLink]="'/home/tour'"><mat-icon>home</mat-icon>Home</a>
       <a mat-button [matMenuTriggerFor]="ganttMenu.menu">
         <mat-icon>bar_chart</mat-icon>Meine Projekte
-        <app-gantt-menu #ganttMenu="menuComponent"></app-gantt-menu>
+        <app-gantt-menu #ganttMenu="gantMenuComponent"></app-gantt-menu>
         <mat-icon>arrow_drop_down</mat-icon>
       </a>
       <a *ngIf="isUserInRole('supervisor')" mat-button [routerLink]="'/overview/projects'">
@@ -19,8 +19,11 @@
       </a>
     </div>
     <span class="full-width-spacer"></span>
-    <div>
-      <a mat-button (click)="logout()"><mat-icon>logout</mat-icon>Logout</a>
+    <div *ngIf="isLoggedIn()">
+      <a mat-button [matMenuTriggerFor]="profileSettingsMenu.menu">
+        <mat-icon>account_circle</mat-icon>
+        <app-profile-settings-menu #profileSettingsMenu="profileSettingsMenu"></app-profile-settings-menu>
+      </a>
     </div>
     <div id="version" class="mat-small">Version: TBD</div>
   </mat-toolbar-row>
