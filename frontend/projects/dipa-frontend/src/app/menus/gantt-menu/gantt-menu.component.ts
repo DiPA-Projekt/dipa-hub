@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-gantt-menu',
   templateUrl: './gantt-menu.component.html',
-  exportAs: 'menuComponent',
+  exportAs: 'gantMenuComponent',
 })
 export class GanttMenuComponent implements OnInit, OnDestroy {
   @ViewChild(MatMenu, { static: true }) menu: MatMenu;
