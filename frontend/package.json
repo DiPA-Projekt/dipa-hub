@@ -11,7 +11,7 @@
     "test:ci": "ng test --code-coverage --no-watch --no-progress --browsers=ChromeHeadlessCustom",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build:ci": "npm run prettier:check && npm run build:api && npm run eslint:ci && npm run nyc:ci && npm run build:prod",
+    "build:ci": "npm run prettier:check && npm run eslint:ci && npm run nyc:ci",
     "eslint": "eslint projects/dipa-frontend/{e2e,src}/**/*.{html,js,json,ts}",
     "eslint:ci": "npm run eslint -- --quiet=true -f json -o eslint-report.json || exit 0",
     "prettier": "prettier projects/dipa-frontend/{src,tests}/**",
