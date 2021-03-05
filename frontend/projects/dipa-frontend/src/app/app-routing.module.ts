@@ -18,6 +18,12 @@ const routes: Routes = [
         loadChildren: () => import('./modules/overview/overview.module').then((m) => m.OverviewModule),
         data: { roles: ['supervisor'] },
       },
+      {
+        path: 'schedules',
+        loadChildren: () => import('./modules/schedules/schedules.module').then((m) => m.SchedulesModule),
+        canActivate: [AuthGuard],
+        data: { roles: ['pmo'] },
+      },
     ],
   },
 ];
