@@ -1,7 +1,9 @@
 package online.dipa.hub.services;
 
 import online.dipa.hub.api.model.User;
+import org.keycloak.adapters.OidcKeycloakAccount;
 import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.keycloak.representations.AccessToken;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -9,7 +11,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -20,18 +25,15 @@ public class UserInformationService {
         User currentUser = new User();
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+        if (authentication instanceof KeycloakAuthenticationToken) {
 
-            List<String> roles = authentication.getAuthorities()
-                    .stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.toList());
+            OidcKeycloakAccount account = ((KeycloakAuthenticationToken) authentication).getAccount();
+            AccessToken token = account.getKeycloakSecurityContext().getToken();
 
-            AccessToken token = ((SimpleKeycloakAccount) authentication.getDetails())
-                    .getKeycloakSecurityContext()
-                    .getToken();
-
-            currentUser.name(token.getName()).email(token.getEmail()).roles(roles);
+            currentUser
+                    .name(token.getName())
+                    .email(token.getEmail())
+                    .roles(new ArrayList<>(account.getRoles()));
         }
         return currentUser;
     }
