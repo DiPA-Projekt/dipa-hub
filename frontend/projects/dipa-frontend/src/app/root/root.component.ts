@@ -13,7 +13,7 @@ export class RootComponent {
     return this.authenticationService.isUserInRole(role);
   }
 
-  public logout(): void {
-    this.authenticationService.logout();
+  public isLoggedIn(): boolean {
+    return this.authenticationService.isLoggedIn();
   }
 }
