@@ -13,6 +13,10 @@
         <mat-icon>supervisor_account</mat-icon>
         Projektübersicht
       </a>
+      <a *ngIf="isUserInRole('pmo')" mat-button [routerLink]="'/schedules/configuration'">
+        <mat-icon>date_range</mat-icon>
+        Zeitplankonfiguration
+      </a>
     </div>
     <span class="full-width-spacer"></span>
     <div>
