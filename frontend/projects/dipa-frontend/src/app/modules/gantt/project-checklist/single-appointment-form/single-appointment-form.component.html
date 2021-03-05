@@ -11,7 +11,7 @@
                 [matDatepicker]="picker"
                 formControlName="date"
                 [value]="singleAppointment.get('date')?.value"
-                (change)="this.dataChanged.emit()"
+                (dateChange)="this.dataChanged.emit()"
               />
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker></mat-datepicker>
