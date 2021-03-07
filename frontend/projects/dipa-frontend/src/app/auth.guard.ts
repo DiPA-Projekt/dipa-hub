@@ -47,6 +47,6 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     if (!(requiredRoles instanceof Array) || requiredRoles.length === 0) {
       return true;
     }
-    return requiredRoles.every((role) => this.roles.includes(`ROLE_${role}`));
+    return requiredRoles.every((role) => this.roles.includes(role));
   }
 }
