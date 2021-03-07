@@ -36,7 +36,7 @@ export class AuthenticationService {
 
   isUserInRole(userRole: string): boolean {
     const roles = this.getUserRoles();
-    return roles.indexOf(`ROLE_${userRole}`) !== -1;
+    return roles.indexOf(userRole) !== -1;
   }
 
   public async login(): Promise<boolean> {
