@@ -15,7 +15,7 @@ public class ProjectEntityToProjectConverter implements Converter<ProjectEntity,
 
         Project project = new Project().id(template.getId())
                              .name(template.getName())
-                             .akz(template.getAKZ())
+                             .akz(template.getAkz())
                              .client(template.getClient())
                              .department(template.getDepartment())
                              .projectOwner(template.getProjectOwner());

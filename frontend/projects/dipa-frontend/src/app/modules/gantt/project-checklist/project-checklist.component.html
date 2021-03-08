@@ -1,14 +1,25 @@
-<mat-vertical-stepper [linear]="false" #stepper>
-  <mat-step *ngFor="let task of projectTasks" [stepControl]="formGroup" [optional]="task.optional" [completed]="false">
-    <ng-template matStepLabel>{{ task.title }}</ng-template>
-    <p *ngIf="task.explanation" class="stepExplanation">{{ task.explanation }}</p>
-    <app-project-task-form [selectedTimelineId]="selectedTimelineId" [taskData]="task"></app-project-task-form>
+<h2 class="project-checklist-header">Projektcheckliste</h2>
+<ng-container *ngIf="projectTasks?.length; else noProjectTask">
+  <mat-vertical-stepper [linear]="false" #stepper>
+    <mat-step
+      *ngFor="let task of projectTasks"
+      [stepControl]="formGroup"
+      [optional]="task.optional"
+      [completed]="false"
+    >
+      <ng-template matStepLabel>{{ task.title }}</ng-template>
+      <p *ngIf="task.explanation" class="stepExplanation">{{ task.explanation }}</p>
+      <app-project-task-form [selectedTimelineId]="selectedTimelineId" [taskData]="task"></app-project-task-form>
 
-    <div>
-      <button mat-raised-button color="primary" class="stepDoneButton" (click)="stepper.selected.completed = true">
-        <mat-icon aria-hidden="false" aria-label="done icon">done</mat-icon>
-        Schritt abschließen
-      </button>
-    </div>
-  </mat-step>
-</mat-vertical-stepper>
+      <div>
+        <button mat-raised-button color="primary" class="stepDoneButton" (click)="stepper.selected.completed = true">
+          <mat-icon aria-hidden="false" aria-label="done icon">done</mat-icon>
+          Schritt abschließen
+        </button>
+      </div>
+    </mat-step>
+  </mat-vertical-stepper>
+</ng-container>
+<ng-template #noProjectTask>
+  <p>Es gibt derzeit noch keine Aufgabenliste für diese Projektgröße bzw. diese Vorhabensart</p>
+</ng-template>

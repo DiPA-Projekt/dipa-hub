@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ControlContainer, FormArray, FormBuilder, FormGroup, FormGroupDirective } from '@angular/forms';
 import { SingleAppointmentResult } from 'dipa-api-client';
-import Utils from '../../../../shared/utils';
 
 @Component({
   selector: 'app-single-appointment-form',
@@ -28,7 +27,7 @@ export class SingleAppointmentFormComponent implements OnInit {
       this.singleAppointmentsArray.push(
         this.fb.group({
           resultType: singleAppointment?.resultType,
-          date: Utils.parseGermanDate(singleAppointment?.date),
+          date: singleAppointment?.date,
           goal: singleAppointment?.goal,
           responsiblePerson: singleAppointment?.responsiblePerson,
           status: singleAppointment?.status,

@@ -28,13 +28,9 @@ public class ProjectTaskTemplateEntity extends BaseEntity {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<ProjectTaskEntity> projectTasks = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "project_project_task_template_connection",
-            joinColumns = { @JoinColumn(name = "project_task_template_id") },
-            inverseJoinColumns = { @JoinColumn(name = "project_id") }
-    )
-    private Set<ProjectEntity> project;
+    @NotNull
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    private ProjectEntity project;
 
     public String getName() {
         return name;
@@ -52,11 +48,11 @@ public class ProjectTaskTemplateEntity extends BaseEntity {
         this.projectTasks = projectTasks;
     }
 
-    public Set<ProjectEntity> getProject() {
+    public ProjectEntity getProject() {
         return project;
     }
 
-    public void setProject(final Set<ProjectEntity> project) {
+    public void setProject(final ProjectEntity project) {
         this.project = project;
     }
 

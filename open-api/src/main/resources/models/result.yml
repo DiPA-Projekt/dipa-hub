@@ -166,7 +166,7 @@ schemas:
           date:
             description: The date of this appointment
             type: string
-            example: "20.11.2021"
+            example: "2021-03-15T23:00:00.000Z"
           goal:
             description: The goal of this appointment
             type: string

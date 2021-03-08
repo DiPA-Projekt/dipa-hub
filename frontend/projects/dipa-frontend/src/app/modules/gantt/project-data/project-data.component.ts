@@ -1,9 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { ActivatedRoute, Params } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { switchMap } from 'rxjs/operators';
 import { Project, ProjectService } from 'dipa-api-client';
+import { ProjectChecklistComponent } from '../project-checklist/project-checklist.component';
 
 interface ProjectSize {
   value: string;
@@ -12,11 +13,13 @@ interface ProjectSize {
 }
 
 @Component({
-  selector: 'app-project-checklist',
+  selector: 'app-project-data',
   templateUrl: './project-data.component.html',
   styleUrls: ['./project-data.component.scss'],
 })
 export class ProjectDataComponent implements OnInit, OnDestroy {
+  @ViewChild(ProjectChecklistComponent) projectChecklistComponent: ProjectChecklistComponent;
+
   projectDataSubscription: Subscription;
 
   selectedTimelineId: number;
@@ -32,7 +35,7 @@ export class ProjectDataComponent implements OnInit, OnDestroy {
       description: 'Aufwand < 250 PT',
     },
     {
-      value: 'MIDDLE',
+      value: 'MEDIUM',
       display: 'mittel',
       description: 'Aufwand 250 - 1.500 PT',
     },
@@ -93,6 +96,7 @@ export class ProjectDataComponent implements OnInit, OnDestroy {
   onSubmit(form: FormGroup): void {
     this.projectService.updateProjectData(this.selectedTimelineId, form.value).subscribe(() => {
       form.reset(form.value);
+      this.projectChecklistComponent.ngOnInit();
     });
   }
 }

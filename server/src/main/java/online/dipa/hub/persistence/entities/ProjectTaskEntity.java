@@ -31,7 +31,7 @@ public class ProjectTaskEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     private ProjectTaskTemplateEntity projectTaskTemplate;
 
-    @ManyToMany(mappedBy = "projectTasks", cascade = { ALL })
+    @OneToMany(mappedBy = "projectTask", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<StandardResultEntity> standardResults = new HashSet<>();
 

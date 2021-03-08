@@ -18,6 +18,11 @@ databaseChangeLog:
                     nullable: false
                   name: name
                   type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_id
+                  type: BIGINT
             tableName: project_task_template
   - changeSet:
       id: create-project-task-table
@@ -75,32 +80,12 @@ databaseChangeLog:
               - column:
                   name: status
                   type: VARCHAR(255)
-            tableName: standard_result
-  - changeSet:
-      id: create-standard-result-project-task-connection
-      author: nguyen
-      changes:
-        - createTable:
-            columns:
-              - column:
-                  autoIncrement: true
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                    primaryKeyName: standardResultTask
-                  name: id
-                  type: BIGINT
               - column:
                   constraints:
                     nullable: false
                   name: project_task_id
                   type: BIGINT
-              - column:
-                  constraints:
-                    nullable: false
-                  name: standard_result_id
-                  type: BIGINT
-            tableName: standard_result_project_task_connection
+            tableName: standard_result
   - changeSet:
       id: create-contact-person-result-table
       author: nguyen
@@ -274,51 +259,13 @@ databaseChangeLog:
                   type: BIGINT
             tableName: single_appointment_result
   - changeSet:
-      id: create-project-projectTask-template-connection
-      author: nguyen
-      changes:
-        - createTable:
-            columns:
-              - column:
-                  autoIncrement: true
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                    primaryKeyName: project-projectTask-templatePK
-                  name: id
-                  type: BIGINT
-              - column:
-                  constraints:
-                    nullable: false
-                  name: project_id
-                  type: BIGINT
-              - column:
-                  constraints:
-                    nullable: false
-                  name: project_task_template_id
-                  type: BIGINT
-            tableName: project_project_task_template_connection
-  - changeSet:
-      id: createForeignKeyConstraint-standardResultConnectionId
-      author: nguyen
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: standard_result_id
-            baseTableName: standard_result_project_task_connection
-            constraintName: FKstandardResultConnection
-            deferrable: false
-            initiallyDeferred: false
-            referencedColumnNames: id
-            referencedTableName: standard_result
-            validate: true
-  - changeSet:
-      id: createForeignKeyConstraint-projectTaskConnectionId
+      id: createForeignKeyConstraint-projectTaskIdStandarfResult
       author: nguyen
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: project_task_id
-            baseTableName: standard_result_project_task_connection
-            constraintName: FKprojectTaskConnection
+            baseTableName: standard_result
+            constraintName: FKstandardResultProjectTask
             deferrable: false
             initiallyDeferred: false
             referencedColumnNames: id
@@ -416,28 +363,15 @@ databaseChangeLog:
             referencedTableName: project_task_template
             validate: true
   - changeSet:
-      id: createForeignKeyConstraint-ProjectConnection
+      id: createForeignKeyConstraint-projectTaskTemplateProject
       author: nguyen
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: project_id
-            baseTableName: project_project_task_template_connection
-            constraintName: FKprojectConnection
+            baseTableName: project_task_template
+            constraintName: FKprojectTaskTemplateProject
             deferrable: false
             initiallyDeferred: false
             referencedColumnNames: id
             referencedTableName: project
-            validate: true
-  - changeSet:
-      id: createForeignKeyConstraint-projectTaskTemplateConnection
-      author: nguyen
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: project_task_template_id
-            baseTableName: project_project_task_template_connection
-            constraintName: FKprojectTaskTemplateConnection
-            deferrable: false
-            initiallyDeferred: false
-            referencedColumnNames: id
-            referencedTableName: project_task_template
             validate: true

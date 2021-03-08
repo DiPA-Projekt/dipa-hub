@@ -16,6 +16,7 @@ import { of } from 'rxjs';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatSelectModule, MatSelectTrigger } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
+import { ProjectChecklistComponent } from '../project-checklist/project-checklist.component';
 
 describe('ProjectDataComponent', () => {
   let component: ProjectDataComponent;
@@ -37,6 +38,7 @@ describe('ProjectDataComponent', () => {
         MatLabel,
         MatSelectTrigger,
         NavMenuListItemComponent,
+        ProjectChecklistComponent,
       ],
       imports: [
         HttpClientTestingModule,

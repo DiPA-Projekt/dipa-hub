@@ -1,0 +1,19 @@
+User:
+  type: object
+  description: Current user data
+  properties:
+    name:
+      description: User name
+      type: string
+      default: Max Mustermann
+    email:
+      description: User email adress
+      type: string
+      default: max@mustermann.de
+    roles:
+      description: Current user roles
+      type: array
+      items:
+        type: string
+  required:
+    - name

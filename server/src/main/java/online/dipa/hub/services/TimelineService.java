@@ -47,6 +47,9 @@ public class TimelineService {
     @Autowired
     private MilestoneService milestoneService;
 
+    @Autowired
+    private ProjectApproachService projectApproachService;
+
     protected static final long FIRST_MASTER_MILESTONE_ID = 21;
 
     public List<Timeline> getTimelines() {
@@ -255,6 +258,15 @@ public class TimelineService {
     public void updateTimeline(final Timeline timeline) {
 
         SessionTimeline sessionTimeline = sessionTimelineState.getSessionTimelines().get(timeline.getId());
+
+        projectRespository.findAll().stream()
+            .filter(t -> t.getId().equals(timeline.getId())).findFirst()
+            .ifPresent(projectEntity -> {
+
+                projectEntity.setProjectApproach(projectApproachService.getProjectApproachFromRepo(timeline.getProjectApproachId()));
+                projectRespository.save(projectEntity);
+
+            });
 
         sessionTimeline.getTimeline().setProjectType(timeline.getProjectType());
         sessionTimeline.getTimeline().setOperationTypeId(timeline.getOperationTypeId());
