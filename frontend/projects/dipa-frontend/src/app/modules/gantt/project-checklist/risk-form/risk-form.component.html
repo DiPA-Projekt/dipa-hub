@@ -10,8 +10,9 @@
                 matInput
                 placeholder="Bezeichnung"
                 formControlName="description"
-                [value]="risk.get('description')?.value"
                 (change)="this.dataChanged.emit()"
+                (focus)="onFocus($event, ['results', 'data', i, 'description'])"
+                (keyup.esc)="onEscape($event, ['results', 'data', i, 'description'])"
               />
             </mat-form-field>
             <mat-form-field>
@@ -20,8 +21,9 @@
                 matInput
                 placeholder="Wert"
                 formControlName="value"
-                [value]="risk.get('value')?.value"
                 (change)="this.dataChanged.emit()"
+                (focus)="onFocus($event, ['results', 'data', i, 'value'])"
+                (keyup.esc)="onEscape($event, ['results', 'data', i, 'value'])"
               />
             </mat-form-field>
             <mat-form-field>
@@ -30,8 +32,9 @@
                 matInput
                 placeholder="Maßnahme"
                 formControlName="solution"
-                [value]="risk.get('solution')?.value"
                 (change)="this.dataChanged.emit()"
+                (focus)="onFocus($event, ['results', 'data', i, 'solution'])"
+                (keyup.esc)="onEscape($event, ['results', 'data', i, 'solution'])"
               />
             </mat-form-field>
             <mat-form-field>

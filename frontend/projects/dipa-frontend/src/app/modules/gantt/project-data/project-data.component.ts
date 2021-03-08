@@ -18,13 +18,9 @@ interface ProjectSize {
   styleUrls: ['./project-data.component.scss'],
 })
 export class ProjectDataComponent implements OnInit, OnDestroy {
-  @ViewChild(ProjectChecklistComponent) projectChecklistComponent: ProjectChecklistComponent;
+  @ViewChild(ProjectChecklistComponent) private projectChecklistComponent: ProjectChecklistComponent;
 
-  projectDataSubscription: Subscription;
-
-  selectedTimelineId: number;
-
-  projectData: Project;
+  public selectedTimelineId: number;
 
   public myForm: FormGroup;
 
@@ -46,7 +42,13 @@ export class ProjectDataComponent implements OnInit, OnDestroy {
     },
   ];
 
-  constructor(private projectService: ProjectService, public activatedRoute: ActivatedRoute, public fb: FormBuilder) {
+  private projectDataSubscription: Subscription;
+
+  public constructor(
+    private projectService: ProjectService,
+    public activatedRoute: ActivatedRoute,
+    public fb: FormBuilder
+  ) {
     this.setReactiveForm({
       id: -1,
       akz: '',
@@ -58,7 +60,7 @@ export class ProjectDataComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.projectDataSubscription = this.activatedRoute.parent.params
       .pipe(
         switchMap(
@@ -73,11 +75,33 @@ export class ProjectDataComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.projectDataSubscription?.unsubscribe();
   }
 
-  setReactiveForm(data: Project): void {
+  public displayProjectSize(size: string): string {
+    return this.sizes.find((x: ProjectSize) => x.value === size)?.display;
+  }
+
+  public onSubmit(form: FormGroup): void {
+    this.projectService.updateProjectData(this.selectedTimelineId, form.value).subscribe(() => {
+      form.reset(form.value);
+      this.projectChecklistComponent.ngOnInit();
+    });
+  }
+
+  public onFocus(event: FocusEvent, path: (string | number)[]): void {
+    const valueInput = event.target as HTMLInputElement;
+    valueInput.setAttribute('data-value', this.myForm.get(path).value);
+  }
+
+  public onEscape(event: KeyboardEvent, path: (string | number)[]): void {
+    const valueInput = event.target as HTMLInputElement;
+    valueInput.value = valueInput.getAttribute('data-value') || '';
+    this.myForm.get(path).setValue(valueInput.value);
+  }
+
+  private setReactiveForm(data: Project): void {
     this.myForm = this.fb.group({
       id: [data?.id],
       akz: [data?.akz],
@@ -86,17 +110,6 @@ export class ProjectDataComponent implements OnInit, OnDestroy {
       client: [data?.client],
       department: [data?.department],
       projectOwner: [data?.projectOwner],
-    });
-  }
-
-  displayProjectSize(size: string): string {
-    return this.sizes.find((x: ProjectSize) => x.value === size)?.display;
-  }
-
-  onSubmit(form: FormGroup): void {
-    this.projectService.updateProjectData(this.selectedTimelineId, form.value).subscribe(() => {
-      form.reset(form.value);
-      this.projectChecklistComponent.ngOnInit();
     });
   }
 }
