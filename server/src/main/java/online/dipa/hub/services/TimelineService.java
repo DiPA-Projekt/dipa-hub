@@ -206,8 +206,7 @@ public class TimelineService {
                         .toDays();
 
                 if (newFirstMilestoneDate.isBefore(oldProjectStart) || newFirstMilestoneDate.isEqual(oldProjectStart)) {
-                    LocalDate newProjectStart = sessionTimeline.getTimeline().getStart()
-                        .plusDays(daysOffsetStart - 1);
+                    LocalDate newProjectStart = oldProjectStart.plusDays(daysOffsetStart - 1);
 
                     sessionTimeline.getTimeline().setStart(newProjectStart);
                 }
