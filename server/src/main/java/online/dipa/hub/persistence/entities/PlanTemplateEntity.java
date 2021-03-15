@@ -40,6 +40,10 @@ public class PlanTemplateEntity extends BaseEntity {
     )
     private Set<ProjectApproachEntity> projectApproaches;
 
+    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER)
+    private ProjectEntity project;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "operation_type_plan_template_connection",
@@ -48,10 +52,21 @@ public class PlanTemplateEntity extends BaseEntity {
     )
     private Set<OperationTypeEntity> operationTypes;
 
-    @Basic(optional = false)
+    public PlanTemplateEntity() {
+        super();
+    }
+
+    public PlanTemplateEntity(PlanTemplateEntity planTemplate) {
+        this.milestones = planTemplate.getMilestones();
+        this.tasks = planTemplate.getTasks();
+        this.projectApproaches = planTemplate.getProjectApproaches();
+        this.operationTypes = planTemplate.getOperationTypes();
+        this.standard = planTemplate.getStandard();
+        this.defaultTemplate = planTemplate.getDefaultTemplate();
+    }
+
     private boolean standard;
 
-    @Basic(optional = false)
     private boolean defaultTemplate;
 
     public String getName() {
@@ -92,6 +107,14 @@ public class PlanTemplateEntity extends BaseEntity {
 
     public void setProjectApproaches(final Set<ProjectApproachEntity> projectApproaches) {
         this.projectApproaches = projectApproaches;
+    }
+
+    public ProjectEntity getProject() {
+        return project;
+    }
+
+    public void setProject(final ProjectEntity project) {
+        this.project = project;
     }
 
     public boolean getStandard() {

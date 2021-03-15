@@ -40,42 +40,43 @@ public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity
 
         final Long operationTypeId = projectApproach.getOperationType().getId();
         
-        final Optional<PlanTemplateEntity> masterPLan = planTemplateRepository.findAll().stream()
-                                                        .filter(template -> filterOperationType(template, operationTypeId))
-                                                        .findFirst();
+        // final Optional<PlanTemplateEntity> masterPLan = planTemplateRepository.findAll().stream()
+        //                                                 .filter(template -> filterOperationType(template, operationTypeId))
+        //                                                 .findFirst();
 
-        final Optional<PlanTemplateEntity> planTemplateProjectApproach = planTemplateRepository.findAll().stream()
-                                                        .filter(template -> filterProjectApproach(template, projectApproach.getId()))
-                                                        .filter(PlanTemplateEntity::getDefaultTemplate)
-                                                        .findFirst();
+        // final Optional<PlanTemplateEntity> planTemplateProjectApproach = planTemplateRepository.findAll().stream()
+        //                                                 .filter(template -> filterProjectApproach(template, projectApproach.getId()))
+        //                                                 .filter(PlanTemplateEntity::getDefaultTemplate)
+        //                                                 .findFirst();
         
-        MilestoneTemplateEntity maxMilestoneDate = new MilestoneTemplateEntity();
+        // MilestoneTemplateEntity maxMilestoneDate = new MilestoneTemplateEntity();
 
-        if (masterPLan.isPresent()) {
-            Optional<MilestoneTemplateEntity> milestone = masterPLan.get().getMilestones().stream().max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset));
+        // if (masterPLan.isPresent()) {
+        //     Optional<MilestoneTemplateEntity> milestone = masterPLan.get().getMilestones().stream().max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset));
             
-            if (milestone.isPresent()) {
-                maxMilestoneDate = milestone.get();
-            }
-        }
-        else if (planTemplateProjectApproach.isPresent()) {
-            Optional<MilestoneTemplateEntity> milestone = planTemplateProjectApproach.get().getMilestones().stream().max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset));
+        //     if (milestone.isPresent()) {
+        //         maxMilestoneDate = milestone.get();
+        //     }
+        // }
+        // else if (planTemplateProjectApproach.isPresent()) {
+        //     Optional<MilestoneTemplateEntity> milestone = planTemplateProjectApproach.get().getMilestones().stream().max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset));
             
-            if (milestone.isPresent()) {
-                maxMilestoneDate = milestone.get();
-            }
-        }
+        //     if (milestone.isPresent()) {
+        //         maxMilestoneDate = milestone.get();
+        //     }
+        // }
 
-        int maxMilestoneDateOffset = maxMilestoneDate.getDateOffset();
+        // int maxMilestoneDateOffset = maxMilestoneDate.getDateOffset();
+
         
-
+        // int maxMilestoneDateOffset = project.getPlanTemplate().getMilestones().stream().max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset)).get().getDateOffset();    
         Timeline timeline = new Timeline().id(project.getId())
                              .name(project.getName())
                              .operationTypeId(operationTypeId)
                              .projectApproachId(projectApproach.getId())
                              .start(LocalDate.now())
-                             .end(LocalDate.now()
-                                     .plusDays(maxMilestoneDateOffset))
+                            //  .end(LocalDate.now()
+                                    //  .plusDays(maxMilestoneDateOffset))
                              .defaultTimeline(operationType.isDefaultType());
 
         if (project.getProjectType() != null) {

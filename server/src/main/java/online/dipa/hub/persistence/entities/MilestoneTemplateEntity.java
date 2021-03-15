@@ -32,8 +32,19 @@ public class MilestoneTemplateEntity extends BaseEntity {
     private String status;
 
     @NotNull
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     private PlanTemplateEntity planTemplate;
+
+    public MilestoneTemplateEntity() {
+        super();
+    }
+
+    public MilestoneTemplateEntity(MilestoneTemplateEntity milestone) {
+        this.name = milestone.getName();
+        this.dateOffset = milestone.getDateOffset();
+        this.status = milestone.getStatus();
+        // this.planTemplate = planTemplate;
+    }
 
     public String getName() {
         return name;

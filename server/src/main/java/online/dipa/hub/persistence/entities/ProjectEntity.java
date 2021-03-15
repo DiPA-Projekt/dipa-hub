@@ -1,5 +1,6 @@
 package online.dipa.hub.persistence.entities;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -29,7 +30,11 @@ public class ProjectEntity extends BaseEntity {
     
     @OneToMany(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<ProjectTaskTemplateEntity> projectTaskTemplates;
+    private Set<ProjectTaskTemplateEntity> projectTaskTemplates = new HashSet<>();
+
+    @OneToMany(mappedBy = "project")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<PlanTemplateEntity> planTemplates = new HashSet<>();
 
     private String projectType;
     private String projectSize;
@@ -79,13 +84,21 @@ public class ProjectEntity extends BaseEntity {
     public void setProjectTaskTemplates(final Set<ProjectTaskTemplateEntity> projectTaskTemplates) {
         this.projectTaskTemplates = projectTaskTemplates;
     }
-    
-    public void setProjectSize(final String projectSize) {
-        this.projectSize = projectSize;
+
+    public Set<PlanTemplateEntity> getPlanTemplate() {
+        return planTemplates;
+    }
+
+    public void setPlanTemplate(final Set<PlanTemplateEntity> planTemplates) {
+        this.planTemplates = planTemplates;
     }
 
     public String getProjectSize() {
         return projectSize;
+    }
+
+    public void setProjectSize(final String projectSize) {
+        this.projectSize = projectSize;
     }
     
     public String getClient() {
