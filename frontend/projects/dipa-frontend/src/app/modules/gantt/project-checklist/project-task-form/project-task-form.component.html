@@ -5,8 +5,9 @@
       matInput
       placeholder="Name, Vorname"
       formControlName="contactPerson"
-      [value]="formGroup.get('contactPerson').value"
       (change)="onSubmit(formGroup)"
+      (focus)="onFocus($event, ['contactPerson'])"
+      (keyup.esc)="onEscape($event, ['contactPerson'])"
     />
   </mat-form-field>
   <mat-form-field>
@@ -15,8 +16,9 @@
       matInput
       placeholder="Link"
       formControlName="documentationLink"
-      [value]="formGroup.get('documentationLink').value"
       (change)="onSubmit(formGroup)"
+      (focus)="onFocus($event, ['documentationLink'])"
+      (keyup.esc)="onEscape($event, ['documentationLink'])"
     />
   </mat-form-field>
 
@@ -27,15 +29,13 @@
         [formData]="taskData.results.data"
         [statusList]="cartStatusList"
         (dataChanged)="onSubmit(formGroup)"
-      >
-      </app-cart-form>
+      ></app-cart-form>
       <app-risk-form
         *ngSwitchCase="'TYPE_RISK'"
         [formData]="taskData.results.data"
         [statusList]="standardStatusList"
         (dataChanged)="onSubmit(formGroup)"
-      >
-      </app-risk-form>
+      ></app-risk-form>
       <app-contact-person-form
         *ngSwitchCase="'TYPE_CONTACT_PERS'"
         [formData]="taskData.results.data"

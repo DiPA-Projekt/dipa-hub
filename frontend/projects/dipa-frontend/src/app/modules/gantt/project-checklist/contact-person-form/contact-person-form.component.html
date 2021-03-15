@@ -10,8 +10,9 @@
                 matInput
                 placeholder="Name"
                 formControlName="name"
-                [value]="person.get('name')?.value"
                 (change)="this.dataChanged.emit()"
+                (focus)="onFocus($event, ['results', 'data', i, 'name'])"
+                (keyup.esc)="onEscape($event, ['results', 'data', i, 'name'])"
               />
             </mat-form-field>
             <mat-form-field>
@@ -20,8 +21,9 @@
                 matInput
                 placeholder="Referat"
                 formControlName="department"
-                [value]="person.get('department')?.value"
                 (change)="this.dataChanged.emit()"
+                (focus)="onFocus($event, ['results', 'data', i, 'department'])"
+                (keyup.esc)="onEscape($event, ['results', 'data', i, 'department'])"
               />
             </mat-form-field>
             <mat-form-field>
@@ -30,8 +32,9 @@
                 matInput
                 placeholder="Aufgabenbereich"
                 formControlName="taskArea"
-                [value]="person.get('taskArea')?.value"
                 (change)="this.dataChanged.emit()"
+                (focus)="onFocus($event, ['results', 'data', i, 'taskArea'])"
+                (keyup.esc)="onEscape($event, ['results', 'data', i, 'taskArea'])"
               />
             </mat-form-field>
             <mat-form-field>

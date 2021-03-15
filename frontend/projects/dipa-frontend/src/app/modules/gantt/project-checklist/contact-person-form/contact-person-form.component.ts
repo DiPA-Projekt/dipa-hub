@@ -8,21 +8,45 @@ import { ContactPersonResult } from 'dipa-api-client';
   styleUrls: ['../project-task-form/project-task-form.component.scss'],
 })
 export class ContactPersonFormComponent implements OnInit {
-  @Input() formData;
-  @Input() statusList;
-  @Output() dataChanged = new EventEmitter();
+  @Input() public formData;
+  @Input() public statusList;
+  @Output() public dataChanged = new EventEmitter();
 
-  formGroup: FormGroup;
+  public formGroup: FormGroup;
 
-  constructor(public controlContainer: ControlContainer, parent: FormGroupDirective, private fb: FormBuilder) {
+  public constructor(public controlContainer: ControlContainer, parent: FormGroupDirective, private fb: FormBuilder) {
     this.formGroup = parent.control;
   }
 
-  ngOnInit(): any {
+  public ngOnInit(): void {
     this.setReactiveForm(this.formData);
   }
 
-  setReactiveForm(data: ContactPersonResult[]): void {
+  public get personsArray(): FormArray {
+    return this.formGroup.get(['results', 'data']) as FormArray;
+  }
+
+  public addPerson(): void {
+    this.personsArray.push(this.emptyPerson);
+  }
+
+  public deletePerson(index: number): void {
+    this.personsArray.removeAt(index);
+    this.dataChanged.emit();
+  }
+
+  public onFocus(event: FocusEvent, path: (string | number)[]): void {
+    const valueInput = event.target as HTMLInputElement;
+    valueInput.setAttribute('data-value', this.formGroup.get(path).value || '');
+  }
+
+  public onEscape(event: KeyboardEvent, path: (string | number)[]): void {
+    const valueInput = event.target as HTMLInputElement;
+    valueInput.value = valueInput.getAttribute('data-value');
+    this.formGroup.get(path).setValue(valueInput.value);
+  }
+
+  private setReactiveForm(data: ContactPersonResult[]): void {
     for (const person of data) {
       this.personsArray.push(
         this.fb.group({
@@ -34,10 +58,10 @@ export class ContactPersonFormComponent implements OnInit {
         })
       );
     }
-    this.formGroup.get('results').get('type').setValue('TYPE_CONTACT_PERS');
+    this.formGroup.get(['results', 'type']).setValue('TYPE_CONTACT_PERS');
   }
 
-  get emptyPerson(): FormGroup {
+  private get emptyPerson(): FormGroup {
     return this.fb.group({
       resultType: 'TYPE_CONTACT_PERS',
       name: '',
@@ -45,18 +69,5 @@ export class ContactPersonFormComponent implements OnInit {
       taskArea: '',
       status: null,
     });
-  }
-
-  get personsArray(): FormArray {
-    return this.formGroup.get('results').get('data') as FormArray;
-  }
-
-  addPerson(): void {
-    this.personsArray.push(this.emptyPerson);
-  }
-
-  deletePerson(index: number): void {
-    this.personsArray.removeAt(index);
-    this.dataChanged.emit();
   }
 }

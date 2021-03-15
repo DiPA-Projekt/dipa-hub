@@ -8,12 +8,12 @@ import { ProjectService, ProjectTask } from 'dipa-api-client';
   styleUrls: ['./project-task-form.component.scss'],
 })
 export class ProjectTaskFormComponent implements OnInit {
-  @Input() taskData;
-  @Input() selectedTimelineId;
+  @Input() public taskData;
+  @Input() public selectedTimelineId;
 
-  formGroup: FormGroup;
+  public formGroup: FormGroup;
 
-  cartStatusList = [
+  public cartStatusList = [
     {
       value: 'PLANNED',
       name: 'geplant',
@@ -32,7 +32,7 @@ export class ProjectTaskFormComponent implements OnInit {
     },
   ];
 
-  standardStatusList = [
+  public standardStatusList = [
     {
       value: 'OPEN',
       name: 'offen',
@@ -63,7 +63,7 @@ export class ProjectTaskFormComponent implements OnInit {
     },
   ];
 
-  personStatusList = [
+  public personStatusList = [
     {
       value: 'OPEN',
       name: 'offen',
@@ -82,13 +82,30 @@ export class ProjectTaskFormComponent implements OnInit {
     },
   ];
 
-  constructor(private projectService: ProjectService, private fb: FormBuilder) {}
+  public constructor(private projectService: ProjectService, private fb: FormBuilder) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.setReactiveForm(this.taskData);
   }
 
-  setReactiveForm(data: ProjectTask): void {
+  public onSubmit(form: FormGroup): void {
+    this.projectService.updateProjectTask(this.selectedTimelineId, form.value).subscribe(() => {
+      form.reset(form.value);
+    });
+  }
+
+  public onFocus(event: FocusEvent, path: (string | number)[]): void {
+    const valueInput = event.target as HTMLInputElement;
+    valueInput.setAttribute('data-value', this.formGroup.get(path).value || '');
+  }
+
+  public onEscape(event: KeyboardEvent, path: (string | number)[]): void {
+    const valueInput = event.target as HTMLInputElement;
+    valueInput.value = valueInput.getAttribute('data-value');
+    this.formGroup.get(path).setValue(valueInput.value);
+  }
+
+  private setReactiveForm(data: ProjectTask): void {
     this.formGroup = this.fb.group({
       id: [data?.id],
       title: [data?.title],
@@ -100,12 +117,6 @@ export class ProjectTaskFormComponent implements OnInit {
         type: '',
         data: this.fb.array([]),
       }),
-    });
-  }
-
-  onSubmit(form: FormGroup): void {
-    this.projectService.updateProjectTask(this.selectedTimelineId, form.value).subscribe(() => {
-      form.reset(form.value);
     });
   }
 }
