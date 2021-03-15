@@ -10,8 +10,9 @@
                 matInput
                 placeholder="Nr"
                 formControlName="shoppingCartNumber"
-                [value]="cart.get('shoppingCartNumber')?.value"
                 (change)="this.dataChanged.emit()"
+                (focus)="onFocus($event, ['results', 'data', i, 'shoppingCartNumber'])"
+                (keyup.esc)="onEscape($event, ['results', 'data', i, 'shoppingCartNumber'])"
               />
             </mat-form-field>
             <mat-form-field>
@@ -20,8 +21,9 @@
                 matInput
                 placeholder="Inhalt"
                 formControlName="shoppingCartContent"
-                [value]="cart.get('shoppingCartContent')?.value"
                 (change)="this.dataChanged.emit()"
+                (focus)="onFocus($event, ['results', 'data', i, 'shoppingCartContent'])"
+                (keyup.esc)="onEscape($event, ['results', 'data', i, 'shoppingCartContent'])"
               />
             </mat-form-field>
             <mat-form-field>

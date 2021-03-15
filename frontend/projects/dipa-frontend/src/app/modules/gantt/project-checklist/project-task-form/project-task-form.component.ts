@@ -102,6 +102,17 @@ export class ProjectTaskFormComponent implements OnInit {
     });
   }
 
+  public onFocus(event: FocusEvent, path: (string | number)[]): void {
+    const valueInput = event.target as HTMLInputElement;
+    valueInput.setAttribute('data-value', this.formGroup.get(path).value || '');
+  }
+
+  public onEscape(event: KeyboardEvent, path: (string | number)[]): void {
+    const valueInput = event.target as HTMLInputElement;
+    valueInput.value = valueInput.getAttribute('data-value');
+    this.formGroup.get(path).setValue(valueInput.value);
+  }
+
   private setReactiveForm(data: ProjectTask): void {
     this.formGroup = this.fb.group({
       id: [data?.id],
