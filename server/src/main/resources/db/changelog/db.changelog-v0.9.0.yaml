@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: addColumn-project-task-completed
+      author: bock
+      changes:
+        - addColumn:
+            tableName: project_task
+            columns:
+              - column:
+                  name: completed
+                  type: BOOLEAN
+                  defaultValue: false

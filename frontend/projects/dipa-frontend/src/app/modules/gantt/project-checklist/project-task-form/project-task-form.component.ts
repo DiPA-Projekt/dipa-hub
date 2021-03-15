@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ProjectService, ProjectTask } from 'dipa-api-client';
 
@@ -8,8 +8,9 @@ import { ProjectService, ProjectTask } from 'dipa-api-client';
   styleUrls: ['./project-task-form.component.scss'],
 })
 export class ProjectTaskFormComponent implements OnInit {
-  @Input() public taskData;
-  @Input() public selectedTimelineId;
+  @Input() public taskData: ProjectTask;
+  @Input() public selectedTimelineId: number;
+  @Output() public stepStatusChanged = new EventEmitter();
 
   public formGroup: FormGroup;
 
@@ -88,6 +89,13 @@ export class ProjectTaskFormComponent implements OnInit {
     this.setReactiveForm(this.taskData);
   }
 
+  public toggleCompleteStatus(): void {
+    const newStatus = !this.formGroup.get('completed').value;
+    this.formGroup.get('completed').setValue(newStatus);
+    this.onSubmit(this.formGroup);
+    this.stepStatusChanged.emit(newStatus);
+  }
+
   public onSubmit(form: FormGroup): void {
     this.projectService.updateProjectTask(this.selectedTimelineId, form.value).subscribe(() => {
       form.reset(form.value);
@@ -111,6 +119,7 @@ export class ProjectTaskFormComponent implements OnInit {
       title: [data?.title],
       optional: [data?.optional],
       explanation: [data?.explanation],
+      completed: [data?.completed],
       contactPerson: [data?.contactPerson],
       documentationLink: [data?.documentationLink],
       results: this.fb.group({

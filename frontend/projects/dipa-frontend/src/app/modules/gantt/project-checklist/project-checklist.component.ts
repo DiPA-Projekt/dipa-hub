@@ -5,6 +5,7 @@ import { switchMap } from 'rxjs/operators';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { ProjectService, ProjectTask } from 'dipa-api-client';
+import { MatVerticalStepper } from '@angular/material/stepper';
 
 @Component({
   selector: 'app-project-checklist',
@@ -18,15 +19,11 @@ import { ProjectService, ProjectTask } from 'dipa-api-client';
   ],
 })
 export class ProjectChecklistComponent implements OnInit, OnDestroy {
-  projectChecklistSubscription: Subscription;
+  public selectedTimelineId: number;
 
-  selectedTimelineId: number;
+  public formGroup: FormGroup;
 
-  isLinear = false;
-
-  formGroup: FormGroup;
-
-  statusList = [
+  public statusList = [
     {
       value: 'IN_PROGRESS',
       name: 'in Bearbeitung',
@@ -53,11 +50,13 @@ export class ProjectChecklistComponent implements OnInit, OnDestroy {
     },
   ];
 
-  projectTasks: ProjectTask[];
+  public projectTasks: ProjectTask[];
 
-  constructor(private projectService: ProjectService, public activatedRoute: ActivatedRoute) {}
+  private projectChecklistSubscription: Subscription;
 
-  ngOnInit(): void {
+  public constructor(private projectService: ProjectService, public activatedRoute: ActivatedRoute) {}
+
+  public ngOnInit(): void {
     this.projectChecklistSubscription = this.activatedRoute.parent.params
       .pipe(
         switchMap(
@@ -72,7 +71,16 @@ export class ProjectChecklistComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.projectChecklistSubscription?.unsubscribe();
+  }
+
+  public stepStatusChanged(stepper: MatVerticalStepper, completed: boolean): void {
+    stepper.selected.completed = completed;
+    stepper.selected.state = completed ? 'done' : 'number';
+    // the icon of the step is not refreshed until the selectedIndex has changed
+    const currentSelectedIndex = stepper.selectedIndex;
+    stepper.selectedIndex = (currentSelectedIndex + 1) % stepper.steps.length;
+    stepper.selectedIndex = currentSelectedIndex;
   }
 }
