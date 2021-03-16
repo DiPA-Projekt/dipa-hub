@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: update-external-link-it-planung-itr4web
+      author: bock
+      context: itzbund
+      changes:
+        - update:
+            tableName: external_link
+            columns:
+              - column:
+                  name: url
+                  value: https://***REMOVED***/orgeinheit/info-_und_dokumentenpool_abteilung_i/Referatsbereiche/Referat_I_3/AB-I-31/Seiten/Startseite.aspx
+            where: id=5
