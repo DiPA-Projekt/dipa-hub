@@ -8,6 +8,7 @@ import online.dipa.hub.persistence.entities.ProjectApproachEntity;
 import online.dipa.hub.persistence.repositories.*;
 import online.dipa.hub.session.model.SessionTimeline;
 import online.dipa.hub.session.state.SessionTimelineState;
+import online.dipa.hub.UserAdministration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
@@ -50,12 +51,18 @@ public class TimelineService {
     @Autowired
     private ProjectApproachService projectApproachService;
 
+    @Autowired
+    private UserAdministration userAdministration;
+
+
     protected static final long FIRST_MASTER_MILESTONE_ID = 21;
 
     public List<Timeline> getTimelines() {
         initializeTimelines();
 
-        return sessionTimelineState.getSessionTimelines().values().stream().map(SessionTimeline::getTimeline).collect(Collectors.toList());
+        List<String> userGroups = userAdministration.getGroups();
+        return sessionTimelineState.getSessionTimelines().values().stream().map(SessionTimeline::getTimeline)
+                                   .filter(t -> userGroups.contains(String.valueOf(t.getId()))).collect(Collectors.toList());
     }
 
     public Timeline getTimeline(final Long timelineId) {
