@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.keycloak.KeycloakSecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -41,6 +40,6 @@ public class UserAdministration {
 
     public List<String> getRoles() {
         return new ArrayList<>(getAccessToken().getRealmAccess()
-                                                getRoles());
+                                                .getRoles());
     }
 }
