@@ -195,11 +195,8 @@ public class TimelineService {
         Optional<LocalDate> oldFirstMilestoneOptionalDate = sessionTimeline.getMilestones().stream().map(Milestone::getDate)
                 .min(LocalDate::compareTo);
         if (oldFirstMilestoneOptionalDate.isPresent()) {
-            LocalDate oldFirstMilestoneDate = oldFirstMilestoneOptionalDate.get();
 
             LocalDate oldProjectStart = sessionTimeline.getTimeline().getStart();
-            long diffProjectStartMilestone = Duration
-                    .between(oldFirstMilestoneDate.atStartOfDay(), oldProjectStart.atStartOfDay()).toDays();
 
             for (Milestone m : sessionTimeline.getMilestones()) {
                 if (m.getId().equals(movedMilestoneId)) {
@@ -214,10 +211,13 @@ public class TimelineService {
 
                 long daysOffsetStart = Duration.between(oldProjectStart.atStartOfDay(), newFirstMilestoneDate.atStartOfDay())
                         .toDays();
-                LocalDate newProjectStart = sessionTimeline.getTimeline().getStart()
-                        .plusDays(daysOffsetStart + diffProjectStartMilestone);
 
-                sessionTimeline.getTimeline().setStart(newProjectStart);
+                if (newFirstMilestoneDate.isBefore(oldProjectStart) || newFirstMilestoneDate.isEqual(oldProjectStart)) {
+                    LocalDate newProjectStart = oldProjectStart.plusDays(daysOffsetStart - 1);
+
+                    sessionTimeline.getTimeline().setStart(newProjectStart);
+                }
+                
             }
 
             Optional<LocalDate> newLastMilestoneOptionalDate = sessionTimeline.getMilestones().stream().map(Milestone::getDate)
