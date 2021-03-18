@@ -1,5 +1,6 @@
 package online.dipa.hub.services;
 
+import online.dipa.hub.UserAdministration;
 import online.dipa.hub.api.model.Project;
 import online.dipa.hub.api.model.ProjectTask;
 
@@ -44,6 +45,9 @@ public class ProjectService {
 
     @Autowired
     private ConversionService conversionService;
+    
+    @Autowired
+    private UserAdministration userAdministration;
 
     private final ProjectProjectEntityMapper projectMapper = Mappers.getMapper(ProjectProjectEntityMapper.class);
     private final ProjectTaskProjectTaskEntityMapper projectTaskMapper = Mappers.getMapper(ProjectTaskProjectTaskEntityMapper.class);
@@ -51,7 +55,12 @@ public class ProjectService {
 
     public Project getProjectData(final Long projectId) {
 
+        List<String> userGroups = userAdministration.getGroups();
+        // return sessionTimelineState.getSessionTimelines().values().stream().map(SessionTimeline::getTimeline)
+        //                            .filter(t -> userGroups.contains(String.valueOf(t.getId()))).collect(Collectors.toList());
+
         return projectRespository.findAll().stream().map(p -> conversionService.convert(p, Project.class))
+        .filter(t -> userGroups.contains(String.valueOf(t.getId())))
         .filter(t -> t.getId().equals(projectId)).findFirst().orElseThrow(() -> new EntityNotFoundException(
                         String.format("Project with id: %1$s not found.", projectId)));
                 

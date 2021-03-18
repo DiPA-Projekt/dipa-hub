@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -20,6 +23,7 @@ import online.dipa.hub.persistence.repositories.PlanTemplateRepository;
 import javax.persistence.EntityNotFoundException;
 
 import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.HOURS;;
 
 @Service
 @Transactional
@@ -118,14 +122,14 @@ public class MilestoneService {
 
         List<Increment> incrementsList = incrementService.loadIncrementsTemplate(timelineId, incrementCount, tempMilestones, sessionTimeline.getMilestones());
 
-        Optional<LocalDate> firstDatePeriodOptional = tempMilestones.stream().map(Milestone::getDate).min(LocalDate::compareTo);
-        Optional<LocalDate> lastDatePeriodOptional = tempMilestones.stream().map(Milestone::getDate).max(LocalDate::compareTo);
+        Optional<OffsetDateTime> firstDatePeriodOptional = tempMilestones.stream().map(Milestone::getDate).min(OffsetDateTime::compareTo);
+        Optional<OffsetDateTime> lastDatePeriodOptional = tempMilestones.stream().map(Milestone::getDate).max(OffsetDateTime::compareTo);
 
         if (firstDatePeriodOptional.isPresent() && lastDatePeriodOptional.isPresent()) {
-            LocalDate firstDatePeriod = firstDatePeriodOptional.get();
-            LocalDate lastDatePeriod = lastDatePeriodOptional.get();
+            OffsetDateTime firstDatePeriod = firstDatePeriodOptional.get();
+            OffsetDateTime lastDatePeriod = lastDatePeriodOptional.get();
 
-            long oldDaysBetween = DAYS.between(firstDatePeriod, lastDatePeriod);
+            long oldHoursBetween = HOURS.between(firstDatePeriod, lastDatePeriod);
 
             long id = tempMilestones.stream().map(Milestone::getId).min(Long::compareTo).orElseThrow(() -> new EntityNotFoundException(
                     String.format("Timeline with id: %1$s milestone has no id.", timelineId)));
@@ -134,22 +138,23 @@ public class MilestoneService {
             for (Increment increment : incrementsList) {
                 List<Milestone> incrementMilestones = new ArrayList<>();
 
-                long newDaysBetween = DAYS.between(increment.getStart().plusDays(14), increment.getEnd());
-                LocalDate newStartDateIncrement = increment.getStart().plusDays(14);
+                long newHoursBetween = HOURS.between(increment.getStart().plusHours(14 * 24), increment.getEnd());
+                OffsetDateTime newStartDateIncrement = increment.getStart().plusHours(14 * 24);
 
-                double factor = (double) newDaysBetween / oldDaysBetween;
+                double factor = (double) newHoursBetween / oldHoursBetween;
 
                 for (Milestone m : tempMilestones) {
 
-                    long daysFromFirstDate = DAYS.between(firstDatePeriod, newStartDateIncrement);
-                    LocalDate newDateBeforeScale = m.getDate().plusDays(daysFromFirstDate);
+                    long hoursFromFirstDate = HOURS.between(firstDatePeriod, newStartDateIncrement);
+                    OffsetDateTime newDateBeforeScale = m.getDate().plusHours(hoursFromFirstDate);
 
-                    long relativePositionBeforeScale = DAYS.between(newStartDateIncrement, newDateBeforeScale);
+                    long relativePositionBeforeScale = HOURS.between(newStartDateIncrement, newDateBeforeScale);
                     long newDateAfterScale = (long)(relativePositionBeforeScale * factor);
                     long milestoneId = id + count;
 
                     String milestoneName = m.getName();
-                    LocalDate milestoneDate = increment.getStart().plusDays(newDateAfterScale).plusDays(14);
+                    OffsetDateTime milestoneDate = 
+                    increment.getStart().plusHours(newDateAfterScale).plusHours(14 * 24);
 
                     Milestone newMilestone = createMilestone(sessionTimeline, milestoneId, milestoneName, milestoneDate);
                     incrementMilestones.add(newMilestone);
@@ -165,7 +170,7 @@ public class MilestoneService {
     }
 
 
-    private Milestone createMilestone(SessionTimeline sessionTimeline, long milestoneId, String milestoneName, LocalDate milestoneDate) {
+    private Milestone createMilestone(SessionTimeline sessionTimeline, long milestoneId, String milestoneName, OffsetDateTime milestoneDate) {
         Milestone newMilestone = new Milestone();
         newMilestone.setId(milestoneId);
         newMilestone.setName(milestoneName);
@@ -253,33 +258,38 @@ public class MilestoneService {
 
         this.updateTempMilestones(timeline.getId());
 
-        LocalDate initTimelineStart = LocalDate.now();
-        Optional<LocalDate> initTimelineEndOptional = sessionTimeline.getMilestones().stream().map(Milestone::getDate).max(LocalDate::compareTo);
+        OffsetDateTime initTimelineStart = OffsetDateTime.now();
+        Optional<OffsetDateTime> initTimelineEndOptional = sessionTimeline.getMilestones().stream().map(Milestone::getDate).max(OffsetDateTime::compareTo);
 
         if (initTimelineEndOptional.isPresent()) {
-            LocalDate initTimelineEnd = initTimelineEndOptional.get();
+            OffsetDateTime initTimelineEnd = initTimelineEndOptional.get();
 
-            LocalDate currentTimelineStart = sessionTimeline.getTimeline().getStart();
-            LocalDate currentTimelineEnd = sessionTimeline.getTimeline().getEnd();
+            OffsetDateTime currentTimelineStart = 
+            OffsetDateTime.of(sessionTimeline.getTimeline().getStart(), LocalTime.NOON, ZoneOffset.UTC);
 
-            long oldDaysBetween = DAYS.between(initTimelineStart, initTimelineEnd);
-            long newDaysBetween = DAYS.between(currentTimelineStart, currentTimelineEnd);
-            double factor = (double) newDaysBetween / oldDaysBetween;
+        // LocalDate timelineEnd = sessionTimeline.getTimeline().getEnd();
+            OffsetDateTime currentTimelineEnd = 
+            OffsetDateTime.of(sessionTimeline.getTimeline().getEnd(), LocalTime.NOON, ZoneOffset.UTC);
+                // LocalDate currentTimelineEnd = sessionTimeline.getTimeline().getEnd();
+
+            long oldHoursBetween = HOURS.between(initTimelineStart, initTimelineEnd);
+            long newHoursBetween = HOURS.between(currentTimelineStart, currentTimelineEnd);
+            double factor = (double) newHoursBetween / oldHoursBetween;
 
             for (Milestone m : sessionTimeline.getMilestones()) {
 
-                long oldMilestoneRelativePosition = DAYS.between(initTimelineStart, m.getDate());
+                long oldMilestoneRelativePosition = HOURS.between(initTimelineStart, m.getDate());
                 long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
 
-                m.setDate(currentTimelineStart.plusDays(newMilestoneRelativePosition));
+                m.setDate(currentTimelineStart.plusHours(newMilestoneRelativePosition));
 
             }
 
             for (Milestone temp : sessionTimeline.getTempIncrementMilestones()) {
-                long oldMilestoneRelativePosition = DAYS.between(initTimelineStart, temp.getDate());
+                long oldMilestoneRelativePosition = HOURS.between(initTimelineStart, temp.getDate());
                 long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
 
-                temp.setDate(currentTimelineStart.plusDays(newMilestoneRelativePosition));
+                temp.setDate(currentTimelineStart.plusHours(newMilestoneRelativePosition));
 
             }
 
