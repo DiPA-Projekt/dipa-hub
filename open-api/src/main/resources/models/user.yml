@@ -15,5 +15,10 @@ User:
       type: array
       items:
         type: string
+    groups:
+      description: Current user groups
+      type: array
+      items:
+        type: string
   required:
     - name

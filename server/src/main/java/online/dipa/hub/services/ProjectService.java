@@ -1,6 +1,5 @@
 package online.dipa.hub.services;
 
-import online.dipa.hub.UserAdministration;
 import online.dipa.hub.api.model.Project;
 import online.dipa.hub.api.model.ProjectTask;
 
@@ -47,7 +46,7 @@ public class ProjectService {
     private ConversionService conversionService;
 
     @Autowired
-    private UserAdministration userAdministration;
+    private UserInformationService userInformationService;
 
     private final ProjectProjectEntityMapper projectMapper = Mappers.getMapper(ProjectProjectEntityMapper.class);
     private final ProjectTaskProjectTaskEntityMapper projectTaskMapper = Mappers.getMapper(ProjectTaskProjectTaskEntityMapper.class);
@@ -55,7 +54,7 @@ public class ProjectService {
 
     public Project getProjectData(final Long projectId) {
 
-        List<String> userGroups = userAdministration.getGroups();
+        List<String> userGroups = userInformationService.getUserData().getGroups();
 
         return projectRespository.findAll().stream().map(p -> conversionService.convert(p, Project.class))
         .filter(t -> userGroups.contains(String.valueOf(t.getId())))

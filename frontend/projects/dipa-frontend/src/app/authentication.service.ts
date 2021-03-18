@@ -34,6 +34,11 @@ export class AuthenticationService {
     return user && typeof user.roles !== 'undefined' ? user.roles : [];
   }
 
+  getUserGroups(): string[] {
+    const user: User = this.userData.getValue();
+    return user && typeof user.groups !== 'undefined' ? user.groups : [];
+  }
+
   isUserInRole(userRole: string): boolean {
     const roles = this.getUserRoles();
     return roles.indexOf(userRole) !== -1;
