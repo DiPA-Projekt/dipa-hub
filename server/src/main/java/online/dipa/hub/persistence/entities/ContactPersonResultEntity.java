@@ -6,6 +6,11 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import static javax.persistence.CascadeType.ALL;
+
 @Entity
 @Table(name = "contact_person_result")
 @Cacheable
@@ -13,11 +18,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class ContactPersonResultEntity extends BaseEntity {
 
     private String resultType;
-    private String name;
-    private String department;
-    private String taskArea;
 
-    private String status;
+    @OneToMany(mappedBy = "riskResult", cascade = { ALL })
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<FormFieldEntity> formFields = new HashSet<>();
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
@@ -31,38 +35,6 @@ public class ContactPersonResultEntity extends BaseEntity {
         this.resultType = resultType;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(final String department) {
-        this.department = department;
-    }
-
-    public String getTaskArea() {
-        return taskArea;
-    }
-
-    public void setTaskArea(final String taskArea) {
-        this.taskArea = taskArea;
-    }
-    
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(final String status) {
-        this.status = status;
-    }
-
     public ProjectTaskEntity getProjectTask() {
         return projectTask;
     }
@@ -71,4 +43,11 @@ public class ContactPersonResultEntity extends BaseEntity {
         this.projectTask = projectTask;
     }
 
+    public Set<FormFieldEntity> getFormFields() {
+        return formFields;
+    }
+
+    public void setFormFields(Set<FormFieldEntity> formFields) {
+        this.formFields = formFields;
+    }
 }

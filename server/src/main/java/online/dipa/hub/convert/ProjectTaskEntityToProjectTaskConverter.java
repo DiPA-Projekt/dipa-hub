@@ -3,6 +3,7 @@ package online.dipa.hub.convert;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import online.dipa.hub.api.model.FormField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
@@ -34,17 +35,22 @@ public class ProjectTaskEntityToProjectTaskConverter implements Converter<Projec
     @Autowired
     private SingleApptResultEntityToSingleApptResultConverter singleApptResultConverter;
 
+    @Autowired
+    private FormFieldEntityToFormFieldConverter formFieldConverter;
+
     @Override
     public ProjectTask convert(final ProjectTaskEntity template) {
 
         ProjectTask projectTask = new ProjectTask().id(template.getId())
                              .title(template.getTitle())
                              .optional(template.getOptional())
-                             .explanation(template.getExplanation())
-                             .completed(template.getCompleted())
-                             .contactPerson(template.getContactPerson())
-                             .documentationLink(template.getDocumentationLink());
-                            
+                             .explanation(template.getExplanation());
+
+        List<FormField> formFields = template.getFormFields().stream().map(p -> formFieldConverter.convert(p)).collect(Collectors.toList());
+        projectTask.entries(formFields);
+
+        System.out.println(formFields);
+
         if (!template.getStandardResult().isEmpty()) {
             List<Result> standardResults = template.getStandardResult().stream().map(p -> standardResultConverter.convert(p)).collect(Collectors.toList());
             projectTask.results(new ProjectTaskResults().type("TYPE_STD").data(standardResults));

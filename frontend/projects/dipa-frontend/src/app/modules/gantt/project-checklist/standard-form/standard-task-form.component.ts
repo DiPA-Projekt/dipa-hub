@@ -21,6 +21,10 @@ export class StandardTaskFormComponent implements OnInit {
     this.setReactiveForm(this.formData);
   }
 
+  public getFormFieldsArray(index: number): FormArray {
+    return this.formGroup.get(['results', 'data', index, 'formFields']) as FormArray;
+  }
+
   public get defaultTaskArray(): FormArray {
     return this.formGroup.get(['results', 'data']) as FormArray;
   }
@@ -41,8 +45,7 @@ export class StandardTaskFormComponent implements OnInit {
       this.defaultTaskArray.push(
         this.fb.group({
           resultType: defaultTask?.resultType,
-          result: defaultTask?.result,
-          status: defaultTask?.status,
+          formFields: defaultTask?.formFields,
         })
       );
     }

@@ -6,6 +6,11 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import static javax.persistence.CascadeType.ALL;
+
 @Entity
 @Table(name = "elbe_shopping_cart_result")
 @Cacheable
@@ -13,10 +18,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class ELBEShoppingCartResultEntity extends BaseEntity {
 
     private String resultType;
-    private String shoppingCartNumber;
-    private String shoppingCartContent;
 
-    private String status;
+    @OneToMany(mappedBy = "elbeShoppingCartResult", cascade = { ALL })
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<FormFieldEntity> formFields = new HashSet<>();
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
@@ -31,30 +36,6 @@ public class ELBEShoppingCartResultEntity extends BaseEntity {
         this.resultType = resultType;
     }
 
-    public String getShoppingCartNumber() {
-        return shoppingCartNumber;
-    }
-
-    public void setShoppingCartNumber(final String shoppingCartNumber) {
-        this.shoppingCartNumber = shoppingCartNumber;
-    }
-
-    public String getShoppingCartContent() {
-        return shoppingCartContent;
-    }
-
-    public void setShoppingCartContent(final String shoppingCartContent) {
-        this.shoppingCartContent = shoppingCartContent;
-    }
-    
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(final String status) {
-        this.status = status;
-    }
-
     public ProjectTaskEntity getProjectTask() {
         return projectTask;
     }
@@ -63,4 +44,11 @@ public class ELBEShoppingCartResultEntity extends BaseEntity {
         this.projectTask = projectTask;
     }
 
+    public Set<FormFieldEntity> getFormFields() {
+        return formFields;
+    }
+
+    public void setFormFields(Set<FormFieldEntity> formFields) {
+        this.formFields = formFields;
+    }
 }

@@ -6,6 +6,11 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import static javax.persistence.CascadeType.ALL;
+
 @Entity
 @Table(name = "appointment_series_result")
 @Cacheable
@@ -13,11 +18,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class AppointmentSeriesResultEntity extends BaseEntity {
 
     private String resultType;
-    private String appointment;
-    private String participants;
-    private String link;
 
-    private String status;
+    @OneToMany(mappedBy = "appointmentSeriesResult", cascade = { ALL })
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<FormFieldEntity> formFields = new HashSet<>();
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
@@ -31,38 +35,6 @@ public class AppointmentSeriesResultEntity extends BaseEntity {
         this.resultType = resultType;
     }
 
-    public String getAppointment() {
-        return appointment;
-    }
-
-    public void setAppointment(final String appointment) {
-        this.appointment = appointment;
-    }
-
-    public String getParticipants() {
-        return participants;
-    }
-
-    public void setParticipants(final String participants) {
-        this.participants = participants;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(final String link) {
-        this.link = link;
-    }
-    
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(final String status) {
-        this.status = status;
-    }
-
     public ProjectTaskEntity getProjectTask() {
         return projectTask;
     }
@@ -71,4 +43,11 @@ public class AppointmentSeriesResultEntity extends BaseEntity {
         this.projectTask = projectTask;
     }
 
+    public Set<FormFieldEntity> getFormFields() {
+        return formFields;
+    }
+
+    public void setFormFields(Set<FormFieldEntity> formFields) {
+        this.formFields = formFields;
+    }
 }

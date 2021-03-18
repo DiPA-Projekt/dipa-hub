@@ -1,0 +1,62 @@
+FormField:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the task
+      type: integer
+      format: int64
+      example: 2
+    value:
+      description: Value of the form field
+      type: string
+      example: "Test"
+    key:
+      description: Key of the form field
+      type: string
+      example: "result"
+    label:
+      description: Label which describes the form field type
+      type: string
+      example: "Link"
+    placeholder:
+      description: Placeholder for empty form fields which explains the form field
+      type: string
+      example: "Link zu Jira"
+    required:
+      description: Is the field mandatory before the form can be set to completed
+      type: boolean
+      example: true
+    sortOrder:
+      description: Sort order of the field in the form
+      type: integer
+      format: int64
+      example: 2
+    controlType:
+      description: Type of form field
+      type: string
+      enum:
+        - TEXT
+        - TEXTAREA
+        - DROPDOWN
+      default: TEXT
+      example: TEXT
+    type:
+      description: HTML input types for controlType TEXT
+      type: string
+      enum:
+        - TEXT
+        - NUMBER
+        - DATE
+        - URL
+        - EMAIL
+      default: TEXT
+      example: TEXT
+    options:
+      description: The list of dropdown option entries
+      type: array
+      items:
+        $ref: "../models/optionEntry.yml#/OptionEntry"
+    show:
+      description: Show field in form?
+      type: boolean
+      example: true

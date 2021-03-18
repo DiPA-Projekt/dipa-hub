@@ -2,60 +2,25 @@
   <div formArrayName="data">
     <ng-container *ngFor="let person of personsArray.controls; let i = index">
       <div [formGroupName]="i">
-        <ng-container>
-          <div class="person">
-            <mat-form-field>
-              <mat-label>Name</mat-label>
-              <input
-                matInput
-                placeholder="Name"
-                formControlName="name"
-                (change)="this.dataChanged.emit()"
-                (focus)="onFocus($event, ['results', 'data', i, 'name'])"
-                (keyup.esc)="onEscape($event, ['results', 'data', i, 'name'])"
-              />
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Referat</mat-label>
-              <input
-                matInput
-                placeholder="Referat"
-                formControlName="department"
-                (change)="this.dataChanged.emit()"
-                (focus)="onFocus($event, ['results', 'data', i, 'department'])"
-                (keyup.esc)="onEscape($event, ['results', 'data', i, 'department'])"
-              />
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Aufgabenbereich</mat-label>
-              <input
-                matInput
-                placeholder="Aufgabenbereich"
-                formControlName="taskArea"
-                (change)="this.dataChanged.emit()"
-                (focus)="onFocus($event, ['results', 'data', i, 'taskArea'])"
-                (keyup.esc)="onEscape($event, ['results', 'data', i, 'taskArea'])"
-              />
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Status</mat-label>
-              <mat-select formControlName="status" (selectionChange)="this.dataChanged.emit()">
-                <mat-option *ngFor="let status of statusList" [value]="status.value">
-                  {{ status.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-            <button
-              mat-button
-              type="button"
-              class="roundedButton"
-              (click)="deletePerson(i)"
-              title="Kontaktperson entfernen"
-              aria-label="Kontaktperson entfernen"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
+        <ng-container formArrayName="formFields">
+          <ng-container *ngFor="let formField of getFormFieldsArray(i).controls; let j = index">
+            <ng-container [formGroupName]="j">
+              <mat-form-field *ngIf="formField.get('show')?.value">
+                <mat-label>{{ formField.get('label')?.value }}</mat-label>
+                <input
+                  matInput
+                  [placeholder]="formField.get('placeholder').value"
+                  formControlName="value"
+                  [id]="formField.get('key')?.value"
+                  [value]="formField.get('value')?.value"
+
+                  (focus)="onFocus($event, [formField.get('key')?.value])"
+                  (keyup.esc)="onEscape($event, [formField.get('key')?.value])"
+                />
+                (change)="onSubmit(formGroup)"
+              </mat-form-field>
+            </ng-container>
+          </ng-container>
         </ng-container>
       </div>
     </ng-container>

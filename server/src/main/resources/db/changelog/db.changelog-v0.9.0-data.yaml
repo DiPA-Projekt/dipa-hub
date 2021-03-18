@@ -1,0 +1,459 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-project-task-01-Zugspitze-form-entry-contactPerson
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_task_form_field
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: value
+                  value:
+              - column:
+                  name: key
+                  value: contactPerson
+              - column:
+                  name: label
+                  value: Ansprechpartner
+              - column:
+                  name: placeholder
+                  value: "Name, Vorname"
+              - column:
+                  name: required
+                  value: false
+              - column:
+                  name: sort_order
+                  value: 1
+              - column:
+                  name: control_type
+                  value: TEXT
+              - column:
+                  name: show
+                  value: true
+              - column:
+                  name: standard_result_id
+                  value: 18
+  - changeSet:
+      id: insert-project-task-01-Zugspitze-form-entry-documentationLink
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_task_form_field
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: value
+                  value:
+              - column:
+                  name: key
+                  value: documentationLink
+              - column:
+                  name: label
+                  value: Link
+              - column:
+                  name: placeholder
+                  value: "Link zu Jira"
+              - column:
+                  name: required
+                  value: false
+              - column:
+                  name: sort_order
+                  value: 2
+              - column:
+                  name: control_type
+                  value: TEXT
+              - column:
+                  name: type
+                  value: URL
+              - column:
+                  name: show
+                  value: true
+              - column:
+                  name: standard_result_id
+                  value: 18
+  - changeSet:
+      id: insert-project-task-02-Zugspitze-form-entry-contactPerson
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_task_form_field
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: value
+                  value:
+              - column:
+                  name: key
+                  value: contactPerson
+              - column:
+                  name: label
+                  value: Ansprechpartner
+              - column:
+                  name: placeholder
+                  value: "Name, Vorname"
+              - column:
+                  name: required
+                  value: false
+              - column:
+                  name: sort_order
+                  value: 1
+              - column:
+                  name: control_type
+                  value: TEXT
+              - column:
+                  name: show
+                  value: true
+              - column:
+                  name: standard_result_id
+                  value: 19
+  - changeSet:
+      id: insert-project-task-02-Zugspitze-form-entry-documentationLink
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_task_form_field
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: value
+                  value:
+              - column:
+                  name: key
+                  value: documentationLink
+              - column:
+                  name: label
+                  value: Link
+              - column:
+                  name: placeholder
+                  value: "Link zu Jira"
+              - column:
+                  name: required
+                  value: false
+              - column:
+                  name: sort_order
+                  value: 2
+              - column:
+                  name: control_type
+                  value: TEXT
+              - column:
+                  name: type
+                  value: URL
+              - column:
+                  name: show
+                  value: false
+              - column:
+                  name: standard_result_id
+                  value: 19
+  - changeSet:
+      id: insert-option-entry-cart-planned
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: option_entry
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: key
+                  value: PLANNED
+              - column:
+                  name: value
+                  value: geplant
+              - column:
+                  name: form_field_id
+                  value: 1
+  - changeSet:
+      id: insert-option-entry-cart-ordered
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: option_entry
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: key
+                  value: ORDERED
+              - column:
+                  name: value
+                  value: bestellt
+              - column:
+                  name: form_field_id
+                  value: 1
+  - changeSet:
+      id: insert-option-entry-cart-approved
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: option_entry
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: key
+                  value: APPROVED
+              - column:
+                  name: value
+                  value: genehmigt
+              - column:
+                  name: form_field_id
+                  value: 1
+  - changeSet:
+      id: insert-option-entry-cart-delivered
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: option_entry
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: key
+                  value: DELIVERED
+              - column:
+                  name: value
+                  value: geliefert
+              - column:
+                  name: form_field_id
+                  value: 1
+  - changeSet:
+      id: insert-option-entry-standard-open
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: option_entry
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: key
+                  value: OPEN
+              - column:
+                  name: value
+                  value: geschlossen
+              - column:
+                  name: form_field_id
+                  value: 2
+  - changeSet:
+      id: insert-option-entry-standard-closed
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: option_entry
+            columns:
+              - column:
+                  name: id
+                  value: 6
+              - column:
+                  name: key
+                  value: CLOSED
+              - column:
+                  name: value
+                  value: geschlossen
+              - column:
+                  name: form_field_id
+                  value: 2
+  - changeSet:
+      id: insert-option-entry-standard-planned
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: option_entry
+            columns:
+              - column:
+                  name: id
+                  value: 7
+              - column:
+                  name: key
+                  value: PLANNED
+              - column:
+                  name: value
+                  value: geplant
+              - column:
+                  name: form_field_id
+                  value: 2
+  - changeSet:
+      id: insert-option-entry-standard-assigned
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: option_entry
+            columns:
+              - column:
+                  name: id
+                  value: 8
+              - column:
+                  name: key
+                  value: ASSIGNED
+              - column:
+                  name: value
+                  value: zugewiesen
+              - column:
+                  name: form_field_id
+                  value: 2
+  - changeSet:
+      id: insert-option-entry-standard-in-progress
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: option_entry
+            columns:
+              - column:
+                  name: id
+                  value: 9
+              - column:
+                  name: key
+                  value: IN_PROGRESS
+              - column:
+                  name: value
+                  value: in Bearbeitung
+              - column:
+                  name: form_field_id
+                  value: 2
+  - changeSet:
+      id: insert-option-entry-standard-submitted
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: option_entry
+            columns:
+              - column:
+                  name: id
+                  value: 10
+              - column:
+                  name: key
+                  value: SUBMITTED
+              - column:
+                  name: value
+                  value: vorgelegt
+              - column:
+                  name: form_field_id
+                  value: 2
+  - changeSet:
+      id: insert-option-entry-standard-done
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: option_entry
+            columns:
+              - column:
+                  name: id
+                  value: 11
+              - column:
+                  name: key
+                  value: DONE
+              - column:
+                  name: value
+                  value: fertiggestellt
+              - column:
+                  name: form_field_id
+                  value: 2
+  - changeSet:
+      id: insert-option-entry-person-open
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: option_entry
+            columns:
+              - column:
+                  name: id
+                  value: 12
+              - column:
+                  name: key
+                  value: OPEN
+              - column:
+                  name: value
+                  value: offen
+              - column:
+                  name: form_field_id
+                  value: 3
+  - changeSet:
+      id: insert-option-entry-person-contacted
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: option_entry
+            columns:
+              - column:
+                  name: id
+                  value: 13
+              - column:
+                  name: key
+                  value: CONTACTED
+              - column:
+                  name: value
+                  value: angesprochen
+              - column:
+                  name: form_field_id
+                  value: 3
+  - changeSet:
+      id: insert-option-entry-person-answer-received
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: option_entry
+            columns:
+              - column:
+                  name: id
+                  value: 14
+              - column:
+                  name: key
+                  value: ANSWER_RECEIVED
+              - column:
+                  name: value
+                  value: Antwort erhalten
+              - column:
+                  name: form_field_id
+                  value: 3
+  - changeSet:
+      id: insert-option-entry-person-done
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: option_entry
+            columns:
+              - column:
+                  name: id
+                  value: 15
+              - column:
+                  name: key
+                  value: DONE
+              - column:
+                  name: value
+                  value: abgeschlossen
+              - column:
+                  name: form_field_id
+                  value: 3

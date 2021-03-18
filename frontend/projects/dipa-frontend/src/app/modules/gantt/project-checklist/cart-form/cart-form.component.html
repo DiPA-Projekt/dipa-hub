@@ -2,50 +2,27 @@
   <div formArrayName="data">
     <ng-container *ngFor="let cart of cartsArray.controls; let i = index">
       <div [formGroupName]="i">
-        <ng-container>
-          <div class="cart">
-            <mat-form-field>
-              <mat-label>EKW - Nummer</mat-label>
-              <input
-                matInput
-                placeholder="Nr"
-                formControlName="shoppingCartNumber"
-                (change)="this.dataChanged.emit()"
-                (focus)="onFocus($event, ['results', 'data', i, 'shoppingCartNumber'])"
-                (keyup.esc)="onEscape($event, ['results', 'data', i, 'shoppingCartNumber'])"
-              />
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>EKW - Inhalt</mat-label>
-              <input
-                matInput
-                placeholder="Inhalt"
-                formControlName="shoppingCartContent"
-                (change)="this.dataChanged.emit()"
-                (focus)="onFocus($event, ['results', 'data', i, 'shoppingCartContent'])"
-                (keyup.esc)="onEscape($event, ['results', 'data', i, 'shoppingCartContent'])"
-              />
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Status</mat-label>
-              <mat-select formControlName="status" (selectionChange)="this.dataChanged.emit()">
-                <mat-option *ngFor="let status of statusList" [value]="status.value">
-                  {{ status.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-            <button
-              mat-button
-              type="button"
-              class="roundedButton"
-              (click)="deleteCart(i)"
-              title="Einkaufswagen entfernen"
-              aria-label="Einkaufswagen entfernen"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
+        <ng-container formArrayName="formFields">
+          <ng-container *ngFor="let formField of getFormFieldsArray(i).controls; let j = index">
+            <ng-container [formGroupName]="j">
+              <mat-form-field *ngIf="formField.get('show')?.value">
+                <mat-label>{{ formField.get('label')?.value }}</mat-label>
+                <input
+                  matInput
+                  [placeholder]="formField.get('placeholder').value"
+                  formControlName="value"
+                  [id]="formField.get('key')?.value"
+                  [value]="formField.get('value')?.value"
+
+                  (focus)="onFocus($event, [formField.get('key')?.value])"
+                  (keyup.esc)="onEscape($event, [formField.get('key')?.value])"
+                />
+                (change)="onSubmit(formGroup)"
+              </mat-form-field>
+            </ng-container>
+          </ng-container>
         </ng-container>
+
       </div>
     </ng-container>
     <span class="">

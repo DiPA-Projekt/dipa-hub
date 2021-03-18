@@ -9,13 +9,12 @@ import online.dipa.hub.persistence.entities.AppointmentSeriesResultEntity;
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ApptSeriesResultMapper {
 
-    @BeforeMapping
-    default void setApptSeriesResultStatus(AppointmentSeriesResult apptSeriesResult, @MappingTarget AppointmentSeriesResultEntity apptSeriesResultEntity) {
-        if (apptSeriesResult.getStatus() != null) {
-            apptSeriesResultEntity.setStatus(apptSeriesResult.getStatus().toString());
-
-        }
-    }
+//    @BeforeMapping
+//    default void setApptSeriesResultStatus(AppointmentSeriesResult apptSeriesResult, @MappingTarget AppointmentSeriesResultEntity apptSeriesResultEntity) {
+//        if (apptSeriesResult.getStatus() != null) {
+//            apptSeriesResultEntity.setStatus(apptSeriesResult.getStatus());
+//        }
+//    }
 
     AppointmentSeriesResultEntity toAppointmentSeriesResultEntity(AppointmentSeriesResult apptSeriesResult);
 

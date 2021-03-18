@@ -10,3 +10,184 @@ databaseChangeLog:
                   name: completed
                   type: BOOLEAN
                   defaultValue: false
+  - changeSet:
+      id: create-option-entry-table
+      author: bock
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: optionEntryTemplatePK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: key
+                  type: VARCHAR(255)
+              - column:
+                  name: value
+                  type: VARCHAR(2000)
+              - column:
+                  name: form_field_id
+                  type: BIGINT
+            tableName: option_entry
+  - changeSet:
+      id: create-project-task-form-field-table
+      author: bock
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: formFieldPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: value
+                  type: VARCHAR(2000)
+              - column:
+                  name: key
+                  type: VARCHAR(255)
+              - column:
+                  name: label
+                  type: VARCHAR(255)
+              - column:
+                  name: placeholder
+                  type: VARCHAR(255)
+              - column:
+                  name: required
+                  type: boolean
+              - column:
+                  name: sort_order
+                  type: BIGINT
+              - column:
+                  name: control_type
+                  type: VARCHAR(255)
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+              - column:
+                  name: show
+                  type: boolean
+              - column:
+                  constraints:
+                    nullable: true
+                  name: project_task_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: true
+                  name: appointment_series_result_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: true
+                  name: elbe_shopping_cart_result_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: true
+                  name: contact_person_result_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: true
+                  name: risk_result_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: true
+                  name: single_appointment_result_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: true
+                  name: standard_result_id
+                  type: BIGINT
+            tableName: project_task_form_field
+  - changeSet:
+      id: createForeignKeyConstraint-formField-projectTaskFormField
+      author: bock
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_task_id
+            baseTableName: project_task_form_field
+            constraintName: FKProjectTaskProjectTaskFormField
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_task
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-standardResult-projectTaskFormField
+      author: bock
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: standard_result_id
+            baseTableName: project_task_form_field
+            constraintName: FKStandardResultProjectTaskFormField
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: standard_result
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-optionEntry-projectTaskFormField
+      author: bock
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: form_field_id
+            baseTableName: option_entry
+            constraintName: FKOptionEntryProjectTaskFormField
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_task_form_field
+            validate: true
+  - changeSet:
+      id: drop-columns-content-status-standard-result
+      author: bock
+      changes:
+        - dropColumn:
+            columns:
+              - column:
+                  name: content
+              - column:
+                  name: status
+            tableName: standard_result
+  - changeSet:
+      id: drop-columns-appointment-participants-link-status-appointment_series_result
+      author: bock
+      changes:
+        - dropColumn:
+            columns:
+              - column:
+                  name: appointment
+              - column:
+                  name: participants
+              - column:
+                  name: link
+              - column:
+                  name: status
+            tableName: appointment_series_result
+  - changeSet:
+      id: drop-columns-description-value-solution-status-risk_result
+      author: bock
+      changes:
+        - dropColumn:
+            columns:
+              - column:
+                  name: description
+              - column:
+                  name: value
+              - column:
+                  name: solution
+              - column:
+                  name: status
+            tableName: risk_result

@@ -8,12 +8,13 @@ import online.dipa.hub.persistence.entities.RiskResultEntity;
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface RiskResultMapper {
 
-    @BeforeMapping
-    default void setRiskResultStatus(RiskResult riskResult, @MappingTarget RiskResultEntity riskResultEntity) {
-        if (riskResult.getStatus() != null) {
-            riskResultEntity.setStatus(riskResult.getStatus().toString());
-        }
-    }
+//    @BeforeMapping
+//    default void setRiskResultStatus(RiskResult riskResult, @MappingTarget RiskResultEntity riskResultEntity) {
+//        if (riskResult.getStatus() != null) {
+//            riskResultEntity.setStatus(riskResult.getStatus());
+////            riskResultEntity.setStatus(riskResult.getStatus());
+//        }
+//    }
 
     RiskResultEntity toRiskResultEntity(RiskResult riskResult);
     

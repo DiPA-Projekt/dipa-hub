@@ -3,8 +3,14 @@ package online.dipa.hub.persistence.entities;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+import online.dipa.hub.api.model.FormField;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import static javax.persistence.CascadeType.ALL;
 
 @Entity
 @Table(name = "risk_result")
@@ -14,16 +20,13 @@ public class RiskResultEntity extends BaseEntity {
 
     private String resultType;
 
-    private String description;
-    private String value;
-    private String solution;
-
-    private String status;
+    @OneToMany(mappedBy = "riskResult", cascade = { ALL })
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<FormFieldEntity> formFields = new HashSet<>();
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private ProjectTaskEntity projectTask;
-
 
     public String getResultType() {
         return resultType;
@@ -33,44 +36,20 @@ public class RiskResultEntity extends BaseEntity {
         this.resultType = resultType;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(final String description) {
-        this.description = description;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(final String value) {
-        this.value = value;
-    }
-
-    public String getSolution() {
-        return solution;
-    }
-
-    public void setSolution(final String solution) {
-        this.solution = solution;
-    }
-    
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(final String status) {
-        this.status = status;
-    }
-
     public ProjectTaskEntity getProjectTask() {
         return projectTask;
     }
 
     public void setProjectTask(final ProjectTaskEntity projectTask) {
         this.projectTask = projectTask;
+    }
+
+    public Set<FormFieldEntity> getFormFields() {
+        return formFields;
+    }
+
+    public void setFormFields(Set<FormFieldEntity> formFields) {
+        this.formFields = formFields;
     }
 
 }

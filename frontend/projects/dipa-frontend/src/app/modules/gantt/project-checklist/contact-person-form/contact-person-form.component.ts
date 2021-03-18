@@ -22,6 +22,10 @@ export class ContactPersonFormComponent implements OnInit {
     this.setReactiveForm(this.formData);
   }
 
+  public getFormFieldsArray(index: number): FormArray {
+    return this.formGroup.get(['results', 'data', index, 'formFields']) as FormArray;
+  }
+
   public get personsArray(): FormArray {
     return this.formGroup.get(['results', 'data']) as FormArray;
   }
@@ -51,10 +55,7 @@ export class ContactPersonFormComponent implements OnInit {
       this.personsArray.push(
         this.fb.group({
           resultType: person?.resultType,
-          name: person?.name,
-          department: person?.department,
-          taskArea: person?.taskArea,
-          status: person?.status,
+          formFields: person?.formFields,
         })
       );
     }

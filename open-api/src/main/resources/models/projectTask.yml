@@ -22,14 +22,10 @@ ProjectTask:
       description: if this task is marked as completed
       type: boolean
       example: true
-    contactPerson:
-      description: contact person
-      type: string
-      example: "Frau Müller"
-    documentationLink:
-      description: the link for this task
-      type: string
-      example: "II A 1"
+    entries:
+      type: array
+      items:
+        $ref: "../models/formField.yml#/FormField"
     results:
       type: object
       properties:

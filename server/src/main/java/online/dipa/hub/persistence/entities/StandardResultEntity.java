@@ -6,21 +6,26 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import static javax.persistence.CascadeType.ALL;
+
 @Entity
 @Table(name = "standard_result")
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class StandardResultEntity extends BaseEntity {
 
-    private String content;
+    private String resultType;
 
-    private String status;
+    @OneToMany(mappedBy = "standardResult", cascade = { ALL })
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<FormFieldEntity> formFields = new HashSet<>();
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private ProjectTaskEntity projectTask;
-
-    private String resultType;
 
     public String getResultType() {
         return resultType;
@@ -28,22 +33,6 @@ public class StandardResultEntity extends BaseEntity {
 
     public void setResultType(final String resultType) {
         this.resultType = resultType;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(final String content) {
-        this.content = content;
-    }
-    
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(final String status) {
-        this.status = status;
     }
 
     public ProjectTaskEntity getProjectTasks() {
@@ -54,4 +43,11 @@ public class StandardResultEntity extends BaseEntity {
         this.projectTask = projectTask;
     }
 
+    public Set<FormFieldEntity> getFormFields() {
+        return formFields;
+    }
+
+    public void setFormFields(Set<FormFieldEntity> formFields) {
+        this.formFields = formFields;
+    }
 }

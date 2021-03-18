@@ -7,6 +7,7 @@ import static javax.persistence.CascadeType.ALL;
 import java.util.HashSet;
 import java.util.Set;
 
+import online.dipa.hub.api.model.FormField;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -25,12 +26,13 @@ public class ProjectTaskEntity extends BaseEntity {
     private String explanation;
     private boolean completed;
 
-    private String contactPerson;
-    private String documentationLink;
-
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private ProjectTaskTemplateEntity projectTaskTemplate;
+
+    @OneToMany(mappedBy = "projectTask")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<FormFieldEntity> entries = new HashSet<>();
 
     @OneToMany(mappedBy = "projectTask", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -96,20 +98,12 @@ public class ProjectTaskEntity extends BaseEntity {
         this.completed = completed;
     }
 
-    public String getContactPerson() {
-        return contactPerson;
-    }
-    
-    public void setContactPerson(final String contactPerson) {
-        this.contactPerson = contactPerson;
+    public Set<FormFieldEntity> getFormFields() {
+        return entries;
     }
 
-    public String getDocumentationLink() {
-        return documentationLink;
-    }
-    
-    public void setDocumentationLink(final String documentationLink) {
-        this.documentationLink = documentationLink;
+    public void setFormFields(final Set<FormFieldEntity> entries) {
+        this.entries = entries;
     }
 
     public Set<StandardResultEntity> getStandardResult() {

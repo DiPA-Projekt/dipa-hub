@@ -22,6 +22,10 @@ export class AppointmentSeriesFormComponent implements OnInit {
     this.setReactiveForm(this.formData);
   }
 
+  public getFormFieldsArray(index: number): FormArray {
+    return this.formGroup.get(['results', 'data', index, 'formFields']) as FormArray;
+  }
+
   public get appointmentSeriesArray(): FormArray {
     return this.formGroup.get(['results', 'data']) as FormArray;
   }
@@ -51,10 +55,7 @@ export class AppointmentSeriesFormComponent implements OnInit {
       this.appointmentSeriesArray.push(
         this.fb.group({
           resultType: appointmentSeries?.resultType,
-          appointment: appointmentSeries?.appointment,
-          participants: appointmentSeries?.participants,
-          link: appointmentSeries?.link,
-          status: appointmentSeries?.status,
+          formFields: appointmentSeries?.formFields,
         })
       );
     }

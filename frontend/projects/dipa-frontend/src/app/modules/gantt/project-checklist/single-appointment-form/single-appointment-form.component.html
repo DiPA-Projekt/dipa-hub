@@ -2,61 +2,25 @@
   <div formArrayName="data">
     <ng-container *ngFor="let singleAppointment of singleAppointmentsArray.controls; let i = index">
       <div [formGroupName]="i">
-        <ng-container>
-          <div class="singleAppointment">
-            <mat-form-field>
-              <mat-label>Datum</mat-label>
-              <input
-                matInput
-                [matDatepicker]="picker"
-                formControlName="date"
-                [value]="singleAppointment.get('date')?.value"
-                (dateChange)="this.dataChanged.emit()"
-              />
-              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Zielzustand</mat-label>
-              <input
-                matInput
-                placeholder="Zielzustand"
-                formControlName="goal"
-                (change)="this.dataChanged.emit()"
-                (focus)="onFocus($event, ['results', 'data', i, 'goal'])"
-                (keyup.esc)="onEscape($event, ['results', 'data', i, 'goal'])"
-              />
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Verantwortung</mat-label>
-              <input
-                matInput
-                placeholder="Verantwortung"
-                formControlName="responsiblePerson"
-                (change)="this.dataChanged.emit()"
-                (focus)="onFocus($event, ['results', 'data', i, 'responsiblePerson'])"
-                (keyup.esc)="onEscape($event, ['results', 'data', i, 'responsiblePerson'])"
-              />
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Status</mat-label>
-              <mat-select formControlName="status" (selectionChange)="this.dataChanged.emit()">
-                <mat-option *ngFor="let status of statusList" [value]="status.value">
-                  {{ status.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-            <button
-              mat-button
-              type="button"
-              class="roundedButton"
-              (click)="deleteSingleAppointment(i)"
-              title="Termin entfernen"
-              aria-label="Termin entfernen"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
+        <ng-container formArrayName="formFields">
+          <ng-container *ngFor="let formField of getFormFieldsArray(i).controls; let j = index">
+            <ng-container [formGroupName]="j">
+              <mat-form-field *ngIf="formField.get('show')?.value">
+                <mat-label>{{ formField.get('label')?.value }}</mat-label>
+                <input
+                  matInput
+                  [placeholder]="formField.get('placeholder').value"
+                  formControlName="value"
+                  [id]="formField.get('key')?.value"
+                  [value]="formField.get('value')?.value"
+
+                  (focus)="onFocus($event, [formField.get('key')?.value])"
+                  (keyup.esc)="onEscape($event, [formField.get('key')?.value])"
+                />
+                (change)="onSubmit(formGroup)"
+              </mat-form-field>
+            </ng-container>
+          </ng-container>
         </ng-container>
       </div>
     </ng-container>

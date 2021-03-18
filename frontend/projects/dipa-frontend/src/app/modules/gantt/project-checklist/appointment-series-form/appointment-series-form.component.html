@@ -2,60 +2,25 @@
   <div formArrayName="data">
     <ng-container *ngFor="let appointmentSeries of appointmentSeriesArray.controls; let i = index">
       <div [formGroupName]="i">
-        <ng-container>
-          <div class="appointmentSeries">
-            <mat-form-field>
-              <mat-label>Terminserie</mat-label>
-              <input
-                matInput
-                placeholder="Terminserie"
-                formControlName="appointment"
-                (change)="this.dataChanged.emit()"
-                (focus)="onFocus($event, ['results', 'data', i, 'appointment'])"
-                (keyup.esc)="onEscape($event, ['results', 'data', i, 'appointment'])"
-              />
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Teilnehmende</mat-label>
-              <input
-                matInput
-                placeholder="Teilnehmende"
-                formControlName="participants"
-                (change)="this.dataChanged.emit()"
-                (focus)="onFocus($event, ['results', 'data', i, 'participants'])"
-                (keyup.esc)="onEscape($event, ['results', 'data', i, 'participants'])"
-              />
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Link</mat-label>
-              <input
-                matInput
-                placeholder="Link"
-                formControlName="link"
-                (change)="this.dataChanged.emit()"
-                (focus)="onFocus($event, ['results', 'data', i, 'link'])"
-                (keyup.esc)="onEscape($event, ['results', 'data', i, 'link'])"
-              />
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Status</mat-label>
-              <mat-select formControlName="status" (selectionChange)="this.dataChanged.emit()">
-                <mat-option *ngFor="let status of statusList" [value]="status.value">
-                  {{ status.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-            <button
-              mat-button
-              type="button"
-              class="roundedButton"
-              (click)="deleteAppointmentSeries(i)"
-              title="Terminserie entfernen"
-              aria-label="Terminserie entfernen"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
+        <ng-container formArrayName="formFields">
+          <ng-container *ngFor="let formField of getFormFieldsArray(i).controls; let j = index">
+            <ng-container [formGroupName]="j">
+              <mat-form-field *ngIf="formField.get('show')?.value">
+                <mat-label>{{ formField.get('label')?.value }}</mat-label>
+                <input
+                  matInput
+                  [placeholder]="formField.get('placeholder').value"
+                  formControlName="value"
+                  [id]="formField.get('key')?.value"
+                  [value]="formField.get('value')?.value"
+
+                  (focus)="onFocus($event, [formField.get('key')?.value])"
+                  (keyup.esc)="onEscape($event, [formField.get('key')?.value])"
+                />
+                (change)="onSubmit(formGroup)"
+              </mat-form-field>
+            </ng-container>
+          </ng-container>
         </ng-container>
       </div>
     </ng-container>

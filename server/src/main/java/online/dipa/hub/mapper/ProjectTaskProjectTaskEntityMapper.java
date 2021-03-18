@@ -14,12 +14,36 @@ import online.dipa.hub.persistence.repositories.*;
 @Mapper(componentModel = "spring")
 public interface ProjectTaskProjectTaskEntityMapper 
         extends StandardResultMapper, ElbeShoppingCartResultMapper, ContactPersonResultMapper,
-        SingleApptResultMapper, ApptSeriesResultMapper, RiskResultMapper {
+        SingleApptResultMapper, ApptSeriesResultMapper, RiskResultMapper, FormFieldMapper {
 
 
     void updateProjectTaskEntity(ProjectTask projectTask, @MappingTarget ProjectTaskEntity projectTaskEntity,@Context ElbeShoppingCartResultRepository elbeShoppingCartResultRepository,
     @Context RiskResultRepository riskResultRepository, @Context ContactPersonResultRepository contactPersonResultRepository,
     @Context SingleAppointmentResultRepository singleApptResultRepository, @Context AppointmentSeriesResultRepository apptSeriesResultRepository);
+
+    void updateFormFieldEntity(ProjectTask projectTask, @MappingTarget ProjectTaskEntity projectTaskEntity,@Context FormFieldRepository formFieldRepository);
+
+    @AfterMapping
+    default void setFormFields(ProjectTask projectTask, @MappingTarget ProjectTaskEntity projectTaskEntity,@Context FormFieldRepository formFieldRepository) {
+        List<FormFieldEntity> oldEntriesList = new ArrayList<>(projectTaskEntity.getFormFields());
+        List<FormField> newList = projectTask.getEntries().stream().map(FormField.class::cast).collect(Collectors.toList());
+
+        for (int i = 0; i < newList.size(); i++) {
+
+            if (i > oldEntriesList.size() - 1) {
+
+                FormFieldEntity entity = toFormFieldEntity(newList.get(i));
+                entity.setId(formFieldRepository.count() + 1);
+                entity.setProjectTask(projectTaskEntity);
+
+                formFieldRepository.save(entity);
+
+            }
+            else {
+                updateFormField(newList.get(i), oldEntriesList.get(i));
+            }
+        }
+    }
 
     @AfterMapping
 	default void setResults(ProjectTask projectTask, @MappingTarget ProjectTaskEntity projectTaskEntity, @Context ElbeShoppingCartResultRepository elbeShoppingCartResultRepository,
@@ -54,9 +78,9 @@ public interface ProjectTaskProjectTaskEntityMapper
         List<StandardResultEntity> oldList = new ArrayList<>(projectTaskEntity.getStandardResult());
         List<StandardResult> newList = projectTask.getResults().getData().stream().map(StandardResult.class::cast).collect(Collectors.toList());
 
-        for (int i = 0; i < newList.size(); i++) {
-            updateStandardResult(newList.get(i), oldList.get(i));
-        }
+//        for (int i = 0; i < newList.size(); i++) {
+//            updateStandardResult(newList.get(i), oldList.get(i));
+//        }
     }
     
 

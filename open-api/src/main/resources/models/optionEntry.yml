@@ -1,0 +1,11 @@
+OptionEntry:
+  type: object
+  properties:
+    key:
+      description: The key of the option
+      type: string
+      example: "key"
+    value:
+      description: The value of the option
+      type: string
+      example: "value"

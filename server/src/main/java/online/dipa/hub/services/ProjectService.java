@@ -28,6 +28,9 @@ public class ProjectService {
     private ProjectRepository projectRespository;
 
     @Autowired
+    private FormFieldRepository formFieldRepository;
+
+    @Autowired
     private ElbeShoppingCartResultRepository elbeShoppingCartResultRepository;
 
     @Autowired
@@ -101,10 +104,13 @@ public class ProjectService {
                     .filter(t -> t.getId().equals(projectTask.getId()))
                     .findFirst()
                 )
-                .ifPresent(oldProjectTask ->
-                projectTaskMapper.updateProjectTaskEntity(projectTask, oldProjectTask,
-                        elbeShoppingCartResultRepository, riskResultRepository,
-                        contactPersonResultRepository, singleAppointmentResultRepository, apptSeriesResultRepository));
+                .ifPresent(oldProjectTask -> {
+                    projectTaskMapper.updateFormFieldEntity(projectTask, oldProjectTask, formFieldRepository);
+
+                    projectTaskMapper.updateProjectTaskEntity(projectTask, oldProjectTask,
+                            elbeShoppingCartResultRepository, riskResultRepository,
+                            contactPersonResultRepository, singleAppointmentResultRepository, apptSeriesResultRepository);
+                });
     }
     
 }

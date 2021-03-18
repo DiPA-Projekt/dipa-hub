@@ -2,60 +2,25 @@
   <div formArrayName="data">
     <ng-container *ngFor="let risk of risksArray.controls; let i = index">
       <div [formGroupName]="i">
-        <ng-container>
-          <div class="risk">
-            <mat-form-field>
-              <mat-label>Risikobezeichnung</mat-label>
-              <input
-                matInput
-                placeholder="Bezeichnung"
-                formControlName="description"
-                (change)="this.dataChanged.emit()"
-                (focus)="onFocus($event, ['results', 'data', i, 'description'])"
-                (keyup.esc)="onEscape($event, ['results', 'data', i, 'description'])"
-              />
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Risikowert</mat-label>
-              <input
-                matInput
-                placeholder="Wert"
-                formControlName="value"
-                (change)="this.dataChanged.emit()"
-                (focus)="onFocus($event, ['results', 'data', i, 'value'])"
-                (keyup.esc)="onEscape($event, ['results', 'data', i, 'value'])"
-              />
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Abstellmaßnahme</mat-label>
-              <input
-                matInput
-                placeholder="Maßnahme"
-                formControlName="solution"
-                (change)="this.dataChanged.emit()"
-                (focus)="onFocus($event, ['results', 'data', i, 'solution'])"
-                (keyup.esc)="onEscape($event, ['results', 'data', i, 'solution'])"
-              />
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Status</mat-label>
-              <mat-select formControlName="status" (selectionChange)="this.dataChanged.emit()">
-                <mat-option *ngFor="let status of statusList" [value]="status.value">
-                  {{ status.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-            <button
-              mat-button
-              type="button"
-              class="roundedButton"
-              (click)="deleteRisk(i)"
-              title="Risiko entfernen"
-              aria-label="Risiko entfernen"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
+        <ng-container formArrayName="formFields">
+          <ng-container *ngFor="let formField of getFormFieldsArray(i).controls; let j = index">
+            <ng-container [formGroupName]="j">
+              <mat-form-field *ngIf="formField.get('show')?.value">
+                <mat-label>{{ formField.get('label')?.value }}</mat-label>
+                <input
+                  matInput
+                  [placeholder]="formField.get('placeholder').value"
+                  formControlName="value"
+                  [id]="formField.get('key')?.value"
+                  [value]="formField.get('value')?.value"
+
+                  (focus)="onFocus($event, [formField.get('key')?.value])"
+                  (keyup.esc)="onEscape($event, [formField.get('key')?.value])"
+                />
+                (change)="onSubmit(formGroup)"
+              </mat-form-field>
+            </ng-container>
+          </ng-container>
         </ng-container>
       </div>
     </ng-container>

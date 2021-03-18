@@ -22,6 +22,10 @@ export class RiskFormComponent implements OnInit {
     this.setReactiveForm(this.formData);
   }
 
+  public getFormFieldsArray(index: number): FormArray {
+    return this.formGroup.get(['results', 'data', index, 'formFields']) as FormArray;
+  }
+
   public get risksArray(): FormArray {
     return this.formGroup.get(['results', 'data']) as FormArray;
   }
@@ -51,10 +55,7 @@ export class RiskFormComponent implements OnInit {
       this.risksArray.push(
         this.fb.group({
           resultType: risk?.resultType,
-          description: risk.description,
-          value: risk?.value,
-          solution: risk?.solution,
-          status: risk?.status,
+          formFields: risk?.formFields,
         })
       );
     }

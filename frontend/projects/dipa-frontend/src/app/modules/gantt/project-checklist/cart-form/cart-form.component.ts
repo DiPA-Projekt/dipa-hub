@@ -22,6 +22,10 @@ export class CartFormComponent implements OnInit {
     this.setReactiveForm(this.formData);
   }
 
+  public getFormFieldsArray(index: number): FormArray {
+    return this.formGroup.get(['results', 'data', index, 'formFields']) as FormArray;
+  }
+
   public get cartsArray(): FormArray {
     return this.formGroup.get(['results', 'data']) as FormArray;
   }
@@ -51,9 +55,7 @@ export class CartFormComponent implements OnInit {
       this.cartsArray.push(
         this.fb.group({
           resultType: cart?.resultType,
-          shoppingCartNumber: cart?.shoppingCartNumber,
-          shoppingCartContent: cart?.shoppingCartContent,
-          status: cart?.status,
+          formFields: cart?.formFields,
         })
       );
     }
