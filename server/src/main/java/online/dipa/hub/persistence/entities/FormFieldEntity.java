@@ -1,18 +1,15 @@
 package online.dipa.hub.persistence.entities;
 
-import online.dipa.hub.api.model.OptionEntry;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+
 
 import java.util.HashSet;
 import java.util.Set;
 
 import static javax.persistence.CascadeType.ALL;
-import static online.dipa.hub.api.model.FormField.TypeEnum;
-import static online.dipa.hub.api.model.FormField.ControlTypeEnum;
 
 @Entity
 @Table(name = "project_task_form_field")
@@ -134,6 +131,56 @@ public class FormFieldEntity extends BaseEntity {
     public void setProjectTask(final ProjectTaskEntity projectTask) {
         this.projectTask = projectTask;
     }
+
+    public ELBEShoppingCartResultEntity getELBEShoppingCartResults() {
+        return elbeShoppingCartResult;
+    }
+
+    public void setELBEShoppingCartResults(final ELBEShoppingCartResultEntity elbeShoppingCartResult) {
+        this.elbeShoppingCartResult = elbeShoppingCartResult;
+    }
+
+    
+    public RiskResultEntity getRiskResult() {
+        return riskResult;
+    }
+
+    public void setRiskResult(final RiskResultEntity riskResult) {
+        this.riskResult = riskResult;
+    }
+
+    public SingleAppointmentResultEntity getSingleAppointmentResultEntity() {
+        return singleAppointmentResult;
+    }
+
+    public void setSingleAppointmentResultEntity(final SingleAppointmentResultEntity singleAppointmentResult) {
+        this.singleAppointmentResult = singleAppointmentResult;
+    }
+
+    public AppointmentSeriesResultEntity getAppointmentSeriesResultEntity() {
+        return appointmentSeriesResult;
+    }
+
+    public void setAppointmentSeriesResultEntity(final AppointmentSeriesResultEntity appointmentSeriesResult) {
+        this.appointmentSeriesResult = appointmentSeriesResult;
+    }
+
+    public ContactPersonResultEntity getContactPersonResultEntity() {
+        return contactPersonResult;
+    }
+
+    public void setContactPersonResultEntity(final ContactPersonResultEntity contactPersonResult) {
+        this.contactPersonResult = contactPersonResult;
+    }
+
+    public StandardResultEntity getStandardResultEntity() {
+        return standardResult;
+    }
+
+    public void setStandardResultEntity(final StandardResultEntity standardResult) {
+        this.standardResult = standardResult;
+    }
+
 
 //    public Set<OptionEntryEntity> getOptions() {
 //        return options;

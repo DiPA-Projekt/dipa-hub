@@ -1,7 +1,6 @@
 package online.dipa.hub.convert;
 
 import online.dipa.hub.api.model.FormField;
-import online.dipa.hub.api.model.Project;
 import online.dipa.hub.persistence.entities.FormFieldEntity;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;

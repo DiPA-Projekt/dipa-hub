@@ -49,7 +49,6 @@ public class ProjectTaskEntityToProjectTaskConverter implements Converter<Projec
         List<FormField> formFields = template.getFormFields().stream().map(p -> formFieldConverter.convert(p)).collect(Collectors.toList());
         projectTask.entries(formFields);
 
-        System.out.println(formFields);
 
         if (!template.getStandardResult().isEmpty()) {
             List<Result> standardResults = template.getStandardResult().stream().map(p -> standardResultConverter.convert(p)).collect(Collectors.toList());

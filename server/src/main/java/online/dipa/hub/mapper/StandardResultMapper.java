@@ -16,7 +16,7 @@ public interface StandardResultMapper {
 //    }
 
 //    @Mapping(source = "result", target= "content")
-//    void updateStandardResult(StandardResult standardResult, @MappingTarget StandardResultEntity standardResultEntity);
+   void updateStandardResult(StandardResult standardResult, @MappingTarget StandardResultEntity standardResultEntity);
 
 
 

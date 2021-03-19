@@ -23,10 +23,9 @@ public class StandardResultEntityToStandardResult implements Converter<StandardR
 
         StandardResult standardResult = new StandardResult();
 
-       List<FormField> formFields = entity.getFormFields().stream().map(p -> formFieldEntityToFormFieldConverter.convert(p)).collect(Collectors.toList());
+        List<FormField> formFields = entity.getFormFields().stream().map(p -> formFieldEntityToFormFieldConverter.convert(p)).collect(Collectors.toList());
         standardResult.formFields(formFields);
 
-        System.out.println(entity.getFormFields());
 
         return (StandardResult) standardResult.resultType(String.valueOf(entity.getResultType()));
     }

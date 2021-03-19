@@ -105,11 +105,11 @@ public class ProjectService {
                     .findFirst()
                 )
                 .ifPresent(oldProjectTask -> {
-                    projectTaskMapper.updateFormFieldEntity(projectTask, oldProjectTask, formFieldRepository);
+                    // projectTaskMapper.updateFormFieldEntity(projectTask, oldProjectTask, formFieldRepository);
 
                     projectTaskMapper.updateProjectTaskEntity(projectTask, oldProjectTask,
                             elbeShoppingCartResultRepository, riskResultRepository,
-                            contactPersonResultRepository, singleAppointmentResultRepository, apptSeriesResultRepository);
+                            contactPersonResultRepository, singleAppointmentResultRepository, apptSeriesResultRepository, formFieldRepository);
                 });
     }
     

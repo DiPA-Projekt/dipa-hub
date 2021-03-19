@@ -154,7 +154,199 @@ databaseChangeLog:
               - column:
                   name: standard_result_id
                   value: 13
-
+  - changeSet:
+      id: insert-project-task-01-Zugspitze-form-entry-contactPerson-25
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_task_form_field
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: value
+                  value:
+              - column:
+                  name: key
+                  value: contactPerson
+              - column:
+                  name: label
+                  value: Ansprechpartner
+              - column:
+                  name: placeholder
+                  value: "Name, Vorname"
+              - column:
+                  name: required
+                  value: false
+              - column:
+                  name: sort_order
+                  value: 1
+              - column:
+                  name: control_type
+                  value: TEXTBOX
+              - column:
+                  name: show
+                  value: true
+              - column:
+                  name: project_task_id
+                  value: 25
+  - changeSet:
+      id: insert-project-task-01-Zugspitze-form-entry-documentationLink-25
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_task_form_field
+            columns:
+              - column:
+                  name: id
+                  value: 6
+              - column:
+                  name: value
+                  value:
+              - column:
+                  name: key
+                  value: documentationLink
+              - column:
+                  name: label
+                  value: Link
+              - column:
+                  name: placeholder
+                  value: "Link zu Jira"
+              - column:
+                  name: required
+                  value: false
+              - column:
+                  name: sort_order
+                  value: 2
+              - column:
+                  name: control_type
+                  value: TEXTBOX
+              - column:
+                  name: type
+                  value: URL
+              - column:
+                  name: show
+                  value: true
+              - column:
+                  name: project_task_id
+                  value: 25
+  - changeSet:
+      id: insert-project-task-02-Zugspitze-form-entry-note-25-elbe
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_task_form_field
+            columns:
+              - column:
+                  name: id
+                  value: 7
+              - column:
+                  name: value
+                  value:
+              - column:
+                  name: key
+                  value: note
+              - column:
+                  name: label
+                  value: Notiz
+              - column:
+                  name: placeholder
+                  value: Notiz
+              - column:
+                  name: required
+                  value: false
+              - column:
+                  name: sort_order
+                  value: 3
+              - column:
+                  name: control_type
+                  value: TEXTAREA
+              - column:
+                  name: show
+                  value: true
+              - column:
+                  name: elbe_shopping_cart_result_id
+                  value: 2
+  - changeSet:
+      id: insert-project-task-02-Zugspitze-form-entry-resultType-elbe-25
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_task_form_field
+            columns:
+              - column:
+                  name: id
+                  value: 8
+              - column:
+                  name: value
+                  value:
+              - column:
+                  name: key
+                  value: status
+              - column:
+                  name: label
+                  value: Status
+              - column:
+                  name: placeholder
+                  value: Status
+              - column:
+                  name: required
+                  value: false
+              - column:
+                  name: sort_order
+                  value: 4
+              - column:
+                  name: control_type
+                  value: DROPDOWN
+              - column:
+                  name: show
+                  value: true
+              - column:
+                  name: elbe_shopping_cart_result_id
+                  value: 2
+  - changeSet:
+      id: insert-project-task-02-Zugspitze-form-entry-shopping-cart-number-elbe-25
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_task_form_field
+            columns:
+              - column:
+                  name: id
+                  value: 9
+              - column:
+                  name: value
+                  value:
+              - column:
+                  name: key
+                  value: Shopping Cart Number
+              - column:
+                  name: label
+                  value: Shopping Cart Number
+              - column:
+                  name: placeholder
+                  value: Shopping Cart Number
+              - column:
+                  name: required
+                  value: false
+              - column:
+                  name: sort_order
+                  value: 4
+              - column:
+                  name: control_type
+                  value: TEXTAREA
+              - column:
+                  name: show
+                  value: true
+              - column:
+                  name: elbe_shopping_cart_result_id
+                  value: 2
 
   - changeSet:
       id: insert-option-entry-cart-planned
