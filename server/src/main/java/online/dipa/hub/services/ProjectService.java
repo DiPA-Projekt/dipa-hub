@@ -1,6 +1,5 @@
 package online.dipa.hub.services;
 
-import online.dipa.hub.UserAdministration;
 import online.dipa.hub.api.model.Project;
 import online.dipa.hub.api.model.ProjectTask;
 
@@ -45,9 +44,6 @@ public class ProjectService {
 
     @Autowired
     private ConversionService conversionService;
-    
-    @Autowired
-    private UserAdministration userAdministration;
 
     @Autowired
     private UserInformationService userInformationService;
