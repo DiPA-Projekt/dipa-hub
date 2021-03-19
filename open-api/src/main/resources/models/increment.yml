@@ -13,13 +13,13 @@ Increment:
     start:
       description: The start date of the increment
       type: string
-      format: date-time
-      example: "2017-07-21T17:32:28Z"
+      format: date
+      example: "2017-07-21"
     end:
       description: The end date of the increment
       type: string
-      format: date-time
-      example: "2017-07-21T17:32:28Z"
+      format: date
+      example: "2017-07-21"
   required:
     - id
     - name
