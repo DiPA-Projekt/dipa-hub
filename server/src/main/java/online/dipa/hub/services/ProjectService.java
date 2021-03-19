@@ -49,15 +49,16 @@ public class ProjectService {
     @Autowired
     private UserAdministration userAdministration;
 
+    @Autowired
+    private UserInformationService userInformationService;
+
     private final ProjectProjectEntityMapper projectMapper = Mappers.getMapper(ProjectProjectEntityMapper.class);
     private final ProjectTaskProjectTaskEntityMapper projectTaskMapper = Mappers.getMapper(ProjectTaskProjectTaskEntityMapper.class);
 
 
     public Project getProjectData(final Long projectId) {
 
-        List<String> userGroups = userAdministration.getGroups();
-        // return sessionTimelineState.getSessionTimelines().values().stream().map(SessionTimeline::getTimeline)
-        //                            .filter(t -> userGroups.contains(String.valueOf(t.getId()))).collect(Collectors.toList());
+        List<String> userGroups = userInformationService.getUserData().getGroups();
 
         return projectRespository.findAll().stream().map(p -> conversionService.convert(p, Project.class))
         .filter(t -> userGroups.contains(String.valueOf(t.getId())))

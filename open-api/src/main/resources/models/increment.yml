@@ -14,12 +14,12 @@ Increment:
       description: The start date of the increment
       type: string
       format: date
-      example: "2017-07-21"
+      example: "2020-08-17"
     end:
       description: The end date of the increment
       type: string
       format: date
-      example: "2017-07-21"
+      example: "2024-8-18"
   required:
     - id
     - name

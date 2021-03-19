@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -23,10 +24,15 @@ public class UserInformationService {
             OidcKeycloakAccount account = ((KeycloakAuthenticationToken) authentication).getAccount();
             AccessToken token = account.getKeycloakSecurityContext().getToken();
 
+            @SuppressWarnings("unchecked")
+            List<String> groups = (List<String>) token.getOtherClaims().get("groups");
+            groups.replaceAll(name -> String.valueOf(name.charAt(name.length() - 1)));
+
             currentUser
                     .name(token.getName())
                     .email(token.getEmail())
-                    .roles(new ArrayList<>(account.getRoles()));
+                    .roles(new ArrayList<>(account.getRoles()))
+                    .groups(groups);
         }
         return currentUser;
     }

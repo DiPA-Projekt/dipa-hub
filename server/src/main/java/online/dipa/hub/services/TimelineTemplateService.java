@@ -174,7 +174,6 @@ public class TimelineTemplateService {
 
                 m.setDate(OffsetDateTime.of(currentTimelineStart.plusDays(newMilestoneRelativePosition), LocalTime.NOON, ZoneOffset.UTC));
 
-                // m.setDate(currentTimelineStart.plusDays(newMilestoneRelativePosition));
 
             }
         }
