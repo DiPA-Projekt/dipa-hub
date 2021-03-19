@@ -13,16 +13,14 @@
                   formControlName="value"
                   [id]="formField.get('key')?.value"
                   [value]="formField.get('value')?.value"
-
-                  (focus)="onFocus($event, [formField.get('key')?.value])"
-                  (keyup.esc)="onEscape($event, [formField.get('key')?.value])"
+                  (focus)="onFocus($event, ['results', 'data', i, 'formFields', j, 'value'])"
+                  (keyup.esc)="onEscape($event, ['results', 'data', i, 'formFields', j, 'value'])"
                 />
                 (change)="onSubmit(formGroup)"
               </mat-form-field>
             </ng-container>
           </ng-container>
         </ng-container>
-
       </div>
     </ng-container>
     <span class="">

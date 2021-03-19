@@ -30,12 +30,12 @@ databaseChangeLog:
                   value: 1
               - column:
                   name: control_type
-                  value: TEXT
+                  value: TEXTBOX
               - column:
                   name: show
                   value: true
               - column:
-                  name: standard_result_id
+                  name: project_task_id
                   value: 18
   - changeSet:
       id: insert-project-task-01-Zugspitze-form-entry-documentationLink
@@ -68,7 +68,7 @@ databaseChangeLog:
                   value: 2
               - column:
                   name: control_type
-                  value: TEXT
+                  value: TEXTBOX
               - column:
                   name: type
                   value: URL
@@ -76,10 +76,10 @@ databaseChangeLog:
                   name: show
                   value: true
               - column:
-                  name: standard_result_id
+                  name: project_task_id
                   value: 18
   - changeSet:
-      id: insert-project-task-02-Zugspitze-form-entry-contactPerson
+      id: insert-project-task-02-Zugspitze-form-entry-note
       author: bock
       context: itzbund
       changes:
@@ -94,30 +94,30 @@ databaseChangeLog:
                   value:
               - column:
                   name: key
-                  value: contactPerson
+                  value: note
               - column:
                   name: label
-                  value: Ansprechpartner
+                  value: Notiz
               - column:
                   name: placeholder
-                  value: "Name, Vorname"
+                  value: Notiz
               - column:
                   name: required
                   value: false
               - column:
                   name: sort_order
-                  value: 1
+                  value: 3
               - column:
                   name: control_type
-                  value: TEXT
+                  value: TEXTAREA
               - column:
                   name: show
                   value: true
               - column:
                   name: standard_result_id
-                  value: 19
+                  value: 13
   - changeSet:
-      id: insert-project-task-02-Zugspitze-form-entry-documentationLink
+      id: insert-project-task-02-Zugspitze-form-entry-status
       author: bock
       context: itzbund
       changes:
@@ -132,31 +132,30 @@ databaseChangeLog:
                   value:
               - column:
                   name: key
-                  value: documentationLink
+                  value: status
               - column:
                   name: label
-                  value: Link
+                  value: Status
               - column:
                   name: placeholder
-                  value: "Link zu Jira"
+                  value: Status
               - column:
                   name: required
                   value: false
               - column:
                   name: sort_order
-                  value: 2
+                  value: 4
               - column:
                   name: control_type
-                  value: TEXT
-              - column:
-                  name: type
-                  value: URL
+                  value: DROPDOWN
               - column:
                   name: show
-                  value: false
+                  value: true
               - column:
                   name: standard_result_id
-                  value: 19
+                  value: 13
+
+
   - changeSet:
       id: insert-option-entry-cart-planned
       author: bock
@@ -253,10 +252,10 @@ databaseChangeLog:
                   value: OPEN
               - column:
                   name: value
-                  value: geschlossen
+                  value: offen
               - column:
                   name: form_field_id
-                  value: 2
+                  value: 4
   - changeSet:
       id: insert-option-entry-standard-closed
       author: bock
@@ -276,7 +275,7 @@ databaseChangeLog:
                   value: geschlossen
               - column:
                   name: form_field_id
-                  value: 2
+                  value: 4
   - changeSet:
       id: insert-option-entry-standard-planned
       author: bock
@@ -296,7 +295,7 @@ databaseChangeLog:
                   value: geplant
               - column:
                   name: form_field_id
-                  value: 2
+                  value: 4
   - changeSet:
       id: insert-option-entry-standard-assigned
       author: bock
@@ -316,7 +315,7 @@ databaseChangeLog:
                   value: zugewiesen
               - column:
                   name: form_field_id
-                  value: 2
+                  value: 4
   - changeSet:
       id: insert-option-entry-standard-in-progress
       author: bock
@@ -336,7 +335,7 @@ databaseChangeLog:
                   value: in Bearbeitung
               - column:
                   name: form_field_id
-                  value: 2
+                  value: 4
   - changeSet:
       id: insert-option-entry-standard-submitted
       author: bock
@@ -356,7 +355,7 @@ databaseChangeLog:
                   value: vorgelegt
               - column:
                   name: form_field_id
-                  value: 2
+                  value: 4
   - changeSet:
       id: insert-option-entry-standard-done
       author: bock
@@ -376,7 +375,7 @@ databaseChangeLog:
                   value: fertiggestellt
               - column:
                   name: form_field_id
-                  value: 2
+                  value: 4
   - changeSet:
       id: insert-option-entry-person-open
       author: bock

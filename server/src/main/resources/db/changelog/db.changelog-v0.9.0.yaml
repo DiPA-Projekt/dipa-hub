@@ -112,7 +112,7 @@ databaseChangeLog:
                   type: BIGINT
             tableName: project_task_form_field
   - changeSet:
-      id: createForeignKeyConstraint-formField-projectTaskFormField
+      id: createForeignKeyConstraint-projectTask-projectTaskFormField
       author: bock
       changes:
         - addForeignKeyConstraint:
@@ -123,6 +123,71 @@ databaseChangeLog:
             initiallyDeferred: false
             referencedColumnNames: id
             referencedTableName: project_task
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-appointmentSeriesResult-projectTaskFormField
+      author: bock
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: appointment_series_result_id
+            baseTableName: project_task_form_field
+            constraintName: FKAppointmentSeriesResultProjectTaskFormField
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: appointment_series_result
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-elbeShoppingCartResult-projectTaskFormField
+      author: bock
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: elbe_shopping_cart_result_id
+            baseTableName: project_task_form_field
+            constraintName: FKElbeShoppingCartResultProjectTaskFormField
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: elbe_shopping_cart_result
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-contactPersonResult-projectTaskFormField
+      author: bock
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: contact_person_result_id
+            baseTableName: project_task_form_field
+            constraintName: FKContactPersonResultProjectTaskFormField
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: contact_person_result
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-riskResult-projectTaskFormField
+      author: bock
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: risk_result_id
+            baseTableName: project_task_form_field
+            constraintName: FKRiskResultProjectTaskFormField
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: risk_result
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-singleAppointmentResult-projectTaskFormField
+      author: bock
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: single_appointment_result_id
+            baseTableName: project_task_form_field
+            constraintName: FKSingleAppointmentResultProjectTaskFormField
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: single_appointment_result
             validate: true
   - changeSet:
       id: createForeignKeyConstraint-standardResult-projectTaskFormField

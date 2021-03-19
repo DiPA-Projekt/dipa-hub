@@ -35,11 +35,11 @@ FormField:
       description: Type of form field
       type: string
       enum:
-        - TEXT
+        - TEXTBOX
         - TEXTAREA
         - DROPDOWN
-      default: TEXT
-      example: TEXT
+      default: TEXTBOX
+      example: TEXTBOX
     type:
       description: HTML input types for controlType TEXT
       type: string

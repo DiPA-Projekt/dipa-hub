@@ -38,7 +38,6 @@ public class FormFieldEntity extends BaseEntity {
 
     private boolean show;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private ProjectTaskEntity projectTask;
 
@@ -46,27 +45,21 @@ public class FormFieldEntity extends BaseEntity {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<OptionEntryEntity> options = new HashSet<>();
 
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private AppointmentSeriesResultEntity appointmentSeriesResult;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private ContactPersonResultEntity contactPersonResult;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private ELBEShoppingCartResultEntity elbeShoppingCartResult;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private RiskResultEntity riskResult;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private SingleAppointmentResultEntity singleAppointmentResult;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private StandardResultEntity standardResult;
 

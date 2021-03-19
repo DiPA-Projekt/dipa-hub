@@ -15,74 +15,74 @@ export class ProjectTaskFormComponent implements OnInit {
 
   public formGroup: FormGroup;
 
-  public cartStatusList = [
-    {
-      value: 'PLANNED',
-      name: 'geplant',
-    },
-    {
-      value: 'ORDERED',
-      name: 'bestellt',
-    },
-    {
-      value: 'APPROVED',
-      name: 'genehmigt',
-    },
-    {
-      value: 'DELIVERED',
-      name: 'geliefert',
-    },
-  ];
-
-  public standardStatusList = [
-    {
-      value: 'OPEN',
-      name: 'offen',
-    },
-    {
-      value: 'CLOSED',
-      name: 'geschlossen',
-    },
-    {
-      value: 'PLANNED',
-      name: 'geplant',
-    },
-    {
-      value: 'ASSIGNED',
-      name: 'zugewiesen',
-    },
-    {
-      value: 'IN_PROGRESS',
-      name: 'in Bearbeitung',
-    },
-    {
-      value: 'SUBMITTED',
-      name: 'vorgelegt',
-    },
-    {
-      value: 'DONE',
-      name: 'fertiggestellt',
-    },
-  ];
-
-  public personStatusList = [
-    {
-      value: 'OPEN',
-      name: 'offen',
-    },
-    {
-      value: 'CONTACTED',
-      name: 'angesprochen',
-    },
-    {
-      value: 'ANSWER_RECEIVED',
-      name: 'Antwort erhalten',
-    },
-    {
-      value: 'DONE',
-      name: 'abgeschlossen',
-    },
-  ];
+  // public cartStatusList = [
+  //   {
+  //     value: 'PLANNED',
+  //     name: 'geplant',
+  //   },
+  //   {
+  //     value: 'ORDERED',
+  //     name: 'bestellt',
+  //   },
+  //   {
+  //     value: 'APPROVED',
+  //     name: 'genehmigt',
+  //   },
+  //   {
+  //     value: 'DELIVERED',
+  //     name: 'geliefert',
+  //   },
+  // ];
+  //
+  // public standardStatusList = [
+  //   {
+  //     value: 'OPEN',
+  //     name: 'offen',
+  //   },
+  //   {
+  //     value: 'CLOSED',
+  //     name: 'geschlossen',
+  //   },
+  //   {
+  //     value: 'PLANNED',
+  //     name: 'geplant',
+  //   },
+  //   {
+  //     value: 'ASSIGNED',
+  //     name: 'zugewiesen',
+  //   },
+  //   {
+  //     value: 'IN_PROGRESS',
+  //     name: 'in Bearbeitung',
+  //   },
+  //   {
+  //     value: 'SUBMITTED',
+  //     name: 'vorgelegt',
+  //   },
+  //   {
+  //     value: 'DONE',
+  //     name: 'fertiggestellt',
+  //   },
+  // ];
+  //
+  // public personStatusList = [
+  //   {
+  //     value: 'OPEN',
+  //     name: 'offen',
+  //   },
+  //   {
+  //     value: 'CONTACTED',
+  //     name: 'angesprochen',
+  //   },
+  //   {
+  //     value: 'ANSWER_RECEIVED',
+  //     name: 'Antwort erhalten',
+  //   },
+  //   {
+  //     value: 'DONE',
+  //     name: 'abgeschlossen',
+  //   },
+  // ];
 
   public showFieldsForm: FormControl; // = new FormControl(this.myselected);
 
@@ -121,6 +121,14 @@ export class ProjectTaskFormComponent implements OnInit {
     });
   }
 
+  public addSelectionFields(event: any, form: FormGroup): void {
+    console.log(event);
+    console.log(form);
+    // this.projectService.updateProjectTask(this.selectedTimelineId, form.value).subscribe(() => {
+    //   form.reset(form.value);
+    // });
+  }
+
   public onFocus(event: FocusEvent, path: (string | number)[]): void {
     const valueInput = event.target as HTMLInputElement;
     valueInput.setAttribute('data-value', this.formGroup.get(path).value || '');
@@ -140,6 +148,7 @@ export class ProjectTaskFormComponent implements OnInit {
         selectedValues.push(entry.get('key').value);
       }
     }
+
     return selectedValues;
   }
 
@@ -176,6 +185,7 @@ export class ProjectTaskFormComponent implements OnInit {
           sortOrder: entry?.sortOrder,
           controlType: entry?.controlType,
           type: entry?.type,
+          options: entry?.options,
           show: entry?.show,
         })
       );

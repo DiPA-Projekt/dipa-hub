@@ -42,10 +42,16 @@ export class StandardTaskFormComponent implements OnInit {
 
   private setReactiveForm(data: StandardResult[]): void {
     for (const defaultTask of data) {
+      const formFieldsArray = this.fb.array([]);
+
+      for (const formField of defaultTask?.formFields) {
+        formFieldsArray.push(this.fb.group(formField));
+      }
+
       this.defaultTaskArray.push(
         this.fb.group({
           resultType: defaultTask?.resultType,
-          formFields: defaultTask?.formFields,
+          formFields: formFieldsArray,
         })
       );
     }

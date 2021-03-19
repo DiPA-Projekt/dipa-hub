@@ -7,17 +7,38 @@
             <ng-container [formGroupName]="j">
               <mat-form-field *ngIf="formField.get('show')?.value">
                 <mat-label>{{ formField.get('label')?.value }}</mat-label>
-                <input
-                  matInput
-                  [placeholder]="formField.get('placeholder').value"
-                  formControlName="value"
-                  [id]="formField.get('key')?.value"
-                  [value]="formField.get('value')?.value"
 
-                  (focus)="onFocus($event, [formField.get('key')?.value])"
-                  (keyup.esc)="onEscape($event, [formField.get('key')?.value])"
-                />
-                (change)="onSubmit(formGroup)"
+                <div [ngSwitch]="formField.get('controlType')?.value">
+                  <input
+                    *ngSwitchCase="'TEXTBOX'"
+                    matInput
+                    [placeholder]="formField.get('placeholder').value"
+                    formControlName="value"
+                    [id]="formField.get('key')?.value"
+                    [value]="formField.get('value')?.value"
+                    (focus)="onFocus($event, ['results', 'data', i, 'formFields', j, 'value'])"
+                    (keyup.esc)="onEscape($event, ['results', 'data', i, 'formFields', j, 'value'])"
+                  />
+                  <!--                  (change)="onSubmit(formGroup)"-->
+                  <textarea
+                    *ngSwitchCase="'TEXTAREA'"
+                    matInput
+                    [placeholder]="formField.get('placeholder').value"
+                    formControlName="value"
+                    [id]="formField.get('key')?.value"
+                    [value]="formField.get('value')?.value"
+                    (focus)="onFocus($event, ['results', 'data', i, 'formFields', j, 'value'])"
+                    (keyup.esc)="onEscape($event, ['results', 'data', i, 'formFields', j, 'value'])"
+                  >
+<!--                    (change)="onSubmit(formGroup)"-->
+            </textarea
+                  >
+                  <mat-select *ngSwitchCase="'DROPDOWN'" formControlName="value">
+                    <mat-option *ngFor="let opt of formField.get('options')?.value" [value]="opt.key">
+                      {{ opt.value }}
+                    </mat-option>
+                  </mat-select>
+                </div>
               </mat-form-field>
             </ng-container>
           </ng-container>
