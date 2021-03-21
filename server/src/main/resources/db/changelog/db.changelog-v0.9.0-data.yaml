@@ -347,7 +347,6 @@ databaseChangeLog:
               - column:
                   name: elbe_shopping_cart_result_id
                   value: 2
-
   - changeSet:
       id: insert-option-entry-cart-planned
       author: bock

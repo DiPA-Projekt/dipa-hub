@@ -1,13 +1,19 @@
 <form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup)">
-  <mat-form-field style="float: right">
-    <mat-label>Felder auswählen</mat-label>
-    <mat-select [formControl]="showFieldsForm" (selectionChange)="changeShowSelection($event)" multiple>
-      <mat-option *ngFor="let entry of entriesArray.controls" [value]="entry.get('key')?.value">{{
-        entry.get('label')?.value
-      }}</mat-option>
-    </mat-select>
-  </mat-form-field>
-
+  <div>
+    <mat-form-field style="float: right">
+      <mat-label>Felder auswählen</mat-label>
+      <mat-select [formControl]="showFieldsForm" (selectionChange)="changeShowSelection($event)" multiple>
+        <mat-option *ngFor="let entry of entriesArray.controls" [value]="entry.get('key')?.value">{{
+          entry.get('label')?.value
+        }}</mat-option>
+        <mat-optgroup *ngFor="let group of formFieldGroups" [label]="group.name">
+          <mat-option *ngFor="let formField of group.fields" [value]="formField.value">
+            {{ formField.viewValue }}
+          </mat-option>
+        </mat-optgroup>
+      </mat-select>
+    </mat-form-field>
+  </div>
   <ng-container formArrayName="entries">
     <ng-container *ngFor="let entry of entriesArray.controls; let i = index">
       <ng-container [formGroupName]="i">
@@ -76,8 +82,14 @@
         [formData]="taskData.results.data"
         (dataChanged)="onSubmit(formGroup)"
       ></app-appointment-series-form>
-      <app-default-task-form *ngSwitchDefault [formData]="taskData.results.data" (dataChanged)="onSubmit(formGroup)">
-      </app-default-task-form>
+      <app-standard-task-form
+        *ngSwitchDefault
+        [formData]="taskData.results.data"
+        [showFieldsForm]="showFieldsForm"
+        [formFieldGroups]="formFieldGroups"
+        (dataChanged)="onSubmit(formGroup)"
+      >
+      </app-standard-task-form>
     </ng-container>
   </ng-container>
 

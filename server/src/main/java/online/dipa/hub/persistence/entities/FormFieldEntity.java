@@ -181,22 +181,13 @@ public class FormFieldEntity extends BaseEntity {
         this.standardResult = standardResult;
     }
 
+    public Set<OptionEntryEntity> getOptions() {
+        return options;
+    }
 
-//    public Set<OptionEntryEntity> getOptions() {
-//        return options;
-//    }
-//
-//    public void setOptions(Set<OptionEntryEntity> options) {
-//        this.options = options;
-//    }
-
-//    public OptionEntryEntity getOptions() {
-//        return options;
-//    }
-//
-//    public void setOptions(OptionEntryEntity options) {
-//        this.options = options;
-//    }
+    public void setOptions(Set<OptionEntryEntity> options) {
+        this.options = options;
+    }
 
     public boolean isShow() {
         return show;

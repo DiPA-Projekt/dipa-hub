@@ -65,9 +65,57 @@ export class CartFormComponent implements OnInit {
   private get emptyCart(): FormGroup {
     return this.fb.group({
       resultType: 'TYPE_ELBE_SC',
-      shoppingCartNumber: '',
-      shoppingCartContent: '',
-      status: null,
+      formFields: [
+        {
+          value: '',
+          key: 'shoppingCartNumber',
+          label: '',
+          placeholder: '',
+          required: false,
+          sortOrder: '1',
+          controlType: 'TEXTBOX',
+          type: 'TEXT',
+          show: true,
+        },
+        {
+          value: '',
+          key: 'shoppingCartContent',
+          label: '',
+          placeholder: '',
+          required: false,
+          sortOrder: '2',
+          controlType: 'TEXTBOX',
+          type: 'TEXT',
+          show: true,
+        },
+        {
+          value: '',
+          key: 'note',
+          label: 'Notizen',
+          placeholder: '',
+          required: false,
+          sortOrder: '3',
+          controlType: 'TEXTAREA',
+          show: true,
+        },
+        {
+          value: '',
+          key: 'status',
+          label: '',
+          placeholder: '',
+          required: false,
+          sortOrder: '4',
+          controlType: 'DROPDOWN',
+          type: '',
+          show: true,
+          options: [
+            { key: 'PLANNED', value: 'geplant' },
+            { key: 'ORDERED', value: 'bestellt' },
+            { key: 'APPROVED', value: 'genehmigt' },
+            { key: 'DELIVERED', value: 'geliefert' },
+          ],
+        },
+      ],
     });
   }
 }

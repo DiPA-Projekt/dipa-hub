@@ -16,24 +16,26 @@
                     formControlName="value"
                     [id]="formField.get('key')?.value"
                     [value]="formField.get('value')?.value"
+                    (change)="dataChanged.emit()"
                     (focus)="onFocus($event, ['results', 'data', i, 'formFields', j, 'value'])"
                     (keyup.esc)="onEscape($event, ['results', 'data', i, 'formFields', j, 'value'])"
                   />
-                  <!--                  (change)="onSubmit(formGroup)"-->
                   <textarea
                     *ngSwitchCase="'TEXTAREA'"
                     matInput
+                    matTextareaAutosize
+                    matAutosizeMinRows="1"
+                    matAutosizeMaxRows="5"
                     [placeholder]="formField.get('placeholder').value"
                     formControlName="value"
                     [id]="formField.get('key')?.value"
                     [value]="formField.get('value')?.value"
+                    (change)="dataChanged.emit()"
                     (focus)="onFocus($event, ['results', 'data', i, 'formFields', j, 'value'])"
                     (keyup.esc)="onEscape($event, ['results', 'data', i, 'formFields', j, 'value'])"
                   >
-<!--                    (change)="onSubmit(formGroup)"-->
-            </textarea
-                  >
-                  <mat-select *ngSwitchCase="'DROPDOWN'" formControlName="value">
+                  </textarea>
+                  <mat-select *ngSwitchCase="'DROPDOWN'" (selectionChange)="dataChanged.emit()" formControlName="value">
                     <mat-option *ngFor="let opt of formField.get('options')?.value" [value]="opt.key">
                       {{ opt.value }}
                     </mat-option>

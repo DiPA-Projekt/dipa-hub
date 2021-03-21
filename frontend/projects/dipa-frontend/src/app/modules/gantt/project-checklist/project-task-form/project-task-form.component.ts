@@ -3,6 +3,16 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { FormField, ProjectService, ProjectTask } from 'dipa-api-client';
 import { MatSelectChange } from '@angular/material/select';
 
+interface SelectOption {
+  value: string;
+  viewValue: string;
+}
+
+interface SelectOptionGroup {
+  name: string;
+  fields: SelectOption[];
+}
+
 @Component({
   selector: 'app-project-task-form',
   templateUrl: './project-task-form.component.html',
@@ -13,78 +23,11 @@ export class ProjectTaskFormComponent implements OnInit {
   @Input() public selectedTimelineId: number;
   @Output() public stepStatusChanged = new EventEmitter();
 
+  formFieldGroups: SelectOptionGroup[] = [];
+
   public formGroup: FormGroup;
 
-  // public cartStatusList = [
-  //   {
-  //     value: 'PLANNED',
-  //     name: 'geplant',
-  //   },
-  //   {
-  //     value: 'ORDERED',
-  //     name: 'bestellt',
-  //   },
-  //   {
-  //     value: 'APPROVED',
-  //     name: 'genehmigt',
-  //   },
-  //   {
-  //     value: 'DELIVERED',
-  //     name: 'geliefert',
-  //   },
-  // ];
-  //
-  // public standardStatusList = [
-  //   {
-  //     value: 'OPEN',
-  //     name: 'offen',
-  //   },
-  //   {
-  //     value: 'CLOSED',
-  //     name: 'geschlossen',
-  //   },
-  //   {
-  //     value: 'PLANNED',
-  //     name: 'geplant',
-  //   },
-  //   {
-  //     value: 'ASSIGNED',
-  //     name: 'zugewiesen',
-  //   },
-  //   {
-  //     value: 'IN_PROGRESS',
-  //     name: 'in Bearbeitung',
-  //   },
-  //   {
-  //     value: 'SUBMITTED',
-  //     name: 'vorgelegt',
-  //   },
-  //   {
-  //     value: 'DONE',
-  //     name: 'fertiggestellt',
-  //   },
-  // ];
-  //
-  // public personStatusList = [
-  //   {
-  //     value: 'OPEN',
-  //     name: 'offen',
-  //   },
-  //   {
-  //     value: 'CONTACTED',
-  //     name: 'angesprochen',
-  //   },
-  //   {
-  //     value: 'ANSWER_RECEIVED',
-  //     name: 'Antwort erhalten',
-  //   },
-  //   {
-  //     value: 'DONE',
-  //     name: 'abgeschlossen',
-  //   },
-  // ];
-
-  public showFieldsForm: FormControl; // = new FormControl(this.myselected);
+  public showFieldsForm: FormControl;
 
   public constructor(private projectService: ProjectService, private fb: FormBuilder) {}
 
@@ -103,9 +46,29 @@ export class ProjectTaskFormComponent implements OnInit {
     for (const entry of this.entriesArray.controls) {
       const showItem = selectedValues.includes(entry.get('key').value);
       entry.get('show').setValue(showItem);
-
-      this.onSubmit(this.formGroup);
     }
+
+    for (const formFieldGroup of this.formFieldGroups) {
+      for (const field of formFieldGroup.fields) {
+        console.log('Überprüfe für: ' + field.value);
+
+        const dataArray = this.getCurrentResultsDataArray();
+        for (const controls of dataArray.controls) {
+          const formFieldsArray = controls.get('formFields') as FormArray;
+          console.log(controls.get('formFields'));
+
+          for (const ffEntry of formFieldsArray.controls) {
+            const currentKey = ffEntry.get('key').value as string;
+            const showItem = selectedValues.includes(`formFields.${currentKey}`);
+            ffEntry.get('show').setValue(showItem);
+
+            console.log(ffEntry);
+          }
+        }
+      }
+    }
+
+    this.onSubmit(this.formGroup);
   }
 
   public toggleCompleteStatus(): void {
@@ -119,14 +82,6 @@ export class ProjectTaskFormComponent implements OnInit {
     this.projectService.updateProjectTask(this.selectedTimelineId, form.value).subscribe(() => {
       form.reset(form.value);
     });
-  }
-
-  public addSelectionFields(event: any, form: FormGroup): void {
-    console.log(event);
-    console.log(form);
-    // this.projectService.updateProjectTask(this.selectedTimelineId, form.value).subscribe(() => {
-    //   form.reset(form.value);
-    // });
   }
 
   public onFocus(event: FocusEvent, path: (string | number)[]): void {
@@ -143,6 +98,7 @@ export class ProjectTaskFormComponent implements OnInit {
   private getShowFieldsSelection(): string[] {
     const selectedValues: string[] = [];
 
+    // TODO: push auch die formFields
     for (const entry of this.entriesArray.controls) {
       if (entry.get('show').value) {
         selectedValues.push(entry.get('key').value);
@@ -160,7 +116,7 @@ export class ProjectTaskFormComponent implements OnInit {
       explanation: [data?.explanation],
       completed: [data?.completed],
       //entries: [data?.entries],
-      entries: this.getEntries(data?.entries),
+      entries: this.getEntriesArray(data?.entries),
       // contactPerson: [data?.contactPerson],
       // documentationLink: [data?.documentationLink],
       results: this.fb.group({
@@ -170,7 +126,7 @@ export class ProjectTaskFormComponent implements OnInit {
     });
   }
 
-  private getEntries(entries: FormField[]): FormArray {
+  private getEntriesArray(entries: FormField[]): FormArray {
     const entriesArray = this.fb.array([]);
 
     for (const entry of entries) {
@@ -191,5 +147,9 @@ export class ProjectTaskFormComponent implements OnInit {
       );
     }
     return entriesArray;
+  }
+
+  private getCurrentResultsDataArray(): FormArray {
+    return this.formGroup.get(['results', 'data']) as FormArray;
   }
 }

@@ -99,7 +99,7 @@ public interface ProjectTaskProjectTaskEntityMapper
         List<StandardResult> newList = projectTask.getResults().getData().stream().map(StandardResult.class::cast).collect(Collectors.toList());
 
      
-        List<FormFieldEntity> oldEntriesList = oldList.get(0).getFormFields().stream().collect(Collectors.toList());
+        List<FormFieldEntity> oldEntriesList = new ArrayList<>(oldList.get(0).getFormFields());
         List<FormField> newListEntries = newList.get(0).getFormFields();
 
 
@@ -127,8 +127,8 @@ public interface ProjectTaskProjectTaskEntityMapper
 
                 List<FormField> newListEntries = newList.get(i).getFormFields();
 
-                for (int index = 0; index < newListEntries.size(); index++) {
-                    FormFieldEntity formField = toFormFieldEntity(newListEntries.get(index));
+                for (FormField newListEntry : newListEntries) {
+                    FormFieldEntity formField = toFormFieldEntity(newListEntry);
 
                     formField.setId(formFieldRepository.count() + 1);
                     formField.setELBEShoppingCartResults(entity);
@@ -139,7 +139,7 @@ public interface ProjectTaskProjectTaskEntityMapper
 
             }
             else {
-                List<FormFieldEntity> oldEntriesList = oldList.get(i).getFormFields().stream().collect(Collectors.toList());
+                List<FormFieldEntity> oldEntriesList = new ArrayList<>(oldList.get(i).getFormFields());
                 List<FormField> newListEntries = newList.get(i).getFormFields();
        
                 
@@ -170,8 +170,8 @@ public interface ProjectTaskProjectTaskEntityMapper
 
                 List<FormField> newListEntries = newList.get(i).getFormFields();
 
-                for (int index = 0; index < newListEntries.size(); index++) {
-                    FormFieldEntity formField = toFormFieldEntity(newListEntries.get(index));
+                for (FormField newListEntry : newListEntries) {
+                    FormFieldEntity formField = toFormFieldEntity(newListEntry);
 
                     formField.setId(formFieldRepository.count() + 1);
                     formField.setContactPersonResultEntity(entity);
@@ -182,7 +182,7 @@ public interface ProjectTaskProjectTaskEntityMapper
 
             }
             else {
-                List<FormFieldEntity> oldEntriesList = oldList.get(i).getFormFields().stream().collect(Collectors.toList());
+                List<FormFieldEntity> oldEntriesList = new ArrayList<>(oldList.get(i).getFormFields());
                 List<FormField> newListEntries = newList.get(i).getFormFields();
             
                 for (int j = 0; j < newListEntries.size(); j++) {
@@ -212,8 +212,8 @@ public interface ProjectTaskProjectTaskEntityMapper
 
                 List<FormField> newListEntries = newList.get(i).getFormFields();
 
-                for (int index = 0; index < newListEntries.size(); index++) {
-                    FormFieldEntity formField = toFormFieldEntity(newListEntries.get(index));
+                for (FormField newListEntry : newListEntries) {
+                    FormFieldEntity formField = toFormFieldEntity(newListEntry);
 
                     formField.setId(formFieldRepository.count() + 1);
                     formField.setAppointmentSeriesResultEntity(entity);
@@ -224,7 +224,7 @@ public interface ProjectTaskProjectTaskEntityMapper
 
             }
             else {
-                List<FormFieldEntity> oldEntriesList = oldList.get(i).getFormFields().stream().collect(Collectors.toList());
+                List<FormFieldEntity> oldEntriesList = new ArrayList<>(oldList.get(i).getFormFields());
                 List<FormField> newListEntries = newList.get(i).getFormFields();
             
                 for (int j = 0; j < newListEntries.size(); j++) {
@@ -253,8 +253,8 @@ public interface ProjectTaskProjectTaskEntityMapper
 
                 List<FormField> newListEntries = newList.get(i).getFormFields();
 
-                for (int index = 0; index < newListEntries.size(); index++) {
-                    FormFieldEntity formField = toFormFieldEntity(newListEntries.get(index));
+                for (FormField newListEntry : newListEntries) {
+                    FormFieldEntity formField = toFormFieldEntity(newListEntry);
 
                     formField.setId(formFieldRepository.count() + 1);
                     formField.setRiskResult(entity);
@@ -265,7 +265,7 @@ public interface ProjectTaskProjectTaskEntityMapper
 
             }
             else {
-                List<FormFieldEntity> oldEntriesList = oldList.get(i).getFormFields().stream().collect(Collectors.toList());
+                List<FormFieldEntity> oldEntriesList = new ArrayList<>(oldList.get(i).getFormFields());
                 List<FormField> newListEntries = newList.get(i).getFormFields();
             
                 for (int j = 0; j < newListEntries.size(); j++) {
@@ -294,8 +294,8 @@ public interface ProjectTaskProjectTaskEntityMapper
 
                 List<FormField> newListEntries = newList.get(i).getFormFields();
 
-                for (int index = 0; index < newListEntries.size(); index++) {
-                    FormFieldEntity formField = toFormFieldEntity(newListEntries.get(index));
+                for (FormField newListEntry : newListEntries) {
+                    FormFieldEntity formField = toFormFieldEntity(newListEntry);
 
                     formField.setId(formFieldRepository.count() + 1);
                     formField.setSingleAppointmentResultEntity(entity);
@@ -306,7 +306,7 @@ public interface ProjectTaskProjectTaskEntityMapper
 
             }
             else {
-                List<FormFieldEntity> oldEntriesList = oldList.get(i).getFormFields().stream().collect(Collectors.toList());
+                List<FormFieldEntity> oldEntriesList = new ArrayList<>(oldList.get(i).getFormFields());
                 List<FormField> newListEntries = newList.get(i).getFormFields();
             
                 for (int j = 0; j < newListEntries.size(); j++) {
