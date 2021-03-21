@@ -7,7 +7,6 @@ import static javax.persistence.CascadeType.ALL;
 import java.util.HashSet;
 import java.util.Set;
 
-import online.dipa.hub.api.model.FormField;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 

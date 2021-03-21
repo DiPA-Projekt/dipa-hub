@@ -26,7 +26,6 @@ public class OptionEntryEntity extends BaseEntity {
     @Basic
     private String value;
 
-    @NotNull
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private FormFieldEntity formField;
 
