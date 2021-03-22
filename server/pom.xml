@@ -6,7 +6,7 @@
     <parent>
         <groupId>online.dipa.hub</groupId>
         <artifactId>dipa-parent</artifactId>
-        <version>0.8.1-SNAPSHOT</version>
+        <version>0.9.0</version>
     </parent>
     <artifactId>dipa-server</artifactId>
     <name>DiPA :: Server</name>
