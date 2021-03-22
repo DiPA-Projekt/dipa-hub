@@ -348,9 +348,10 @@ export class ProjectDuration {
           }
         }
 
-        this.projectEndDate = this.xScale.invert(xValueStart + widthNew);
-
-        this.redraw(0);
+        if (this.xScale.invert(xValueStart + widthNew).toDateString() !== this.projectStartDate.toDateString()) {
+          this.projectEndDate = this.xScale.invert(xValueStart + widthNew);
+          this.redraw(0);
+        }
       })
       .on('start', () => {
         this.dragStartDate = this.projectEndDate;
