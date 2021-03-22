@@ -20,5 +20,11 @@ User:
       type: array
       items:
         type: string
+    projects:
+      description: Current user project's ids
+      type: array
+      items:
+        type: integer
+        format: int64
   required:
     - name

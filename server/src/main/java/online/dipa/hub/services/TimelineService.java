@@ -62,10 +62,10 @@ public class TimelineService {
     public List<Timeline> getTimelines() {
         initializeTimelines();
 
-        List<String> userGroups = userInformationService.getUserData().getGroups();
+        List<Long> projectIds = userInformationService.getUserData().getProjects();
 
         return sessionTimelineState.getSessionTimelines().values().stream().map(SessionTimeline::getTimeline)
-                                   .filter(t -> userGroups.contains(String.valueOf(t.getId()))).collect(Collectors.toList());
+                                   .filter(t -> projectIds.contains(t.getId())).collect(Collectors.toList());
     }
 
     public Timeline getTimeline(final Long timelineId) {
