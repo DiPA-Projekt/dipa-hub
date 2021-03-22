@@ -22,8 +22,9 @@
                 matInput
                 placeholder="Zielzustand"
                 formControlName="goal"
-                [value]="singleAppointment.get('goal')?.value"
                 (change)="this.dataChanged.emit()"
+                (focus)="onFocus($event, ['results', 'data', i, 'goal'])"
+                (keyup.esc)="onEscape($event, ['results', 'data', i, 'goal'])"
               />
             </mat-form-field>
             <mat-form-field>
@@ -32,8 +33,9 @@
                 matInput
                 placeholder="Verantwortung"
                 formControlName="responsiblePerson"
-                [value]="singleAppointment.get('responsiblePerson')?.value"
                 (change)="this.dataChanged.emit()"
+                (focus)="onFocus($event, ['results', 'data', i, 'responsiblePerson'])"
+                (keyup.esc)="onEscape($event, ['results', 'data', i, 'responsiblePerson'])"
               />
             </mat-form-field>
             <mat-form-field>

@@ -6,7 +6,7 @@
     <parent>
         <groupId>online.dipa.hub</groupId>
         <artifactId>dipa-parent</artifactId>
-        <version>0.8.0</version>
+        <version>0.9.0</version>
     </parent>
     <artifactId>dipa-server</artifactId>
     <name>DiPA :: Server</name>
@@ -124,7 +124,7 @@
         <dependency>
             <groupId>org.mnode.ical4j</groupId>
             <artifactId>ical4j</artifactId>
-            <version>3.0.21</version>
+            <version>3.0.22</version>
         </dependency>
 
         <dependency>

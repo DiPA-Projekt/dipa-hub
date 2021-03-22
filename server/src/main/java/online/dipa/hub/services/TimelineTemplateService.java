@@ -1,6 +1,9 @@
 package online.dipa.hub.services;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -151,9 +154,9 @@ public class TimelineTemplateService {
 
         LocalDate initTimelineStart = LocalDate.now();
 
-        Optional<LocalDate> initTimelineEndOptional = milestones.stream().map(Milestone::getDate).max(LocalDate::compareTo);
+        Optional<OffsetDateTime> initTimelineEndOptional = milestones.stream().map(Milestone::getDate).max(OffsetDateTime::compareTo);
 
-        LocalDate initTimelineEnd;
+        OffsetDateTime initTimelineEnd;
 
         if (initTimelineEndOptional.isPresent()) {
             initTimelineEnd = initTimelineEndOptional.get();
@@ -169,7 +172,8 @@ public class TimelineTemplateService {
                 long oldMilestoneRelativePosition = DAYS.between(initTimelineStart, m.getDate());
                 long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
 
-                m.setDate(currentTimelineStart.plusDays(newMilestoneRelativePosition));
+                m.setDate(OffsetDateTime.of(currentTimelineStart.plusDays(newMilestoneRelativePosition), LocalTime.NOON, ZoneOffset.UTC));
+
 
             }
         }

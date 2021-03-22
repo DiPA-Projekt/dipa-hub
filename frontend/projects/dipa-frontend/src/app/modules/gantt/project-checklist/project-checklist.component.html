@@ -5,18 +5,16 @@
       *ngFor="let task of projectTasks"
       [stepControl]="formGroup"
       [optional]="task.optional"
-      [completed]="false"
+      [completed]="task.completed"
+      [state]="task.completed ? 'done' : 'number'"
     >
       <ng-template matStepLabel>{{ task.title }}</ng-template>
       <p *ngIf="task.explanation" class="stepExplanation">{{ task.explanation }}</p>
-      <app-project-task-form [selectedTimelineId]="selectedTimelineId" [taskData]="task"></app-project-task-form>
-
-      <div>
-        <button mat-raised-button color="primary" class="stepDoneButton" (click)="stepper.selected.completed = true">
-          <mat-icon aria-hidden="false" aria-label="done icon">done</mat-icon>
-          Schritt abschließen
-        </button>
-      </div>
+      <app-project-task-form
+        [selectedTimelineId]="selectedTimelineId"
+        [taskData]="task"
+        (stepStatusChanged)="stepStatusChanged(stepper, $event)"
+      ></app-project-task-form>
     </mat-step>
   </mat-vertical-stepper>
 </ng-container>

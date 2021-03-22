@@ -10,8 +10,9 @@
                 matInput
                 placeholder="Ergebnis"
                 formControlName="result"
-                [value]="defaultTask.get('appointment')?.value"
                 (change)="this.dataChanged.emit()"
+                (focus)="onFocus($event, ['results', 'data', i, 'result'])"
+                (keyup.esc)="onEscape($event, ['results', 'data', i, 'result'])"
               />
             </mat-form-field>
             <mat-form-field>

@@ -18,6 +18,10 @@ ProjectTask:
       description: what is this task about
       type: string
       example: "angelegtes iSAR-Projekt mit vorausgefülltem PSB"
+    completed:
+      description: if this task is marked as completed
+      type: boolean
+      example: true
     contactPerson:
       description: contact person
       type: string
