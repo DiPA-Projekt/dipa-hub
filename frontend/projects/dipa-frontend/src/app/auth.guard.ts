@@ -11,7 +11,7 @@ import { UserService } from 'dipa-api-client';
 export class AuthGuard implements CanActivate, CanActivateChild {
   protected authenticated: boolean;
   protected roles: string[];
-  protected groups: string[];
+  protected projects: number[];
 
   constructor(
     private oauthService: OAuthService,
@@ -24,7 +24,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
       try {
         this.authenticated = this.authenticationService.isLoggedIn();
         this.roles = this.authenticationService.getUserRoles();
-        this.groups = this.authenticationService.getUserGroups();
+        this.projects = this.authenticationService.getProjects();
 
         const result = await this.isAccessAllowed(route);
         resolve(result);
@@ -47,7 +47,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     }
 
     let accessRole;
-    let accessGroup;
+    let accessProject;
 
     const requiredRoles = route.data.roles as string[];
     if (!(requiredRoles instanceof Array) || requiredRoles.length === 0) {
@@ -56,13 +56,13 @@ export class AuthGuard implements CanActivate, CanActivateChild {
       accessRole = requiredRoles.every((role) => this.roles.includes(role));
     }
 
-    const requiredGroup = route.params.id as string;
-    if (!requiredGroup) {
-      accessGroup = true;
+    const requiredProjectId = route.params.id as number;
+    if (!requiredProjectId) {
+      accessProject = true;
     } else {
-      accessGroup = this.groups.includes(requiredGroup);
+      accessProject = this.projects.includes(Number(requiredProjectId));
     }
 
-    return accessRole && accessGroup;
+    return accessRole && accessProject;
   }
 }
