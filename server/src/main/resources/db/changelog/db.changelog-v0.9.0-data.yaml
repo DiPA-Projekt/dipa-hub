@@ -11,3 +11,105 @@ databaseChangeLog:
                   name: url
                   value: https://***REMOVED***/orgeinheit/info-_und_dokumentenpool_abteilung_i/Referatsbereiche/Referat_I_3/AB-I-31/Seiten/Startseite.aspx
             where: id=5
+  - changeSet:
+      id: insert-user-group-1
+      author: nguyen
+      context: ba
+      changes:
+        - insert:
+            tableName: user_group
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: group_name
+                  value: group_1
+              - column:
+                  name: project_id
+                  value: 1
+  - changeSet:
+      id: insert-user-group-2
+      author: nguyen
+      context: ba
+      changes:
+        - insert:
+            tableName: user_group
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: group_name
+                  value: group_2
+              - column:
+                  name: project_id
+                  value: 2
+  - changeSet:
+      id: insert-user-group-3
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: user_group
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: group_name
+                  value: group_3
+              - column:
+                  name: project_id
+                  value: 3
+  - changeSet:
+      id: insert-user-group-4
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: user_group
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: group_name
+                  value: group_4
+              - column:
+                  name: project_id
+                  value: 4
+  - changeSet:
+      id: insert-user-group-5
+      author: nguyen
+      context: itzbund
+      changes:
+        - insert:
+            tableName: user_group
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: group_name
+                  value: group_5
+              - column:
+                  name: project_id
+                  value: 5
+  - changeSet:
+      id: insert-user-group-6
+      author: nguyen
+      context: ba
+      changes:
+        - insert:
+            tableName: user_group
+            columns:
+              - column:
+                  name: id
+                  value: 6
+              - column:
+                  name: group_name
+                  value: group_6
+              - column:
+                  name: project_id
+                  value: 6

@@ -31,6 +31,10 @@ public class ProjectEntity extends BaseEntity {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<ProjectTaskTemplateEntity> projectTaskTemplates;
 
+    @OneToMany(mappedBy = "project")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<UserGroupEntity> userGroups;
+
     private String projectType;
     private String projectSize;
     private String akz;
@@ -78,6 +82,13 @@ public class ProjectEntity extends BaseEntity {
 
     public void setProjectTaskTemplates(final Set<ProjectTaskTemplateEntity> projectTaskTemplates) {
         this.projectTaskTemplates = projectTaskTemplates;
+    }
+    public Set<UserGroupEntity> getUserGroups() {
+        return userGroups;
+    }
+
+    public void setUserGroups(final Set<UserGroupEntity> userGroups) {
+        this.userGroups = userGroups;
     }
     
     public void setProjectSize(final String projectSize) {
