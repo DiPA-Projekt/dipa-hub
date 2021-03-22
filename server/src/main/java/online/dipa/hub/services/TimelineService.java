@@ -50,12 +50,18 @@ public class TimelineService {
     @Autowired
     private ProjectApproachService projectApproachService;
 
+    @Autowired
+    private UserInformationService userInformationService;
+
     protected static final long FIRST_MASTER_MILESTONE_ID = 21;
 
     public List<Timeline> getTimelines() {
         initializeTimelines();
 
-        return sessionTimelineState.getSessionTimelines().values().stream().map(SessionTimeline::getTimeline).collect(Collectors.toList());
+        List<Long> projectIds = userInformationService.getUserData().getProjects();
+
+        return sessionTimelineState.getSessionTimelines().values().stream().map(SessionTimeline::getTimeline)
+                                   .filter(t -> projectIds.contains(t.getId())).collect(Collectors.toList());
     }
 
     public Timeline getTimeline(final Long timelineId) {
