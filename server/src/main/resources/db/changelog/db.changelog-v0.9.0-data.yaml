@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-project-template-Feldberg
+      author: nguyen
+      context: itzbund
+      changes:
+        - sql: INSERT INTO plan_template (id, name, project_id) VALUES (9, "Feldberg Template", 3)
+  - changeSet:
+      id: insert-project-template-ZugSpitze
+      author: nguyen
+      context: itzbund
+      changes:
+        - sql: INSERT INTO plan_template (id, name, project_id) VALUES (10, "Zugspitze Template", 4)
+  - changeSet:
+      id: insert-project-template-Bergsteigerausrüstung
+      author: nguyen
+      context: itzbund
+      changes:
+        - sql: INSERT INTO plan_template (id, name, project_id) VALUES (11, "Bergsteigerausrüstung Template", 5)
+  - changeSet:
+      id: add-timestamp-to-milestone
+      author: nguyen
+      changes:
+        - addColumn:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: date
+                  type: TIMESTAMP

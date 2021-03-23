@@ -1,39 +1,75 @@
-databaseChangeLog:
-  - changeSet:
-      id: add-startDate-endDate-to-project
-      author: nguyen
-      changes:
-        - addColumn:
-            tableName: project
-            columns:
-              - column:
-                  name: start
-                  type: VARCHAR(255)
-              - column:
-                  name: end
-                  type: VARCHAR(255)
-  - changeSet:
-      id: add-projectId-to-planTemplate
-      author: nguyen
-      changes:
-        - addColumn:
-            tableName: plan_template
-            columns:
-              - column:
-                  constraints:
-                    nullable: true
-                  name: project_id
-                  type: BIGINT
-  - changeSet:
-      id: createForeignKeyConstraint-projectPlanTemplate
-      author: nguyen
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: project_id
-            baseTableName: plan_template
-            constraintName: FKprojectIdPlanTemplate
-            deferrable: false
-            initiallyDeferred: false
-            referencedColumnNames: id
-            referencedTableName: project
-            validate: true
+# databaseChangeLog:
+#   - changeSet:
+#       id: add-startDate-endDate-to-project
+#       author: nguyen
+#       changes:
+#         - addColumn:
+#             tableName: project
+#             columns:
+#               - column:
+#                   name: start
+#                   type: VARCHAR(255)
+#               - column:
+#                   name: end
+#                   type: VARCHAR(255)
+#   - changeSet:
+#       id: add-projectId-to-planTemplate
+#       author: nguyen
+#       changes:
+#         - addColumn:
+#             tableName: plan_template
+#             columns:
+#               - column:
+#                   constraints:
+#                     nullable: true
+#                   name: project_id
+#                   type: BIGINT
+#   # - changeSet:
+#   #     id: addAutoIncrement-project-table
+#   #     author: nguyen
+#   #     changes:
+#   #       - addAutoIncrement:
+#   #           columnDataType: BIGINT
+#   #           columnName: id
+#   #           defaultOnNull: false
+#   #           generationType: ALWAYS
+#   #           incrementBy: 1
+#   #           startWith: 7
+#   #           tableName: project
+#   # - changeSet:
+#   #     id: addAutoIncrement-plan-template-table
+#   #     author: nguyen
+#   #     changes:
+#   #       - addAutoIncrement:
+#   #           columnDataType: BIGINT
+#   #           columnName: id
+#   #           defaultOnNull: false
+#   #           generationType: ALWAYS
+#   #           incrementBy: 1
+#   #           startWith: 9
+#   #           tableName: plan_template
+#   - changeSet:
+#       id: addAutoIncrement-example
+#       author: nguyen
+#       changes:
+#         - addAutoIncrement:
+#             columnDataType: BIGINT
+#             columnName: id
+#             defaultOnNull: false
+#             generationType: ALWAYS
+#             incrementBy: 1
+#             startWith: 83
+#             tableName: milestone_template
+#   # - changeSet:
+#   #     id: createForeignKeyConstraint-projectPlanTemplate
+#   #     author: nguyen
+#   #     changes:
+#   #       - addForeignKeyConstraint:
+#   #           baseColumnNames: project_id
+#   #           baseTableName: plan_template
+#   #           constraintName: FKprojectIdPlanTemplate
+#   #           deferrable: false
+#   #           initiallyDeferred: false
+#   #           referencedColumnNames: id
+#   #           referencedTableName: project
+#   #           validate: true

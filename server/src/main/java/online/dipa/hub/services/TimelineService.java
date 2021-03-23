@@ -63,6 +63,17 @@ public class TimelineService {
     boolean check = false; 
 
     public List<Timeline> getTimelines() {
+
+        PlanTemplateEntity planTemplate = projectRespository.findAll().stream()
+                .filter(t -> t.getId().equals(Long.valueOf(3)))
+                .findFirst().get().getPlanTemplate().stream().findFirst().get();
+        List<MilestoneTemplateEntity> milestones = planTemplate.getMilestones().stream().collect(Collectors.toList());
+        for (MilestoneTemplateEntity m: milestones) {
+                        System.out.println(m.getId());
+
+            System.out.println(m.getName());
+        }
+
         // if (check == false) {        
         //     initializeTimelines();
 
@@ -76,7 +87,7 @@ public class TimelineService {
     }
 
     public Timeline getTimeline(final Long timelineId) {
-            initializeTimelines();
+            // initializeTimelines();
 
         // if (check == false) {        
         //     initializeTimelines();
@@ -87,6 +98,7 @@ public class TimelineService {
         // return sessionTimelineState.getSessionTimelines().values().stream().map(SessionTimeline::getTimeline)
         //         .filter(t -> t.getId().equals(timelineId)).findFirst().orElseThrow(() -> new EntityNotFoundException(
         //                 String.format("Timeline with id: %1$s not found.", timelineId)));
+        
         return projectRespository.findAll().stream().map(p -> conversionService.convert(p, Timeline.class))
                 .filter(t -> t.getId().equals(timelineId)).findFirst().orElseThrow(() -> new EntityNotFoundException(
                         String.format("Timeline with id: %1$s not found.", timelineId)));
@@ -163,6 +175,9 @@ public class TimelineService {
         .filter(p -> p.getProjectApproach().getId().equals(projectApproachId)).findFirst().orElseThrow(() -> new EntityNotFoundException(
                         String.format("Project approach with id: %1$s not found.", projectApproachId))).getProjectApproach();
     }
+
+        public void moveTimelineByDays(final Long timelineId, final Long days) {
+        }
 
     // public void moveTimelineByDays(final Long timelineId, final Long days) {
 

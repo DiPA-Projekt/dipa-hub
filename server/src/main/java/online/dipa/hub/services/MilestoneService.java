@@ -60,28 +60,22 @@ public class MilestoneService {
     
     public List<Milestone> getMilestonesForTimeline(final Long timelineId) {
 
-        timelineService.initializeTimelines();
+        // timelineService.initializeTimelines();
 
-        List<Milestone> milestones = new ArrayList<>();
         // initializeMilestones(timelineId);
 
         // return sessionTimelineState.getSessionTimelines().get(timelineId).getMilestones();
         Optional<ProjectEntity> project =  projectRespository.findAll().stream()
                 .filter(p -> p.getId().equals(timelineId)).findFirst();
-        final ProjectApproachEntity projectApproach = timelineService.findProjectApproach(project.get().getProjectApproach().getId());
+
+        PlanTemplateEntity planTemplate =   projectRespository.findAll().stream()
+                .filter(t -> t.getId().equals(Long.valueOf(3)))
+                .findFirst().get().getPlanTemplate().stream().findFirst().get();
+        List<Milestone> milestones = planTemplate
+        .getMilestones().stream().map(p -> conversionService.convert(p, Milestone.class)).collect(Collectors.toList());
+        // final ProjectApproachEntity projectApproach = timelineService.findProjectApproach(project.get().getProjectApproach().getId());
         
 
-
-        System.out.println(planTemplateRepository.count());
-        System.out.println(milestoneTemplateRepository.count());
-        // if (project.isPresent()) {
-        //     System.out.println(project.get().getPlanTemplate());
-        //     System.out.println(project.get().getProjectApproach());
-        //     milestones = project.get().getPlanTemplate().stream().findFirst().get()
-        //     .getMilestones().stream()
-        //     .map(m -> conversionService.convert(m, Milestone.class)).collect(Collectors.toList());
-        // }
-        
         return milestones;
         // System.out.println(getMilestonesFromRespository(project.get().getProjectApproach().getId()));
         // return getMilestonesFromRespository(project.get().getProjectApproach().getId());

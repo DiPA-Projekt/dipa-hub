@@ -69,14 +69,15 @@ public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity
         // int maxMilestoneDateOffset = maxMilestoneDate.getDateOffset();
 
         
-        // int maxMilestoneDateOffset = project.getPlanTemplate().getMilestones().stream().max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset)).get().getDateOffset();    
+        int maxMilestoneDateOffset = project.getPlanTemplate().stream().findFirst().get()
+        .getMilestones().stream().max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset)).get().getDateOffset();
         Timeline timeline = new Timeline().id(project.getId())
                              .name(project.getName())
                              .operationTypeId(operationTypeId)
                              .projectApproachId(projectApproach.getId())
                              .start(LocalDate.now())
-                            //  .end(LocalDate.now()
-                                    //  .plusDays(maxMilestoneDateOffset))
+                             .end(LocalDate.now()
+                                     .plusDays(maxMilestoneDateOffset))
                              .defaultTimeline(operationType.isDefaultType());
 
         if (project.getProjectType() != null) {

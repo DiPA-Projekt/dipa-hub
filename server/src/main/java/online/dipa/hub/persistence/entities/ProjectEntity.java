@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.stream.events.EndDocument;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -42,8 +43,9 @@ public class ProjectEntity extends BaseEntity {
     private String client;
     private String department;
     private String projectOwner;
+    private String start;
+    private String end;
 
-    
     public String getName() {
         return name;
     }
@@ -125,5 +127,19 @@ public class ProjectEntity extends BaseEntity {
         this.projectOwner = projectOwner;
     }
 
+    public String getStartDateOffset() {
+        return start;
+    }
+
+    public void setStartDateOffset(final String start) {
+        this.start = start;
+    }
+    public String getEndDateOffset() {
+        return end;
+    }
+
+    public void setEndDateOffset(final String end) {
+        this.end = end;
+    }
 
 }
