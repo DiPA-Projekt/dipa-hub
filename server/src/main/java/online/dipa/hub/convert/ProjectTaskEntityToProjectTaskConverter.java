@@ -41,6 +41,7 @@ public class ProjectTaskEntityToProjectTaskConverter implements Converter<Projec
                              .title(template.getTitle())
                              .optional(template.getOptional())
                              .explanation(template.getExplanation())
+                             .completed(template.getCompleted())
                              .contactPerson(template.getContactPerson())
                              .documentationLink(template.getDocumentationLink());
                             

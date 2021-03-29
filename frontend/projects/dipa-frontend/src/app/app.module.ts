@@ -12,15 +12,16 @@ import { SharedModule } from './shared/shared.module';
 import { NavService } from './nav.service';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { RootComponent } from './root/root.component';
+import { ProfileSettingsMenuComponent } from './menus/profile-settings-menu/profile-settings-menu.component';
 
 @NgModule({
-  declarations: [AppComponent, GanttMenuComponent, RootComponent],
+  declarations: [AppComponent, GanttMenuComponent, RootComponent, ProfileSettingsMenuComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
     MaterialModule,
     AppRoutingModule,
-    ApiModule.forRoot(AppModule.getApiConfiguration),
+    ApiModule.forRoot(AppModule.getApiConfiguration.bind(this)),
     BrowserAnimationsModule,
     CoreModule,
     SharedModule,

@@ -8,21 +8,45 @@ import { SingleAppointmentResult } from 'dipa-api-client';
   styleUrls: ['../project-task-form/project-task-form.component.scss'],
 })
 export class SingleAppointmentFormComponent implements OnInit {
-  @Input() formData;
-  @Input() statusList;
-  @Output() dataChanged = new EventEmitter();
+  @Input() public formData;
+  @Input() public statusList;
+  @Output() public dataChanged = new EventEmitter();
 
-  formGroup: FormGroup;
+  public formGroup: FormGroup;
 
-  constructor(public controlContainer: ControlContainer, parent: FormGroupDirective, private fb: FormBuilder) {
+  public constructor(public controlContainer: ControlContainer, parent: FormGroupDirective, private fb: FormBuilder) {
     this.formGroup = parent.control;
   }
 
-  ngOnInit(): any {
+  public ngOnInit(): void {
     this.setReactiveForm(this.formData);
   }
 
-  setReactiveForm(data: SingleAppointmentResult[]): void {
+  public get singleAppointmentsArray(): FormArray {
+    return this.formGroup.get(['results', 'data']) as FormArray;
+  }
+
+  public addSingleAppointment(): void {
+    this.singleAppointmentsArray.push(this.emptySingleAppointment);
+  }
+
+  public deleteSingleAppointment(index: number): void {
+    this.singleAppointmentsArray.removeAt(index);
+    this.dataChanged.emit();
+  }
+
+  public onFocus(event: FocusEvent, path: (string | number)[]): void {
+    const valueInput = event.target as HTMLInputElement;
+    valueInput.setAttribute('data-value', this.formGroup.get(path).value || '');
+  }
+
+  public onEscape(event: KeyboardEvent, path: (string | number)[]): void {
+    const valueInput = event.target as HTMLInputElement;
+    valueInput.value = valueInput.getAttribute('data-value');
+    this.formGroup.get(path).setValue(valueInput.value);
+  }
+
+  private setReactiveForm(data: SingleAppointmentResult[]): void {
     for (const singleAppointment of data) {
       this.singleAppointmentsArray.push(
         this.fb.group({
@@ -34,10 +58,10 @@ export class SingleAppointmentFormComponent implements OnInit {
         })
       );
     }
-    this.formGroup.get('results').get('type').setValue('TYPE_SINGLE_APPOINTMENT');
+    this.formGroup.get(['results', 'type']).setValue('TYPE_SINGLE_APPOINTMENT');
   }
 
-  get emptySingleAppointment(): FormGroup {
+  private get emptySingleAppointment(): FormGroup {
     return this.fb.group({
       resultType: 'TYPE_SINGLE_APPOINTMENT',
       date: '',
@@ -45,18 +69,5 @@ export class SingleAppointmentFormComponent implements OnInit {
       responsiblePerson: '',
       status: null,
     });
-  }
-
-  get singleAppointmentsArray(): FormArray {
-    return this.formGroup.get('results').get('data') as FormArray;
-  }
-
-  addSingleAppointment(): void {
-    this.singleAppointmentsArray.push(this.emptySingleAppointment);
-  }
-
-  deleteSingleAppointment(index: number): void {
-    this.singleAppointmentsArray.removeAt(index);
-    this.dataChanged.emit();
   }
 }

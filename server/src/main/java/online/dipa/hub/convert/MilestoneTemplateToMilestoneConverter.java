@@ -1,7 +1,6 @@
 package online.dipa.hub.convert;
 
-import java.time.LocalDate;
-
+import java.time.OffsetDateTime;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -14,9 +13,8 @@ public class MilestoneTemplateToMilestoneConverter implements Converter<Mileston
     public Milestone convert(final MilestoneTemplateEntity templateEntity) {
 
         return new Milestone().id(templateEntity.getId())
-                                                   .name(templateEntity.getName())
-                                                   .date(LocalDate.now()
-                                                                  .plusDays(templateEntity.getDateOffset()))
-                                                    .status(Milestone.StatusEnum.fromValue(templateEntity.getStatus()));
+                            .name(templateEntity.getName())
+                            .date(OffsetDateTime.now().plusDays(templateEntity.getDateOffset()))
+                            .status(Milestone.StatusEnum.fromValue(templateEntity.getStatus()));
     }
 }

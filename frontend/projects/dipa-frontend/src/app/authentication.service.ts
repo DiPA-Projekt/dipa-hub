@@ -34,9 +34,19 @@ export class AuthenticationService {
     return user && typeof user.roles !== 'undefined' ? user.roles : [];
   }
 
+  getUserGroups(): string[] {
+    const user: User = this.userData.getValue();
+    return user && typeof user.groups !== 'undefined' ? user.groups : [];
+  }
+
+  getProjects(): number[] {
+    const user: User = this.userData.getValue();
+    return user && typeof user.projects !== 'undefined' ? user.projects : [];
+  }
+
   isUserInRole(userRole: string): boolean {
     const roles = this.getUserRoles();
-    return roles.indexOf(`ROLE_${userRole}`) !== -1;
+    return roles.indexOf(userRole) !== -1;
   }
 
   public async login(): Promise<boolean> {

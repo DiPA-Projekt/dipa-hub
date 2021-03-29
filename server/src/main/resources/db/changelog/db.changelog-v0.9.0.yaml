@@ -1,86 +1,48 @@
 databaseChangeLog:
   - changeSet:
-      id: add-startDate-endDate-to-project
-      author: nguyen
+      id: addColumn-project-task-completed
+      author: bock
       changes:
         - addColumn:
-            tableName: project
+            tableName: project_task
             columns:
               - column:
-                  name: start
-                  type: TIMESTAMP
-              - column:
-                  name: end
-                  type: TIMESTAMP
+                  name: completed
+                  type: BOOLEAN
+                  defaultValue: false
   - changeSet:
-      id: add-projectId-to-planTemplate
+      id: create-administration-groups-table
       author: nguyen
       changes:
-        - addColumn:
-            tableName: plan_template
+        - createTable:
             columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: userGroupPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: group_name
+                  type: VARCHAR(255)
               - column:
                   constraints:
-                    nullable: true
+                    nullable: false
                   name: project_id
                   type: BIGINT
-  # - changeSet:
-  #     id: addAutoIncrement-project-table
-  #     author: nguyen
-  #     changes:
-  #       - addAutoIncrement:
-  #           columnDataType: BIGINT
-  #           columnName: id
-  #           defaultOnNull: false
-  #           generationType: ALWAYS
-  #           incrementBy: 1
-  #           startWith: 7
-  #           tableName: project
-  # - changeSet:
-  #     id: addAutoIncrement-plan-template-table
-  #     author: nguyen
-  #     changes:
-  #       - addAutoIncrement:
-  #           columnDataType: BIGINT
-  #           columnName: id
-  #           defaultOnNull: false
-  #           generationType: ALWAYS
-  #           incrementBy: 1
-  #           startWith: 9
-  #           tableName: plan_template
+            tableName: user_group
   - changeSet:
-      id: addAutoIncrement-example
+      id: createForeignKeyConstraint-UserGroupProject
       author: nguyen
       changes:
-        - addAutoIncrement:
-            columnDataType: BIGINT
-            columnName: id
-            defaultOnNull: false
-            generationType: ALWAYS
-            incrementBy: 1
-            startWith: 83
-            tableName: milestone_template
-  - changeSet:
-      id: add-timestamp-to-milestone
-      author: nguyen
-      changes:
-        - addColumn:
-            tableName: milestone_template
-            columns:
-              - column:
-                  name: date
-                  type: TIMESTAMP
-
-  # - changeSet:
-  #     id: createForeignKeyConstraint-projectPlanTemplate
-  #     author: nguyen
-  #     changes:
-  #       - addForeignKeyConstraint:
-  #           baseColumnNames: project_id
-  #           baseTableName: plan_template
-  #           constraintName: FKprojectIdPlanTemplate
-  #           deferrable: false
-  #           initiallyDeferred: false
-  #           referencedColumnNames: id
-  #           referencedTableName: project
-  #           validate: true
+        - addForeignKeyConstraint:
+            baseColumnNames: project_id
+            baseTableName: user_group
+            constraintName: FKuserGroupProjectId
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project
+            validate: true

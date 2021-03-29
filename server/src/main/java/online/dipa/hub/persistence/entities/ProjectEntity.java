@@ -6,7 +6,7 @@ import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.stream.events.EndDocument;
+import java.time.OffsetDateTime;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -33,9 +33,13 @@ public class ProjectEntity extends BaseEntity {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<ProjectTaskTemplateEntity> projectTaskTemplates = new HashSet<>();
 
+    @OneToOne(mappedBy = "project")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private PlanTemplateEntity planTemplate;
+
     @OneToMany(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<PlanTemplateEntity> planTemplates = new HashSet<>();
+    private Set<UserGroupEntity> userGroups;
 
     private String projectType;
     private String projectSize;
@@ -43,8 +47,8 @@ public class ProjectEntity extends BaseEntity {
     private String client;
     private String department;
     private String projectOwner;
-    private String start;
-    private String end;
+    private OffsetDateTime startDate;
+    private OffsetDateTime endDate;
 
     public String getName() {
         return name;
@@ -87,12 +91,21 @@ public class ProjectEntity extends BaseEntity {
         this.projectTaskTemplates = projectTaskTemplates;
     }
 
-    public Set<PlanTemplateEntity> getPlanTemplate() {
-        return planTemplates;
+    public PlanTemplateEntity getPlanTemplate() {
+        return planTemplate;
     }
 
-    public void setPlanTemplate(final Set<PlanTemplateEntity> planTemplates) {
-        this.planTemplates = planTemplates;
+    public void setPlanTemplate(final PlanTemplateEntity planTemplate) {
+        this.planTemplate = planTemplate;
+
+    }
+
+    public Set<UserGroupEntity> getUserGroups() {
+        return userGroups;
+    }
+
+    public void setUserGroups(final Set<UserGroupEntity> userGroups) {
+        this.userGroups = userGroups;
     }
 
     public String getProjectSize() {
@@ -127,19 +140,20 @@ public class ProjectEntity extends BaseEntity {
         this.projectOwner = projectOwner;
     }
 
-    public String getStartDateOffset() {
-        return start;
+    public OffsetDateTime getStartDate() {
+        return startDate;
     }
 
-    public void setStartDateOffset(final String start) {
-        this.start = start;
+    public void setStartDate(final OffsetDateTime startDate) {
+        this.startDate = startDate;
     }
-    public String getEndDateOffset() {
-        return end;
+    
+    public OffsetDateTime getEndDate() {
+        return endDate;
     }
 
-    public void setEndDateOffset(final String end) {
-        this.end = end;
+    public void setEndDate(final OffsetDateTime endDate) {
+        this.endDate = endDate;
     }
 
 }

@@ -23,6 +23,7 @@ public class ProjectTaskEntity extends BaseEntity {
 
     private boolean optional;
     private String explanation;
+    private boolean completed;
 
     private String contactPerson;
     private String documentationLink;
@@ -85,6 +86,14 @@ public class ProjectTaskEntity extends BaseEntity {
     
     public void setExplanation(final String explanation) {
         this.explanation = explanation;
+    }
+
+    public boolean getCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(final boolean completed) {
+        this.completed = completed;
     }
 
     public String getContactPerson() {
