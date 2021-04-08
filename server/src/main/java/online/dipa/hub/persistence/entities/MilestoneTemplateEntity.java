@@ -1,9 +1,14 @@
 package online.dipa.hub.persistence.entities;
 
+import java.time.OffsetDateTime;
+
 import javax.persistence.Basic;
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
@@ -12,6 +17,8 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import liquibase.pro.packaged.iS;
 
 @Entity
 @Table(name = "milestone_template")
@@ -26,6 +33,12 @@ public class MilestoneTemplateEntity extends BaseEntity {
 
     @Basic(optional = false)
     private int dateOffset;
+
+    @Basic(optional = true)
+    private OffsetDateTime date;
+
+    @Basic(optional = true)
+    private boolean isMaster;
 
     @NotEmpty
     @Basic(optional = false)
@@ -42,8 +55,9 @@ public class MilestoneTemplateEntity extends BaseEntity {
     public MilestoneTemplateEntity(MilestoneTemplateEntity milestone) {
         this.name = milestone.getName();
         this.dateOffset = milestone.getDateOffset();
+        this.date = milestone.getDate();
         this.status = milestone.getStatus();
-        // this.planTemplate = planTemplate;
+        this.isMaster = milestone.getIsMaster();
     }
 
     public String getName() {
@@ -61,6 +75,14 @@ public class MilestoneTemplateEntity extends BaseEntity {
     public void setDateOffset(final int dateOffset) {
         this.dateOffset = dateOffset;
     }
+    
+    public OffsetDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(final OffsetDateTime date) {
+        this.date = date;
+    }
 
     public String getStatus() {
         return status;
@@ -68,6 +90,14 @@ public class MilestoneTemplateEntity extends BaseEntity {
 
     public void setStatus(final String status) {
         this.status = status;
+    }
+    
+    public boolean getIsMaster() {
+        return isMaster;
+    }
+
+    public void setIsMaster(final boolean isMaster) {
+        this.isMaster = isMaster;
     }
 
     public PlanTemplateEntity getPlanTemplate() {

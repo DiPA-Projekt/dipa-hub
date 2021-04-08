@@ -24,7 +24,7 @@ public class PlanTemplateEntity extends BaseEntity {
     @Column(unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "planTemplate", cascade = { ALL })
+    @OneToMany(mappedBy = "planTemplate")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<MilestoneTemplateEntity> milestones = new HashSet<>();
 
@@ -41,7 +41,7 @@ public class PlanTemplateEntity extends BaseEntity {
     private Set<ProjectApproachEntity> projectApproaches;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     private ProjectEntity project;
 
     @ManyToMany(fetch = FetchType.EAGER)

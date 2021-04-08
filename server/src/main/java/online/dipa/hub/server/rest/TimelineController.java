@@ -31,24 +31,24 @@ public class TimelineController implements TimelinesApi {
         return ResponseEntity.ok(timelines);
     }
 
-    // @Override
-    // public ResponseEntity<Void> applyOperation(Long timelineId, InlineObject inlineObject) {
+    @Override
+    public ResponseEntity<Void> applyOperation(Long timelineId, InlineObject inlineObject) {
 
-    //     switch (inlineObject.getOperation()) {
-    //         case MOVE_TIMELINE: timelineService.moveTimelineByDays(timelineId, inlineObject.getDays());
-    //             break;
-    //         case MOVE_TIMELINE_START: timelineService.moveTimelineStartByDays(timelineId, inlineObject.getDays());
-    //             break;
-    //         case MOVE_TIMELINE_END: timelineService.moveTimelineEndByDays(timelineId, inlineObject.getDays());
-    //             break;
-    //         case MOVE_MILESTONE: timelineService.moveMileStoneByDays(timelineId, inlineObject.getDays(), inlineObject.getMovedMilestoneId());
-    //             break;
-    //         default:
-    //             return ResponseEntity.notFound().build();
-    //     }
+        switch (inlineObject.getOperation()) {
+            case MOVE_TIMELINE: timelineService.moveTimelineByDays(timelineId, inlineObject.getDays());
+                break;
+            case MOVE_TIMELINE_START: timelineService.moveTimelineStartByDays(timelineId, inlineObject.getDays());
+                break;
+            case MOVE_TIMELINE_END: timelineService.moveTimelineEndByDays(timelineId, inlineObject.getDays());
+                break;
+            case MOVE_MILESTONE: timelineService.moveMileStoneByDays(timelineId, inlineObject.getDays(), inlineObject.getMovedMilestoneId());
+                break;
+            default:
+                return ResponseEntity.notFound().build();
+        }
 
-    //     return ResponseEntity.noContent().build();
-    // }
+        return ResponseEntity.noContent().build();
+    }
 
     @Override
     public ResponseEntity<Void> updateTimeline(final Long timelineId, Timeline timeline) {

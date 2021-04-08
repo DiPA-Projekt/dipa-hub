@@ -1,158 +1,200 @@
-// package online.dipa.hub.services;
+package online.dipa.hub.services;
 
-// import java.time.LocalDate;
-// import java.time.OffsetDateTime;
-// import java.util.ArrayList;
-// import java.util.Collections;
-// import java.util.List;
-// import java.util.Objects;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-// import javax.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.stereotype.Service;
-// import org.springframework.transaction.annotation.Transactional;
+import online.dipa.hub.api.model.*;
+import online.dipa.hub.session.state.*;
 
-// import online.dipa.hub.api.model.*;
-// import online.dipa.hub.session.model.*;
-// import online.dipa.hub.session.state.*;
-// import online.dipa.hub.persistence.entities.ProjectApproachEntity;
-// import online.dipa.hub.persistence.repositories.ProjectRepository;
+import online.dipa.hub.persistence.entities.IncrementEntity;
+import online.dipa.hub.persistence.entities.MilestoneTemplateEntity;
+import online.dipa.hub.persistence.entities.ProjectEntity;
+import online.dipa.hub.persistence.repositories.IncrementRepository;
+import online.dipa.hub.persistence.repositories.ProjectRepository;
 
-// import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.HOURS;
+
+@Service
+@Transactional
+public class IncrementService {
+
+    @Autowired
+    private ConversionService conversionService;
+
+    @Autowired
+    private IncrementRepository incrementRepository;
+
+    @Autowired
+    private MilestoneService milestoneService;
+
+    @Autowired
+    private TimelineService timelineService;
 
 
-// @Service
-// @Transactional
-// public class IncrementService {
+    public List<Increment> getIncrementsForTimeline(final Long timelineId) {
+        ProjectEntity currentProject = timelineService.getProject(timelineId);
 
-//     @Autowired
-//     private SessionTimelineState sessionTimelineState;
+        initializeIncrements(timelineId);
 
-//     @Autowired
-//     private ProjectRepository projectRespository;
+        List<Increment> result = currentProject.getIncrements().stream()
+                .map(i -> conversionService.convert(i, Increment.class))
+                .collect(Collectors.toList());
 
-//     @Autowired
-//     private MilestoneService milestoneService;
+        return Objects.requireNonNullElse(result, Collections.emptyList());
+    }
 
-//     public List<Increment> getIncrementsForTimeline(final Long timelineId) {
+    void initializeIncrements(final Long timelineId) {
 
-//         initializeIncrements(timelineId);
+        ProjectEntity currentProject = timelineService.getProject(timelineId);
+       
+        List<IncrementEntity> currentIncrementsList = new ArrayList<>(currentProject.getIncrements());
 
-//         List<Increment> result = sessionTimelineState.getSessionTimelines().get(timelineId).getIncrements();
+        if (currentIncrementsList.size() == 0 && currentProject.getProjectApproach().isIterative() && currentProject.getPlanTemplate().getStandard()) {
 
-//         return Objects.requireNonNullElse(result, Collections.emptyList());
-//     }
+            currentProject.setIncrements(this.loadIncrementsTemplate(timelineId, 1));
 
-//     void initializeIncrements(final Long timelineId) {
-//         SessionTimeline sessionTimeline = sessionTimelineState.findTimelineState(timelineId);
-//         List<TimelineTemplate> currentSessionTemplates = sessionTimelineState.getSessionTimelineTemplates().get(timelineId);
+        }
+    }
 
-//         if (sessionTimeline.getIncrements() == null) {
-//             final ProjectApproachEntity projectApproach = projectRespository.findAll().stream()
-//                                                                             .filter(p -> p.getProjectApproach().getId().equals(sessionTimeline.getTimeline().getProjectApproachId())).findFirst().orElseThrow(() -> new EntityNotFoundException(
-//                             String.format("No project approach available for timeline id: %1$s.", timelineId))).getProjectApproach();
+    public void addIncrement(Long timelineId) {
 
-//             if (projectApproach.isIterative() && (currentSessionTemplates == null || sessionTimeline.getIterative())) {
+        ProjectEntity currentProject = timelineService.getProject(timelineId);
 
-//                 List<Milestone> initMilestones = milestoneService.getMilestonesFromRespository(timelineId);
-//                 sessionTimeline.setIncrements(this.loadIncrementsTemplate(timelineId, 1, initMilestones, null));
+        int incrementCount = currentProject.getIncrements().size();
 
-//             }
+        currentProject.setIncrements(loadIncrementsTemplate(timelineId, incrementCount + 1));
+        milestoneService.getIncrementMilestones(timelineId, 1);
+    }
 
-//         }
-//     }
+    public void deleteIncrement(Long timelineId) {
+        ProjectEntity currentProject = timelineService.getProject(timelineId);
+        int incrementCount = currentProject.getIncrements().size();
 
-//     public void addIncrement(Long timelineId) {
-//         SessionTimeline sessionTimeline = sessionTimelineState.findTimelineState(timelineId);
+        if (incrementCount != 1) {
+                currentProject.setIncrements(loadIncrementsTemplate(timelineId, incrementCount - 1));
+                milestoneService.getIncrementMilestones(timelineId, - 1);
+        }
+    }
 
-//         int incrementCount = sessionTimeline.getIncrements().size();
+    public void updateDurationIncrements(final Long timelineId) {
+        ProjectEntity currentProject = timelineService.getProject(timelineId);
 
-//         sessionTimeline.setIncrements(this.loadIncrementsTemplate(timelineId, incrementCount + 1, null, sessionTimeline.getMilestones()));
-//         sessionTimeline.setMilestones(milestoneService.loadMilestones(timelineId, incrementCount + 1));
-//     }
+        int incrementCount = currentProject.getIncrements().size();
 
-//     public void deleteIncrement(Long timelineId) {
-//         SessionTimeline sessionTimeline = sessionTimelineState.findTimelineState(timelineId);
+        currentProject.setIncrements(loadIncrementsTemplate(currentProject.getId(), incrementCount));
+        milestoneService.getIncrementMilestones(currentProject.getId(), 0);
+    }
 
-//         int incrementCount = sessionTimeline.getIncrements().size();
+    private Set<IncrementEntity> loadIncrementsTemplate(final Long timelineId, final int incrementCount) {
+        
+        ProjectEntity currentProject = timelineService.getProject(timelineId);
 
-//         if (incrementCount != 1) {
-//             sessionTimeline.setIncrements(this.loadIncrementsTemplate(timelineId, incrementCount - 1, null, sessionTimeline.getMilestones()));
-//             sessionTimeline.setMilestones(milestoneService.loadMilestones(timelineId, incrementCount - 1));
-//         }
-//     }
+        Set<IncrementEntity> newIncrementsList = new HashSet<>();
+        List<IncrementEntity> currentIncrementsList = new ArrayList<>(currentProject.getIncrements());
 
-//     List<Increment> loadIncrementsTemplate(final Long timelineId, final int incrementCount,
-//             List<Milestone> initMilestones, List<Milestone> currentMilestones) {
+        List<MilestoneTemplateEntity> currentMilestones = new ArrayList<>(currentProject.getPlanTemplate()
+                                                                                     .getMilestones());
+        currentMilestones = milestoneService.sortMilestonesDate(currentMilestones);
 
-//         LocalDate firstMilestoneDate;
-//         LocalDate lastMilestoneDate;
-//         long daysBetween;
-//         List<Increment> incrementsList = new ArrayList<>();
+        OffsetDateTime firstMilestoneDate = currentMilestones.get(1).getDate().minusDays(14);
+        OffsetDateTime lastMilestoneDate = currentMilestones.get(currentMilestones.size() - 2).getDate();
 
-//         if (currentMilestones == null) {
-//             initMilestones = milestoneService.sortMilestones(initMilestones);
+        long hoursBetween = HOURS.between(firstMilestoneDate, lastMilestoneDate);
 
-//             initMilestones.removeIf(m -> m.getId().equals(MilestoneService.FIRST_MASTER_MILESTONE_ID));
-//             initMilestones.removeIf(m -> m.getId().equals(MilestoneService.LAST_MASTER_MILESTONE_ID));
+        long durationIncrement = hoursBetween / incrementCount;
 
-            //minus 14 days for "Inkrement geplant"
-        //     firstMilestoneDate = initMilestones.stream().map(Milestone::getDate).min(OffsetDateTime::compareTo).orElseThrow(() -> new EntityNotFoundException(
-        //             String.format("No valid milestone date available for timeline id: %1$s.", timelineId))).toLocalDate().minusDays(14);
-        //     lastMilestoneDate = initMilestones.stream().map(Milestone::getDate).max(OffsetDateTime::compareTo).orElseThrow(() -> new EntityNotFoundException(
-        //             String.format("No valid milestone date available for timeline id: %1$s.", timelineId))).toLocalDate();
+        long id = incrementCount;
 
-//         } else {
+        OffsetDateTime startDateIncrement = firstMilestoneDate;
+        OffsetDateTime endDateIncrement = startDateIncrement.plusHours(durationIncrement);
 
-//             currentMilestones = milestoneService.sortMilestones(currentMilestones);
+        if (incrementCount < currentIncrementsList.size()) {
 
-        //     firstMilestoneDate = currentMilestones.get(1).getDate().toLocalDate().minusDays(14);
-        //     lastMilestoneDate = currentMilestones.get(currentMilestones.size() - 2).getDate().toLocalDate();
+            IncrementEntity lastIncrement = currentIncrementsList.get(currentIncrementsList.size() - 1);
+            incrementRepository.delete(lastIncrement);
+            currentIncrementsList.remove(lastIncrement);
 
-//         }
-//         daysBetween = DAYS.between(firstMilestoneDate, lastMilestoneDate);
+            for (int i = 0; i < incrementCount; i++) {
+                IncrementEntity increment = currentIncrementsList.get(i);
+                increment.setStartDate(startDateIncrement);
+                increment.setEndDate(endDateIncrement);
 
-//         long durationIncrement = daysBetween / incrementCount;
+                startDateIncrement = endDateIncrement.plusDays(1);
 
-//         long id = 1;
+                if (i == (incrementCount - 2)) {
+                    endDateIncrement = lastMilestoneDate;
+                } else {
+                    endDateIncrement = endDateIncrement.plusHours(durationIncrement);
+                }
+            }
+            newIncrementsList.addAll(currentIncrementsList);
 
-//         LocalDate startDateIncrement = firstMilestoneDate;
-//         LocalDate endDateIncrement = startDateIncrement.plusDays(durationIncrement);
+        }
+        else {
+            for (int i = 0; i < incrementCount; i++) {
 
-//         for (int i = 0; i < incrementCount; i++) {
+                if (i > currentIncrementsList.size() - 1) {
+                    IncrementEntity newIncrement = new IncrementEntity("Inkrement " + id, startDateIncrement, endDateIncrement, currentProject);
+                    incrementRepository.save(newIncrement);
+                    newIncrementsList.add(newIncrement);
+                }
+                else {
+                   IncrementEntity increment = currentIncrementsList.get(i);
+                   increment.setStartDate(startDateIncrement);
+                   increment.setEndDate(endDateIncrement);
+                   newIncrementsList.add(increment);
 
-//             Increment increment = new Increment();
-//             increment.setId(id);
-//             increment.setName("Inkrement " + id);
-//             increment.setStart(startDateIncrement);
-//             increment.setEnd(endDateIncrement);
+                }
 
-//             incrementsList.add(increment);
+                startDateIncrement = endDateIncrement.plusDays(1);
 
-//             id++;
-//             startDateIncrement = endDateIncrement.plusDays(1);
+                if (i == (incrementCount - 2)) {
+                    endDateIncrement = lastMilestoneDate;
+                } else {
+                    endDateIncrement = endDateIncrement.plusHours(durationIncrement);
+                }
+            }
+        }
+        return newIncrementsList;
+    }
 
-//             if (i == (incrementCount - 2)) {
-//                 endDateIncrement = lastMilestoneDate;
-//             } else {
-//                 endDateIncrement = endDateIncrement.plusDays(durationIncrement);
-//             }
-//         }
-//         return incrementsList;
-//     }
+    public Set<IncrementEntity> createIncrementsTimelineTemplate(final Long timelineId, final int incrementCount,
+            List<MilestoneTemplateEntity> milestones) {
+                
+        Set<IncrementEntity> newIncrementsList = new HashSet<>();
+        ProjectEntity currentProject = timelineService.getProject(timelineId);
 
-//     void updateIncrements(final Long timelineId) {
+        milestones = milestoneService.sortMilestonesDate(milestones);
+        
+        OffsetDateTime firstMilestoneDate = milestones.get(1).getDate().minusDays(14);
+        OffsetDateTime lastMilestoneDate = milestones.get(milestones.size() - 2).getDate();
 
-//         SessionTimeline sessionTimeline = sessionTimelineState.getSessionTimelines().get(timelineId);
+        long hoursBetween = HOURS.between(firstMilestoneDate, lastMilestoneDate);
 
-//         List<Increment> increments = sessionTimeline.getIncrements();
+        long durationIncrement = hoursBetween / incrementCount;
 
-        // if (increments != null) {
-        //     int incrementCount = increments.size();
-        //     sessionTimeline.setIncrements(this.loadIncrementsTemplate(timelineId, incrementCount, null, sessionTimeline.getMilestones()));
-        //     sessionTimeline.setMilestones(milestoneService.loadMilestones(timelineId, incrementCount));
+        long id = 1;
 
-//         }
-//     }
-// }
+        OffsetDateTime startDateIncrement = firstMilestoneDate;
+        OffsetDateTime endDateIncrement = startDateIncrement.plusHours(durationIncrement);
+        
+        for (int i = 0; i < incrementCount; i++) {
+                IncrementEntity increment = new IncrementEntity("Inkrement " + id, startDateIncrement, endDateIncrement, null);
+        
+                newIncrementsList.add(increment);          
+        }
+
+        return newIncrementsList;
+    }
+}

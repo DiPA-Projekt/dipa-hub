@@ -41,6 +41,10 @@ public class ProjectEntity extends BaseEntity {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<UserGroupEntity> userGroups;
 
+    @OneToMany(mappedBy = "project")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<IncrementEntity> increments;
+
     private String projectType;
     private String projectSize;
     private String akz;
@@ -106,6 +110,14 @@ public class ProjectEntity extends BaseEntity {
 
     public void setUserGroups(final Set<UserGroupEntity> userGroups) {
         this.userGroups = userGroups;
+    }
+
+    public Set<IncrementEntity> getIncrements() {
+        return increments;
+    }
+
+    public void setIncrements(final Set<IncrementEntity> increments) {
+        this.increments = increments;
     }
 
     public String getProjectSize() {
