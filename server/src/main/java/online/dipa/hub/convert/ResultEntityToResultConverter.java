@@ -1,8 +1,8 @@
 package online.dipa.hub.convert;
 
-import online.dipa.hub.api.model.ContactPersonResult;
 import online.dipa.hub.api.model.FormField;
-import online.dipa.hub.persistence.entities.ContactPersonResultEntity;
+import online.dipa.hub.api.model.Result;
+import online.dipa.hub.persistence.entities.ResultEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
@@ -11,19 +11,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class ContactPersonResultEntityToContactPersonResultConverter implements Converter<ContactPersonResultEntity, ContactPersonResult> {
+public class ResultEntityToResultConverter implements Converter<ResultEntity, Result> {
 
     @Autowired
     private FormFieldEntityToFormFieldConverter formFieldEntityToFormFieldConverter;
 
     @Override
-    public ContactPersonResult convert(final ContactPersonResultEntity entity) {
+    public Result convert(final ResultEntity entity) {
 
-        ContactPersonResult contactPersonResult = new ContactPersonResult();
+        Result result = new Result();
 
         List<FormField> formFields = entity.getFormFields().stream().map(p -> formFieldEntityToFormFieldConverter.convert(p)).collect(Collectors.toList());
-        contactPersonResult.formFields(formFields);
+        result.resultType(Result.ResultTypeEnum.valueOf(entity.getResultType()))
+                .formFields(formFields);
 
-        return (ContactPersonResult) contactPersonResult.resultType(String.valueOf(entity.getResultType()));
+        return result.resultType(Result.ResultTypeEnum.valueOf(String.valueOf(entity.getResultType())));
     }
 }

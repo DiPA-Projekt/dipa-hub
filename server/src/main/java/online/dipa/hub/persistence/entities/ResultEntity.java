@@ -12,20 +12,21 @@ import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
 
 @Entity
-@Table(name = "single_appointment_result")
+@Table(name = "project_task_result")
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class SingleAppointmentResultEntity extends BaseEntity {
+public class ResultEntity extends BaseEntity {
 
     private String resultType;
 
-    @OneToMany(mappedBy = "singleAppointmentResult", cascade = { ALL })
+    @OneToMany(mappedBy = "result", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<FormFieldEntity> formFields = new HashSet<>();
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private ProjectTaskEntity projectTask;
+
 
     public String getResultType() {
         return resultType;

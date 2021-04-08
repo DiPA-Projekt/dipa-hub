@@ -43,22 +43,7 @@ public class FormFieldEntity extends BaseEntity {
     private Set<OptionEntryEntity> options = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private AppointmentSeriesResultEntity appointmentSeriesResult;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    private ContactPersonResultEntity contactPersonResult;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    private ELBEShoppingCartResultEntity elbeShoppingCartResult;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    private RiskResultEntity riskResult;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    private SingleAppointmentResultEntity singleAppointmentResult;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    private StandardResultEntity standardResult;
+    private ResultEntity result;
 
     public String getValue() {
         return value;
@@ -132,53 +117,12 @@ public class FormFieldEntity extends BaseEntity {
         this.projectTask = projectTask;
     }
 
-    public ELBEShoppingCartResultEntity getELBEShoppingCartResults() {
-        return elbeShoppingCartResult;
+    public ResultEntity getResultEntity() {
+        return result;
     }
 
-    public void setELBEShoppingCartResults(final ELBEShoppingCartResultEntity elbeShoppingCartResult) {
-        this.elbeShoppingCartResult = elbeShoppingCartResult;
-    }
-
-    
-    public RiskResultEntity getRiskResult() {
-        return riskResult;
-    }
-
-    public void setRiskResult(final RiskResultEntity riskResult) {
-        this.riskResult = riskResult;
-    }
-
-    public SingleAppointmentResultEntity getSingleAppointmentResultEntity() {
-        return singleAppointmentResult;
-    }
-
-    public void setSingleAppointmentResultEntity(final SingleAppointmentResultEntity singleAppointmentResult) {
-        this.singleAppointmentResult = singleAppointmentResult;
-    }
-
-    public AppointmentSeriesResultEntity getAppointmentSeriesResultEntity() {
-        return appointmentSeriesResult;
-    }
-
-    public void setAppointmentSeriesResultEntity(final AppointmentSeriesResultEntity appointmentSeriesResult) {
-        this.appointmentSeriesResult = appointmentSeriesResult;
-    }
-
-    public ContactPersonResultEntity getContactPersonResultEntity() {
-        return contactPersonResult;
-    }
-
-    public void setContactPersonResultEntity(final ContactPersonResultEntity contactPersonResult) {
-        this.contactPersonResult = contactPersonResult;
-    }
-
-    public StandardResultEntity getStandardResultEntity() {
-        return standardResult;
-    }
-
-    public void setStandardResultEntity(final StandardResultEntity standardResult) {
-        this.standardResult = standardResult;
+    public void setResultEntity(final ResultEntity result) {
+        this.result = result;
     }
 
     public Set<OptionEntryEntity> getOptions() {

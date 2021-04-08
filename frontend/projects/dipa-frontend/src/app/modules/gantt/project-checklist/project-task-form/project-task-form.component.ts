@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { FormField, ProjectService, ProjectTask } from 'dipa-api-client';
+import { FormField, ProjectService, ProjectTask, Result } from 'dipa-api-client';
 import { MatSelectChange } from '@angular/material/select';
 
 interface SelectOption {
@@ -23,7 +23,7 @@ export class ProjectTaskFormComponent implements OnInit {
   @Input() public selectedTimelineId: number;
   @Output() public stepStatusChanged = new EventEmitter();
 
-  formFieldGroups: SelectOptionGroup[] = [];
+  public formFieldGroups: SelectOptionGroup[] = [];
 
   public formGroup: FormGroup;
 
@@ -40,6 +40,10 @@ export class ProjectTaskFormComponent implements OnInit {
     return this.formGroup.get('entries') as FormArray;
   }
 
+  public get resultsArray(): FormArray {
+    return this.formGroup.get(['results']) as FormArray;
+  }
+
   public changeShowSelection(event: MatSelectChange): void {
     const selectedValues = event.value as string[];
 
@@ -52,8 +56,8 @@ export class ProjectTaskFormComponent implements OnInit {
       for (const field of formFieldGroup.fields) {
         console.log('Überprüfe für: ' + field.value);
 
-        const dataArray = this.getCurrentResultsDataArray();
-        for (const controls of dataArray.controls) {
+        const resultsArray = this.getCurrentResultsArray();
+        for (const controls of resultsArray.controls) {
           const formFieldsArray = controls.get('formFields') as FormArray;
           console.log(controls.get('formFields'));
 
@@ -61,8 +65,6 @@ export class ProjectTaskFormComponent implements OnInit {
             const currentKey = ffEntry.get('key').value as string;
             const showItem = selectedValues.includes(`formFields.${currentKey}`);
             ffEntry.get('show').setValue(showItem);
-
-            console.log(ffEntry);
           }
         }
       }
@@ -116,20 +118,28 @@ export class ProjectTaskFormComponent implements OnInit {
       explanation: [data?.explanation],
       completed: [data?.completed],
       //entries: [data?.entries],
-      entries: this.getEntriesArray(data?.entries),
+      entries: this.getFormFieldsArray(data?.entries),
       // contactPerson: [data?.contactPerson],
       // documentationLink: [data?.documentationLink],
-      results: this.fb.group({
-        type: '',
-        data: this.fb.array([]),
-      }),
+      results: this.getResultsArray(data?.results),
     });
   }
 
-  private getEntriesArray(entries: FormField[]): FormArray {
+  private getFormFieldsArray(entries: FormField[]): FormArray {
     const entriesArray = this.fb.array([]);
 
     for (const entry of entries) {
+      const optionsArray = this.fb.array([]);
+
+      for (const option of entry?.options) {
+        optionsArray.push(
+          this.fb.group({
+            key: option?.key,
+            value: option?.value,
+          })
+        );
+      }
+
       entriesArray.push(
         this.fb.group({
           id: entry?.id,
@@ -141,7 +151,7 @@ export class ProjectTaskFormComponent implements OnInit {
           sortOrder: entry?.sortOrder,
           controlType: entry?.controlType,
           type: entry?.type,
-          options: entry?.options,
+          options: optionsArray,
           show: entry?.show,
         })
       );
@@ -149,7 +159,24 @@ export class ProjectTaskFormComponent implements OnInit {
     return entriesArray;
   }
 
-  private getCurrentResultsDataArray(): FormArray {
-    return this.formGroup.get(['results', 'data']) as FormArray;
+  private getResultsArray(results: Result[]): FormArray {
+    const resultsArray = this.fb.array([]);
+
+    // TODO: besser abfangen
+    if (results?.length) {
+      for (const entry of results) {
+        resultsArray.push(
+          this.fb.group({
+            resultType: entry?.resultType,
+            formFields: this.getFormFieldsArray(entry?.formFields),
+          })
+        );
+      }
+    }
+    return resultsArray;
+  }
+
+  private getCurrentResultsArray(): FormArray {
+    return this.formGroup.get(['results']) as FormArray;
   }
 }

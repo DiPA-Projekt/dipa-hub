@@ -56,3 +56,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-form-field + .mat-form-field {
   margin-left: 16px;
 }
+
+.mat-form-field.width2x {
+  width: 360px;
+}

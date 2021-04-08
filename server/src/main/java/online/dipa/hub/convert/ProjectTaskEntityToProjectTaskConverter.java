@@ -9,31 +9,15 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import online.dipa.hub.api.model.ProjectTask;
-import online.dipa.hub.api.model.ProjectTaskResults;
 import online.dipa.hub.api.model.Result;
 import online.dipa.hub.persistence.entities.ProjectTaskEntity;
 
 
 @Component
 public class ProjectTaskEntityToProjectTaskConverter implements Converter<ProjectTaskEntity, ProjectTask> {
-    
-    @Autowired
-    private StandardResultEntityToStandardResult standardResultConverter;
-    
-    @Autowired
-    private ContactPersonResultEntityToContactPersonResultConverter contactPersonResultConverter;
 
     @Autowired
-    private ElbeShoppingCartResultEntityToElbeShoppingCartResultConverter elbeShoppingCartResultConverter;
-    
-    @Autowired
-    private ApptSeriesResultEntityToApptSeriesResultConverter apptSeriesResultConverter;
-    
-    @Autowired
-    private RiskResultEntityToRiskResultConverter riskResultConverter;
-    
-    @Autowired
-    private SingleApptResultEntityToSingleApptResultConverter singleApptResultConverter;
+    private ResultEntityToResultConverter resultEntityToResultConverter;
 
     @Autowired
     private FormFieldEntityToFormFieldConverter formFieldConverter;
@@ -46,39 +30,12 @@ public class ProjectTaskEntityToProjectTaskConverter implements Converter<Projec
                              .optional(template.getOptional())
                              .explanation(template.getExplanation());
 
-        List<FormField> formFields = template.getFormFields().stream().map(p -> formFieldConverter.convert(p)).collect(Collectors.toList());
-        projectTask.entries(formFields);
+        List<FormField> entries = template.getEntries().stream().map(p -> formFieldConverter.convert(p)).collect(Collectors.toList());
+        projectTask.entries(entries);
 
-
-        if (!template.getStandardResult().isEmpty()) {
-            List<Result> standardResults = template.getStandardResult().stream().map(p -> standardResultConverter.convert(p)).collect(Collectors.toList());
-            projectTask.results(new ProjectTaskResults().type("TYPE_STD").data(standardResults));
-
-        }
-        else if (!template.getContactPersonResult().isEmpty()) {
-            List<Result> contactPersonResults = template.getContactPersonResult().stream().map(p -> contactPersonResultConverter.convert(p)).collect(Collectors.toList());
-            projectTask.results(new ProjectTaskResults().type("TYPE_CONTACT_PERS").data(contactPersonResults));
-
-        }
-        else if (!template.getAppointmentSeriesResults().isEmpty()) {
-            List<Result> apptSeriesResults = template.getAppointmentSeriesResults().stream().map(p -> apptSeriesResultConverter.convert(p)).collect(Collectors.toList());
-            projectTask.results(new ProjectTaskResults().type("TYPE_APPT_SERIES").data(apptSeriesResults));
-
-        }
-        else if (!template.getELBEShoppingCartResults().isEmpty()) {
-            List<Result> elbeShoppingCartResults = template.getELBEShoppingCartResults().stream().map(p -> elbeShoppingCartResultConverter.convert(p)).collect(Collectors.toList());
-            projectTask.results(new ProjectTaskResults().type("TYPE_ELBE_SC").data(elbeShoppingCartResults));
-
-        }
-        else if (!template.getSingleAppointmentResults().isEmpty()) {
-            List<Result> singleApptResults = template.getSingleAppointmentResults().stream().map(p -> singleApptResultConverter.convert(p)).collect(Collectors.toList());
-            projectTask.results(new ProjectTaskResults().type("TYPE_SINGLE_APPOINTMENT").data(singleApptResults));
-
-        }
-        else if (!template.getRiskResults().isEmpty()) {
-            List<Result> riskResults = template.getRiskResults().stream().map(p -> riskResultConverter.convert(p)).collect(Collectors.toList());
-            projectTask.results(new ProjectTaskResults().type("TYPE_RISK").data(riskResults));
-            
+        if (!template.getResults().isEmpty()) {
+            List<Result> results = template.getResults().stream().map(p -> resultEntityToResultConverter.convert(p)).collect(Collectors.toList());
+            projectTask.results(results);
         }
                 
         return projectTask;

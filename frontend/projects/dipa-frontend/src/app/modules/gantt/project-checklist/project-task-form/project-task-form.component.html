@@ -55,43 +55,12 @@
     </ng-container>
   </ng-container>
 
-  <ng-container formGroupName="results">
-    <ng-container [ngSwitch]="taskData.results.type">
-      <app-cart-form
-        *ngSwitchCase="'TYPE_ELBE_SC'"
-        [formData]="taskData.results.data"
-        (dataChanged)="onSubmit(formGroup)"
-      ></app-cart-form>
-      <app-risk-form
-        *ngSwitchCase="'TYPE_RISK'"
-        [formData]="taskData.results.data"
-        (dataChanged)="onSubmit(formGroup)"
-      ></app-risk-form>
-      <app-contact-person-form
-        *ngSwitchCase="'TYPE_CONTACT_PERS'"
-        [formData]="taskData.results.data"
-        (dataChanged)="onSubmit(formGroup)"
-      ></app-contact-person-form>
-      <app-single-appointment-form
-        *ngSwitchCase="'TYPE_SINGLE_APPOINTMENT'"
-        [formData]="taskData.results.data"
-        (dataChanged)="onSubmit(formGroup)"
-      ></app-single-appointment-form>
-      <app-appointment-series-form
-        *ngSwitchCase="'TYPE_APPT_SERIES'"
-        [formData]="taskData.results.data"
-        (dataChanged)="onSubmit(formGroup)"
-      ></app-appointment-series-form>
-      <app-standard-task-form
-        *ngSwitchDefault
-        [formData]="taskData.results.data"
-        [showFieldsForm]="showFieldsForm"
-        [formFieldGroups]="formFieldGroups"
-        (dataChanged)="onSubmit(formGroup)"
-      >
-      </app-standard-task-form>
-    </ng-container>
-  </ng-container>
+  <app-results-form
+    [formData]="resultsArray"
+    [showFieldsForm]="showFieldsForm"
+    [formFieldGroups]="formFieldGroups"
+    (dataChanged)="onSubmit(formGroup)"
+  ></app-results-form>
 
   <div>
     <button mat-raised-button color="primary" class="stepDoneButton" (click)="toggleCompleteStatus()">

@@ -1,13 +1,15 @@
-<ng-container [formGroup]="controlContainer.control">
-  <div formArrayName="data">
-    <ng-container *ngFor="let defaultTask of defaultTaskArray.controls; let i = index">
+<ng-container [formGroup]="formGroupDirective.control">
+  <div formArrayName="results">
+    <ng-container *ngFor="let result of resultsArray.controls; let i = index">
       <div [formGroupName]="i">
         <ng-container formArrayName="formFields">
-          <ng-container *ngFor="let formField of getFormFieldsArray(i).controls; let j = index">
+          <ng-container *ngFor="let formField of getFormFieldsArray(result).controls; let j = index">
             <ng-container [formGroupName]="j">
-              <mat-form-field *ngIf="formField.get('show')?.value">
+              <mat-form-field
+                [ngClass]="formField.get('controlType')?.value === 'TEXTAREA' ? 'width2x' : ''"
+                *ngIf="formField.get('show')?.value"
+              >
                 <mat-label>{{ formField.get('label')?.value }}</mat-label>
-
                 <div [ngSwitch]="formField.get('controlType')?.value">
                   <input
                     *ngSwitchCase="'TEXTBOX'"
@@ -17,8 +19,8 @@
                     [id]="formField.get('key')?.value"
                     [value]="formField.get('value')?.value"
                     (change)="dataChanged.emit()"
-                    (focus)="onFocus($event, ['results', 'data', i, 'formFields', j, 'value'])"
-                    (keyup.esc)="onEscape($event, ['results', 'data', i, 'formFields', j, 'value'])"
+                    (focus)="onFocus($event, ['results', i, 'formFields', j, 'value'])"
+                    (keyup.esc)="onEscape($event, ['results', i, 'formFields', j, 'value'])"
                   />
                   <textarea
                     *ngSwitchCase="'TEXTAREA'"
@@ -31,8 +33,8 @@
                     [id]="formField.get('key')?.value"
                     [value]="formField.get('value')?.value"
                     (change)="dataChanged.emit()"
-                    (focus)="onFocus($event, ['results', 'data', i, 'formFields', j, 'value'])"
-                    (keyup.esc)="onEscape($event, ['results', 'data', i, 'formFields', j, 'value'])"
+                    (focus)="onFocus($event, ['results', i, 'formFields', j, 'value'])"
+                    (keyup.esc)="onEscape($event, ['results', i, 'formFields', j, 'value'])"
                   >
                   </textarea>
                   <mat-select *ngSwitchCase="'DROPDOWN'" (selectionChange)="dataChanged.emit()" formControlName="value">
@@ -45,7 +47,23 @@
             </ng-container>
           </ng-container>
         </ng-container>
+        <button
+          mat-button
+          type="button"
+          class="roundedButton"
+          (click)="deleteResult(i)"
+          title="Eintrag entfernen"
+          aria-label="Eintrag entfernen"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
       </div>
     </ng-container>
+    <span class="">
+      <button type="button" mat-button (click)="addResult(getResultType())">
+        <mat-icon>add_circle</mat-icon>
+        Neuer Eintrag
+      </button>
+    </span>
   </div>
 </ng-container>

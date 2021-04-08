@@ -31,19 +31,7 @@ public class ProjectService {
     private FormFieldRepository formFieldRepository;
 
     @Autowired
-    private ElbeShoppingCartResultRepository elbeShoppingCartResultRepository;
-
-    @Autowired
-    private RiskResultRepository riskResultRepository;
-
-    @Autowired
-    private AppointmentSeriesResultRepository apptSeriesResultRepository;
-
-    @Autowired
-    private ContactPersonResultRepository contactPersonResultRepository;
-
-    @Autowired
-    private SingleAppointmentResultRepository singleAppointmentResultRepository;
+    private ResultRepository resultRepository;
 
     @Autowired
     private ConversionService conversionService;
@@ -108,8 +96,7 @@ public class ProjectService {
                     // projectTaskMapper.updateFormFieldEntity(projectTask, oldProjectTask, formFieldRepository);
 
                     projectTaskMapper.updateProjectTaskEntity(projectTask, oldProjectTask,
-                            elbeShoppingCartResultRepository, riskResultRepository,
-                            contactPersonResultRepository, singleAppointmentResultRepository, apptSeriesResultRepository, formFieldRepository);
+                            resultRepository, formFieldRepository);
                 });
     }
     

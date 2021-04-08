@@ -1,5 +1,267 @@
 databaseChangeLog:
   - changeSet:
+      id: update-project-task-01-title
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: title
+                  value: Übergabe SMPL-->PL
+              - column:
+                  name: explanation
+                  value: Übergabe des Projekts inklusive der Planungsunterlagen vom Planenden (Servicemanagement Produkte und Lösungen) an die Projektleitung
+            where: id=1 OR id=18
+  - changeSet:
+      id: update-project-task-02-title
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: title
+                  value: Übergabe II A 11-->PL
+              - column:
+                  name: explanation
+                  value: Übergabe des angelegten iSAR-Projektes mit vorausgefülltem PSB vom Einzelauftragsmanagement an die Projektleitung
+            where: id=2 OR id=19
+  - changeSet:
+      id: update-project-task-03-title
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: title
+                  value: Besetzung in iSAR durchführen
+              - column:
+                  name: explanation
+                  value: Eingabe von weiteren Projektmitgliedern in iSAR, die auf das AKZ Zeiten zurückmelden sollen
+            where: id=3 OR id=20
+  - changeSet:
+      id: update-project-task-05-title
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: title
+                  value: Erste Terminserien wie z.B. Jour Fixe vereinbaren
+            where: id=5 OR id=22
+  - changeSet:
+      id: update-project-task-08-title
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: title
+                  value: Einkaufswagen in ELBE anlegen
+              - column:
+                  name: explanation
+                  value: Bestellung von Software, Hardware und externen Projektteammitgliedern
+            where: id=8 OR id=25
+  - changeSet:
+      id: update-project-task-09-title
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: title
+                  value: AeDL einrichten
+              - column:
+                  name: explanation
+                  value: Einrichtung der Verträge und der externen Kolleg:innen zu diesen Verträgen im Tool "AeDL"
+            where: id=9 OR id=26
+  - changeSet:
+      id: update-project-task-10-title
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: title
+                  value: Trackingtabelle für externe Dienstleistung einrichten
+              - column:
+                  name: explanation
+                  value: Tracking der monatlichen Aufwände und Zahlungen
+            where: id=10 OR id=27
+  - changeSet:
+      id: update-project-task-11-title
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: title
+                  value: Arbeitsmittel für externe Teamkolleg:innen bestellen und einrichten
+              - column:
+                  name: explanation
+                  value: Bestellung von notwendigen Arbeitsmitteln (z.B. Servista, Verpflichtung etc.) beim Einsatz externer Teamkolleg:innen
+            where: id=11 OR id=28
+  - changeSet:
+      id: update-project-task-12-title
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: title
+                  value: Ersten Projektstatusbericht schreiben
+              - column:
+                  name: explanation
+                  value: Erstellung des ersten Statusberichtes für den vorangegangenen Berichtsmonat in iSAR und Freigabe dessen durch den Projekteigner bis zum 10. Tag des Kalendermonats
+            where: id=12 OR id=29
+  - changeSet:
+      id: update-project-task-13-title
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: title
+                  value: Erste Termine setzen und steuern
+              - column:
+                  name: explanation
+                  value: Strukturieren des Projektablaufes mit internen Terminen, Überprüfen der Termineinhaltung und Steuerung von Auswirkungen von Terminüberschreitungen
+            where: id=13 OR id=30
+  - changeSet:
+      id: update-project-task-14-title
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: title
+                  value: Erste Risiken aufnehmen
+            where: id=14 OR id=31
+  - changeSet:
+      id: delete-standard-result-01
+      author: bock
+      context: itzbund
+      changes:
+        - delete:
+            tableName: standard_result
+            where: id=1
+  - changeSet:
+      id: insert-contact-person-result-01
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_task_result
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: result_type
+                  value: "TYPE_CONTACT_PERS"
+              - column:
+                  name: project_task_id
+                  value: 1
+  - changeSet:
+      id: delete-standard-result-01-Zugspitze
+      author: bock
+      context: itzbund
+      changes:
+        - delete:
+            tableName: standard_result
+            where: id=13
+  - changeSet:
+      id: insert-contact-person-result-01-Zugspitze
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_task_result
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: result_type
+                  value: "TYPE_CONTACT_PERS"
+              - column:
+                  name: project_task_id
+                  value: 18
+  - changeSet:
+      id: delete-standard-result-02-Zugspitze
+      author: bock
+      context: itzbund
+      changes:
+        - delete:
+            tableName: standard_result
+            where: id=14
+  - changeSet:
+      id: insert-contact-person-result-02-Zugspitze
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_task_result
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: result_type
+                  value: "TYPE_CONTACT_PERS"
+              - column:
+                  name: project_task_id
+                  value: 19
+
+  - changeSet:
+      id: delete-standard-result-03-Zugspitze
+      author: bock
+      context: itzbund
+      changes:
+        - delete:
+            tableName: standard_result
+            where: id=15
+  - changeSet:
+      id: insert-contact-person-result-03-Zugspitze
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_task_result
+            columns:
+              - column:
+                  name: id
+                  value: 6
+              - column:
+                  name: result_type
+                  value: "TYPE_CONTACT_PERS"
+              - column:
+                  name: project_task_id
+                  value: 20
+## -----------------------------------
+
+  - changeSet:
       id: insert-project-task-01-Zugspitze-form-entry-contactPerson
       author: bock
       context: itzbund
@@ -33,7 +295,7 @@ databaseChangeLog:
                   value: TEXTBOX
               - column:
                   name: show
-                  value: true
+                  value: false
               - column:
                   name: project_task_id
                   value: 18
@@ -59,7 +321,7 @@ databaseChangeLog:
                   value: Link
               - column:
                   name: placeholder
-                  value: "Link zu Jira"
+                  value: "Link zur Angebotsplanungsunterlage"
               - column:
                   name: required
                   value: false
@@ -78,8 +340,10 @@ databaseChangeLog:
               - column:
                   name: project_task_id
                   value: 18
+
+
   - changeSet:
-      id: insert-project-task-02-Zugspitze-form-entry-note
+      id: insert-project-task-01-Zugspitze-form-entry-name
       author: bock
       context: itzbund
       changes:
@@ -94,89 +358,13 @@ databaseChangeLog:
                   value:
               - column:
                   name: key
-                  value: note
+                  value: name
               - column:
                   name: label
-                  value: Notiz
+                  value: Name
               - column:
                   name: placeholder
-                  value: Notiz
-              - column:
-                  name: required
-                  value: false
-              - column:
-                  name: sort_order
-                  value: 3
-              - column:
-                  name: control_type
-                  value: TEXTAREA
-              - column:
-                  name: show
-                  value: true
-              - column:
-                  name: standard_result_id
-                  value: 13
-  - changeSet:
-      id: insert-project-task-02-Zugspitze-form-entry-status
-      author: bock
-      context: itzbund
-      changes:
-        - insert:
-            tableName: project_task_form_field
-            columns:
-              - column:
-                  name: id
-                  value: 4
-              - column:
-                  name: value
-                  value:
-              - column:
-                  name: key
-                  value: status
-              - column:
-                  name: label
-                  value: Status
-              - column:
-                  name: placeholder
-                  value: Status
-              - column:
-                  name: required
-                  value: false
-              - column:
-                  name: sort_order
-                  value: 4
-              - column:
-                  name: control_type
-                  value: DROPDOWN
-              - column:
-                  name: show
-                  value: true
-              - column:
-                  name: standard_result_id
-                  value: 13
-  - changeSet:
-      id: insert-project-task-01-Zugspitze-form-entry-contactPerson-25
-      author: bock
-      context: itzbund
-      changes:
-        - insert:
-            tableName: project_task_form_field
-            columns:
-              - column:
-                  name: id
-                  value: 5
-              - column:
-                  name: value
-                  value:
-              - column:
-                  name: key
-                  value: contactPerson
-              - column:
-                  name: label
-                  value: Ansprechpartner
-              - column:
-                  name: placeholder
-                  value: "Name, Vorname"
+                  value: Name
               - column:
                   name: required
                   value: false
@@ -187,13 +375,16 @@ databaseChangeLog:
                   name: control_type
                   value: TEXTBOX
               - column:
+                  name: type
+                  value: TEXT
+              - column:
                   name: show
                   value: true
               - column:
-                  name: project_task_id
-                  value: 25
+                  name: result_id
+                  value: 4
   - changeSet:
-      id: insert-project-task-01-Zugspitze-form-entry-documentationLink-25
+      id: insert-project-task-01-Zugspitze-form-entry-department
       author: bock
       context: itzbund
       changes:
@@ -202,19 +393,19 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  value: 6
+                  value: 4
               - column:
                   name: value
                   value:
               - column:
                   name: key
-                  value: documentationLink
+                  value: department
               - column:
                   name: label
-                  value: Link
+                  value: Referat
               - column:
                   name: placeholder
-                  value: "Link zu Jira"
+                  value: Referat
               - column:
                   name: required
                   value: false
@@ -226,15 +417,97 @@ databaseChangeLog:
                   value: TEXTBOX
               - column:
                   name: type
+                  value: TEXT
+              - column:
+                  name: show
+                  value: true
+              - column:
+                  name: result_id
+                  value: 4
+  - changeSet:
+      id: insert-project-task-01-Zugspitze-form-entry-taskArea
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_task_form_field
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: value
+                  value:
+              - column:
+                  name: key
+                  value: taskArea
+              - column:
+                  name: label
+                  value: Aufgabenbereich
+              - column:
+                  name: placeholder
+                  value: Aufgabenbereich
+              - column:
+                  name: required
+                  value: false
+              - column:
+                  name: sort_order
+                  value: 3
+              - column:
+                  name: control_type
+                  value: TEXTBOX
+              - column:
+                  name: type
+                  value: TEXT
+              - column:
+                  name: show
+                  value: true
+              - column:
+                  name: result_id
+                  value: 4
+  - changeSet:
+      id: insert-project-task-01-Zugspitze-form-entry-link
+      author: bock
+      context: itzbund
+      changes:
+        - insert:
+            tableName: project_task_form_field
+            columns:
+              - column:
+                  name: id
+                  value: 6
+              - column:
+                  name: value
+                  value:
+              - column:
+                  name: key
+                  value: link
+              - column:
+                  name: label
+                  value: Link
+              - column:
+                  name: placeholder
+                  value: URL
+              - column:
+                  name: required
+                  value: false
+              - column:
+                  name: sort_order
+                  value: 4
+              - column:
+                  name: control_type
+                  value: TEXTBOX
+              - column:
+                  name: type
                   value: URL
               - column:
                   name: show
                   value: true
               - column:
-                  name: project_task_id
-                  value: 25
+                  name: result_id
+                  value: 4
   - changeSet:
-      id: insert-project-task-02-Zugspitze-form-entry-note-25-elbe
+      id: insert-project-task-01-Zugspitze-form-entry-note
       author: bock
       context: itzbund
       changes:
@@ -252,16 +525,16 @@ databaseChangeLog:
                   value: note
               - column:
                   name: label
-                  value: Notiz
+                  value: Notizen
               - column:
                   name: placeholder
-                  value: Notiz
+                  value: Notizen
               - column:
                   name: required
                   value: false
               - column:
                   name: sort_order
-                  value: 3
+                  value: 5
               - column:
                   name: control_type
                   value: TEXTAREA
@@ -269,10 +542,10 @@ databaseChangeLog:
                   name: show
                   value: true
               - column:
-                  name: elbe_shopping_cart_result_id
-                  value: 2
+                  name: result_id
+                  value: 4
   - changeSet:
-      id: insert-project-task-02-Zugspitze-form-entry-resultType-elbe-25
+      id: insert-project-task-01-Zugspitze-form-entry-status
       author: bock
       context: itzbund
       changes:
@@ -299,7 +572,7 @@ databaseChangeLog:
                   value: false
               - column:
                   name: sort_order
-                  value: 4
+                  value: 6
               - column:
                   name: control_type
                   value: DROPDOWN
@@ -307,128 +580,1409 @@ databaseChangeLog:
                   name: show
                   value: true
               - column:
-                  name: elbe_shopping_cart_result_id
-                  value: 2
-  - changeSet:
-      id: insert-project-task-02-Zugspitze-form-entry-shopping-cart-number-elbe-25
-      author: bock
-      context: itzbund
-      changes:
-        - insert:
-            tableName: project_task_form_field
-            columns:
-              - column:
-                  name: id
-                  value: 9
-              - column:
-                  name: value
-                  value:
-              - column:
-                  name: key
-                  value: Shopping Cart Number
-              - column:
-                  name: label
-                  value: Shopping Cart Number
-              - column:
-                  name: placeholder
-                  value: Shopping Cart Number
-              - column:
-                  name: required
-                  value: false
-              - column:
-                  name: sort_order
+                  name: result_id
                   value: 4
-              - column:
-                  name: control_type
-                  value: TEXTAREA
-              - column:
-                  name: show
-                  value: true
-              - column:
-                  name: elbe_shopping_cart_result_id
-                  value: 2
-#   - changeSet:
-#       id: insert-option-entry-cart-planned
-#       author: bock
-#       context: itzbund
-#       changes:
-#         - insert:
-#             tableName: option_entry
-#             columns:
-#               - column:
-#                   name: id
-#                   value: 1
-#               - column:
-#                   name: key
-#                   value: PLANNED
-#               - column:
-#                   name: value
-#                   value: geplant
-#               - column:
-#                   name: form_field_id
-#                   value: 1
-#   - changeSet:
-#       id: insert-option-entry-cart-ordered
-#       author: bock
-#       context: itzbund
-#       changes:
-#         - insert:
-#             tableName: option_entry
-#             columns:
-#               - column:
-#                   name: id
-#                   value: 2
-#               - column:
-#                   name: key
-#                   value: ORDERED
-#               - column:
-#                   name: value
-#                   value: bestellt
-#               - column:
-#                   name: form_field_id
-#                   value: 1
-#   - changeSet:
-#       id: insert-option-entry-cart-approved
-#       author: bock
-#       context: itzbund
-#       changes:
-#         - insert:
-#             tableName: option_entry
-#             columns:
-#               - column:
-#                   name: id
-#                   value: 3
-#               - column:
-#                   name: key
-#                   value: APPROVED
-#               - column:
-#                   name: value
-#                   value: genehmigt
-#               - column:
-#                   name: form_field_id
-#                   value: 1
-#   - changeSet:
-#       id: insert-option-entry-cart-delivered
-#       author: bock
-#       context: itzbund
-#       changes:
-#         - insert:
-#             tableName: option_entry
-#             columns:
-#               - column:
-#                   name: id
-#                   value: 4
-#               - column:
-#                   name: key
-#                   value: DELIVERED
-#               - column:
-#                   name: value
-#                   value: geliefert
-#               - column:
-#                   name: form_field_id
-#                   value: 1
+#
+## ------------------------------------------
+#
+#  - changeSet:
+#      id: insert-project-task-02-Zugspitze-form-entry-contactPerson
+#      author: bock
+#      context: itzbund
+#      changes:
+#        - insert:
+#            tableName: project_task_form_field
+#            columns:
+#              - column:
+#                  name: id
+#                  value: 27
+#              - column:
+#                  name: value
+#                  value:
+#              - column:
+#                  name: key
+#                  value: contactPerson
+#              - column:
+#                  name: label
+#                  value: Ansprechpartner
+#              - column:
+#                  name: placeholder
+#                  value: "Name, Vorname"
+#              - column:
+#                  name: required
+#                  value: false
+#              - column:
+#                  name: sort_order
+#                  value: 1
+#              - column:
+#                  name: control_type
+#                  value: TEXTBOX
+#              - column:
+#                  name: show
+#                  value: false
+#              - column:
+#                  name: project_task_id
+#                  value: 19
+#  - changeSet:
+#      id: insert-project-task-02-Zugspitze-form-entry-documentationLink
+#      author: bock
+#      context: itzbund
+#      changes:
+#        - insert:
+#            tableName: project_task_form_field
+#            columns:
+#              - column:
+#                  name: id
+#                  value: 28
+#              - column:
+#                  name: value
+#                  value:
+#              - column:
+#                  name: key
+#                  value: documentationLink
+#              - column:
+#                  name: label
+#                  value: Link
+#              - column:
+#                  name: placeholder
+#                  value: "Link zur Angebotsplanungsunterlage"
+#              - column:
+#                  name: required
+#                  value: false
+#              - column:
+#                  name: sort_order
+#                  value: 2
+#              - column:
+#                  name: control_type
+#                  value: TEXTBOX
+#              - column:
+#                  name: type
+#                  value: URL
+#              - column:
+#                  name: show
+#                  value: false
+#              - column:
+#                  name: project_task_id
+#                  value: 19
+#
+#  - changeSet:
+#      id: insert-project-task-02-Zugspitze-form-entry-name
+#      author: bock
+#      context: itzbund
+#      changes:
+#        - insert:
+#            tableName: project_task_form_field
+#            columns:
+#              - column:
+#                  name: id
+#                  value: 9
+#              - column:
+#                  name: value
+#                  value:
+#              - column:
+#                  name: key
+#                  value: name
+#              - column:
+#                  name: label
+#                  value: Name
+#              - column:
+#                  name: placeholder
+#                  value: Name
+#              - column:
+#                  name: required
+#                  value: false
+#              - column:
+#                  name: sort_order
+#                  value: 1
+#              - column:
+#                  name: control_type
+#                  value: TEXTBOX
+#              - column:
+#                  name: type
+#                  value: TEXT
+#              - column:
+#                  name: show
+#                  value: true
+#              - column:
+#                  name: contact_person_result_id
+#                  value: 5
+#  - changeSet:
+#      id: insert-project-task-02-Zugspitze-form-entry-department
+#      author: bock
+#      context: itzbund
+#      changes:
+#        - insert:
+#            tableName: project_task_form_field
+#            columns:
+#              - column:
+#                  name: id
+#                  value: 10
+#              - column:
+#                  name: value
+#                  value:
+#              - column:
+#                  name: key
+#                  value: department
+#              - column:
+#                  name: label
+#                  value: Referat
+#              - column:
+#                  name: placeholder
+#                  value: Referat
+#              - column:
+#                  name: required
+#                  value: false
+#              - column:
+#                  name: sort_order
+#                  value: 2
+#              - column:
+#                  name: control_type
+#                  value: TEXTBOX
+#              - column:
+#                  name: type
+#                  value: TEXT
+#              - column:
+#                  name: show
+#                  value: true
+#              - column:
+#                  name: contact_person_result_id
+#                  value: 5
+#  - changeSet:
+#      id: insert-project-task-02-Zugspitze-form-entry-taskArea
+#      author: bock
+#      context: itzbund
+#      changes:
+#        - insert:
+#            tableName: project_task_form_field
+#            columns:
+#              - column:
+#                  name: id
+#                  value: 11
+#              - column:
+#                  name: value
+#                  value:
+#              - column:
+#                  name: key
+#                  value: taskArea
+#              - column:
+#                  name: label
+#                  value: Aufgabenbereich
+#              - column:
+#                  name: placeholder
+#                  value: Aufgabenbereich
+#              - column:
+#                  name: required
+#                  value: false
+#              - column:
+#                  name: sort_order
+#                  value: 3
+#              - column:
+#                  name: control_type
+#                  value: TEXTBOX
+#              - column:
+#                  name: type
+#                  value: TEXT
+#              - column:
+#                  name: show
+#                  value: true
+#              - column:
+#                  name: contact_person_result_id
+#                  value: 5
+#  - changeSet:
+#      id: insert-project-task-02-Zugspitze-form-entry-link
+#      author: bock
+#      context: itzbund
+#      changes:
+#        - insert:
+#            tableName: project_task_form_field
+#            columns:
+#              - column:
+#                  name: id
+#                  value: 12
+#              - column:
+#                  name: value
+#                  value:
+#              - column:
+#                  name: key
+#                  value: link
+#              - column:
+#                  name: label
+#                  value: Link
+#              - column:
+#                  name: placeholder
+#                  value: URL
+#              - column:
+#                  name: required
+#                  value: false
+#              - column:
+#                  name: sort_order
+#                  value: 4
+#              - column:
+#                  name: control_type
+#                  value: TEXTBOX
+#              - column:
+#                  name: type
+#                  value: URL
+#              - column:
+#                  name: show
+#                  value: false
+#              - column:
+#                  name: contact_person_result_id
+#                  value: 5
+#  - changeSet:
+#      id: insert-project-task-02-Zugspitze-form-entry-note
+#      author: bock
+#      context: itzbund
+#      changes:
+#        - insert:
+#            tableName: project_task_form_field
+#            columns:
+#              - column:
+#                  name: id
+#                  value: 13
+#              - column:
+#                  name: value
+#                  value:
+#              - column:
+#                  name: key
+#                  value: note
+#              - column:
+#                  name: label
+#                  value: Notizen
+#              - column:
+#                  name: placeholder
+#                  value: Notizen
+#              - column:
+#                  name: required
+#                  value: false
+#              - column:
+#                  name: sort_order
+#                  value: 5
+#              - column:
+#                  name: control_type
+#                  value: TEXTAREA
+#              - column:
+#                  name: show
+#                  value: true
+#              - column:
+#                  name: contact_person_result_id
+#                  value: 5
+#  - changeSet:
+#      id: insert-project-task-02-Zugspitze-form-entry-status
+#      author: bock
+#      context: itzbund
+#      changes:
+#        - insert:
+#            tableName: project_task_form_field
+#            columns:
+#              - column:
+#                  name: id
+#                  value: 14
+#              - column:
+#                  name: value
+#                  value:
+#              - column:
+#                  name: key
+#                  value: status
+#              - column:
+#                  name: label
+#                  value: Status
+#              - column:
+#                  name: placeholder
+#                  value: Status
+#              - column:
+#                  name: required
+#                  value: false
+#              - column:
+#                  name: sort_order
+#                  value: 6
+#              - column:
+#                  name: control_type
+#                  value: DROPDOWN
+#              - column:
+#                  name: show
+#                  value: false
+#              - column:
+#                  name: contact_person_result_id
+#                  value: 5
+#
+#  # -----------------------------------
+##
+##  - changeSet:
+##      id: insert-project-task-03-Zugspitze-form-entry-contactPerson
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: project_task_form_field
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 29
+##              - column:
+##                  name: value
+##                  value:
+##              - column:
+##                  name: key
+##                  value: contactPerson
+##              - column:
+##                  name: label
+##                  value: Ansprechpartner
+##              - column:
+##                  name: placeholder
+##                  value: "Name, Vorname"
+##              - column:
+##                  name: required
+##                  value: false
+##              - column:
+##                  name: sort_order
+##                  value: 1
+##              - column:
+##                  name: control_type
+##                  value: TEXTBOX
+##              - column:
+##                  name: show
+##                  value: false
+##              - column:
+##                  name: project_task_id
+##                  value: 20
+##  - changeSet:
+##      id: insert-project-task-03-Zugspitze-form-entry-documentationLink
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: project_task_form_field
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 30
+##              - column:
+##                  name: value
+##                  value:
+##              - column:
+##                  name: key
+##                  value: documentationLink
+##              - column:
+##                  name: label
+##                  value: Link
+##              - column:
+##                  name: placeholder
+##                  value: "Link zur Angebotsplanungsunterlage"
+##              - column:
+##                  name: required
+##                  value: false
+##              - column:
+##                  name: sort_order
+##                  value: 2
+##              - column:
+##                  name: control_type
+##                  value: TEXTBOX
+##              - column:
+##                  name: type
+##                  value: URL
+##              - column:
+##                  name: show
+##                  value: true
+##              - column:
+##                  name: project_task_id
+##                  value: 20
+##
+##  - changeSet:
+##      id: insert-project-task-03-Zugspitze-form-entry-name
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: project_task_form_field
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 15
+##              - column:
+##                  name: value
+##                  value:
+##              - column:
+##                  name: key
+##                  value: name
+##              - column:
+##                  name: label
+##                  value: Name
+##              - column:
+##                  name: placeholder
+##                  value: Name
+##              - column:
+##                  name: required
+##                  value: false
+##              - column:
+##                  name: sort_order
+##                  value: 1
+##              - column:
+##                  name: control_type
+##                  value: TEXTBOX
+##              - column:
+##                  name: type
+##                  value: TEXT
+##              - column:
+##                  name: show
+##                  value: true
+##              - column:
+##                  name: contact_person_result_id
+##                  value: 6
+##  - changeSet:
+##      id: insert-project-task-03-Zugspitze-form-entry-department
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: project_task_form_field
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 16
+##              - column:
+##                  name: value
+##                  value:
+##              - column:
+##                  name: key
+##                  value: department
+##              - column:
+##                  name: label
+##                  value: Referat
+##              - column:
+##                  name: placeholder
+##                  value: Referat
+##              - column:
+##                  name: required
+##                  value: false
+##              - column:
+##                  name: sort_order
+##                  value: 2
+##              - column:
+##                  name: control_type
+##                  value: TEXTBOX
+##              - column:
+##                  name: type
+##                  value: TEXT
+##              - column:
+##                  name: show
+##                  value: true
+##              - column:
+##                  name: contact_person_result_id
+##                  value: 6
+##  - changeSet:
+##      id: insert-project-task-03-Zugspitze-form-entry-taskArea
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: project_task_form_field
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 17
+##              - column:
+##                  name: value
+##                  value:
+##              - column:
+##                  name: key
+##                  value: taskArea
+##              - column:
+##                  name: label
+##                  value: Aufgabenbereich
+##              - column:
+##                  name: placeholder
+##                  value: Aufgabenbereich
+##              - column:
+##                  name: required
+##                  value: false
+##              - column:
+##                  name: sort_order
+##                  value: 3
+##              - column:
+##                  name: control_type
+##                  value: TEXTBOX
+##              - column:
+##                  name: type
+##                  value: TEXT
+##              - column:
+##                  name: show
+##                  value: true
+##              - column:
+##                  name: contact_person_result_id
+##                  value: 6
+##  - changeSet:
+##      id: insert-project-task-03-Zugspitze-form-entry-link
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: project_task_form_field
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 18
+##              - column:
+##                  name: value
+##                  value:
+##              - column:
+##                  name: key
+##                  value: link
+##              - column:
+##                  name: label
+##                  value: Link
+##              - column:
+##                  name: placeholder
+##                  value: URL
+##              - column:
+##                  name: required
+##                  value: false
+##              - column:
+##                  name: sort_order
+##                  value: 4
+##              - column:
+##                  name: control_type
+##                  value: TEXTBOX
+##              - column:
+##                  name: type
+##                  value: URL
+##              - column:
+##                  name: show
+##                  value: false
+##              - column:
+##                  name: contact_person_result_id
+##                  value: 6
+##  - changeSet:
+##      id: insert-project-task-03-Zugspitze-form-entry-note
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: project_task_form_field
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 19
+##              - column:
+##                  name: value
+##                  value:
+##              - column:
+##                  name: key
+##                  value: note
+##              - column:
+##                  name: label
+##                  value: Notizen
+##              - column:
+##                  name: placeholder
+##                  value: Notizen
+##              - column:
+##                  name: required
+##                  value: false
+##              - column:
+##                  name: sort_order
+##                  value: 5
+##              - column:
+##                  name: control_type
+##                  value: TEXTAREA
+##              - column:
+##                  name: show
+##                  value: true
+##              - column:
+##                  name: contact_person_result_id
+##                  value: 6
+##  - changeSet:
+##      id: insert-project-task-03-Zugspitze-form-entry-status
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: project_task_form_field
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 20
+##              - column:
+##                  name: value
+##                  value:
+##              - column:
+##                  name: key
+##                  value: status
+##              - column:
+##                  name: label
+##                  value: Status
+##              - column:
+##                  name: placeholder
+##                  value: Status
+##              - column:
+##                  name: required
+##                  value: false
+##              - column:
+##                  name: sort_order
+##                  value: 6
+##              - column:
+##                  name: control_type
+##                  value: DROPDOWN
+##              - column:
+##                  name: show
+##                  value: false
+##              - column:
+##                  name: contact_person_result_id
+##                  value: 6
+##  # -----------------------------------
+##
+##  - changeSet:
+##      id: insert-project-task-04-Zugspitze-form-entry-contactPerson
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: project_task_form_field
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 31
+##              - column:
+##                  name: value
+##                  value:
+##              - column:
+##                  name: key
+##                  value: contactPerson
+##              - column:
+##                  name: label
+##                  value: Ansprechpartner
+##              - column:
+##                  name: placeholder
+##                  value: "Name, Vorname"
+##              - column:
+##                  name: required
+##                  value: false
+##              - column:
+##                  name: sort_order
+##                  value: 1
+##              - column:
+##                  name: control_type
+##                  value: TEXTBOX
+##              - column:
+##                  name: show
+##                  value: false
+##              - column:
+##                  name: project_task_id
+##                  value: 21
+##  - changeSet:
+##      id: insert-project-task-04-Zugspitze-form-entry-documentationLink
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: project_task_form_field
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 32
+##              - column:
+##                  name: value
+##                  value:
+##              - column:
+##                  name: key
+##                  value: documentationLink
+##              - column:
+##                  name: label
+##                  value: Link
+##              - column:
+##                  name: placeholder
+##                  value: "Link zur Angebotsplanungsunterlage"
+##              - column:
+##                  name: required
+##                  value: false
+##              - column:
+##                  name: sort_order
+##                  value: 2
+##              - column:
+##                  name: control_type
+##                  value: TEXTBOX
+##              - column:
+##                  name: type
+##                  value: URL
+##              - column:
+##                  name: show
+##                  value: true
+##              - column:
+##                  name: project_task_id
+##                  value: 21
+##
+##  - changeSet:
+##      id: insert-project-task-04-Zugspitze-form-entry-name
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: project_task_form_field
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 21
+##              - column:
+##                  name: value
+##                  value:
+##              - column:
+##                  name: key
+##                  value: name
+##              - column:
+##                  name: label
+##                  value: Name
+##              - column:
+##                  name: placeholder
+##                  value: Name
+##              - column:
+##                  name: required
+##                  value: false
+##              - column:
+##                  name: sort_order
+##                  value: 1
+##              - column:
+##                  name: control_type
+##                  value: TEXTBOX
+##              - column:
+##                  name: type
+##                  value: TEXT
+##              - column:
+##                  name: show
+##                  value: true
+##              - column:
+##                  name: contact_person_result_id
+##                  value: 2
+##  - changeSet:
+##      id: insert-project-task-04-Zugspitze-form-entry-department
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: project_task_form_field
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 22
+##              - column:
+##                  name: value
+##                  value:
+##              - column:
+##                  name: key
+##                  value: department
+##              - column:
+##                  name: label
+##                  value: Referat
+##              - column:
+##                  name: placeholder
+##                  value: Referat
+##              - column:
+##                  name: required
+##                  value: false
+##              - column:
+##                  name: sort_order
+##                  value: 2
+##              - column:
+##                  name: control_type
+##                  value: TEXTBOX
+##              - column:
+##                  name: type
+##                  value: TEXT
+##              - column:
+##                  name: show
+##                  value: true
+##              - column:
+##                  name: contact_person_result_id
+##                  value: 2
+##  - changeSet:
+##      id: insert-project-task-04-Zugspitze-form-entry-taskArea
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: project_task_form_field
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 23
+##              - column:
+##                  name: value
+##                  value:
+##              - column:
+##                  name: key
+##                  value: taskArea
+##              - column:
+##                  name: label
+##                  value: Aufgabenbereich
+##              - column:
+##                  name: placeholder
+##                  value: Aufgabenbereich
+##              - column:
+##                  name: required
+##                  value: false
+##              - column:
+##                  name: sort_order
+##                  value: 3
+##              - column:
+##                  name: control_type
+##                  value: TEXTBOX
+##              - column:
+##                  name: type
+##                  value: TEXT
+##              - column:
+##                  name: show
+##                  value: true
+##              - column:
+##                  name: contact_person_result_id
+##                  value: 2
+##  - changeSet:
+##      id: insert-project-task-04-Zugspitze-form-entry-link
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: project_task_form_field
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 24
+##              - column:
+##                  name: value
+##                  value:
+##              - column:
+##                  name: key
+##                  value: link
+##              - column:
+##                  name: label
+##                  value: Link
+##              - column:
+##                  name: placeholder
+##                  value: URL
+##              - column:
+##                  name: required
+##                  value: false
+##              - column:
+##                  name: sort_order
+##                  value: 4
+##              - column:
+##                  name: control_type
+##                  value: TEXTBOX
+##              - column:
+##                  name: type
+##                  value: URL
+##              - column:
+##                  name: show
+##                  value: false
+##              - column:
+##                  name: contact_person_result_id
+##                  value: 2
+##  - changeSet:
+##      id: insert-project-task-04-Zugspitze-form-entry-note
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: project_task_form_field
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 25
+##              - column:
+##                  name: value
+##                  value:
+##              - column:
+##                  name: key
+##                  value: note
+##              - column:
+##                  name: label
+##                  value: Notizen
+##              - column:
+##                  name: placeholder
+##                  value: Notizen
+##              - column:
+##                  name: required
+##                  value: false
+##              - column:
+##                  name: sort_order
+##                  value: 5
+##              - column:
+##                  name: control_type
+##                  value: TEXTAREA
+##              - column:
+##                  name: show
+##                  value: true
+##              - column:
+##                  name: contact_person_result_id
+##                  value: 2
+##  - changeSet:
+##      id: insert-project-task-04-Zugspitze-form-entry-status
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: project_task_form_field
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 26
+##              - column:
+##                  name: value
+##                  value:
+##              - column:
+##                  name: key
+##                  value: status
+##              - column:
+##                  name: label
+##                  value: Status
+##              - column:
+##                  name: placeholder
+##                  value: Status
+##              - column:
+##                  name: required
+##                  value: false
+##              - column:
+##                  name: sort_order
+##                  value: 6
+##              - column:
+##                  name: control_type
+##                  value: DROPDOWN
+##              - column:
+##                  name: show
+##                  value: show
+##              - column:
+##                  name: contact_person_result_id
+##                  value: 2
+#
+#  # -----------------------------------
+#  # -----------------------------------
+#  # -----------------------------------
+#  # -----------------------------------
+#
+##  - changeSet:
+##      id: insert-project-task-01-Zugspitze-form-entry-contactPerson-25
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: project_task_form_field
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 5
+##              - column:
+##                  name: value
+##                  value:
+##              - column:
+##                  name: key
+##                  value: contactPerson
+##              - column:
+##                  name: label
+##                  value: Ansprechpartner
+##              - column:
+##                  name: placeholder
+##                  value: "Name, Vorname"
+##              - column:
+##                  name: required
+##                  value: false
+##              - column:
+##                  name: sort_order
+##                  value: 1
+##              - column:
+##                  name: control_type
+##                  value: TEXTBOX
+##              - column:
+##                  name: show
+##                  value: true
+##              - column:
+##                  name: project_task_id
+##                  value: 25
+##  - changeSet:
+##      id: insert-project-task-01-Zugspitze-form-entry-documentationLink-25
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: project_task_form_field
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 6
+##              - column:
+##                  name: value
+##                  value:
+##              - column:
+##                  name: key
+##                  value: documentationLink
+##              - column:
+##                  name: label
+##                  value: Link
+##              - column:
+##                  name: placeholder
+##                  value: "Link zu Jira"
+##              - column:
+##                  name: required
+##                  value: false
+##              - column:
+##                  name: sort_order
+##                  value: 2
+##              - column:
+##                  name: control_type
+##                  value: TEXTBOX
+##              - column:
+##                  name: type
+##                  value: URL
+##              - column:
+##                  name: show
+##                  value: true
+##              - column:
+##                  name: project_task_id
+##                  value: 25
+##  - changeSet:
+##      id: insert-project-task-02-Zugspitze-form-entry-note-25-elbe
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: project_task_form_field
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 7
+##              - column:
+##                  name: value
+##                  value:
+##              - column:
+##                  name: key
+##                  value: note
+##              - column:
+##                  name: label
+##                  value: Notiz
+##              - column:
+##                  name: placeholder
+##                  value: Notiz
+##              - column:
+##                  name: required
+##                  value: false
+##              - column:
+##                  name: sort_order
+##                  value: 3
+##              - column:
+##                  name: control_type
+##                  value: TEXTAREA
+##              - column:
+##                  name: show
+##                  value: true
+##              - column:
+##                  name: elbe_shopping_cart_result_id
+##                  value: 2
+##  - changeSet:
+##      id: insert-project-task-02-Zugspitze-form-entry-resultType-elbe-25
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: project_task_form_field
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 8
+##              - column:
+##                  name: value
+##                  value:
+##              - column:
+##                  name: key
+##                  value: status
+##              - column:
+##                  name: label
+##                  value: Status
+##              - column:
+##                  name: placeholder
+##                  value: Status
+##              - column:
+##                  name: required
+##                  value: false
+##              - column:
+##                  name: sort_order
+##                  value: 4
+##              - column:
+##                  name: control_type
+##                  value: DROPDOWN
+##              - column:
+##                  name: show
+##                  value: true
+##              - column:
+##                  name: elbe_shopping_cart_result_id
+##                  value: 2
+##  - changeSet:
+##      id: insert-project-task-02-Zugspitze-form-entry-shopping-cart-number-elbe-25
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: project_task_form_field
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 9
+##              - column:
+##                  name: value
+##                  value:
+##              - column:
+##                  name: key
+##                  value: Shopping Cart Number
+##              - column:
+##                  name: label
+##                  value: Shopping Cart Number
+##              - column:
+##                  name: placeholder
+##                  value: Shopping Cart Number
+##              - column:
+##                  name: required
+##                  value: false
+##              - column:
+##                  name: sort_order
+##                  value: 4
+##              - column:
+##                  name: control_type
+##                  value: TEXTAREA
+##              - column:
+##                  name: show
+##                  value: true
+##              - column:
+##                  name: elbe_shopping_cart_result_id
+##                  value: 2
+##  - changeSet:
+##      id: insert-option-entry-cart-planned
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: option_entry
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 1
+##              - column:
+##                  name: key
+##                  value: PLANNED
+##              - column:
+##                  name: value
+##                  value: geplant
+##              - column:
+##                  name: form_field_id
+##                  value: 1
+##  - changeSet:
+##      id: insert-option-entry-cart-ordered
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: option_entry
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 2
+##              - column:
+##                  name: key
+##                  value: ORDERED
+##              - column:
+##                  name: value
+##                  value: bestellt
+##              - column:
+##                  name: form_field_id
+##                  value: 1
+##  - changeSet:
+##      id: insert-option-entry-cart-approved
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: option_entry
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 3
+##              - column:
+##                  name: key
+##                  value: APPROVED
+##              - column:
+##                  name: value
+##                  value: genehmigt
+##              - column:
+##                  name: form_field_id
+##                  value: 1
+##  - changeSet:
+##      id: insert-option-entry-cart-delivered
+##      author: bock
+##      context: itzbund
+##      changes:
+##        - insert:
+##            tableName: option_entry
+##            columns:
+##              - column:
+##                  name: id
+##                  value: 4
+##              - column:
+##                  name: key
+##                  value: DELIVERED
+##              - column:
+##                  name: value
+##                  value: geliefert
+##              - column:
+##                  name: form_field_id
+##                  value: 1
+#  - changeSet:
+#      id: insert-option-entry-standard-open
+#      author: bock
+#      context: itzbund
+#      changes:
+#        - insert:
+#            tableName: option_entry
+#            columns:
+#              - column:
+#                  name: id
+#                  value: 5
+#              - column:
+#                  name: key
+#                  value: OPEN
+#              - column:
+#                  name: value
+#                  value: offen
+#              - column:
+#                  name: form_field_id
+#                  value: 4
+#  - changeSet:
+#      id: insert-option-entry-standard-closed
+#      author: bock
+#      context: itzbund
+#      changes:
+#        - insert:
+#            tableName: option_entry
+#            columns:
+#              - column:
+#                  name: id
+#                  value: 6
+#              - column:
+#                  name: key
+#                  value: CLOSED
+#              - column:
+#                  name: value
+#                  value: geschlossen
+#              - column:
+#                  name: form_field_id
+#                  value: 4
+#  - changeSet:
+#      id: insert-option-entry-standard-planned
+#      author: bock
+#      context: itzbund
+#      changes:
+#        - insert:
+#            tableName: option_entry
+#            columns:
+#              - column:
+#                  name: id
+#                  value: 7
+#              - column:
+#                  name: key
+#                  value: PLANNED
+#              - column:
+#                  name: value
+#                  value: geplant
+#              - column:
+#                  name: form_field_id
+#                  value: 4
+#  - changeSet:
+#      id: insert-option-entry-standard-assigned
+#      author: bock
+#      context: itzbund
+#      changes:
+#        - insert:
+#            tableName: option_entry
+#            columns:
+#              - column:
+#                  name: id
+#                  value: 8
+#              - column:
+#                  name: key
+#                  value: ASSIGNED
+#              - column:
+#                  name: value
+#                  value: zugewiesen
+#              - column:
+#                  name: form_field_id
+#                  value: 4
+#  - changeSet:
+#      id: insert-option-entry-standard-in-progress
+#      author: bock
+#      context: itzbund
+#      changes:
+#        - insert:
+#            tableName: option_entry
+#            columns:
+#              - column:
+#                  name: id
+#                  value: 9
+#              - column:
+#                  name: key
+#                  value: IN_PROGRESS
+#              - column:
+#                  name: value
+#                  value: in Bearbeitung
+#              - column:
+#                  name: form_field_id
+#                  value: 4
+#  - changeSet:
+#      id: insert-option-entry-standard-submitted
+#      author: bock
+#      context: itzbund
+#      changes:
+#        - insert:
+#            tableName: option_entry
+#            columns:
+#              - column:
+#                  name: id
+#                  value: 10
+#              - column:
+#                  name: key
+#                  value: SUBMITTED
+#              - column:
+#                  name: value
+#                  value: vorgelegt
+#              - column:
+#                  name: form_field_id
+#                  value: 4
+#  - changeSet:
+#      id: insert-option-entry-standard-done
+#      author: bock
+#      context: itzbund
+#      changes:
+#        - insert:
+#            tableName: option_entry
+#            columns:
+#              - column:
+#                  name: id
+#                  value: 11
+#              - column:
+#                  name: key
+#                  value: DONE
+#              - column:
+#                  name: value
+#                  value: fertiggestellt
+#              - column:
+#                  name: form_field_id
+#                  value: 4
+
+
+
+
+
+
+
+
+
+
+
+
   - changeSet:
-      id: insert-option-entry-standard-open
+      id: insert-option-entry-person-open
       author: bock
       context: itzbund
       changes:
@@ -437,7 +1991,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  value: 5
+                  value: 12
               - column:
                   name: key
                   value: OPEN
@@ -446,69 +2000,9 @@ databaseChangeLog:
                   value: offen
               - column:
                   name: form_field_id
-                  value: 4
-  - changeSet:
-      id: insert-option-entry-standard-closed
-      author: bock
-      context: itzbund
-      changes:
-        - insert:
-            tableName: option_entry
-            columns:
-              - column:
-                  name: id
-                  value: 6
-              - column:
-                  name: key
-                  value: CLOSED
-              - column:
-                  name: value
-                  value: geschlossen
-              - column:
-                  name: form_field_id
-                  value: 4
-  - changeSet:
-      id: insert-option-entry-standard-planned
-      author: bock
-      context: itzbund
-      changes:
-        - insert:
-            tableName: option_entry
-            columns:
-              - column:
-                  name: id
-                  value: 7
-              - column:
-                  name: key
-                  value: PLANNED
-              - column:
-                  name: value
-                  value: geplant
-              - column:
-                  name: form_field_id
-                  value: 4
-  - changeSet:
-      id: insert-option-entry-standard-assigned
-      author: bock
-      context: itzbund
-      changes:
-        - insert:
-            tableName: option_entry
-            columns:
-              - column:
-                  name: id
                   value: 8
-              - column:
-                  name: key
-                  value: ASSIGNED
-              - column:
-                  name: value
-                  value: zugewiesen
-              - column:
-                  name: form_field_id
-                  value: 4
   - changeSet:
-      id: insert-option-entry-standard-in-progress
+      id: insert-option-entry-person-contacted
       author: bock
       context: itzbund
       changes:
@@ -517,18 +2011,18 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  value: 9
+                  value: 13
               - column:
                   name: key
-                  value: IN_PROGRESS
+                  value: CONTACTED
               - column:
                   name: value
-                  value: in Bearbeitung
+                  value: angesprochen
               - column:
                   name: form_field_id
-                  value: 4
+                  value: 8
   - changeSet:
-      id: insert-option-entry-standard-submitted
+      id: insert-option-entry-person-answer-received
       author: bock
       context: itzbund
       changes:
@@ -537,18 +2031,18 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  value: 10
+                  value: 14
               - column:
                   name: key
-                  value: SUBMITTED
+                  value: ANSWER_RECEIVED
               - column:
                   name: value
-                  value: vorgelegt
+                  value: Antwort erhalten
               - column:
                   name: form_field_id
-                  value: 4
+                  value: 8
   - changeSet:
-      id: insert-option-entry-standard-done
+      id: insert-option-entry-person-done
       author: bock
       context: itzbund
       changes:
@@ -557,93 +2051,13 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  value: 11
+                  value: 15
               - column:
                   name: key
                   value: DONE
               - column:
                   name: value
-                  value: fertiggestellt
+                  value: abgeschlossen
               - column:
                   name: form_field_id
-                  value: 4
-#   - changeSet:
-#       id: insert-option-entry-person-open
-#       author: bock
-#       context: itzbund
-#       changes:
-#         - insert:
-#             tableName: option_entry
-#             columns:
-#               - column:
-#                   name: id
-#                   value: 12
-#               - column:
-#                   name: key
-#                   value: OPEN
-#               - column:
-#                   name: value
-#                   value: offen
-#               - column:
-#                   name: form_field_id
-#                   value: 3
-#   - changeSet:
-#       id: insert-option-entry-person-contacted
-#       author: bock
-#       context: itzbund
-#       changes:
-#         - insert:
-#             tableName: option_entry
-#             columns:
-#               - column:
-#                   name: id
-#                   value: 13
-#               - column:
-#                   name: key
-#                   value: CONTACTED
-#               - column:
-#                   name: value
-#                   value: angesprochen
-#               - column:
-#                   name: form_field_id
-#                   value: 3
-#   - changeSet:
-#       id: insert-option-entry-person-answer-received
-#       author: bock
-#       context: itzbund
-#       changes:
-#         - insert:
-#             tableName: option_entry
-#             columns:
-#               - column:
-#                   name: id
-#                   value: 14
-#               - column:
-#                   name: key
-#                   value: ANSWER_RECEIVED
-#               - column:
-#                   name: value
-#                   value: Antwort erhalten
-#               - column:
-#                   name: form_field_id
-#                   value: 3
-#   - changeSet:
-#       id: insert-option-entry-person-done
-#       author: bock
-#       context: itzbund
-#       changes:
-#         - insert:
-#             tableName: option_entry
-#             columns:
-#               - column:
-#                   name: id
-#                   value: 15
-#               - column:
-#                   name: key
-#                   value: DONE
-#               - column:
-#                   name: value
-#                   value: abgeschlossen
-#               - column:
-#                   name: form_field_id
-#                   value: 3
+                  value: 8

@@ -1,5 +1,28 @@
 databaseChangeLog:
   - changeSet:
+      id: create-project-task-result-table
+      author: bock
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: resultPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: result_type
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_task_id
+                  type: BIGINT
+            tableName: project_task_result
+  - changeSet:
       id: addColumn-project-task-completed
       author: bock
       changes:
@@ -83,32 +106,7 @@ databaseChangeLog:
               - column:
                   constraints:
                     nullable: true
-                  name: appointment_series_result_id
-                  type: BIGINT
-              - column:
-                  constraints:
-                    nullable: true
-                  name: elbe_shopping_cart_result_id
-                  type: BIGINT
-              - column:
-                  constraints:
-                    nullable: true
-                  name: contact_person_result_id
-                  type: BIGINT
-              - column:
-                  constraints:
-                    nullable: true
-                  name: risk_result_id
-                  type: BIGINT
-              - column:
-                  constraints:
-                    nullable: true
-                  name: single_appointment_result_id
-                  type: BIGINT
-              - column:
-                  constraints:
-                    nullable: true
-                  name: standard_result_id
+                  name: result_id
                   type: BIGINT
             tableName: project_task_form_field
   - changeSet:
@@ -125,82 +123,17 @@ databaseChangeLog:
             referencedTableName: project_task
             validate: true
   - changeSet:
-      id: createForeignKeyConstraint-appointmentSeriesResult-projectTaskFormField
+      id: createForeignKeyConstraint-result-projectTaskFormField
       author: bock
       changes:
         - addForeignKeyConstraint:
-            baseColumnNames: appointment_series_result_id
+            baseColumnNames: result_id
             baseTableName: project_task_form_field
-            constraintName: FKAppointmentSeriesResultProjectTaskFormField
+            constraintName: FKResultProjectTaskFormField
             deferrable: false
             initiallyDeferred: false
             referencedColumnNames: id
-            referencedTableName: appointment_series_result
-            validate: true
-  - changeSet:
-      id: createForeignKeyConstraint-elbeShoppingCartResult-projectTaskFormField
-      author: bock
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: elbe_shopping_cart_result_id
-            baseTableName: project_task_form_field
-            constraintName: FKElbeShoppingCartResultProjectTaskFormField
-            deferrable: false
-            initiallyDeferred: false
-            referencedColumnNames: id
-            referencedTableName: elbe_shopping_cart_result
-            validate: true
-  - changeSet:
-      id: createForeignKeyConstraint-contactPersonResult-projectTaskFormField
-      author: bock
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: contact_person_result_id
-            baseTableName: project_task_form_field
-            constraintName: FKContactPersonResultProjectTaskFormField
-            deferrable: false
-            initiallyDeferred: false
-            referencedColumnNames: id
-            referencedTableName: contact_person_result
-            validate: true
-  - changeSet:
-      id: createForeignKeyConstraint-riskResult-projectTaskFormField
-      author: bock
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: risk_result_id
-            baseTableName: project_task_form_field
-            constraintName: FKRiskResultProjectTaskFormField
-            deferrable: false
-            initiallyDeferred: false
-            referencedColumnNames: id
-            referencedTableName: risk_result
-            validate: true
-  - changeSet:
-      id: createForeignKeyConstraint-singleAppointmentResult-projectTaskFormField
-      author: bock
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: single_appointment_result_id
-            baseTableName: project_task_form_field
-            constraintName: FKSingleAppointmentResultProjectTaskFormField
-            deferrable: false
-            initiallyDeferred: false
-            referencedColumnNames: id
-            referencedTableName: single_appointment_result
-            validate: true
-  - changeSet:
-      id: createForeignKeyConstraint-standardResult-projectTaskFormField
-      author: bock
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: standard_result_id
-            baseTableName: project_task_form_field
-            constraintName: FKStandardResultProjectTaskFormField
-            deferrable: false
-            initiallyDeferred: false
-            referencedColumnNames: id
-            referencedTableName: standard_result
+            referencedTableName: project_task_result
             validate: true
   - changeSet:
       id: createForeignKeyConstraint-optionEntry-projectTaskFormField
@@ -215,44 +148,46 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: project_task_form_field
             validate: true
-  - changeSet:
-      id: drop-columns-content-status-standard-result
-      author: bock
-      changes:
-        - dropColumn:
-            columns:
-              - column:
-                  name: content
-              - column:
-                  name: status
-            tableName: standard_result
-  - changeSet:
-      id: drop-columns-appointment-participants-link-status-appointment_series_result
-      author: bock
-      changes:
-        - dropColumn:
-            columns:
-              - column:
-                  name: appointment
-              - column:
-                  name: participants
-              - column:
-                  name: link
-              - column:
-                  name: status
-            tableName: appointment_series_result
-  - changeSet:
-      id: drop-columns-description-value-solution-status-risk_result
-      author: bock
-      changes:
-        - dropColumn:
-            columns:
-              - column:
-                  name: description
-              - column:
-                  name: value
-              - column:
-                  name: solution
-              - column:
-                  name: status
-            tableName: risk_result
+# TODO: ... result tables können alle raus
+#  - changeSet:
+#      id: drop-columns-content-status-standard-result
+#      author: bock
+#      changes:
+#        - dropColumn:
+#            columns:
+#              - column:
+#                  name: content
+#              - column:
+#                  name: status
+#            tableName: standard_result
+#  - changeSet:
+#      id: drop-columns-appointment-participants-link-status-appointment_series_result
+#      author: bock
+#      changes:
+#        - dropColumn:
+#            columns:
+#              - column:
+#                  name: appointment
+#              - column:
+#                  name: participants
+#              - column:
+#                  name: link
+#              - column:
+#                  name: status
+#            tableName: appointment_series_result
+#  - changeSet:
+#      id: drop-columns-description-value-solution-status-risk_result
+#      author: bock
+#      changes:
+#        - dropColumn:
+#            columns:
+#              - column:
+#                  name: description
+#              - column:
+#                  name: value
+#              - column:
+#                  name: solution
+#              - column:
+#                  name: status
+#            tableName: risk_result
+

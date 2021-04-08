@@ -3,7 +3,6 @@ package online.dipa.hub.persistence.entities;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import static javax.persistence.CascadeType.ALL;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,29 +32,9 @@ public class ProjectTaskEntity extends BaseEntity {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<FormFieldEntity> entries = new HashSet<>();
 
-    @OneToMany(mappedBy = "projectTask", cascade = { ALL })
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<StandardResultEntity> standardResults = new HashSet<>();
-
     @OneToMany(mappedBy = "projectTask")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<ContactPersonResultEntity> contactPersonResults = new HashSet<>();
-    
-    @OneToMany(mappedBy = "projectTask")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<ELBEShoppingCartResultEntity> elbeShoppingCartResults = new HashSet<>();
-
-    @OneToMany(mappedBy = "projectTask")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<AppointmentSeriesResultEntity> appointmentSeriesResults = new HashSet<>();
-    
-    @OneToMany(mappedBy = "projectTask")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<RiskResultEntity> riskResults = new HashSet<>();
-
-    @OneToMany(mappedBy = "projectTask")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<SingleAppointmentResultEntity> singleAppointmentResults = new HashSet<>();
+    private Set<ResultEntity> results = new HashSet<>();
     
     public ProjectTaskTemplateEntity getProjectTaskTemplate() {
         return projectTaskTemplate;
@@ -97,60 +76,20 @@ public class ProjectTaskEntity extends BaseEntity {
         this.completed = completed;
     }
 
-    public Set<FormFieldEntity> getFormFields() {
+    public Set<FormFieldEntity> getEntries() {
         return entries;
     }
 
-    public void setFormFields(final Set<FormFieldEntity> entries) {
+    public void setEntries(final Set<FormFieldEntity> entries) {
         this.entries = entries;
     }
 
-    public Set<StandardResultEntity> getStandardResult() {
-        return standardResults;
+    public Set<ResultEntity> getResults() {
+        return results;
     }
 
-    public void setStandardResult(final Set<StandardResultEntity> standardResults) {
-        this.standardResults = standardResults;
-    }
-
-    public Set<ContactPersonResultEntity> getContactPersonResult() {
-        return contactPersonResults;
-    }
-
-    public void setContactPersonResult(final Set<ContactPersonResultEntity> contactPersonResults) {
-        this.contactPersonResults = contactPersonResults;
-    }
-    
-    public Set<ELBEShoppingCartResultEntity> getELBEShoppingCartResults() {
-        return elbeShoppingCartResults;
-    }
-
-    public void setELBEShoppingCartResults(final Set<ELBEShoppingCartResultEntity> elbeShoppingCartResults) {
-        this.elbeShoppingCartResults = elbeShoppingCartResults;
-    }
-
-    public Set<AppointmentSeriesResultEntity> getAppointmentSeriesResults() {
-        return appointmentSeriesResults;
-    }
-
-    public void setAppointmentSeriesResults(final Set<AppointmentSeriesResultEntity> appointmentSeriesResults) {
-        this.appointmentSeriesResults = appointmentSeriesResults;
-    }
-
-    public Set<RiskResultEntity> getRiskResults() {
-        return riskResults;
-    }
-
-    public void setRiskResults(final Set<RiskResultEntity> riskResults) {
-        this.riskResults = riskResults;
-    }
-
-    public Set<SingleAppointmentResultEntity> getSingleAppointmentResults() {
-        return singleAppointmentResults;
-    }
-
-    public void setSingleAppointmentResults(final Set<SingleAppointmentResultEntity> singleAppointmentResults) {
-        this.singleAppointmentResults = singleAppointmentResults;
+    public void setResults(final Set<ResultEntity> results) {
+        this.results = results;
     }
 
 }
