@@ -1,8 +1,10 @@
 package online.dipa.hub.services;
 
+import online.dipa.hub.api.model.FormField;
 import online.dipa.hub.api.model.Project;
 import online.dipa.hub.api.model.ProjectTask;
 
+import online.dipa.hub.api.model.Result;
 import online.dipa.hub.mapper.ProjectProjectEntityMapper;
 import online.dipa.hub.mapper.ProjectTaskProjectTaskEntityMapper;
 import online.dipa.hub.persistence.entities.*;
@@ -26,6 +28,9 @@ public class ProjectService {
 
     @Autowired
     private ProjectRepository projectRespository;
+
+    @Autowired
+    private ProjectTaskRepository projectTaskRepository;
 
     @Autowired
     private FormFieldRepository formFieldRepository;
@@ -86,7 +91,8 @@ public class ProjectService {
         Optional<ProjectEntity> project = projectRespository.findAll().stream()
             .filter(t -> t.getId().equals(projectId)).findFirst();
 
-
+        ProjectTaskEntity oldProjectTaskEntity = projectTaskRepository.findAll().stream()
+                                                                      .filter(t -> t.getId().equals(projectTask.getId())).findFirst().orElse(null);
         project.flatMap(projectEntity -> projectEntity.getProjectTaskTemplates().stream().findFirst())
                 .flatMap(template -> template.getProjectTasks().stream()
                     .filter(t -> t.getId().equals(projectTask.getId()))
@@ -94,10 +100,67 @@ public class ProjectService {
                 )
                 .ifPresent(oldProjectTask -> {
                     // projectTaskMapper.updateFormFieldEntity(projectTask, oldProjectTask, formFieldRepository);
+                    List<FormFieldEntity> oldEntriesList = new ArrayList<>(oldProjectTask.getEntries());
+                    List<FormField> newList = projectTask.getEntries().stream().map(FormField.class::cast).collect(Collectors.toList());
 
-                    projectTaskMapper.updateProjectTaskEntity(projectTask, oldProjectTask,
-                            resultRepository, formFieldRepository);
+                    for (int i = 0; i < newList.size(); i++) {
+
+                        if (i > oldEntriesList.size() - 1) {
+
+                            FormFieldEntity entity = new FormFieldEntity(newList.get(i));
+                            entity.setProjectTask(oldProjectTask);
+//                            entity.setOptions(conversionService.convert(newList.get(i).getOptions().stream(), OptionEntryEntity.class));
+
+                            formFieldRepository.save(entity);
+                        }
+                        else {
+
+                            oldEntriesList.get(i).setValue(newList.get(i).getValue());
+
+                        }
+                    }
+                            updateResults(oldProjectTask, projectTask);
+
                 });
+    }
+
+    private void updateResults(ProjectTaskEntity projectTaskEntity, ProjectTask projectTask) {
+
+        List<ResultEntity> oldList = new ArrayList<>(projectTaskEntity.getResults());
+        List<Result> newList = projectTask.getResults().stream().map(Result.class::cast).collect(Collectors.toList());
+
+        ResultEntity entity = oldList.get(0);
+        for (int i = 0; i < newList.size(); i++) {
+
+            if (i > oldList.size() - 1) {
+
+                ResultEntity newResultEntity = new ResultEntity();
+                newResultEntity.setResultType(entity.getResultType()); // "TYPE_ELBE_SC"
+                newResultEntity.setProjectTask(projectTaskEntity);
+                resultRepository.save(newResultEntity);
+
+                List<FormField> newListEntries = newList.get(i).getFormFields();
+
+
+                for (FormField newListEntry : newListEntries) {
+                    FormFieldEntity formField = new FormFieldEntity(newListEntry);
+
+                    formField.setId(formFieldRepository.count() + 1);
+                    formField.setResultEntity(newResultEntity);
+
+                    formFieldRepository.save(formField);
+                }
+            } else {
+                List<FormFieldEntity> oldEntriesList = new ArrayList<>(oldList.get(i).getFormFields());
+                List<FormField> newListEntries = newList.get(i).getFormFields();
+
+                for (int j = 0; j < newListEntries.size(); j++) {
+                    oldEntriesList.get(j).setValue(newListEntries.get(j).getValue());
+
+                }
+            }
+
+        }
     }
     
 }
