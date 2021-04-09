@@ -114,13 +114,11 @@ public class ProjectService {
                             formFieldRepository.save(entity);
                         }
                         else {
-
                             oldEntriesList.get(i).setValue(newList.get(i).getValue());
-
+                            oldEntriesList.get(i).setShow(newList.get(i).getShow());
                         }
                     }
-                            updateResults(oldProjectTask, projectTask);
-
+                    updateResults(oldProjectTask, projectTask);
                 });
     }
 
@@ -143,12 +141,12 @@ public class ProjectService {
 
 
                 for (FormField newListEntry : newListEntries) {
-                    FormFieldEntity formField = new FormFieldEntity(newListEntry);
+                    FormFieldEntity formFieldEntity = new FormFieldEntity(newListEntry);
 
-                    formField.setId(formFieldRepository.count() + 1);
-                    formField.setResultEntity(newResultEntity);
+                    formFieldEntity.setId(formFieldRepository.count() + 1);
+                    formFieldEntity.setResultEntity(newResultEntity);
 
-                    formFieldRepository.save(formField);
+                    formFieldRepository.save(formFieldEntity);
                 }
             } else {
                 List<FormFieldEntity> oldEntriesList = new ArrayList<>(oldList.get(i).getFormFields());
@@ -156,7 +154,7 @@ public class ProjectService {
 
                 for (int j = 0; j < newListEntries.size(); j++) {
                     oldEntriesList.get(j).setValue(newListEntries.get(j).getValue());
-
+                    oldEntriesList.get(j).setShow(newListEntries.get(j).getShow());
                 }
             }
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
 import { OptionEntry, Result } from 'dipa-api-client';
 import ResultTypeEnum = Result.ResultTypeEnum;
@@ -18,19 +18,22 @@ interface SelectOptionGroup {
   templateUrl: './results-form.component.html',
   styleUrls: ['../project-task-form/project-task-form.component.scss'],
 })
-export class ResultsFormComponent implements OnInit {
+export class ResultsFormComponent implements OnInit, OnChanges {
   @Input() public formData: FormArray;
   @Input() public statusList: OptionEntry[];
   @Input() public showFieldsForm: FormControl;
   @Input() public formFieldGroups: SelectOptionGroup[];
+  @Input() public selectedFields: string[];
   @Output() public dataChanged = new EventEmitter();
+
+  public currentResultType: ResultTypeEnum;
 
   public formGroup: FormGroup;
 
   public constructor(public formGroupDirective: FormGroupDirective, private fb: FormBuilder) {}
 
   public static getResultTypeName(resultType: ResultTypeEnum): string {
-    let resultTypeName = '';
+    let resultTypeName: string;
 
     switch (resultType) {
       case 'TYPE_STD':
@@ -59,14 +62,27 @@ export class ResultsFormComponent implements OnInit {
 
   public ngOnInit(): void {
     this.formGroup = this.formGroupDirective.control;
-    // this.setReactiveForm(this.formData);
-    // TODO: eigene Funktion
+
+    this.setFormFieldGroups();
     const currentShowFields = this.showFieldsForm.value as string[];
-    this.showFieldsForm.setValue([...currentShowFields, ...this.getShowFieldsSelection()]);
+    this.showFieldsForm.setValue([...currentShowFields, ...this.initSelectedFields()]);
+  }
+
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (changes.selectedFields && !changes.selectedFields.isFirstChange()) {
+      for (const controls of this.resultsArray.controls) {
+        const formFieldsArray = controls.get('formFields') as FormArray;
+
+        for (const ffEntry of formFieldsArray.controls) {
+          const currentKey = ffEntry.get('key').value as string;
+          const showItem = this.selectedFields.includes(`formFields.${currentKey}`);
+          ffEntry.get('show').setValue(showItem);
+        }
+      }
+    }
   }
 
   public getFormFieldsArray(resultGroup: FormGroup): FormArray {
-    // return this.formData.get([index, 'formFields']) as FormArray;
     return resultGroup.get(['formFields']) as FormArray;
   }
 
@@ -79,7 +95,18 @@ export class ResultsFormComponent implements OnInit {
   }
 
   public getResultType(): ResultTypeEnum {
-    return this.formData.get([0, 'resultType']).value as ResultTypeEnum;
+    if (!this.currentResultType) {
+      if (this.formData.get([0])) {
+        this.currentResultType = this.formData.get([0, 'resultType']).value as ResultTypeEnum;
+      } else {
+        this.currentResultType = ResultTypeEnum.TypeStd;
+      }
+    }
+    return this.currentResultType;
+  }
+
+  public getSelectedFields(): string[] {
+    return this.selectedFields || [];
   }
 
   public deleteResult(index: number): void {
@@ -98,21 +125,32 @@ export class ResultsFormComponent implements OnInit {
     this.formGroup.get(path).setValue(valueInput.value);
   }
 
-  private getShowFieldsSelection(): string[] {
-    const groupValues: { value: string; viewValue: string }[] = [];
-    const selectedValues: string[] = [];
-
+  private initSelectedFields() {
     const resultFormGroup = this.resultsArray.controls[0] as FormGroup;
 
     if (resultFormGroup !== undefined) {
       const formFieldsArray = this.getFormFieldsArray(resultFormGroup);
       if (formFieldsArray?.length > 0) {
         for (const formFieldEntry of formFieldsArray.controls) {
-          // TODO
+          if (formFieldEntry.get('show')?.value === true) {
+            this.selectedFields.push(`formFields.${formFieldEntry.get('key').value as string}`);
+          }
+        }
+      }
+    }
+
+    return this.selectedFields;
+  }
+
+  private setFormFieldGroups(): void {
+    const groupValues: { value: string; viewValue: string }[] = [];
+    const resultFormGroup = this.resultsArray.controls[0] as FormGroup;
+
+    if (resultFormGroup !== undefined) {
+      const formFieldsArray = this.getFormFieldsArray(resultFormGroup);
+      if (formFieldsArray?.length > 0) {
+        for (const formFieldEntry of formFieldsArray.controls) {
           if (formFieldEntry.get('show').value !== null) {
-            if (formFieldEntry.get('show').value === true) {
-              selectedValues.push(`formFields.${formFieldEntry.get('key').value as string}`);
-            }
             groupValues.push({
               value: `formFields.${formFieldEntry.get('key').value as string}`,
               viewValue: formFieldEntry.get('label').value as string,
@@ -130,7 +168,6 @@ export class ResultsFormComponent implements OnInit {
         });
       }
     }
-    return selectedValues;
   }
 
   private getEmptyResult(resultType: ResultTypeEnum): FormGroup {
@@ -172,7 +209,7 @@ export class ResultsFormComponent implements OnInit {
 
   private getStandardFormFields(): FormArray {
     const resultsArray = this.fb.array([]);
-    const selectedValues = this.getShowFieldsSelection();
+    const selectedValues = this.getSelectedFields();
 
     resultsArray.push(
       this.fb.group({
@@ -239,7 +276,7 @@ export class ResultsFormComponent implements OnInit {
 
   private getContactPersonFormFields(): FormArray {
     const resultsArray = this.fb.array([]);
-    const selectedValues = this.getShowFieldsSelection();
+    const selectedValues = this.getSelectedFields();
 
     resultsArray.push(
       this.fb.group({
@@ -329,7 +366,7 @@ export class ResultsFormComponent implements OnInit {
 
   private getCartFormFields(): FormArray {
     const resultsArray = this.fb.array([]);
-    const selectedValues = this.getShowFieldsSelection();
+    const selectedValues = this.getSelectedFields();
 
     resultsArray.push(
       this.fb.group({
@@ -393,7 +430,7 @@ export class ResultsFormComponent implements OnInit {
 
   private getRiskFormFields(): FormArray {
     const resultsArray = this.fb.array([]);
-    const selectedValues = this.getShowFieldsSelection();
+    const selectedValues = this.getSelectedFields();
 
     resultsArray.push(
       this.fb.group({
@@ -473,7 +510,7 @@ export class ResultsFormComponent implements OnInit {
 
   private getSingleAppointmentFormFields(): FormArray {
     const resultsArray = this.fb.array([]);
-    const selectedValues = this.getShowFieldsSelection();
+    const selectedValues = this.getSelectedFields();
 
     resultsArray.push(
       this.fb.group({
@@ -553,7 +590,7 @@ export class ResultsFormComponent implements OnInit {
 
   private getAppointmentSeriesFormFields(): FormArray {
     const resultsArray = this.fb.array([]);
-    const selectedValues = this.getShowFieldsSelection();
+    const selectedValues = this.getSelectedFields();
 
     resultsArray.push(
       this.fb.group({

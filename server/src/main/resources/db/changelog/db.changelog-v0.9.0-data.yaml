@@ -578,7 +578,7 @@ databaseChangeLog:
                   value: DROPDOWN
               - column:
                   name: show
-                  value: true
+                  value: false
               - column:
                   name: result_id
                   value: 4
