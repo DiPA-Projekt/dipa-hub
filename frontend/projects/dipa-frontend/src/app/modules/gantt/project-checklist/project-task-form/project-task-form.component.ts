@@ -77,6 +77,8 @@ export class ProjectTaskFormComponent implements OnInit {
   public onSubmit(form: FormGroup): void {
     this.projectService.updateProjectTask(this.selectedTimelineId, form.value).subscribe({
       next: () => form.reset(form.value),
+      error: null,
+      complete: () => void 0,
     });
   }
 

@@ -197,7 +197,7 @@ public class ProjectService {
                 }
             }
 
-            if (allResultIds.size() > 0) {
+            if (!allResultIds.isEmpty()) {
                 for (Long deletedResultId: allResultIds) {
                     ResultEntity toDeleteResultEntity = findResultEntity(oldList, deletedResultId);
                     List<FormFieldEntity> formFields = new ArrayList<>(toDeleteResultEntity.getFormFields());
