@@ -2,6 +2,7 @@ package online.dipa.hub.persistence.entities;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import online.dipa.hub.api.model.FormField;
 
 import javax.persistence.*;
 
@@ -38,12 +39,30 @@ public class FormFieldEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     private ProjectTaskEntity projectTask;
 
-    @OneToMany(mappedBy = "formField", cascade = { ALL })
+    @OneToMany(mappedBy = "formField")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<OptionEntryEntity> options = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     private ResultEntity result;
+
+    public FormFieldEntity() {
+        super();
+    }
+
+    public FormFieldEntity(FormField formField) {
+        this.key = formField.getKey();
+        this.value = formField.getValue();
+        this.label = formField.getLabel();
+        this.placeholder = formField.getLabel();
+        this.required = formField.getRequired();
+        this.placeholder = formField.getPlaceholder();
+        this.sortOrder = formField.getSortOrder();
+        this.controlType = formField.getControlType().toString();
+        this.type = formField.getType().toString();
+//        this.options = formField.getOptions();
+        this.show = formField.getShow();
+    }
 
     public String getValue() {
         return value;
