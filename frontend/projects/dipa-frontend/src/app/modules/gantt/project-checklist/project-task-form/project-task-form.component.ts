@@ -54,6 +54,16 @@ export class ProjectTaskFormComponent implements OnInit {
       entry.get('show').setValue(showItem);
     }
 
+    for (const result of this.resultsArray.controls) {
+      const formFieldsArray = result.get('formFields') as FormArray;
+
+      for (const ffEntry of formFieldsArray.controls) {
+        const currentKey = ffEntry.get('key').value as string;
+        const showItem = this.selectedFields.includes(`formFields.${currentKey}`);
+        ffEntry.get('show').setValue(showItem);
+      }
+    }
+
     this.onSubmit(this.formGroup);
   }
 
@@ -153,9 +163,5 @@ export class ProjectTaskFormComponent implements OnInit {
       }
     }
     return resultsArray;
-  }
-
-  private getCurrentResultsArray(): FormArray {
-    return this.formGroup.get(['results']) as FormArray;
   }
 }

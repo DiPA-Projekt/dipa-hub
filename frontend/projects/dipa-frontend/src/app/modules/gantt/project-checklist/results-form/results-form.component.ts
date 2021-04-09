@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
 import { OptionEntry, Result } from 'dipa-api-client';
 import ResultTypeEnum = Result.ResultTypeEnum;
@@ -18,7 +18,7 @@ interface SelectOptionGroup {
   templateUrl: './results-form.component.html',
   styleUrls: ['../project-task-form/project-task-form.component.scss'],
 })
-export class ResultsFormComponent implements OnInit, OnChanges {
+export class ResultsFormComponent implements OnInit {
   @Input() public formData: FormArray;
   @Input() public statusList: OptionEntry[];
   @Input() public showFieldsForm: FormControl;
@@ -66,20 +66,6 @@ export class ResultsFormComponent implements OnInit, OnChanges {
     this.setFormFieldGroups();
     const currentShowFields = this.showFieldsForm.value as string[];
     this.showFieldsForm.setValue([...currentShowFields, ...this.initSelectedFields()]);
-  }
-
-  public ngOnChanges(changes: SimpleChanges): void {
-    if (changes.selectedFields && !changes.selectedFields.isFirstChange()) {
-      for (const controls of this.resultsArray.controls) {
-        const formFieldsArray = controls.get('formFields') as FormArray;
-
-        for (const ffEntry of formFieldsArray.controls) {
-          const currentKey = ffEntry.get('key').value as string;
-          const showItem = this.selectedFields.includes(`formFields.${currentKey}`);
-          ffEntry.get('show').setValue(showItem);
-        }
-      }
-    }
   }
 
   public getFormFieldsArray(resultGroup: FormGroup): FormArray {
