@@ -1,6 +1,7 @@
 package online.dipa.hub.services;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -81,7 +82,7 @@ public class IncrementService {
             sessionTimeline.setMilestones(milestoneService.loadMilestones(timelineId, incrementCount - 1));
         }
     }
-    
+
     List<Increment> loadIncrementsTemplate(final Long timelineId, final int incrementCount,
             List<Milestone> initMilestones, List<Milestone> currentMilestones) {
 
@@ -97,17 +98,17 @@ public class IncrementService {
             initMilestones.removeIf(m -> m.getId().equals(MilestoneService.LAST_MASTER_MILESTONE_ID));
 
             //minus 14 days for "Inkrement geplant"
-            firstMilestoneDate = initMilestones.stream().map(Milestone::getDate).min(LocalDate::compareTo).orElseThrow(() -> new EntityNotFoundException(
-                    String.format("No valid milestone date available for timeline id: %1$s.", timelineId))).minusDays(14);
-            lastMilestoneDate = initMilestones.stream().map(Milestone::getDate).max(LocalDate::compareTo).orElseThrow(() -> new EntityNotFoundException(
-                    String.format("No valid milestone date available for timeline id: %1$s.", timelineId)));
+            firstMilestoneDate = initMilestones.stream().map(Milestone::getDate).min(OffsetDateTime::compareTo).orElseThrow(() -> new EntityNotFoundException(
+                    String.format("No valid milestone date available for timeline id: %1$s.", timelineId))).toLocalDate().minusDays(14);
+            lastMilestoneDate = initMilestones.stream().map(Milestone::getDate).max(OffsetDateTime::compareTo).orElseThrow(() -> new EntityNotFoundException(
+                    String.format("No valid milestone date available for timeline id: %1$s.", timelineId))).toLocalDate();
 
         } else {
 
             currentMilestones = milestoneService.sortMilestones(currentMilestones);
 
-            firstMilestoneDate = currentMilestones.get(1).getDate().minusDays(14);
-            lastMilestoneDate = currentMilestones.get(currentMilestones.size() - 2).getDate();
+            firstMilestoneDate = currentMilestones.get(1).getDate().toLocalDate().minusDays(14);
+            lastMilestoneDate = currentMilestones.get(currentMilestones.size() - 2).getDate().toLocalDate();
 
         }
         daysBetween = DAYS.between(firstMilestoneDate, lastMilestoneDate);
@@ -150,6 +151,7 @@ public class IncrementService {
         if (increments != null) {
             int incrementCount = increments.size();
             sessionTimeline.setIncrements(this.loadIncrementsTemplate(timelineId, incrementCount, null, sessionTimeline.getMilestones()));
+            sessionTimeline.setMilestones(milestoneService.loadMilestones(timelineId, incrementCount));
 
         }
     }

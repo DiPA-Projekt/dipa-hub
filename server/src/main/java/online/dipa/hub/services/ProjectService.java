@@ -44,13 +44,19 @@ public class ProjectService {
     @Autowired
     private ConversionService conversionService;
 
+    @Autowired
+    private UserInformationService userInformationService;
+
     private final ProjectProjectEntityMapper projectMapper = Mappers.getMapper(ProjectProjectEntityMapper.class);
     private final ProjectTaskProjectTaskEntityMapper projectTaskMapper = Mappers.getMapper(ProjectTaskProjectTaskEntityMapper.class);
 
 
     public Project getProjectData(final Long projectId) {
 
+        List<Long> projectIds = userInformationService.getUserData().getProjects();
+
         return projectRespository.findAll().stream().map(p -> conversionService.convert(p, Project.class))
+        .filter(t -> projectIds.contains(t.getId()))
         .filter(t -> t.getId().equals(projectId)).findFirst().orElseThrow(() -> new EntityNotFoundException(
                         String.format("Project with id: %1$s not found.", projectId)));
                 
@@ -58,7 +64,10 @@ public class ProjectService {
     
     public void updateProjectData(final Long projectId, final Project project) {
 
+        List<Long> projectIds = userInformationService.getUserData().getProjects();
+
         projectRespository.findAll().stream()
+            .filter(t -> projectIds.contains(t.getId()))
             .filter(t -> t.getId().equals(projectId)).findFirst()
             .ifPresent(projectEntity -> 
                 projectMapper.updateProjectEntity(project, projectEntity)
@@ -70,7 +79,11 @@ public class ProjectService {
 
         List<ProjectTask> projectTasks = new ArrayList<>();
 
-        projectRespository.findAll().stream().filter(t -> t.getId().equals(projectId))
+        List<Long> projectIds = userInformationService.getUserData().getProjects();
+
+        projectRespository.findAll().stream()
+        .filter(t -> projectIds.contains(t.getId()))
+        .filter(t -> t.getId().equals(projectId))
         .findFirst().ifPresent(project -> {
 
             Optional<ProjectTaskTemplateEntity> template = project.getProjectTaskTemplates().stream().findFirst();
@@ -91,7 +104,10 @@ public class ProjectService {
 
     public void updateProjectTask (final Long projectId, final ProjectTask projectTask) {
 
+        List<Long> projectIds = userInformationService.getUserData().getProjects();
+
         Optional<ProjectEntity> project = projectRespository.findAll().stream()
+            .filter(t -> projectIds.contains(t.getId()))
             .filter(t -> t.getId().equals(projectId)).findFirst();
 
         project.flatMap(projectEntity -> projectEntity.getProjectTaskTemplates().stream().findFirst())

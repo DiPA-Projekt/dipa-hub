@@ -34,6 +34,43 @@ databaseChangeLog:
                   type: BOOLEAN
                   defaultValue: false
   - changeSet:
+      id: create-administration-groups-table
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: userGroupPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: group_name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_id
+                  type: BIGINT
+            tableName: user_group
+  - changeSet:
+      id: createForeignKeyConstraint-UserGroupProject
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_id
+            baseTableName: user_group
+            constraintName: FKuserGroupProjectId
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project
+            validate: true
+
+  - changeSet:
       id: create-option-entry-table
       author: bock
       changes:
