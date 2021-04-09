@@ -1,16 +1,12 @@
 package online.dipa.hub.persistence.entities;
 
+import online.dipa.hub.api.model.FormField;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import online.dipa.hub.api.model.FormField;
 
 import javax.persistence.*;
-
-
 import java.util.HashSet;
 import java.util.Set;
-
-import static javax.persistence.CascadeType.ALL;
 
 @Entity
 @Table(name = "project_task_form_field")

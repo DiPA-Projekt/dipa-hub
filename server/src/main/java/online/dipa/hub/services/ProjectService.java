@@ -57,7 +57,6 @@ public class ProjectService {
         .filter(t -> projectIds.contains(t.getId()))
         .filter(t -> t.getId().equals(projectId)).findFirst().orElseThrow(() -> new EntityNotFoundException(
                         String.format("Project with id: %1$s not found.", projectId)));
-                
     }
     
     public void updateProjectData(final Long projectId, final Project project) {
@@ -70,7 +69,6 @@ public class ProjectService {
             .ifPresent(projectEntity -> 
                 projectMapper.updateProjectEntity(project, projectEntity)
             );
-
     }
 
     public List<ProjectTask> getProjectTasks (final Long projectId) {
@@ -93,11 +91,9 @@ public class ProjectService {
                 .sorted(Comparator.comparing(ProjectTask::getId))
                 .collect(Collectors.toList()));
             }
-
         });
 
         return projectTasks;
-        
     }
 
     public void updateProjectTask (final Long projectId, final ProjectTask projectTask) {
@@ -109,46 +105,43 @@ public class ProjectService {
             .filter(t -> t.getId().equals(projectId)).findFirst();
 
         project.flatMap(projectEntity -> projectEntity.getProjectTaskTemplates().stream().findFirst())
-                .flatMap(template -> template.getProjectTasks().stream()
-                    .filter(t -> t.getId().equals(projectTask.getId()))
-                    .findFirst()
-                )
-                .ifPresent(oldProjectTask -> {
-                    List<FormFieldEntity> oldEntriesList = new ArrayList<>(oldProjectTask.getEntries());
-                    List<FormField> newList = projectTask.getEntries().stream().map(FormField.class::cast).collect(Collectors.toList());
+            .flatMap(template -> template.getProjectTasks().stream()
+                .filter(t -> t.getId().equals(projectTask.getId()))
+                .findFirst()
+            )
+            .ifPresent(oldProjectTask -> {
+                List<FormFieldEntity> oldEntriesList = new ArrayList<>(oldProjectTask.getEntries());
+                List<FormField> newList = projectTask.getEntries().stream().map(FormField.class::cast).collect(Collectors.toList());
 
-                    for (int i = 0; i < newList.size(); i++) {
+                for (int i = 0; i < newList.size(); i++) {
 
-                        if (i > oldEntriesList.size() - 1) {
+                    if (i > oldEntriesList.size() - 1) {
 
-                            FormFieldEntity entity = new FormFieldEntity(newList.get(i));
-                            entity.setProjectTask(oldProjectTask);
+                        FormFieldEntity entity = new FormFieldEntity(newList.get(i));
+                        entity.setProjectTask(oldProjectTask);
 
-                            if (newList.get(i).getOptions() != null) {
+                        if (newList.get(i).getOptions() != null) {
 
-                                Set<OptionEntryEntity> options = newList.get(i).getOptions()
-                                                                             .stream().map(o -> conversionService.convert(o, OptionEntryEntity.class))
-                                                                             .collect(Collectors.toSet());
+                            Set<OptionEntryEntity> options = newList.get(i).getOptions()
+                                                                         .stream().map(o -> conversionService.convert(o, OptionEntryEntity.class))
+                                                                         .collect(Collectors.toSet());
 
-                                options.forEach(opt -> {
-                                    opt.setFormField(entity);
-                                    optionEntryRepository.save(opt);
-                                });
-                            }
-
-                            formFieldRepository.save(entity);
-
+                            options.forEach(opt -> {
+                                opt.setFormField(entity);
+                                optionEntryRepository.save(opt);
+                            });
                         }
-                        else {
-
-                            oldEntriesList.get(i).setValue(newList.get(i).getValue());
-                            oldEntriesList.get(i).setShow(newList.get(i).getShow());
-
-                        }
+                        formFieldRepository.save(entity);
                     }
-                            updateResults(oldProjectTask, projectTask);
+                    else {
 
-                });
+                        oldEntriesList.get(i).setValue(newList.get(i).getValue());
+                        oldEntriesList.get(i).setShow(newList.get(i).getShow());
+
+                    }
+                }
+                updateResults(oldProjectTask, projectTask);
+            });
     }
 
     private void updateResults(ProjectTaskEntity projectTaskEntity, ProjectTask projectTask) {
@@ -216,17 +209,16 @@ public class ProjectService {
                     resultRepository.delete(findResultEntity(oldList, deletedResultId));
                 }
             }
-
         }
-
     }
 
     private ResultEntity findResultEntity (List<ResultEntity> results, Long id) {
-        return results.stream().filter(r -> r.getId().equals(id)).findFirst().orElse(null);
+        return results.stream().filter(r -> r.getId().equals(id)).findFirst().orElseThrow(() -> new EntityNotFoundException(
+                String.format("Result with id: %1$s not found.", id)));
     }
 
     private FormFieldEntity findFormFieldEntity (List<FormFieldEntity> formFields, Long id) {
-        return formFields.stream().filter(f -> f.getId().equals(id)).findFirst().orElse(null);
+        return formFields.stream().filter(f -> f.getId().equals(id)).findFirst().orElseThrow(() -> new EntityNotFoundException(
+                String.format("FormField with id: %1$s not found.", id)));
     }
-
 }

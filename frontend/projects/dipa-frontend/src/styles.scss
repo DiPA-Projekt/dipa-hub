@@ -48,11 +48,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   color: rgba(0,0,0,.87);
 }
 
-
-.mat-form-field-wrapper {
-  padding-top: 1.25em;
-}
-
 .mat-form-field + .mat-form-field {
   margin-left: 16px;
 }
@@ -64,8 +59,4 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .countButton.mat-mini-fab .mat-button-wrapper {
   padding: 0;
   line-height: 20px;
-}
-
-.mat-form-field-wrapper {
-  padding-top: inherit;
 }
