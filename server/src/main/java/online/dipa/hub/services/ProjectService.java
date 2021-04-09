@@ -6,7 +6,6 @@ import online.dipa.hub.api.model.ProjectTask;
 
 import online.dipa.hub.api.model.Result;
 import online.dipa.hub.mapper.ProjectProjectEntityMapper;
-import online.dipa.hub.mapper.ProjectTaskProjectTaskEntityMapper;
 import online.dipa.hub.persistence.entities.*;
 import online.dipa.hub.persistence.repositories.*;
 
@@ -48,7 +47,6 @@ public class ProjectService {
     private UserInformationService userInformationService;
 
     private final ProjectProjectEntityMapper projectMapper = Mappers.getMapper(ProjectProjectEntityMapper.class);
-    private final ProjectTaskProjectTaskEntityMapper projectTaskMapper = Mappers.getMapper(ProjectTaskProjectTaskEntityMapper.class);
 
 
     public Project getProjectData(final Long projectId) {
