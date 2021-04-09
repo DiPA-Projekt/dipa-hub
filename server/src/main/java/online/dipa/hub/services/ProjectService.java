@@ -34,6 +34,9 @@ public class ProjectService {
 
     @Autowired
     private FormFieldRepository formFieldRepository;
+    
+    @Autowired
+    private OptionEntryEntityRepository optionEntryRepository;
 
     @Autowired
     private ResultRepository resultRepository;
@@ -91,15 +94,12 @@ public class ProjectService {
         Optional<ProjectEntity> project = projectRespository.findAll().stream()
             .filter(t -> t.getId().equals(projectId)).findFirst();
 
-        ProjectTaskEntity oldProjectTaskEntity = projectTaskRepository.findAll().stream()
-                                                                      .filter(t -> t.getId().equals(projectTask.getId())).findFirst().orElse(null);
         project.flatMap(projectEntity -> projectEntity.getProjectTaskTemplates().stream().findFirst())
                 .flatMap(template -> template.getProjectTasks().stream()
                     .filter(t -> t.getId().equals(projectTask.getId()))
                     .findFirst()
                 )
                 .ifPresent(oldProjectTask -> {
-                    // projectTaskMapper.updateFormFieldEntity(projectTask, oldProjectTask, formFieldRepository);
                     List<FormFieldEntity> oldEntriesList = new ArrayList<>(oldProjectTask.getEntries());
                     List<FormField> newList = projectTask.getEntries().stream().map(FormField.class::cast).collect(Collectors.toList());
 
@@ -109,13 +109,26 @@ public class ProjectService {
 
                             FormFieldEntity entity = new FormFieldEntity(newList.get(i));
                             entity.setProjectTask(oldProjectTask);
-//                            entity.setOptions(conversionService.convert(newList.get(i).getOptions().stream(), OptionEntryEntity.class));
+
+                            if (newList.get(i).getOptions() != null) {
+
+                                Set<OptionEntryEntity> options = newList.get(i).getOptions()
+                                                                             .stream().map(o -> conversionService.convert(o, OptionEntryEntity.class))
+                                                                             .collect(Collectors.toSet());
+
+                                options.forEach(opt -> {
+                                    opt.setFormField(entity);
+                                    optionEntryRepository.save(opt);
+                                });
+                            }
 
                             formFieldRepository.save(entity);
+                           
                         }
                         else {
 
                             oldEntriesList.get(i).setValue(newList.get(i).getValue());
+                            oldEntriesList.get(i).setShow(newList.get(i).getShow());
 
                         }
                     }
@@ -130,37 +143,76 @@ public class ProjectService {
         List<Result> newList = projectTask.getResults().stream().map(Result.class::cast).collect(Collectors.toList());
 
         ResultEntity entity = oldList.get(0);
-        for (int i = 0; i < newList.size(); i++) {
 
-            if (i > oldList.size() - 1) {
+        List<Long> allNewResultsId = newList.stream().map(Result::getId).collect(Collectors.toList());
+        List<Long> allResultIds = oldList.stream().map(BaseEntity::getId).collect(Collectors.toList());
 
+        allResultIds.removeAll(allNewResultsId); 
+        allResultIds.remove(null);
+
+        for (Result newResult: newList) {
+
+            if (newResult.getId() == null) {
                 ResultEntity newResultEntity = new ResultEntity();
                 newResultEntity.setResultType(entity.getResultType()); // "TYPE_ELBE_SC"
                 newResultEntity.setProjectTask(projectTaskEntity);
                 resultRepository.save(newResultEntity);
 
-                List<FormField> newListEntries = newList.get(i).getFormFields();
-
+                List<FormField> newListEntries = newResult.getFormFields();
 
                 for (FormField newListEntry : newListEntries) {
                     FormFieldEntity formField = new FormFieldEntity(newListEntry);
 
-                    formField.setId(formFieldRepository.count() + 1);
                     formField.setResultEntity(newResultEntity);
-
                     formFieldRepository.save(formField);
+
+                    if (newListEntry.getOptions() != null) {
+
+                        Set<OptionEntryEntity> options = newListEntry.getOptions()
+                        .stream().map(o -> conversionService.convert(o, OptionEntryEntity.class))
+                                                                     .collect(Collectors.toSet());
+
+                        options.forEach(opt -> {
+                            opt.setFormField(formField);
+                            optionEntryRepository.save(opt);
+                        });
+                    }
                 }
-            } else {
-                List<FormFieldEntity> oldEntriesList = new ArrayList<>(oldList.get(i).getFormFields());
-                List<FormField> newListEntries = newList.get(i).getFormFields();
+            }
+            else {
+                List<FormFieldEntity> oldEntriesList = new ArrayList<>(findResultEntity(oldList, newResult.getId()).getFormFields());
+                List<FormField> newListEntries = newResult.getFormFields();
 
-                for (int j = 0; j < newListEntries.size(); j++) {
-                    oldEntriesList.get(j).setValue(newListEntries.get(j).getValue());
 
+                for (FormField formField: newListEntries) {
+                    findFormFieldEntity(oldEntriesList, formField.getId()).setValue(formField.getValue());
+                    findFormFieldEntity(oldEntriesList, formField.getId()).setShow(formField.getShow());
+                }
+            }
+
+            if (allResultIds.size() > 0) {
+                for (Long deletedResultId: allResultIds) {
+                    ResultEntity toDeleteResultEntity = findResultEntity(oldList, deletedResultId);
+                    List<FormFieldEntity> formFields = new ArrayList<>(toDeleteResultEntity.getFormFields());
+
+                    for (FormFieldEntity formField: formFields) {
+                        optionEntryRepository.deleteAll(formField.getOptions());
+                        formFieldRepository.delete(formField);
+                    }
+                    resultRepository.delete(findResultEntity(oldList, deletedResultId));
                 }
             }
 
         }
+
+    }
+
+    private ResultEntity findResultEntity (List<ResultEntity> results, Long id) {
+        return results.stream().filter(r -> r.getId().equals(id)).findFirst().orElse(null);
+    }
+
+    private FormFieldEntity findFormFieldEntity (List<FormFieldEntity> formFields, Long id) {
+        return formFields.stream().filter(f -> f.getId().equals(id)).findFirst().orElse(null);
     }
     
 }

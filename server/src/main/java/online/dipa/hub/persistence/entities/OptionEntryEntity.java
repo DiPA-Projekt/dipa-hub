@@ -44,4 +44,12 @@ public class OptionEntryEntity extends BaseEntity {
     public void setValue(String value) {
         this.value = value;
     }
+
+    public FormFieldEntity getFormField() {
+        return formField;
+    }
+
+    public void setFormField(final FormFieldEntity formField) {
+        this.formField = formField;
+    }
 }

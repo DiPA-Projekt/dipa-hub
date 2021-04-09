@@ -167,6 +167,7 @@ export class ProjectTaskFormComponent implements OnInit {
       for (const entry of results) {
         resultsArray.push(
           this.fb.group({
+            id: entry?.id,
             resultType: entry?.resultType,
             formFields: this.getFormFieldsArray(entry?.formFields),
           })

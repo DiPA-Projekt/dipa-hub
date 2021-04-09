@@ -1,6 +1,11 @@
 Result:
   type: object
   properties:
+    id:
+      description: Unique identifier of the Result
+      type: integer
+      format: int64
+      example: 2
     resultType:
       type: string
       enum:
