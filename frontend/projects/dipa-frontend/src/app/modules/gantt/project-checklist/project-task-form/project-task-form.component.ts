@@ -29,11 +29,13 @@ export class ProjectTaskFormComponent implements OnInit {
 
   public showFieldsForm: FormControl;
 
+  public selectedFields: string[];
+
   public constructor(private projectService: ProjectService, private fb: FormBuilder) {}
 
   public ngOnInit(): void {
     this.setReactiveForm(this.taskData);
-    this.showFieldsForm = new FormControl(this.getShowFieldsSelection());
+    this.showFieldsForm = new FormControl(this.getSelectedFields());
   }
 
   public get entriesArray(): FormArray {
@@ -45,28 +47,20 @@ export class ProjectTaskFormComponent implements OnInit {
   }
 
   public changeShowSelection(event: MatSelectChange): void {
-    const selectedValues = event.value as string[];
+    this.selectedFields = event.value as string[];
 
     for (const entry of this.entriesArray.controls) {
-      const showItem = selectedValues.includes(entry.get('key').value);
+      const showItem = this.selectedFields.includes(entry.get('key').value);
       entry.get('show').setValue(showItem);
     }
 
-    for (const formFieldGroup of this.formFieldGroups) {
-      for (const field of formFieldGroup.fields) {
-        console.log('Überprüfe für: ' + field.value);
+    for (const result of this.resultsArray.controls) {
+      const formFieldsArray = result.get('formFields') as FormArray;
 
-        const resultsArray = this.getCurrentResultsArray();
-        for (const controls of resultsArray.controls) {
-          const formFieldsArray = controls.get('formFields') as FormArray;
-          console.log(controls.get('formFields'));
-
-          for (const ffEntry of formFieldsArray.controls) {
-            const currentKey = ffEntry.get('key').value as string;
-            const showItem = selectedValues.includes(`formFields.${currentKey}`);
-            ffEntry.get('show').setValue(showItem);
-          }
-        }
+      for (const ffEntry of formFieldsArray.controls) {
+        const currentKey = ffEntry.get('key').value as string;
+        const showItem = this.selectedFields.includes(`formFields.${currentKey}`);
+        ffEntry.get('show').setValue(showItem);
       }
     }
 
@@ -97,17 +91,16 @@ export class ProjectTaskFormComponent implements OnInit {
     this.formGroup.get(path).setValue(valueInput.value);
   }
 
-  private getShowFieldsSelection(): string[] {
-    const selectedValues: string[] = [];
+  private getSelectedFields(): string[] {
+    this.selectedFields = [];
 
-    // TODO: push auch die formFields
     for (const entry of this.entriesArray.controls) {
       if (entry.get('show').value) {
-        selectedValues.push(entry.get('key').value);
+        this.selectedFields.push(entry.get('key').value);
       }
     }
 
-    return selectedValues;
+    return this.selectedFields;
   }
 
   private setReactiveForm(data: ProjectTask): void {
@@ -117,10 +110,7 @@ export class ProjectTaskFormComponent implements OnInit {
       optional: [data?.optional],
       explanation: [data?.explanation],
       completed: [data?.completed],
-      //entries: [data?.entries],
       entries: this.getFormFieldsArray(data?.entries),
-      // contactPerson: [data?.contactPerson],
-      // documentationLink: [data?.documentationLink],
       results: this.getResultsArray(data?.results),
     });
   }
@@ -162,7 +152,6 @@ export class ProjectTaskFormComponent implements OnInit {
   private getResultsArray(results: Result[]): FormArray {
     const resultsArray = this.fb.array([]);
 
-    // TODO: besser abfangen
     if (results?.length) {
       for (const entry of results) {
         resultsArray.push(
@@ -175,9 +164,5 @@ export class ProjectTaskFormComponent implements OnInit {
       }
     }
     return resultsArray;
-  }
-
-  private getCurrentResultsArray(): FormArray {
-    return this.formGroup.get(['results']) as FormArray;
   }
 }

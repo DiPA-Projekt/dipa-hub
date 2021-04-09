@@ -34,7 +34,7 @@ public class ProjectService {
 
     @Autowired
     private FormFieldRepository formFieldRepository;
-    
+
     @Autowired
     private OptionEntryEntityRepository optionEntryRepository;
 
@@ -123,7 +123,7 @@ public class ProjectService {
                             }
 
                             formFieldRepository.save(entity);
-                           
+
                         }
                         else {
 
@@ -147,7 +147,7 @@ public class ProjectService {
         List<Long> allNewResultsId = newList.stream().map(Result::getId).collect(Collectors.toList());
         List<Long> allResultIds = oldList.stream().map(BaseEntity::getId).collect(Collectors.toList());
 
-        allResultIds.removeAll(allNewResultsId); 
+        allResultIds.removeAll(allNewResultsId);
         allResultIds.remove(null);
 
         for (Result newResult: newList) {
@@ -214,5 +214,5 @@ public class ProjectService {
     private FormFieldEntity findFormFieldEntity (List<FormFieldEntity> formFields, Long id) {
         return formFields.stream().filter(f -> f.getId().equals(id)).findFirst().orElse(null);
     }
-    
+
 }
