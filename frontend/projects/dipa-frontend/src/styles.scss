@@ -60,3 +60,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-form-field.width2x {
   width: 360px;
 }
+
+.mat-mini-fab.blaButton .mat-button-wrapper {
+  padding: 0;
+  line-height: 20px;
+}
+
+.mat-form-field-wrapper {
+  padding-top: inherit;
+}

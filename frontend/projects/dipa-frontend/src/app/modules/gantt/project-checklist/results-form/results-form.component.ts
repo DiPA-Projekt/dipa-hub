@@ -16,7 +16,7 @@ interface SelectOptionGroup {
 @Component({
   selector: 'app-results-form',
   templateUrl: './results-form.component.html',
-  styleUrls: ['../project-task-form/project-task-form.component.scss'],
+  styleUrls: ['./results-form.component.scss', '../project-task-form/project-task-form.component.scss'],
 })
 export class ResultsFormComponent implements OnInit {
   @Input() public formData: FormArray;
