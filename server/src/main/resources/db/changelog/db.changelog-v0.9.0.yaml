@@ -148,46 +148,46 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: project_task_form_field
             validate: true
-# TODO: ... result tables können alle raus
-#  - changeSet:
-#      id: drop-columns-content-status-standard-result
-#      author: bock
-#      changes:
-#        - dropColumn:
-#            columns:
-#              - column:
-#                  name: content
-#              - column:
-#                  name: status
-#            tableName: standard_result
-#  - changeSet:
-#      id: drop-columns-appointment-participants-link-status-appointment_series_result
-#      author: bock
-#      changes:
-#        - dropColumn:
-#            columns:
-#              - column:
-#                  name: appointment
-#              - column:
-#                  name: participants
-#              - column:
-#                  name: link
-#              - column:
-#                  name: status
-#            tableName: appointment_series_result
-#  - changeSet:
-#      id: drop-columns-description-value-solution-status-risk_result
-#      author: bock
-#      changes:
-#        - dropColumn:
-#            columns:
-#              - column:
-#                  name: description
-#              - column:
-#                  name: value
-#              - column:
-#                  name: solution
-#              - column:
-#                  name: status
-#            tableName: risk_result
 
+  - changeSet:
+      id: drop-table-standard_result
+      author: bock
+      changes:
+        -  dropTable:
+             cascadeConstraints: true
+             tableName: standard_result
+  - changeSet:
+      id: drop-table-contact_person_result
+      author: bock
+      changes:
+        -  dropTable:
+             cascadeConstraints: true
+             tableName: contact_person_result
+  - changeSet:
+      id: drop-table-elbe_shopping_cart_result
+      author: bock
+      changes:
+        -  dropTable:
+             cascadeConstraints: true
+             tableName: elbe_shopping_cart_result
+  - changeSet:
+      id: drop-table-appointment_series_result
+      author: bock
+      changes:
+        -  dropTable:
+             cascadeConstraints: true
+             tableName: appointment_series_result
+  - changeSet:
+      id: drop-table-risk_result
+      author: bock
+      changes:
+        -  dropTable:
+             cascadeConstraints: true
+             tableName: risk_result
+  - changeSet:
+      id: drop-table-single_appointment_result
+      author: bock
+      changes:
+        -  dropTable:
+             cascadeConstraints: true
+             tableName: single_appointment_result
