@@ -119,24 +119,7 @@ public class IncrementService {
 
         if (incrementCount < currentIncrementsList.size()) {
 
-            IncrementEntity lastIncrement = currentIncrementsList.get(currentIncrementsList.size() - 1);
-            incrementRepository.delete(lastIncrement);
-            currentIncrementsList.remove(lastIncrement);
-
-            for (int i = 0; i < incrementCount; i++) {
-                IncrementEntity increment = currentIncrementsList.get(i);
-                increment.setStartDate(startDateIncrement);
-                increment.setEndDate(endDateIncrement);
-
-                startDateIncrement = endDateIncrement.plusDays(1);
-
-                if (i == (incrementCount - 2)) {
-                    endDateIncrement = lastMilestoneDate;
-                } else {
-                    endDateIncrement = endDateIncrement.plusHours(durationIncrement);
-                }
-            }
-            newIncrementsList.addAll(currentIncrementsList);
+            newIncrementsList.addAll(deleteLastIncrement(currentIncrementsList,incrementCount, firstMilestoneDate, lastMilestoneDate, durationIncrement));
 
         }
         else {
@@ -165,6 +148,33 @@ public class IncrementService {
             }
         }
         return newIncrementsList;
+    }
+
+    private List<IncrementEntity> deleteLastIncrement (List<IncrementEntity> currentIncrementsList, int incrementCount,
+            OffsetDateTime firstMilestoneDate, OffsetDateTime lastMilestoneDate, Long durationIncrement) {
+
+        OffsetDateTime startDateIncrement = firstMilestoneDate;
+        OffsetDateTime endDateIncrement = startDateIncrement.plusHours(durationIncrement);
+
+        IncrementEntity lastIncrement = currentIncrementsList.get(currentIncrementsList.size() - 1);
+        incrementRepository.delete(lastIncrement);
+        currentIncrementsList.remove(lastIncrement);
+
+        for (int i = 0; i < incrementCount; i++) {
+            IncrementEntity increment = currentIncrementsList.get(i);
+            increment.setStartDate(startDateIncrement);
+            increment.setEndDate(endDateIncrement);
+
+            startDateIncrement = endDateIncrement.plusDays(1);
+
+            if (i == (incrementCount - 2)) {
+                endDateIncrement = lastMilestoneDate;
+            } else {
+                endDateIncrement = endDateIncrement.plusHours(durationIncrement);
+            }
+        }
+        return currentIncrementsList;
+
     }
 
     public Set<IncrementEntity> createIncrementsTimelineTemplate(final Long timelineId, final int incrementCount,
