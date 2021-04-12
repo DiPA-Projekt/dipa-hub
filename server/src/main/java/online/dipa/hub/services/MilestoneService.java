@@ -218,6 +218,7 @@ public class MilestoneService {
     }
 
     public void updateMilestoneStatus(final Long milestoneId, final Milestone.StatusEnum status) {
+        System.out.println(new ArrayList<>(planTemplateRepository.findAll()));
 
         milestoneTemplateRepository.findAll().stream().filter(m -> m.getId().equals(milestoneId)).findFirst()
             .ifPresent(milestone -> milestone.setStatus(status.toString()));

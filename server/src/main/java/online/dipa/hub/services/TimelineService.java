@@ -99,7 +99,7 @@ public class TimelineService {
             m.setDate(m.getDate().plusDays(days));
         }
 
-        if (currentProject.getIncrements().size() > 0) {
+        if (!currentProject.getIncrements().isEmpty()) {
             incrementService.updateDurationIncrements(timelineId);
         }
     }
@@ -125,7 +125,7 @@ public class TimelineService {
             m.setDate(newTimelineStart.plusHours(newMilestoneRelativePosition));
         }
 
-        if (currentProject.getIncrements().size() > 0) {
+        if (!currentProject.getIncrements().isEmpty()) {
             incrementService.updateDurationIncrements(timelineId);
         }
 
@@ -152,7 +152,7 @@ public class TimelineService {
             m.setDate(timelineStart.plusHours(newMilestoneRelativePosition));
         }
 
-        if (currentProject.getIncrements().size() > 0) {
+        if (!currentProject.getIncrements().isEmpty()) {
             incrementService.updateDurationIncrements(timelineId);
         }
 
@@ -278,7 +278,6 @@ public class TimelineService {
     public List<DownloadFile> getFilesForMilestone(final Long timelineId, final Long milestoneId) {
 
         List<Long> downloadFileIds = getDownloadFileIds(timelineId, milestoneId);
-        System.out.println(downloadFileIds);
 
         return fileRepository.findAll()
                 .stream()
@@ -289,18 +288,19 @@ public class TimelineService {
 
     private List<Long> getDownloadFileIds(final Long timelineId, final Long milestoneId) {
 
-        // final SessionTimeline sessionTimeline = sessionTimelineState.getSessionTimelines().get(timelineId);
         ProjectEntity currentProject = getProject(timelineId);
         final ProjectApproachEntity projectApproach = currentProject.getProjectApproach();
-        System.out.println(projectApproach.getName());
-        System.out.println(currentProject.getProjectType());
 
-        
-        MilestoneTemplateEntity firstMilestone = currentProject.getPlanTemplate()
-        .getMilestones().stream().min(Comparator.comparing(MilestoneTemplateEntity::getDateOffset)).orElse(null);
+        Long firstMilestoneId = Objects.requireNonNull(currentProject.getPlanTemplate()
+                                                                     .getMilestones()
+                                                                     .stream()
+                                                                     .min(Comparator.comparing(
+                                                                             MilestoneTemplateEntity::getDateOffset))
+                                                                     .orElse(null))
+                                       .getId();
 
-        if (!milestoneId.equals(firstMilestone.getId()) || projectApproach == null ||
-                !projectApproach.getOperationType().getId().equals(2)) {
+        if (!milestoneId.equals(firstMilestoneId) || projectApproach == null ||
+                !projectApproach.getOperationType().getId().equals(2L)) {
             return Collections.emptyList();
         }
 

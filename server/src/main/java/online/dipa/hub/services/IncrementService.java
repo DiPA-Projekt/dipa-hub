@@ -58,7 +58,7 @@ public class IncrementService {
        
         List<IncrementEntity> currentIncrementsList = new ArrayList<>(currentProject.getIncrements());
 
-        if (currentIncrementsList.size() == 0 && currentProject.getProjectApproach().isIterative() && currentProject.getPlanTemplate().getStandard()) {
+        if (currentIncrementsList.isEmpty() && currentProject.getProjectApproach().isIterative() && currentProject.getPlanTemplate().getStandard()) {
 
             currentProject.setIncrements(this.loadIncrementsTemplate(timelineId, 1));
 
@@ -171,7 +171,6 @@ public class IncrementService {
             List<MilestoneTemplateEntity> milestones) {
                 
         Set<IncrementEntity> newIncrementsList = new HashSet<>();
-        ProjectEntity currentProject = timelineService.getProject(timelineId);
 
         milestones = milestoneService.sortMilestonesDate(milestones);
         

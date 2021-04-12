@@ -176,9 +176,9 @@ public class TimelineTemplateService {
 
         ProjectEntity currentProject = timelineService.getProject(timelineId);
         milestones = milestoneService.sortMilestones(milestones);
-        List<MilestoneTemplateEntity> resultMilestones = new ArrayList<>();
+        List<MilestoneTemplateEntity> resultMilestones;
 
-        List<MilestoneTemplateEntity> standardTemplateMilestones = new ArrayList<>();
+        List<MilestoneTemplateEntity> standardTemplateMilestones;
 
         if (currentProject.getProjectApproach().isIterative() && !template.getStandard()) {
 
