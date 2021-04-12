@@ -1,190 +1,22 @@
 Result:
   type: object
   properties:
+    id:
+      description: Unique identifier of the Result
+      type: integer
+      format: int64
+      example: 2
     resultType:
       type: string
-      example: "TYPE_STD"
-  discriminator:
-    propertyName: resultType
-    mapping:
-      TYPE_STD: "#/schemas/StandardResult"
-      TYPE_ELBE_SC: "#/schemas/ELBEshoppingCartResult"
-      TYPE_CONTACT_PERS: "#/schemas/ContactPersonResult"
-      TYPE_APPT_SERIES: "#/schemas/AppointmentSeriesResult"
-      TYPE_RISK: "#/schemas/RiskResult"
-      TYPE_SINGLE_APPOINTMENT: "#/schemas/SingleAppointmentResult"
-schemas:
-  StandardResult:
-    allOf:
-      - $ref: "result.yml#/Result"
-      - type: object
-        required:
-          - resultTypeId
-        properties:
-          result:
-            description: result content
-            type: string
-            example: "Standard"
-          status:
-            description: standard status
-            type: string
-            enum:
-              - OPEN
-              - CLOSED
-              - PLANNED
-              - ASSIGNED
-              - IN_PROGRESS
-              - SUBMITTED
-              - DONE
-            default: null
-            example: OPEN
-  ContactPersonResult:
-    allOf:
-      - $ref: "result.yml#/Result"
-      - type: object
-        required:
-          - resultTypeId
-        properties:
-          name:
-            description: name
-            type: string
-            example: "Herr Mustermann"
-          department:
-            description: responsible department
-            type: string
-            example: "II A 1"
-          taskArea:
-            description: task area
-            type: string
-            example: "Projektmanagement"
-          status:
-            description: status
-            type: string
-            enum:
-              - OPEN
-              - CONTACTED
-              - ANSWER_RECEIVED
-              - DONE
-            default: null
-            example: OPEN
-  ELBEshoppingCartResult:
-    allOf:
-      - $ref: "result.yml#/Result"
-      - type: object
-        required:
-          - resultTypeId
-        properties:
-          shoppingCartNumber:
-            description: number of shopping cart
-            type: string
-            example: "2345"
-          shoppingCartContent:
-            description: content of shopping cart
-            type: string
-            example: "Bericht ABC"
-          status:
-            description: status
-            type: string
-            enum:
-              - PLANNED
-              - ORDERED
-              - APPROVED
-              - DELIVERED
-            default: null
-            example: OPEN
-  AppointmentSeriesResult:
-    allOf:
-      - $ref: "result.yml#/Result"
-      - type: object
-        required:
-          - resultTypeId
-        properties:
-          appointment:
-            description: the name of the appointment
-            type: string
-            example: "Termin1"
-          participants:
-            description: The list of participants
-            type: string
-            example: "Teilnehmer 1, Teilnehmer 2"
-          link:
-            description: link to this appointment
-            type: string
-            example: "https://***REMOVED***/secure/Dashboard.jspa"
-          status:
-            description: standard status
-            type: string
-            enum:
-              - OPEN
-              - CLOSED
-              - PLANNED
-              - ASSIGNED
-              - IN_PROGRESS
-              - SUBMITTED
-              - DONE
-            default: null
-            example: OPEN
-  RiskResult:
-    allOf:
-      - $ref: "result.yml#/Result"
-      - type: object
-        required:
-          - resultTypeId
-        properties:
-          description:
-            description: The description of this risk
-            type: string
-            example: "Zeitschätzungen sind ungenau"
-          value:
-            description: The value of this risk
-            type: string
-            example: "2 Monaten über Planung"
-          solution:
-            description: The solution to reduce this risk
-            type: string
-            example: "schätzen mit Punkten"
-          status:
-            description: standard status
-            type: string
-            enum:
-              - OPEN
-              - CLOSED
-              - PLANNED
-              - ASSIGNED
-              - IN_PROGRESS
-              - SUBMITTED
-              - DONE
-            default: null
-            example: OPEN
-  SingleAppointmentResult:
-    allOf:
-      - $ref: "result.yml#/Result"
-      - type: object
-        required:
-          - resultTypeId
-        properties:
-          date:
-            description: The date of this appointment
-            type: string
-            example: "2021-03-15T23:00:00.000Z"
-          goal:
-            description: The goal of this appointment
-            type: string
-            example: "Budget Entscheidung treffen"
-          responsiblePerson:
-            description: Who is responsible for this appointment
-            type: string
-            example: "Frau Müller"
-          status:
-            description: standard status
-            type: string
-            enum:
-              - OPEN
-              - CLOSED
-              - PLANNED
-              - ASSIGNED
-              - IN_PROGRESS
-              - SUBMITTED
-              - DONE
-            default: null
-            example: OPEN
+      enum:
+        - TYPE_STD
+        - TYPE_ELBE_SC
+        - TYPE_CONTACT_PERS
+        - TYPE_APPT_SERIES
+        - TYPE_RISK
+        - TYPE_SINGLE_APPOINTMENT
+      example: TYPE_STD
+    formFields:
+      type: array
+      items:
+        $ref: "../models/formField.yml#/FormField"
