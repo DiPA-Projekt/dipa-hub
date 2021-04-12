@@ -33,12 +33,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { ChartHeaderComponent } from './chart/chart-header/chart-header.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ProjectTaskFormComponent } from './project-checklist/project-task-form/project-task-form.component';
-import { CartFormComponent } from './project-checklist/cart-form/cart-form.component';
-import { RiskFormComponent } from './project-checklist/risk-form/risk-form.component';
-import { SingleAppointmentFormComponent } from './project-checklist/single-appointment-form/single-appointment-form.component';
-import { AppointmentSeriesFormComponent } from './project-checklist/appointment-series-form/appointment-series-form.component';
-import { ContactPersonFormComponent } from './project-checklist/contact-person-form/contact-person-form.component';
-import { StandardTaskFormComponent } from './project-checklist/standard-form/standard-task-form.component';
+import { ResultsFormComponent } from './project-checklist/results-form/results-form.component';
 
 @NgModule({
   declarations: [
@@ -55,12 +50,7 @@ import { StandardTaskFormComponent } from './project-checklist/standard-form/sta
     ProjectChecklistComponent,
     ChartHeaderComponent,
     ProjectTaskFormComponent,
-    CartFormComponent,
-    RiskFormComponent,
-    SingleAppointmentFormComponent,
-    AppointmentSeriesFormComponent,
-    ContactPersonFormComponent,
-    StandardTaskFormComponent,
+    ResultsFormComponent,
   ],
   exports: [ChartComponent, FilesComponent, NavMenuListItemComponent],
   imports: [
