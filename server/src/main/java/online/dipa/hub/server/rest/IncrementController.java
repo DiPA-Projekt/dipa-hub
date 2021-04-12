@@ -2,7 +2,6 @@ package online.dipa.hub.server.rest;
 
 import online.dipa.hub.api.model.*;
 import online.dipa.hub.api.rest.IncrementsApi;
-// import online.dipa.hub.services.IncrementService;
 import online.dipa.hub.services.IncrementService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +18,6 @@ public class IncrementController implements IncrementsApi {
     @Override
     public ResponseEntity<List<Increment>> getIncrementsForTimeline(final Long timelineId) {
         final List<Increment> incrementsList = incrementService.getIncrementsForTimeline(timelineId);
-        
-        // final List<Increment> incrementsList = new ArrayList<>();
 
         return ResponseEntity.ok(incrementsList);
     }

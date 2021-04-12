@@ -76,7 +76,7 @@ public class TimelineTemplateService {
         final ProjectApproachEntity projectApproach = currentProject.getProjectApproach();
 
         List<TimelineTemplate> timelineTemplatesFromRepo = getTimelineTemplatesFromRepo(timelineId, projectApproach);
-        
+
         timelineTemplates.addAll(timelineTemplatesFromRepo);
 
         sessionTimelineState.getSessionTimelineTemplates().put(timelineId, timelineTemplates);
@@ -171,58 +171,102 @@ public class TimelineTemplateService {
 
     }
 
-    public List<MilestoneTemplateEntity> updateMilestonesTimelineTemplate(final Long timelineId, List<MilestoneTemplateEntity> milestones, PlanTemplateEntity template) {
+    public List<MilestoneTemplateEntity> updateMilestonesTimelineTemplate(final Long timelineId, List<MilestoneTemplateEntity> milestones,
+            PlanTemplateEntity template) {
 
         ProjectEntity currentProject = timelineService.getProject(timelineId);
         milestones = milestoneService.sortMilestones(milestones);
+        List<MilestoneTemplateEntity> resultMilestones = new ArrayList<>();
 
-        OffsetDateTime initTimelineStart = OffsetDateTime.now();
-        Optional<MilestoneTemplateEntity> maxDateOffset = milestones.stream()
-                                                                    .max(Comparator.comparing(MilestoneTemplateEntity::getDateOffset));
-        OffsetDateTime initTimelineEnd = OffsetDateTime.now();
+        List<MilestoneTemplateEntity> standardTemplateMilestones = new ArrayList<>();
 
-        if (maxDateOffset.isPresent()) {
-            initTimelineEnd = initTimelineEnd.plusDays(maxDateOffset.get().getDateOffset());
+        if (currentProject.getProjectApproach().isIterative() && !template.getStandard()) {
+
+            standardTemplateMilestones = new ArrayList<>(Objects.requireNonNull(
+                planTemplateRepository.findAll()
+                                      .stream()
+                                      .filter(temp -> temp.getProjectApproaches() != null)
+                                      .filter(temp -> timelineService.filterProjectApproach(temp,
+                                              currentProject.getProjectApproach()
+                                                            .getId()))
+                                      .filter(PlanTemplateEntity::getStandard)
+                                      .findFirst()
+                                      .orElse(null))
+                                                                                  .getMilestones());
+
+            standardTemplateMilestones = milestoneService.sortMilestones(standardTemplateMilestones);
+            standardTemplateMilestones.forEach(m -> m.setDate(currentProject.getStartDate().plusDays(m.getDateOffset())));
+
+            standardTemplateMilestones = updateMilestonesPosition(standardTemplateMilestones, null, currentProject.getStartDate(), currentProject.getEndDate());
+            OffsetDateTime currentStartIncrement = standardTemplateMilestones.get(1).getDate();
+            OffsetDateTime currentEndIncrement = standardTemplateMilestones.get(standardTemplateMilestones.size() - 2).getDate();
+
+            resultMilestones = updateMilestonesPosition(milestones, standardTemplateMilestones, currentStartIncrement, currentEndIncrement);
+
         }
-//
-//        if (currentProject.getProjectApproach().isIterative() && !template.getStandard()) {
-//
-//            List<MilestoneTemplateEntity> standardMilestones = new ArrayList<>(Objects.requireNonNull(
-//                    planTemplateRepository.findAll()
-//                                          .stream()
-//                                          .filter(temp -> temp.getProjectApproaches() != null)
-//                                          .filter(temp -> timelineService.filterProjectApproach(temp,
-//                                                  currentProject.getProjectApproach()
-//                                                                .getId()))
-//                                          .filter(PlanTemplateEntity::getStandard)
-//                                          .findFirst()
-//                                          .orElse(null))
-//                                                                                      .getMilestones());
-//            standardMilestones.removeIf(MilestoneTemplateEntity::getIsMaster);
-//            standardMilestones = milestoneService.sortMilestones(standardMilestones);
-//
-//            currentTimelineStart = OffsetDateTime.now().plusDays(standardMilestones.get(0).getDateOffset());
-//            currentTimelineEnd = OffsetDateTime.now().plusDays(standardMilestones.get(standardMilestones.size() - 1).getDateOffset());
-//        }
-//        else {
-        OffsetDateTime currentTimelineStart = currentProject.getStartDate();
-        OffsetDateTime currentTimelineEnd = currentProject.getEndDate();
+        else {
+            OffsetDateTime currentStartTimeline = currentProject.getStartDate();
+            OffsetDateTime currentEndTimeline = currentProject.getEndDate();
+            resultMilestones = updateMilestonesPosition(milestones, null, currentStartTimeline, currentEndTimeline);
+        }
+
+        return resultMilestones;
+    }
+
+    private List<MilestoneTemplateEntity> updateMilestonesPosition (List<MilestoneTemplateEntity> milestones, List<MilestoneTemplateEntity> standardTemplateMilestones,
+            OffsetDateTime currentStart, OffsetDateTime currentEnd) {
+
+        List<MilestoneTemplateEntity> milestonesResult = new ArrayList<>();
+        int dateOffsetToIncrement = 0;
+        OffsetDateTime initStart;
+
+        if (standardTemplateMilestones != null) {
+
+            List<MilestoneTemplateEntity> masterMilestones = milestones.stream().filter(
+                    MilestoneTemplateEntity::getIsMaster).sorted(Comparator.comparing(MilestoneTemplateEntity::getDateOffset)).collect(
+                    Collectors.toList());
+
+            masterMilestones.get(0).setDate(standardTemplateMilestones.get(0).getDate());
+            milestonesResult.add(masterMilestones.get(0));
+
+            masterMilestones.get(masterMilestones.size() - 1).setDate(standardTemplateMilestones.get(standardTemplateMilestones.size() - 1).getDate());
+            milestonesResult.add(masterMilestones.get(masterMilestones.size() - 1));
+
+            milestones.removeIf(MilestoneTemplateEntity::getIsMaster);
+            dateOffsetToIncrement = milestones.get(0).getDateOffset();
+            initStart = OffsetDateTime.now().plusDays(dateOffsetToIncrement);
+        }
+        else {
+            initStart = OffsetDateTime.now();
+        }
+
+        OffsetDateTime initEnd = OffsetDateTime.now();
+
+        int maxDateOffset = Objects.requireNonNull(milestones
+                                                        .stream()
+                                                        .max(Comparator.comparing(
+                                                                MilestoneTemplateEntity::getDateOffset))
+                                                        .orElse(null))
+                                   .getDateOffset();
+        initEnd = initEnd.plusDays(maxDateOffset);
 
 
-        long oldHoursBetween = HOURS.between(initTimelineStart, initTimelineEnd);
-        long newHoursBetween = HOURS.between(currentTimelineStart, currentTimelineEnd);
+        long oldHoursBetween = HOURS.between(initStart, initEnd);
+        long newHoursBetween = HOURS.between(currentStart, currentEnd);
+
         double factor = (double) newHoursBetween / oldHoursBetween;
 
         for (MilestoneTemplateEntity m : milestones) {
 
-            long oldMilestoneRelativePosition = HOURS.between(initTimelineStart, initTimelineStart.plusDays(m.getDateOffset()));
+            long oldMilestoneRelativePosition = HOURS.between(initStart, initStart.plusDays(m.getDateOffset()).minusDays(dateOffsetToIncrement));
             long newMilestoneRelativePosition = Math.round(oldMilestoneRelativePosition * factor);
 
-            m.setDate(currentTimelineStart.plusHours(newMilestoneRelativePosition));
+            m.setDate(currentStart.plusHours(newMilestoneRelativePosition));
 
         }
+        milestonesResult.addAll(milestones);
 
-        return milestones;
+        return milestonesResult;
     }
 
 }

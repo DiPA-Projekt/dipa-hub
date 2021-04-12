@@ -15,13 +15,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import online.dipa.hub.api.model.*;
-import online.dipa.hub.session.state.*;
 
 import online.dipa.hub.persistence.entities.IncrementEntity;
 import online.dipa.hub.persistence.entities.MilestoneTemplateEntity;
 import online.dipa.hub.persistence.entities.ProjectEntity;
 import online.dipa.hub.persistence.repositories.IncrementRepository;
-import online.dipa.hub.persistence.repositories.ProjectRepository;
 
 import static java.time.temporal.ChronoUnit.HOURS;
 
