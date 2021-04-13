@@ -5,6 +5,7 @@ import online.dipa.hub.IcsCalendar;
 import online.dipa.hub.api.model.*;
 import online.dipa.hub.persistence.entities.PlanTemplateEntity;
 import online.dipa.hub.persistence.entities.ProjectApproachEntity;
+import online.dipa.hub.persistence.entities.ProjectEntity;
 import online.dipa.hub.persistence.repositories.*;
 import online.dipa.hub.session.model.SessionTimeline;
 import online.dipa.hub.session.state.SessionTimelineState;

@@ -12,6 +12,8 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import online.dipa.hub.api.model.FormField;
+
 @Entity
 @Table(name = "project_task_template")
 @Cacheable
@@ -24,6 +26,8 @@ public class ProjectTaskTemplateEntity extends BaseEntity {
     @Column(unique = true)
     private String name;
 
+    private boolean master;
+
     @OneToMany(mappedBy = "projectTaskTemplate", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<ProjectTaskEntity> projectTasks = new HashSet<>();
@@ -32,12 +36,30 @@ public class ProjectTaskTemplateEntity extends BaseEntity {
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private ProjectEntity project;
 
+    public ProjectTaskTemplateEntity() {
+        super();
+    }
+
+    public ProjectTaskTemplateEntity(String name, boolean master, ProjectEntity project) {
+        this.name = name;
+        this.master = master;
+        this.project = project;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(final String name) {
         this.name = name;
+    }
+
+    public boolean getMaster() {
+        return master;
+    }
+
+    public void setMaster(final boolean master) {
+        this.master = master;
     }
 
     public Set<ProjectTaskEntity> getProjectTasks() {

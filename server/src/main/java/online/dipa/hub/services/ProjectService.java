@@ -29,6 +29,9 @@ public class ProjectService {
     private ProjectRepository projectRespository;
 
     @Autowired
+    private ProjectTaskTemplateRepository projectTaskTemplateRepository;
+
+    @Autowired
     private ProjectTaskRepository projectTaskRepository;
 
     @Autowired
@@ -77,6 +80,8 @@ public class ProjectService {
 
         List<Long> projectIds = userInformationService.getUserData().getProjects();
 
+        initializeProjectTasks(projectId);
+
         projectRespository.findAll().stream()
         .filter(t -> projectIds.contains(t.getId()))
         .filter(t -> t.getId().equals(projectId))
@@ -94,6 +99,59 @@ public class ProjectService {
         });
 
         return projectTasks;
+    }
+
+    private void initializeProjectTasks(final Long projectId) {
+        ProjectEntity project = getProject(projectId);
+
+        if (project.getProjectSize() != null && (project.getProjectSize().equals("SMALL") || project.getProjectSize().equals("MEDIUM"))
+                && project.getProjectTaskTemplates().isEmpty()) {
+            ProjectTaskTemplateEntity projectTaskTemplate = projectTaskTemplateRepository.findAll().stream().filter(
+                    ProjectTaskTemplateEntity::getMaster).findFirst().orElse(null);
+
+            ProjectTaskTemplateEntity projectTaskProject = new ProjectTaskTemplateEntity("Project Task Template" + project.getName(), false, project);
+            projectTaskTemplateRepository.save(projectTaskProject);
+
+            for (ProjectTaskEntity projectTask: projectTaskTemplate.getProjectTasks()) {
+                ProjectTaskEntity newProjectTask = new ProjectTaskEntity(projectTask);
+                newProjectTask.setProjectTaskTemplate(projectTaskProject);
+                projectTaskRepository.save(newProjectTask);
+
+                for (FormFieldEntity entry: projectTask.getEntries()) {
+                    FormFieldEntity newFormField = new FormFieldEntity(entry);
+                    newFormField.setProjectTask(newProjectTask);
+
+                    formFieldRepository.save(newFormField);
+                }
+
+                for (ResultEntity result: projectTask.getResults()) {
+                    ResultEntity newResultEntity = new ResultEntity();
+                    newResultEntity.setResultType(result.getResultType()); // "TYPE_ELBE_SC"
+                    newResultEntity.setProjectTask(newProjectTask);
+                    resultRepository.save(newResultEntity);
+
+                    for (FormFieldEntity formFieldResult: result.getFormFields()) {
+                        FormFieldEntity newFormFieldResult = new FormFieldEntity(formFieldResult);
+                        newFormFieldResult.setResultEntity(newResultEntity);
+                        formFieldRepository.save(newFormFieldResult);
+                        System.out.println(formFieldResult.getOptions());
+
+                        if (formFieldResult.getOptions() != null) {
+
+                            Set<OptionEntryEntity> options = formFieldResult.getOptions()
+                                                                         .stream().map(o -> conversionService.convert(o, OptionEntryEntity.class))
+                                                                         .collect(Collectors.toSet());
+
+                            options.forEach(opt -> {
+                                opt.setFormField(newFormFieldResult);
+                                optionEntryRepository.save(opt);
+                            });
+                        }
+                    }
+                }
+
+            }
+        }
     }
 
     public void updateProjectTask (final Long projectId, final ProjectTask projectTask) {
@@ -220,5 +278,13 @@ public class ProjectService {
     private FormFieldEntity findFormFieldEntity (List<FormFieldEntity> formFields, Long id) {
         return formFields.stream().filter(f -> f.getId().equals(id)).findFirst().orElseThrow(() -> new EntityNotFoundException(
                 String.format("FormField with id: %1$s not found.", id)));
+    }
+
+    public ProjectEntity getProject(final Long timelineId) {
+
+        return projectRespository.findAll().stream()
+                                .filter(t -> t.getId().equals(timelineId)).findFirst().orElseThrow(() -> new EntityNotFoundException(
+                        String.format("Project with id: %1$s not found.", timelineId)));
+
     }
 }

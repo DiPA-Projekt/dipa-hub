@@ -56,8 +56,20 @@ public class FormFieldEntity extends BaseEntity {
         this.sortOrder = formField.getSortOrder();
         this.controlType = formField.getControlType().toString();
         this.type = formField.getType().toString();
-//        this.options = formField.getOptions();
         this.show = formField.getShow();
+    }
+
+    public FormFieldEntity(FormFieldEntity formField) {
+        this.key = formField.getKey();
+        this.value = formField.getValue();
+        this.label = formField.getLabel();
+        this.placeholder = formField.getLabel();
+        this.required = formField.isRequired();
+        this.placeholder = formField.getPlaceholder();
+        this.sortOrder = formField.getSortOrder();
+        this.controlType = formField.getControlType();
+        this.type = formField.getType();
+        this.show = formField.isShow();
     }
 
     public String getValue() {

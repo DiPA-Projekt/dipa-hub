@@ -35,6 +35,17 @@ public class ProjectTaskEntity extends BaseEntity {
     @OneToMany(mappedBy = "projectTask")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<ResultEntity> results = new HashSet<>();
+
+    public ProjectTaskEntity() {
+        super();
+    }
+
+    public ProjectTaskEntity(ProjectTaskEntity projectTaskEntity) {
+        this.title = projectTaskEntity.getTitle();
+        this.optional = projectTaskEntity.getOptional();
+        this.explanation = projectTaskEntity.getExplanation();
+        this.completed = projectTaskEntity.getCompleted();
+    }
     
     public ProjectTaskTemplateEntity getProjectTaskTemplate() {
         return projectTaskTemplate;
