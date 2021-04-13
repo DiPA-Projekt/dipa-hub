@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: addColumn-project-task-template-master
+      author: bock
+      changes:
+        - addColumn:
+            tableName: project_task_template
+            columns:
+              - column:
+                  name: master
+                  type: BOOLEAN
+                  defaultValue: true
