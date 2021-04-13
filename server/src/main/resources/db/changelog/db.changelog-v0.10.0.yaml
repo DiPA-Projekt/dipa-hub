@@ -42,15 +42,15 @@ databaseChangeLog:
       id: createForeignKeyConstraint-projectPlanTemplate-FK
       author: nguyen
       changes:
-         - addForeignKeyConstraint:
-             baseColumnNames: project_id
-             baseTableName: plan_template
-             constraintName: FKprojectIdPlanTemplate
-             deferrable: false
-             initiallyDeferred: false
-             referencedColumnNames: id
-             referencedTableName: project
-             validate: true
+        - addForeignKeyConstraint:
+            baseColumnNames: project_id
+            baseTableName: plan_template
+            constraintName: FKprojectIdPlanTemplate
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project
+            validate: true
   - changeSet:
       id: create-increment-table
       author: nguyen
@@ -80,3 +80,16 @@ databaseChangeLog:
                   name: project_id
                   type: BIGINT
             tableName: increment
+  - changeSet:
+      id: createForeignKeyConstraint-projectIdIncrement-FK
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_id
+            baseTableName: increment
+            constraintName: FKprojectIdIncrement
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project
+            validate: true

@@ -177,7 +177,7 @@ public class IncrementService {
 
     }
 
-    public Set<IncrementEntity> createIncrementsTimelineTemplate(final Long timelineId, final int incrementCount,
+    public Set<IncrementEntity> createIncrementsTimelineTemplate(final int incrementCount,
             List<MilestoneTemplateEntity> milestones) {
                 
         Set<IncrementEntity> newIncrementsList = new HashSet<>();

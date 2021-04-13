@@ -20,9 +20,6 @@ import online.dipa.hub.persistence.entities.MilestoneTemplateEntity;
 import online.dipa.hub.persistence.entities.PlanTemplateEntity;
 import online.dipa.hub.persistence.repositories.MilestoneTemplateRepository;
 import online.dipa.hub.persistence.repositories.PlanTemplateRepository;
-import online.dipa.hub.persistence.repositories.ProjectApproachRepository;
-import online.dipa.hub.persistence.repositories.ProjectRepository;
-
 import static java.time.temporal.ChronoUnit.HOURS;
 
 @Service
@@ -33,13 +30,7 @@ public class MilestoneService {
     private PlanTemplateRepository planTemplateRepository;
 
     @Autowired
-    private ProjectApproachRepository projectApproachRepository;
-
-    @Autowired
     private MilestoneTemplateRepository milestoneTemplateRepository;
-
-    @Autowired
-    private ProjectRepository projectRepository;
     
     @Autowired
     private ConversionService conversionService;
@@ -51,6 +42,7 @@ public class MilestoneService {
     public List<Milestone> getMilestonesForTimeline(final Long timelineId) {
 
         ProjectEntity project = timelineService.getProject(timelineId);
+
 
         return project.getPlanTemplate()
                       .getMilestones().stream().map(p -> conversionService.convert(p, Milestone.class)).collect(Collectors.toList());
@@ -218,7 +210,6 @@ public class MilestoneService {
     }
 
     public void updateMilestoneStatus(final Long milestoneId, final Milestone.StatusEnum status) {
-        System.out.println(new ArrayList<>(planTemplateRepository.findAll()));
 
         milestoneTemplateRepository.findAll().stream().filter(m -> m.getId().equals(milestoneId)).findFirst()
             .ifPresent(milestone -> milestone.setStatus(status.toString()));

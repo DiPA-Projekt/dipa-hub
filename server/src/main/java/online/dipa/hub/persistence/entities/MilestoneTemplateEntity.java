@@ -14,6 +14,9 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 
 @Entity
 @Table(name = "milestone_template")
@@ -41,6 +44,7 @@ public class MilestoneTemplateEntity extends BaseEntity {
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
+    @NotFound(action = NotFoundAction.IGNORE)
     private PlanTemplateEntity planTemplate;
 
     public MilestoneTemplateEntity() {

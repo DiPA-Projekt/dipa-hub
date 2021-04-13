@@ -126,3 +126,9 @@ WHERE ID = 6
 
 -- changeset id:delete_unused_milestones context:itzbund
 DELETE FROM milestone_template WHERE plan_template_id = 2;
+
+-- changeset id:delete_connection_operation_type_plan_template context:itzbund
+DELETE FROM operation_type_plan_template_connection WHERE id = 1;
+
+-- changeset id:delete_unused_plan_template context:itzbund
+DELETE FROM plan_template WHERE id = 2;

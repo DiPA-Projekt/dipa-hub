@@ -37,9 +37,6 @@ public class TimelineService {
     private ProjectRepository projectRepository;
 
     @Autowired
-    private PlanTemplateRepository planTemplateRepository;
-
-    @Autowired
     private MilestoneTemplateRepository milestoneTemplateRepository;
 
     @Autowired
@@ -66,7 +63,6 @@ public class TimelineService {
     public List<Timeline> getTimelines() {
 
         List<Long> projectIds = userInformationService.getUserData().getProjects();
-       
         return projectRepository.findAll()
                                  .stream()
                                  .map(p -> conversionService.convert(p, Timeline.class))

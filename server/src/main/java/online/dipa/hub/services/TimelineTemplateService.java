@@ -66,10 +66,9 @@ public class TimelineTemplateService {
         List<TimelineTemplate> timelineTemplates = new ArrayList<>();
 
         ProjectEntity currentProject = timelineService.getProject(timelineId);
-        long count = 0;
 
         TimelineTemplate currentTimelineTemplate = this.initializeCurrentTimelineTemplate(timelineId)
-                                                    .id(count++);
+                                                    .id(0L);
 
         timelineTemplates.add(currentTimelineTemplate);
 
@@ -125,7 +124,7 @@ public class TimelineTemplateService {
                 .stream().map(m -> conversionService.convert(m, Milestone.class)).collect(Collectors.toList()));
 
             if (projectApproach.isIterative() && temp.getStandard()) {
-                Set<IncrementEntity> increments = incrementService.createIncrementsTimelineTemplate(timelineId, 1,
+                Set<IncrementEntity> increments = incrementService.createIncrementsTimelineTemplate(1,
                                         updateMilestonesTimelineTemplate(timelineId, milestones, temp));
                 template.increments(increments.stream().map(i -> conversionService.convert(i, Increment.class)).collect(Collectors.toList()));
             }
