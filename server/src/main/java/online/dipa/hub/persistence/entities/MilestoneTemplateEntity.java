@@ -1,5 +1,7 @@
 package online.dipa.hub.persistence.entities;
 
+import java.time.OffsetDateTime;
+
 import javax.persistence.Basic;
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
@@ -12,6 +14,9 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 
 @Entity
 @Table(name = "milestone_template")
@@ -27,13 +32,32 @@ public class MilestoneTemplateEntity extends BaseEntity {
     @Basic(optional = false)
     private int dateOffset;
 
+    @Basic(optional = true)
+    private OffsetDateTime date;
+
+    @Basic(optional = true)
+    private boolean isMaster;
+
     @NotEmpty
     @Basic(optional = false)
     private String status;
 
     @NotNull
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @NotFound(action = NotFoundAction.IGNORE)
     private PlanTemplateEntity planTemplate;
+
+    public MilestoneTemplateEntity() {
+        super();
+    }
+
+    public MilestoneTemplateEntity(MilestoneTemplateEntity milestone) {
+        this.name = milestone.getName();
+        this.dateOffset = milestone.getDateOffset();
+        this.date = milestone.getDate();
+        this.status = milestone.getStatus();
+        this.isMaster = milestone.getIsMaster();
+    }
 
     public String getName() {
         return name;
@@ -50,6 +74,14 @@ public class MilestoneTemplateEntity extends BaseEntity {
     public void setDateOffset(final int dateOffset) {
         this.dateOffset = dateOffset;
     }
+    
+    public OffsetDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(final OffsetDateTime date) {
+        this.date = date;
+    }
 
     public String getStatus() {
         return status;
@@ -57,6 +89,14 @@ public class MilestoneTemplateEntity extends BaseEntity {
 
     public void setStatus(final String status) {
         this.status = status;
+    }
+    
+    public boolean getIsMaster() {
+        return isMaster;
+    }
+
+    public void setIsMaster(final boolean isMaster) {
+        this.isMaster = isMaster;
     }
 
     public PlanTemplateEntity getPlanTemplate() {

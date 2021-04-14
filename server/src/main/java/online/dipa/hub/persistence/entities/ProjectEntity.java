@@ -1,10 +1,12 @@
 package online.dipa.hub.persistence.entities;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.OffsetDateTime;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -29,11 +31,19 @@ public class ProjectEntity extends BaseEntity {
     
     @OneToMany(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<ProjectTaskTemplateEntity> projectTaskTemplates;
+    private Set<ProjectTaskTemplateEntity> projectTaskTemplates = new HashSet<>();
+
+    @OneToOne(mappedBy = "project")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private PlanTemplateEntity planTemplate;
 
     @OneToMany(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<UserGroupEntity> userGroups;
+
+    @OneToMany(mappedBy = "project")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<IncrementEntity> increments;
 
     private String projectType;
     private String projectSize;
@@ -41,8 +51,9 @@ public class ProjectEntity extends BaseEntity {
     private String client;
     private String department;
     private String projectOwner;
+    private OffsetDateTime startDate;
+    private OffsetDateTime endDate;
 
-    
     public String getName() {
         return name;
     }
@@ -83,6 +94,16 @@ public class ProjectEntity extends BaseEntity {
     public void setProjectTaskTemplates(final Set<ProjectTaskTemplateEntity> projectTaskTemplates) {
         this.projectTaskTemplates = projectTaskTemplates;
     }
+
+    public PlanTemplateEntity getPlanTemplate() {
+        return planTemplate;
+    }
+
+    public void setPlanTemplate(final PlanTemplateEntity planTemplate) {
+        this.planTemplate = planTemplate;
+
+    }
+
     public Set<UserGroupEntity> getUserGroups() {
         return userGroups;
     }
@@ -90,13 +111,21 @@ public class ProjectEntity extends BaseEntity {
     public void setUserGroups(final Set<UserGroupEntity> userGroups) {
         this.userGroups = userGroups;
     }
-    
-    public void setProjectSize(final String projectSize) {
-        this.projectSize = projectSize;
+
+    public Set<IncrementEntity> getIncrements() {
+        return increments;
+    }
+
+    public void setIncrements(final Set<IncrementEntity> increments) {
+        this.increments = increments;
     }
 
     public String getProjectSize() {
         return projectSize;
+    }
+
+    public void setProjectSize(final String projectSize) {
+        this.projectSize = projectSize;
     }
     
     public String getClient() {
@@ -123,5 +152,20 @@ public class ProjectEntity extends BaseEntity {
         this.projectOwner = projectOwner;
     }
 
+    public OffsetDateTime getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(final OffsetDateTime startDate) {
+        this.startDate = startDate;
+    }
+    
+    public OffsetDateTime getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(final OffsetDateTime endDate) {
+        this.endDate = endDate;
+    }
 
 }
