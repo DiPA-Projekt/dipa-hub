@@ -1,5 +1,28 @@
 databaseChangeLog:
   - changeSet:
+      id: create-project-task-result-table
+      author: bock
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: resultPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: result_type
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_task_id
+                  type: BIGINT
+            tableName: project_task_result
+  - changeSet:
       id: addColumn-project-task-completed
       author: bock
       changes:
@@ -46,3 +69,162 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: project
             validate: true
+
+  - changeSet:
+      id: create-option-entry-table
+      author: bock
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: optionEntryTemplatePK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: key
+                  type: VARCHAR(255)
+              - column:
+                  name: value
+                  type: VARCHAR(2000)
+              - column:
+                  name: form_field_id
+                  type: BIGINT
+            tableName: option_entry
+  - changeSet:
+      id: create-project-task-form-field-table
+      author: bock
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: formFieldPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: value
+                  type: VARCHAR(2000)
+              - column:
+                  name: key
+                  type: VARCHAR(255)
+              - column:
+                  name: label
+                  type: VARCHAR(255)
+              - column:
+                  name: placeholder
+                  type: VARCHAR(255)
+              - column:
+                  name: required
+                  type: boolean
+              - column:
+                  name: sort_order
+                  type: BIGINT
+              - column:
+                  name: control_type
+                  type: VARCHAR(255)
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+              - column:
+                  name: show
+                  type: boolean
+              - column:
+                  constraints:
+                    nullable: true
+                  name: project_task_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: true
+                  name: result_id
+                  type: BIGINT
+            tableName: project_task_form_field
+  - changeSet:
+      id: createForeignKeyConstraint-projectTask-projectTaskFormField
+      author: bock
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_task_id
+            baseTableName: project_task_form_field
+            constraintName: FKProjectTaskProjectTaskFormField
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_task
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-result-projectTaskFormField
+      author: bock
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: result_id
+            baseTableName: project_task_form_field
+            constraintName: FKResultProjectTaskFormField
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_task_result
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-optionEntry-projectTaskFormField
+      author: bock
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: form_field_id
+            baseTableName: option_entry
+            constraintName: FKOptionEntryProjectTaskFormField
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_task_form_field
+            validate: true
+
+  - changeSet:
+      id: drop-table-standard_result
+      author: bock
+      changes:
+        -  dropTable:
+             cascadeConstraints: true
+             tableName: standard_result
+  - changeSet:
+      id: drop-table-contact_person_result
+      author: bock
+      changes:
+        -  dropTable:
+             cascadeConstraints: true
+             tableName: contact_person_result
+  - changeSet:
+      id: drop-table-elbe_shopping_cart_result
+      author: bock
+      changes:
+        -  dropTable:
+             cascadeConstraints: true
+             tableName: elbe_shopping_cart_result
+  - changeSet:
+      id: drop-table-appointment_series_result
+      author: bock
+      changes:
+        -  dropTable:
+             cascadeConstraints: true
+             tableName: appointment_series_result
+  - changeSet:
+      id: drop-table-risk_result
+      author: bock
+      changes:
+        -  dropTable:
+             cascadeConstraints: true
+             tableName: risk_result
+  - changeSet:
+      id: drop-table-single_appointment_result
+      author: bock
+      changes:
+        -  dropTable:
+             cascadeConstraints: true
+             tableName: single_appointment_result

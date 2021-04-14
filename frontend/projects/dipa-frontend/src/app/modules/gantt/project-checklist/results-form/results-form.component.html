@@ -1,0 +1,73 @@
+<ng-container [formGroup]="formGroupDirective.control">
+  <div formArrayName="results">
+    <ng-container *ngFor="let result of resultsArray.controls; let i = index">
+      <div [formGroupName]="i">
+        <button class="countButton" color="primary" disabled mat-mini-fab aria-label="icon with result count">
+          {{ i + 1 }}
+        </button>
+        <ng-container formArrayName="formFields">
+          <ng-container *ngFor="let formField of getFormFieldsArray(result).controls; let j = index">
+            <ng-container [formGroupName]="j">
+              <mat-form-field
+                [ngClass]="formField.get('controlType')?.value === 'TEXTAREA' ? 'width2x' : ''"
+                *ngIf="formField.get('show')?.value"
+              >
+                <mat-label>{{ formField.get('label')?.value }}</mat-label>
+                <div [ngSwitch]="formField.get('controlType')?.value">
+                  <input
+                    *ngSwitchCase="'TEXTBOX'"
+                    matInput
+                    [placeholder]="formField.get('placeholder').value"
+                    formControlName="value"
+                    [id]="formField.get('key')?.value"
+                    [value]="formField.get('value')?.value"
+                    (change)="dataChanged.emit()"
+                    (focus)="onFocus($event, ['results', i, 'formFields', j, 'value'])"
+                    (keyup.esc)="onEscape($event, ['results', i, 'formFields', j, 'value'])"
+                  />
+                  <textarea
+                    *ngSwitchCase="'TEXTAREA'"
+                    matInput
+                    matTextareaAutosize
+                    matAutosizeMinRows="1"
+                    matAutosizeMaxRows="5"
+                    [placeholder]="formField.get('placeholder').value"
+                    formControlName="value"
+                    [id]="formField.get('key')?.value"
+                    [value]="formField.get('value')?.value"
+                    (change)="dataChanged.emit()"
+                    (focus)="onFocus($event, ['results', i, 'formFields', j, 'value'])"
+                    (keyup.esc)="onEscape($event, ['results', i, 'formFields', j, 'value'])"
+                  >
+                  </textarea>
+                  <mat-select *ngSwitchCase="'DROPDOWN'" (selectionChange)="dataChanged.emit()" formControlName="value">
+                    <mat-option *ngFor="let opt of formField.get('options')?.value" [value]="opt.key">
+                      {{ opt.value }}
+                    </mat-option>
+                  </mat-select>
+                </div>
+              </mat-form-field>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+        <button
+          *ngIf="resultsArray.controls.length > 1"
+          mat-button
+          type="button"
+          class="roundedButton"
+          (click)="deleteResult(i)"
+          title="Eintrag entfernen"
+          aria-label="Eintrag entfernen"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </ng-container>
+    <span class="">
+      <button type="button" mat-button (click)="addResult(getResultType())">
+        <mat-icon style="color: rgba(0, 0, 0, 0.65)">add_circle</mat-icon>
+        Eintrag hinzufügen
+      </button>
+    </span>
+  </div>
+</ng-container>
