@@ -93,7 +93,7 @@ public class ProjectService {
 
                 projectTasks.addAll(template.get().getProjectTasks()
                 .stream().map(p -> conversionService.convert(p, ProjectTask.class))
-                .sorted(Comparator.comparing(ProjectTask::getId))
+                .sorted(Comparator.comparing(ProjectTask::getSortOrder))
                 .collect(Collectors.toList()));
             }
         });
@@ -134,7 +134,6 @@ public class ProjectService {
                         FormFieldEntity newFormFieldResult = new FormFieldEntity(formFieldResult);
                         newFormFieldResult.setResultEntity(newResultEntity);
                         formFieldRepository.save(newFormFieldResult);
-                        System.out.println(formFieldResult.getOptions());
 
                         if (formFieldResult.getOptions() != null) {
 

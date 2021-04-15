@@ -46,6 +46,7 @@ public class ProjectTaskEntity extends BaseEntity {
         this.optional = projectTaskEntity.getOptional();
         this.explanation = projectTaskEntity.getExplanation();
         this.completed = projectTaskEntity.getCompleted();
+        this.sortOrder = projectTaskEntity.getSortOrder();
     }
     
     public ProjectTaskTemplateEntity getProjectTaskTemplate() {

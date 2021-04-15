@@ -38,6 +38,7 @@ FormField:
         - TEXTBOX
         - TEXTAREA
         - DROPDOWN
+        - DATE
       default: TEXTBOX
       example: TEXTBOX
     type:
