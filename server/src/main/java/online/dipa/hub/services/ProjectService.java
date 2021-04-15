@@ -49,6 +49,9 @@ public class ProjectService {
     @Autowired
     private UserInformationService userInformationService;
 
+    @Autowired
+    private TimelineService timelineService;
+
     private final ProjectProjectEntityMapper projectMapper = Mappers.getMapper(ProjectProjectEntityMapper.class);
 
 
@@ -102,7 +105,7 @@ public class ProjectService {
     }
 
     private String initializeProjectTasks(final Long projectId) {
-        ProjectEntity project = getProject(projectId);
+        ProjectEntity project = timelineService.getProject(projectId);
 
         if (project.getProjectSize() != null && (project.getProjectSize().equals("SMALL") || project.getProjectSize().equals("MEDIUM"))
                 && project.getProjectTaskTemplates().isEmpty()) {
@@ -280,11 +283,4 @@ public class ProjectService {
                 String.format("FormField with id: %1$s not found.", id)));
     }
 
-    public ProjectEntity getProject(final Long timelineId) {
-
-        return projectRespository.findAll().stream()
-                                .filter(t -> t.getId().equals(timelineId)).findFirst().orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Project with id: %1$s not found.", timelineId)));
-
-    }
 }

@@ -32,7 +32,6 @@ public class ProjectTaskEntityToProjectTaskConverter implements Converter<Projec
                              .optional(template.getOptional())
                              .explanation(template.getExplanation())
                                                    .sortOrder(template.getSortOrder());
-        System.out.println(template.getSortOrder());
 
         List<FormField> entries = template.getEntries().stream().sorted(Comparator.comparing(FormFieldEntity::getSortOrder)).map(p -> formFieldConverter.convert(p)).collect(Collectors.toList());
         projectTask.entries(entries);
