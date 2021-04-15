@@ -12,8 +12,6 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import online.dipa.hub.api.model.FormField;
-
 @Entity
 @Table(name = "project_task_template")
 @Cacheable
@@ -33,7 +31,7 @@ public class ProjectTaskTemplateEntity extends BaseEntity {
     private Set<ProjectTaskEntity> projectTasks = new HashSet<>();
 
     @NotNull
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     private ProjectEntity project;
 
     public ProjectTaskTemplateEntity() {

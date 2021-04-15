@@ -287,7 +287,7 @@ VALUES (31, 'Jour Fixe', 'serie', 'Name', 'Name der Serie', false, 1, 'TEXTBOX',
 
 --changeset id:insert-project-task-04-form-entry-date-result-05 context:itzbund
 INSERT INTO project_task_form_field (id, key, label, placeholder, required, sort_order, CONTROL_TYPE, type, show, result_id)
-VALUES (32, 'date', 'Termin', 'Termin', false, 2, 'DATE', 'DATE', true, 5)
+VALUES (32, 'date', 'Termin', 'Termin', false, 2, 'TEXTBOX', 'DATE', true, 5)
 
 --changeset id:insert-project-task-04-form-entry-participants-result-05 context:itzbund
 INSERT INTO project_task_form_field (id, key, label, placeholder, required, sort_order, CONTROL_TYPE, type, show, result_id)
@@ -335,7 +335,7 @@ VALUES (6, 'TYPE_SINGLE_APPOINTMENT', 5)
 
 --changeset id:insert-project-task-05-form-entry-serie-jf-result-06 context:itzbund
 INSERT INTO project_task_form_field (id, key, label, placeholder, required, sort_order, CONTROL_TYPE, type, show, result_id)
-VALUES (41, 'date', 'Datum', 'Datum', false, 1, 'DATE', 'DATE', true, 6)
+VALUES (41, 'date', 'Datum', 'Datum', false, 1, 'TEXTBOX', 'DATE', true, 6)
 
 --changeset id:insert-project-task-05-form-entry-date-result-06 context:itzbund
 INSERT INTO project_task_form_field (id, key, label, placeholder, required, sort_order, CONTROL_TYPE, type, show, result_id)
