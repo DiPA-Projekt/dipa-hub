@@ -129,7 +129,7 @@ databaseChangeLog:
                   value: Auftragsübergabe an Projektleitung
               - column:
                   name: explanation
-                  value: Übergabe der Projektes (u.a. Planungsunterlagen, iSAR-Projekt mit vorausgefülltem PSB) von  Planenden, Einzelauftragsmanagement und PMO an die Projektleitung
+                  value: Übergabe der Projekte (u.a. Planungsunterlagen, iSAR-Projekt mit vorausgefülltem PSB) von  Planenden, Einzelauftragsmanagement und PMO an die Projektleitung
             where: id=1 OR id=18
   - changeSet:
       id: update-project-task-02-title

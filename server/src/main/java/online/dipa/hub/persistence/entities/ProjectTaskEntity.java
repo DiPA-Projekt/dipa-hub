@@ -23,6 +23,7 @@ public class ProjectTaskEntity extends BaseEntity {
     private boolean optional;
     private String explanation;
     private boolean completed;
+    private Long sortOrder;
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
@@ -101,6 +102,14 @@ public class ProjectTaskEntity extends BaseEntity {
 
     public void setResults(final Set<ResultEntity> results) {
         this.results = results;
+    }
+    
+    public Long getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(Long sortOrder) {
+        this.sortOrder = sortOrder;
     }
 
 }

@@ -80,7 +80,7 @@ public class ProjectService {
 
         List<Long> projectIds = userInformationService.getUserData().getProjects();
 
-        initializeProjectTasks(projectId);
+        String result = initializeProjectTasks(projectId);
 
         projectRespository.findAll().stream()
         .filter(t -> projectIds.contains(t.getId()))
@@ -101,7 +101,7 @@ public class ProjectService {
         return projectTasks;
     }
 
-    private void initializeProjectTasks(final Long projectId) {
+    private String initializeProjectTasks(final Long projectId) {
         ProjectEntity project = getProject(projectId);
 
         if (project.getProjectSize() != null && (project.getProjectSize().equals("SMALL") || project.getProjectSize().equals("MEDIUM"))
@@ -152,6 +152,7 @@ public class ProjectService {
 
             }
         }
+        return "DONE";
     }
 
     public void updateProjectTask (final Long projectId, final ProjectTask projectTask) {

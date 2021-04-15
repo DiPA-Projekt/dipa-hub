@@ -10,3 +10,13 @@ databaseChangeLog:
                   name: master
                   type: BOOLEAN
                   defaultValue: true
+  - changeSet:
+      id: addColumn-project-task
+      author: bock
+      changes:
+        - addColumn:
+            tableName: project_task
+            columns:
+              - column:
+                  name: SORT_ORDER
+                  type: BIGINT
