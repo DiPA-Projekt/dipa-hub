@@ -1,6 +1,5 @@
 package online.dipa.hub.persistence.entities;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -29,9 +28,9 @@ public class ProjectEntity extends BaseEntity {
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private ProjectApproachEntity projectApproach;
     
-    @OneToMany(mappedBy = "project")
+    @OneToOne(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<ProjectTaskTemplateEntity> projectTaskTemplates = new HashSet<>();
+    private ProjectTaskTemplateEntity projectTaskTemplate;
 
     @OneToOne(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -87,12 +86,12 @@ public class ProjectEntity extends BaseEntity {
         return akz;
     }
 
-    public Set<ProjectTaskTemplateEntity> getProjectTaskTemplates() {
-        return projectTaskTemplates;
+    public ProjectTaskTemplateEntity getProjectTaskTemplate() {
+        return projectTaskTemplate;
     }
 
-    public void setProjectTaskTemplates(final Set<ProjectTaskTemplateEntity> projectTaskTemplates) {
-        this.projectTaskTemplates = projectTaskTemplates;
+    public void setProjectTaskTemplate(final ProjectTaskTemplateEntity projectTaskTemplate) {
+        this.projectTaskTemplate = projectTaskTemplate;
     }
 
     public PlanTemplateEntity getPlanTemplate() {

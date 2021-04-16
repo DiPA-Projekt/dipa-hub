@@ -17,14 +17,18 @@
   <ng-container formArrayName="entries">
     <ng-container *ngFor="let entry of entriesArray.controls; let i = index">
       <ng-container [formGroupName]="i">
-        <mat-form-field *ngIf="entry.get('show')?.value">
+        <mat-form-field
+          [hintLabel]="entry.get('hint')?.value"
+          *ngIf="entry.get('show')?.value"
+          [ngClass]="getFormFieldClass(entry)"
+        >
           <mat-label>{{ entry.get('label')?.value }}</mat-label>
 
-          <div [ngSwitch]="entry.get('controlType')?.value">
+          <ng-container [ngSwitch]="entry.get('controlType')?.value">
             <input
               *ngSwitchCase="'TEXTBOX'"
               matInput
-              [placeholder]="entry.get('placeholder').value"
+              [type]="entry.get('type').value.toLowerCase()"
               formControlName="value"
               [id]="entry.get('key')?.value"
               [value]="entry.get('value')?.value"
@@ -35,7 +39,6 @@
             <textarea
               *ngSwitchCase="'TEXTAREA'"
               matInput
-              [placeholder]="entry.get('placeholder').value"
               formControlName="value"
               [id]="entry.get('key')?.value"
               [value]="entry.get('value')?.value"
@@ -49,7 +52,14 @@
                 {{ opt.value }}
               </mat-option>
             </mat-select>
-          </div>
+          </ng-container>
+          <mat-error *ngIf="entry.get('value').hasError('email') && !entry.get('value').hasError('required')">
+            Bitte gültige E-Mailadresse eingeben
+          </mat-error>
+          <mat-error *ngIf="entry.get('value').hasError('url') && !entry.get('value').hasError('required')">
+            Bitte gültige URL eingeben
+          </mat-error>
+          <mat-error *ngIf="entry.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>
         </mat-form-field>
       </ng-container>
     </ng-container>

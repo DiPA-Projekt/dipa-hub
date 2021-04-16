@@ -20,7 +20,7 @@ databaseChangeLog:
                   type: VARCHAR(255)
               - column:
                   constraints:
-                    nullable: false
+                    nullable: true
                   name: project_id
                   type: BIGINT
             tableName: project_task_template

@@ -1,5 +1,34 @@
 databaseChangeLog:
   - changeSet:
+      id: addColumn-project-task-template-master
+      author: nguyen
+      changes:
+        - addColumn:
+            tableName: project_task_template
+            columns:
+              - column:
+                  name: master
+                  type: BOOLEAN
+                  defaultValue: true
+  - changeSet:
+      id: addColumn-project-task
+      author: nguyen
+      changes:
+        - addColumn:
+            tableName: project_task
+            columns:
+              - column:
+                  name: SORT_ORDER
+                  type: BIGINT
+  - changeSet:
+      id: rename-column-placeholder-to-hint
+      author: nguyen
+      changes:
+        - renameColumn:
+            tableName: project_task_form_field
+            newColumnName: hint
+            oldColumnName: placeholder
+  - changeSet:
       id: add-startDate-endDate-to-project
       author: nguyen
       changes:
