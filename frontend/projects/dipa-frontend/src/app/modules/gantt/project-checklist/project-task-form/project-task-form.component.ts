@@ -138,7 +138,7 @@ export class ProjectTaskFormComponent implements OnInit {
           value: entry?.value,
           key: entry?.key,
           label: entry?.label,
-          placeholder: entry?.placeholder,
+          hint: entry?.hint,
           required: entry?.required,
           sortOrder: entry?.sortOrder,
           controlType: entry?.controlType,

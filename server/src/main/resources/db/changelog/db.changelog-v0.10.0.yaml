@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: addColumn-project-task-template-master
-      author: bock
+      author: nguyen
       changes:
         - addColumn:
             tableName: project_task_template
@@ -12,7 +12,7 @@ databaseChangeLog:
                   defaultValue: true
   - changeSet:
       id: addColumn-project-task
-      author: bock
+      author: nguyen
       changes:
         - addColumn:
             tableName: project_task
@@ -20,6 +20,14 @@ databaseChangeLog:
               - column:
                   name: SORT_ORDER
                   type: BIGINT
+  - changeSet:
+      id: rename-column-placeholder-to-hint
+      author: nguyen
+      changes:
+        - renameColumn:
+            tableName: project_task_form_field
+            newColumnName: hint
+            oldColumnName: placeholder
   - changeSet:
       id: add-startDate-endDate-to-project
       author: nguyen

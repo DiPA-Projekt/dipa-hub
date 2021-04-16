@@ -17,6 +17,7 @@ Result:
         - TYPE_SINGLE_APPOINTMENT
         - TYPE_LINK
         - TYPE_TEAM_PERS
+        - TYPE_SUBTASK
       example: TYPE_STD
     formFields:
       type: array

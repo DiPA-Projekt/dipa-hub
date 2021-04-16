@@ -17,7 +17,6 @@
                   <input
                     *ngSwitchCase="'TEXTBOX'"
                     matInput
-                    [placeholder]="formField.get('placeholder').value"
                     formControlName="value"
                     [id]="formField.get('key')?.value"
                     [value]="formField.get('value')?.value"
@@ -31,7 +30,6 @@
                     matTextareaAutosize
                     matAutosizeMinRows="1"
                     matAutosizeMaxRows="5"
-                    [placeholder]="formField.get('placeholder').value"
                     formControlName="value"
                     [id]="formField.get('key')?.value"
                     [value]="formField.get('value')?.value"

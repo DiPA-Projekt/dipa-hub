@@ -24,7 +24,7 @@ public class FormFieldEntityToFormFieldConverter implements Converter<FormFieldE
                 .value(entity.getValue())
                 .key(entity.getKey())
                 .label(entity.getLabel())
-                .placeholder(entity.getPlaceholder())
+                .hint(entity.getHint())
                 .required(entity.isRequired())
                 .sortOrder(entity.getSortOrder())
                 .show(entity.isShow());

@@ -90,7 +90,7 @@ public class ProjectService {
             initializeProjectTasks(projectId);
 
             ProjectTaskTemplateEntity template = project.getProjectTaskTemplate();
-            if (!project.getProjectSize()
+            if (project.getProjectSize() != null && !project.getProjectSize()
                         .equals(Project.ProjectSizeEnum.BIG.toString())) {
 
                 projectTasks.addAll(template.getProjectTasks()
@@ -127,33 +127,37 @@ public class ProjectService {
                     formFieldRepository.save(newFormField);
                 }
 
-                for (ResultEntity result: projectTask.getResults()) {
-                    ResultEntity newResultEntity = new ResultEntity();
-                    newResultEntity.setResultType(result.getResultType()); // "TYPE_ELBE_SC"
-                    newResultEntity.setProjectTask(newProjectTask);
-                    resultRepository.save(newResultEntity);
-
-                    for (FormFieldEntity formFieldResult: result.getFormFields()) {
-                        FormFieldEntity newFormFieldResult = new FormFieldEntity(formFieldResult);
-                        newFormFieldResult.setResultEntity(newResultEntity);
-                        formFieldRepository.save(newFormFieldResult);
-
-                        if (formFieldResult.getOptions() != null) {
-
-                            Set<OptionEntryEntity> options = formFieldResult.getOptions()
-                                                                         .stream().map(o -> conversionService.convert(o, OptionEntryEntity.class))
-                                                                         .collect(Collectors.toSet());
-
-                            options.forEach(opt -> {
-                                opt.setFormField(newFormFieldResult);
-                                optionEntryRepository.save(opt);
-                            });
-                        }
-                    }
-                }
-
+                createNewResults(projectTask, newProjectTask);
             }
             project.setProjectTaskTemplate(projectTaskTemplate);
+        }
+    }
+
+    private void createNewResults(ProjectTaskEntity oldProjectTask, ProjectTaskEntity newProjectTask) {
+        for (ResultEntity result: oldProjectTask.getResults()) {
+
+            ResultEntity newResultEntity = new ResultEntity();
+            newResultEntity.setResultType(result.getResultType()); // "TYPE_ELBE_SC"
+            newResultEntity.setProjectTask(newProjectTask);
+            resultRepository.save(newResultEntity);
+
+            for (FormFieldEntity formFieldResult: result.getFormFields()) {
+                FormFieldEntity newFormFieldResult = new FormFieldEntity(formFieldResult);
+                newFormFieldResult.setResultEntity(newResultEntity);
+                formFieldRepository.save(newFormFieldResult);
+
+                if (formFieldResult.getOptions() != null) {
+
+                    Set<OptionEntryEntity> options = formFieldResult.getOptions()
+                                                                    .stream().map(o -> conversionService.convert(o, OptionEntryEntity.class))
+                                                                    .collect(Collectors.toSet());
+
+                    options.forEach(opt -> {
+                        opt.setFormField(newFormFieldResult);
+                        optionEntryRepository.save(opt);
+                    });
+                }
+            }
         }
     }
 
@@ -162,45 +166,45 @@ public class ProjectService {
 
         if (projectIds.contains(projectId)) {
 
-        ProjectEntity project = timelineService.getProject(projectId);
-        ProjectTaskTemplateEntity template = project.getProjectTaskTemplate();
+            ProjectEntity project = timelineService.getProject(projectId);
+            ProjectTaskTemplateEntity template = project.getProjectTaskTemplate();
 
-        template.getProjectTasks().stream()
-                .filter(t -> t.getId().equals(projectTask.getId()))
-                .findFirst()
-                .ifPresent(oldProjectTask -> {
-                    List<FormFieldEntity> oldEntriesList = new ArrayList<>(oldProjectTask.getEntries());
-                    List<FormField> newList = projectTask.getEntries().stream().map(FormField.class::cast).collect(Collectors.toList());
+            template.getProjectTasks().stream()
+                    .filter(t -> t.getId().equals(projectTask.getId()))
+                    .findFirst()
+                    .ifPresent(oldProjectTask -> {
+                        List<FormFieldEntity> oldEntriesList = new ArrayList<>(oldProjectTask.getEntries());
+                        List<FormField> newList = projectTask.getEntries().stream().map(FormField.class::cast).collect(Collectors.toList());
 
-                    for (int i = 0; i < newList.size(); i++) {
+                        for (int i = 0; i < newList.size(); i++) {
 
-                        if (i > oldEntriesList.size() - 1) {
+                            if (i > oldEntriesList.size() - 1) {
 
-                            FormFieldEntity entity = new FormFieldEntity(newList.get(i));
-                            entity.setProjectTask(oldProjectTask);
+                                FormFieldEntity entity = new FormFieldEntity(newList.get(i));
+                                entity.setProjectTask(oldProjectTask);
 
-                            if (newList.get(i).getOptions() != null) {
+                                if (newList.get(i).getOptions() != null) {
 
-                                Set<OptionEntryEntity> options = newList.get(i).getOptions()
-                                                                        .stream().map(o -> conversionService.convert(o, OptionEntryEntity.class))
-                                                                        .collect(Collectors.toSet());
+                                    Set<OptionEntryEntity> options = newList.get(i).getOptions()
+                                                                            .stream().map(o -> conversionService.convert(o, OptionEntryEntity.class))
+                                                                            .collect(Collectors.toSet());
 
-                                options.forEach(opt -> {
-                                    opt.setFormField(entity);
-                                    optionEntryRepository.save(opt);
-                                });
+                                    options.forEach(opt -> {
+                                        opt.setFormField(entity);
+                                        optionEntryRepository.save(opt);
+                                    });
+                                }
+                                formFieldRepository.save(entity);
                             }
-                            formFieldRepository.save(entity);
-                        }
-                        else {
+                            else {
 
-                            oldEntriesList.get(i).setValue(newList.get(i).getValue());
-                            oldEntriesList.get(i).setShow(newList.get(i).getShow());
+                                oldEntriesList.get(i).setValue(newList.get(i).getValue());
+                                oldEntriesList.get(i).setShow(newList.get(i).getShow());
 
+                            }
                         }
-                    }
-                    updateResults(oldProjectTask, projectTask);
-                });
+                        updateResults(oldProjectTask, projectTask);
+                    });
         }
 
     }

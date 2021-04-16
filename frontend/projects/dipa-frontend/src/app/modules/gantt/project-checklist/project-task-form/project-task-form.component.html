@@ -24,7 +24,6 @@
             <input
               *ngSwitchCase="'TEXTBOX'"
               matInput
-              [placeholder]="entry.get('placeholder').value"
               formControlName="value"
               [id]="entry.get('key')?.value"
               [value]="entry.get('value')?.value"
@@ -35,7 +34,6 @@
             <textarea
               *ngSwitchCase="'TEXTAREA'"
               matInput
-              [placeholder]="entry.get('placeholder').value"
               formControlName="value"
               [id]="entry.get('key')?.value"
               [value]="entry.get('value')?.value"
