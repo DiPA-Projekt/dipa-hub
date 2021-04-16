@@ -19,7 +19,9 @@
       <ng-container [formGroupName]="i">
         <mat-form-field
           [hintLabel]="entry.get('hint')?.value"
-          *ngIf="entry.get('show')?.value" [ngClass]="getFormFieldClass(entry)">
+          *ngIf="entry.get('show')?.value"
+          [ngClass]="getFormFieldClass(entry)"
+        >
           <mat-label>{{ entry.get('label')?.value }}</mat-label>
 
           <ng-container [ngSwitch]="entry.get('controlType')?.value">

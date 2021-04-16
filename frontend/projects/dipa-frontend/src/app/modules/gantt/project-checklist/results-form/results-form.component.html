@@ -10,7 +10,9 @@
             <ng-container [formGroupName]="j">
               <mat-form-field
                 [hintLabel]="formField.get('hint')?.value"
-                [ngClass]="getFormFieldClass(formField)" *ngIf="formField.get('show')?.value">
+                [ngClass]="getFormFieldClass(formField)"
+                *ngIf="formField.get('show')?.value"
+              >
                 <mat-label>{{ formField.get('label')?.value }}</mat-label>
                 <ng-container [ngSwitch]="formField.get('controlType')?.value">
                   <input
