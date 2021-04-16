@@ -18,8 +18,8 @@ FormField:
       description: Label which describes the form field type
       type: string
       example: "Link"
-    placeholder:
-      description: Placeholder for empty form fields which explains the form field
+    hint:
+      description: Hint for form fields
       type: string
       example: "Link zu Jira"
     required:
@@ -38,6 +38,7 @@ FormField:
         - TEXTBOX
         - TEXTAREA
         - DROPDOWN
+        - DATE
       default: TEXTBOX
       example: TEXTBOX
     type:

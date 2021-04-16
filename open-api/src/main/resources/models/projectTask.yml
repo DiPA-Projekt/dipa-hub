@@ -22,6 +22,11 @@ ProjectTask:
       description: if this task is marked as completed
       type: boolean
       example: true
+    sortOrder:
+      description: Sort order of the task
+      type: integer
+      format: int64
+      example: 2
     entries:
       type: array
       items:

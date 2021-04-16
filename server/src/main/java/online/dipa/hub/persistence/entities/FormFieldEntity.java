@@ -20,7 +20,7 @@ public class FormFieldEntity extends BaseEntity {
 
     private String label;
 
-    private String placeholder;
+    private String hint;
 
     private boolean required;
 
@@ -50,14 +50,24 @@ public class FormFieldEntity extends BaseEntity {
         this.key = formField.getKey();
         this.value = formField.getValue();
         this.label = formField.getLabel();
-        this.placeholder = formField.getLabel();
         this.required = formField.getRequired();
-        this.placeholder = formField.getPlaceholder();
+        this.hint = formField.getHint();
         this.sortOrder = formField.getSortOrder();
         this.controlType = formField.getControlType().toString();
         this.type = formField.getType().toString();
-//        this.options = formField.getOptions();
         this.show = formField.getShow();
+    }
+
+    public FormFieldEntity(FormFieldEntity formField) {
+        this.key = formField.getKey();
+        this.value = formField.getValue();
+        this.label = formField.getLabel();
+        this.required = formField.isRequired();
+        this.hint = formField.getHint();
+        this.sortOrder = formField.getSortOrder();
+        this.controlType = formField.getControlType();
+        this.type = formField.getType();
+        this.show = formField.isShow();
     }
 
     public String getValue() {
@@ -84,12 +94,12 @@ public class FormFieldEntity extends BaseEntity {
         this.label = label;
     }
 
-    public String getPlaceholder() {
-        return placeholder;
+    public String getHint() {
+        return hint;
     }
 
-    public void setPlaceholder(String placeholder) {
-        this.placeholder = placeholder;
+    public void setHint(String hint) {
+        this.hint = hint;
     }
 
     public boolean isRequired() {

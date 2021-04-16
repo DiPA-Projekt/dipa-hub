@@ -1,5 +1,6 @@
 package online.dipa.hub.convert;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import online.dipa.hub.api.model.ProjectTask;
 import online.dipa.hub.api.model.Result;
+import online.dipa.hub.persistence.entities.FormFieldEntity;
 import online.dipa.hub.persistence.entities.ProjectTaskEntity;
 
 
@@ -28,9 +30,10 @@ public class ProjectTaskEntityToProjectTaskConverter implements Converter<Projec
         ProjectTask projectTask = new ProjectTask().id(template.getId())
                              .title(template.getTitle())
                              .optional(template.getOptional())
-                             .explanation(template.getExplanation());
+                             .explanation(template.getExplanation())
+                                                   .sortOrder(template.getSortOrder());
 
-        List<FormField> entries = template.getEntries().stream().map(p -> formFieldConverter.convert(p)).collect(Collectors.toList());
+        List<FormField> entries = template.getEntries().stream().sorted(Comparator.comparing(FormFieldEntity::getSortOrder)).map(p -> formFieldConverter.convert(p)).collect(Collectors.toList());
         projectTask.entries(entries);
 
         if (!template.getResults().isEmpty()) {
