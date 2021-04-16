@@ -51,7 +51,7 @@ public class FormFieldEntity extends BaseEntity {
         this.value = formField.getValue();
         this.label = formField.getLabel();
         this.required = formField.getRequired();
-//        this.hint = formField.getPlaceholder();
+        this.hint = formField.getHint();
         this.sortOrder = formField.getSortOrder();
         this.controlType = formField.getControlType().toString();
         this.type = formField.getType().toString();
