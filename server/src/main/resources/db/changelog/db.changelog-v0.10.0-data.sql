@@ -307,7 +307,7 @@ VALUES (33, 'participants', 'Teilnehmende', false, 3, 'TEXTAREA', true, 5)
 
 --changeset id:insert-project-task-04-form-entry-link-result-05 context:itzbund
 INSERT INTO project_task_form_field (id, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
-VALUES (34, 'link', 'Einwahllink', false, 4, 'TEXTBOX', 'TEXT', true, 5)
+VALUES (34, 'link', 'Einwahllink', false, 4, 'TEXTBOX', 'URL', true, 5)
 
 --changeset id:insert-project-task-04-form-entry-note-result-05 context:itzbund
 INSERT INTO project_task_form_field (id, key, label, required, sort_order, CONTROL_TYPE, show, result_id)
@@ -729,9 +729,9 @@ VALUES (92, 'status', 'Status', false, 5, 'DROPDOWN', true, 14)
 INSERT INTO option_entry (key, value, form_field_id)
 VALUES ('ACTIVE', 'aktiv', 92)
 
---changeset id:insert-project-task-12-option-entry-person-OCCURED-result-14 context:itzbund
+--changeset id:insert-project-task-12-option-entry-person-OCCURRED-result-14 context:itzbund
 INSERT INTO option_entry (key, value, form_field_id)
-VALUES ('OCCURED', 'eingetreten', 92)
+VALUES ('OCCURRED', 'eingetreten', 92)
 
 --changeset id:insert-project-task-12-option-entry-person-ELIMINATED-result-14 context:itzbund
 INSERT INTO option_entry (key, value, form_field_id)

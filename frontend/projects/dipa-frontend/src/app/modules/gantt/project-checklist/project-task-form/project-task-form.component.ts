@@ -1,5 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { FormField, ProjectService, ProjectTask, Result } from 'dipa-api-client';
 import { MatSelectChange } from '@angular/material/select';
 
@@ -32,6 +40,41 @@ export class ProjectTaskFormComponent implements OnInit {
   public selectedFields: string[];
 
   public constructor(private projectService: ProjectService, private fb: FormBuilder) {}
+
+  public static getValidators(entry: FormField): ValidatorFn[] {
+    const validators: ValidatorFn[] = [];
+
+    let typeValidator;
+
+    switch (entry?.type) {
+      case 'TEXT':
+        break;
+      case 'NUMBER':
+        const numberPattern = '^[0-9]*$';
+        typeValidator = Validators.pattern(numberPattern);
+        break;
+      case 'DATE':
+        break;
+      case 'URL':
+        // const urlPattern = '(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?';
+        // const urlPattern =
+        //   '(https?://)?(?:w{1,3}.)?[^s.]+(?:.[a-z]+)*(?::d+)?((?:/w+)|(?:-w+))*/?(?![^<]*(?:</w+>|/?>))';
+        // typeValidator = Validators.pattern(urlPattern);
+        break;
+      case 'EMAIL':
+        typeValidator = Validators.email;
+        break;
+    }
+
+    if (typeValidator) {
+      validators.push(typeValidator);
+    }
+    if (entry?.required === true) {
+      validators.push(Validators.required);
+    }
+
+    return validators;
+  }
 
   public ngOnInit(): void {
     this.setReactiveForm(this.taskData);
@@ -75,11 +118,15 @@ export class ProjectTaskFormComponent implements OnInit {
   }
 
   public onSubmit(form: FormGroup): void {
-    this.projectService.updateProjectTask(this.selectedTimelineId, form.value).subscribe({
-      next: () => form.reset(form.value),
-      error: null,
-      complete: () => void 0,
-    });
+    if (form.valid) {
+      this.projectService.updateProjectTask(this.selectedTimelineId, form.value).subscribe({
+        next: () => form.reset(form.value),
+        error: null,
+        complete: () => void 0,
+      });
+    } else {
+      console.log('form not submitted');
+    }
   }
 
   public onFocus(event: FocusEvent, path: (string | number)[]): void {
@@ -91,6 +138,12 @@ export class ProjectTaskFormComponent implements OnInit {
     const valueInput = event.target as HTMLInputElement;
     valueInput.value = valueInput.getAttribute('data-value');
     this.formGroup.get(path).setValue(valueInput.value);
+  }
+
+  public getFormFieldClass(formField: FormGroup | AbstractControl): string {
+    return formField.get('controlType')?.value === 'TEXTAREA' || formField.get('type')?.value === 'URL'
+      ? 'width2x'
+      : '';
   }
 
   private getSelectedFields(): string[] {
@@ -132,21 +185,24 @@ export class ProjectTaskFormComponent implements OnInit {
         );
       }
 
-      entriesArray.push(
-        this.fb.group({
-          id: entry?.id,
-          value: entry?.value,
-          key: entry?.key,
-          label: entry?.label,
-          hint: entry?.hint,
-          required: entry?.required,
-          sortOrder: entry?.sortOrder,
-          controlType: entry?.controlType,
-          type: entry?.type,
-          options: optionsArray,
-          show: entry?.show,
-        })
-      );
+      const formGroup = this.fb.group({
+        id: entry?.id,
+        value: entry?.value,
+        key: entry?.key,
+        label: entry?.label,
+        hint: entry?.hint,
+        required: entry?.required,
+        sortOrder: entry?.sortOrder,
+        controlType: entry?.controlType,
+        type: entry?.type,
+        options: optionsArray,
+        show: entry?.show,
+      });
+
+      const validators = ProjectTaskFormComponent.getValidators(entry);
+      formGroup.get('value').setValidators(validators);
+
+      entriesArray.push(formGroup);
     }
     return entriesArray;
   }
