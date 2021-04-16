@@ -17,7 +17,9 @@
   <ng-container formArrayName="entries">
     <ng-container *ngFor="let entry of entriesArray.controls; let i = index">
       <ng-container [formGroupName]="i">
-        <mat-form-field *ngIf="entry.get('show')?.value" [ngClass]="getFormFieldClass(entry)">
+        <mat-form-field
+          [hintLabel]="entry.get('hint')?.value"
+          *ngIf="entry.get('show')?.value" [ngClass]="getFormFieldClass(entry)">
           <mat-label>{{ entry.get('label')?.value }}</mat-label>
 
           <ng-container [ngSwitch]="entry.get('controlType')?.value">
@@ -49,9 +51,6 @@
               </mat-option>
             </mat-select>
           </ng-container>
-          <mat-hint>
-            {{ entry.get('hint').value }}
-          </mat-hint>
           <mat-error *ngIf="entry.get('value').hasError('email') && !entry.get('value').hasError('required')">
             Bitte gültige E-Mailadresse eingeben
           </mat-error>

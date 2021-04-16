@@ -8,7 +8,9 @@
         <ng-container formArrayName="formFields">
           <ng-container *ngFor="let formField of getFormFieldsArray(result).controls; let j = index">
             <ng-container [formGroupName]="j">
-              <mat-form-field [ngClass]="getFormFieldClass(formField)" *ngIf="formField.get('show')?.value">
+              <mat-form-field
+                [hintLabel]="formField.get('hint')?.value"
+                [ngClass]="getFormFieldClass(formField)" *ngIf="formField.get('show')?.value">
                 <mat-label>{{ formField.get('label')?.value }}</mat-label>
                 <ng-container [ngSwitch]="formField.get('controlType')?.value">
                   <input
@@ -42,12 +44,6 @@
                     </mat-option>
                   </mat-select>
                 </ng-container>
-                <!--                TODO: Problem hier
-ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked. Previous value for 'attr.aria-describedby': 'null'. Current value: 'mat-hint-15'
--->
-                <mat-hint>
-                  {{ formField.get('hint').value }}
-                </mat-hint>
                 <mat-error
                   *ngIf="formField.get('value').hasError('email') && !formField.get('value').hasError('required')"
                 >

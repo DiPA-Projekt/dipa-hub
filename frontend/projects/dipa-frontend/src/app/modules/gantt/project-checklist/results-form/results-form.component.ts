@@ -126,8 +126,6 @@ export class ResultsFormComponent implements OnInit {
   public calculatePT(filterOptions: { key: string; value: string }): number {
     const filteredFormControls = this.getFilteredFormControls(filterOptions);
 
-    console.log(filteredFormControls);
-
     return filteredFormControls
       .map(
         (x: FormGroup) =>
@@ -384,7 +382,7 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'subtask',
         label: 'Aufgabe',
-        hint: '',
+        hint: null,
         required: false,
         sortOrder: 1,
         controlType: 'TEXTBOX',

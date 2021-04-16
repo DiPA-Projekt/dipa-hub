@@ -163,7 +163,7 @@ VALUES (11, 'note', 'Notizen', false, 5, 'TEXTAREA', true, 2)
 
 --changeset id:insert-project-task-01-form-entry-status-result-02 context:itzbund
 INSERT INTO project_task_form_field (id, key, label, required, sort_order, CONTROL_TYPE, show, result_id)
-VALUES (113, 'status', 'Status', false, 6, 'DROPDOWN', false, 2)
+VALUES (113, 'status', 'Status', false, 6, 'DROPDOWN', true, 2)
 
 --changeset id:insert-project-task-01-option-entry-person-OPEN-result-02 context:itzbund
 INSERT INTO option_entry (key, value, form_field_id)
