@@ -8,56 +8,90 @@
         <ng-container formArrayName="formFields">
           <ng-container *ngFor="let formField of getFormFieldsArray(result).controls; let j = index">
             <ng-container [formGroupName]="j">
-              <mat-form-field
-                [hintLabel]="formField.get('hint')?.value"
-                [ngClass]="getFormFieldClass(formField)"
-                *ngIf="formField.get('show')?.value"
-              >
-                <mat-label>{{ formField.get('label')?.value }}</mat-label>
-                <ng-container [ngSwitch]="formField.get('controlType')?.value">
-                  <input
-                    *ngSwitchCase="'TEXTBOX'"
-                    matInput
-                    [type]="formField.get('type').value.toLowerCase()"
-                    formControlName="value"
-                    [id]="formField.get('key')?.value"
-                    [value]="formField.get('value')?.value"
-                    (change)="dataChanged.emit()"
-                    (focus)="onFocus($event, ['results', i, 'formFields', j, 'value'])"
-                    (keyup.esc)="onEscape($event, ['results', i, 'formFields', j, 'value'])"
-                  />
-                  <textarea
-                    *ngSwitchCase="'TEXTAREA'"
-                    matInput
-                    matTextareaAutosize
-                    matAutosizeMinRows="1"
-                    matAutosizeMaxRows="5"
-                    formControlName="value"
-                    [id]="formField.get('key')?.value"
-                    [value]="formField.get('value')?.value"
-                    (change)="dataChanged.emit()"
-                    (focus)="onFocus($event, ['results', i, 'formFields', j, 'value'])"
-                    (keyup.esc)="onEscape($event, ['results', i, 'formFields', j, 'value'])"
+              <ng-container [ngSwitch]="formField.get('controlType')?.value">
+                <ng-container *ngSwitchCase="'TEXTBOX'">
+                  <mat-form-field
+                    *ngIf="formField.get('show')?.value"
+                    [hintLabel]="formField.get('hint')?.value"
+                    [ngClass]="getFormFieldClass(formField)"
                   >
-                  </textarea>
-                  <mat-select *ngSwitchCase="'DROPDOWN'" (selectionChange)="dataChanged.emit()" formControlName="value">
-                    <mat-option *ngFor="let opt of formField.get('options')?.value" [value]="opt.key">
-                      {{ opt.value }}
-                    </mat-option>
-                  </mat-select>
+                    <mat-label>{{ formField.get('label')?.value }}</mat-label>
+                    <mat-icon matPrefix *ngIf="formField.get('type')?.value === 'URL'" class="matPrefixIcon">
+                      link
+                    </mat-icon>
+                    <input
+                      matInput
+                      [type]="formField.get('type').value.toLowerCase()"
+                      formControlName="value"
+                      [id]="formField.get('key')?.value"
+                      [value]="formField.get('value')?.value"
+                      (change)="dataChanged.emit()"
+                      (focus)="onFocus($event, ['results', i, 'formFields', j, 'value'])"
+                      (keyup.esc)="onEscape($event, ['results', i, 'formFields', j, 'value'])"
+                    />
+                    <button
+                      matSuffix
+                      mat-icon-button
+                      *ngIf="formField.get('type')?.value === 'URL'"
+                      [disabled]="!isValidUrl(formField.get('value'))"
+                      (click)="onClickLink(formField)"
+                    >
+                      <mat-icon style="font-size: 150%"> open_in_new </mat-icon>
+                    </button>
+
+                    <mat-error
+                      *ngIf="formField.get('value').hasError('email') && !formField.get('value').hasError('required')"
+                    >
+                      Bitte gültige E-Mailadresse eingeben
+                    </mat-error>
+                    <mat-error
+                      *ngIf="formField.get('value').hasError('url') && !formField.get('value').hasError('required')"
+                    >
+                      Bitte gültige URL eingeben
+                    </mat-error>
+                    <mat-error *ngIf="formField.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>
+                  </mat-form-field>
                 </ng-container>
-                <mat-error
-                  *ngIf="formField.get('value').hasError('email') && !formField.get('value').hasError('required')"
-                >
-                  Bitte gültige E-Mailadresse eingeben
-                </mat-error>
-                <mat-error
-                  *ngIf="formField.get('value').hasError('url') && !formField.get('value').hasError('required')"
-                >
-                  Bitte gültige URL eingeben
-                </mat-error>
-                <mat-error *ngIf="formField.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>
-              </mat-form-field>
+                <ng-container *ngSwitchCase="'TEXTAREA'">
+                  <mat-form-field
+                    [hintLabel]="formField.get('hint')?.value"
+                    *ngIf="formField.get('show')?.value"
+                    [ngClass]="getFormFieldClass(formField)"
+                  >
+                    <textarea
+                      matInput
+                      matTextareaAutosize
+                      matAutosizeMinRows="1"
+                      matAutosizeMaxRows="5"
+                      formControlName="value"
+                      [id]="formField.get('key')?.value"
+                      [value]="formField.get('value')?.value"
+                      (change)="dataChanged.emit()"
+                      (focus)="onFocus($event, ['results', i, 'formFields', j, 'value'])"
+                      (keyup.esc)="onEscape($event, ['results', i, 'formFields', j, 'value'])"
+                    >
+                    </textarea>
+                    <mat-error *ngIf="formField.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>
+                  </mat-form-field>
+                </ng-container>
+                <ng-container *ngSwitchCase="'DROPDOWN'">
+                  <mat-form-field
+                    [hintLabel]="formField.get('hint')?.value"
+                    *ngIf="formField.get('show')?.value"
+                    [ngClass]="getFormFieldClass(formField)"
+                  >
+                    <mat-select
+                      *ngSwitchCase="'DROPDOWN'"
+                      (selectionChange)="dataChanged.emit()"
+                      formControlName="value"
+                    >
+                      <mat-option *ngFor="let opt of formField.get('options')?.value" [value]="opt.key">
+                        {{ opt.value }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </ng-container>
+              </ng-container>
             </ng-container>
           </ng-container>
         </ng-container>
