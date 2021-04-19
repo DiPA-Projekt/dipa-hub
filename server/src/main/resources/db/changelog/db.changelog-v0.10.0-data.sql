@@ -19,7 +19,7 @@ WHERE project_task_template_id = 1
 
 --changeset id:insert-project-task-01 context:itzbund
 INSERT INTO project_task (id, title, optional, explanation, sort_order, project_task_template_id)
-VALUES (1, 'Übergabe Auftragsplanung --> Projektleitung', false, 'Übergabe der Projekte (u.a. Planungsunterlagen, iSAR-Projekt mit vorausgefülltem PSB) von  Planenden, Einzelauftragsmanagement und PMO an die Projektleitung', 1, 1)
+VALUES (1, 'Übergabe Auftragsplanung --> Projektleitung', false, 'Übergabe des Projektes (u.a. Planungsunterlagen, iSAR-Projekt mit vorausgefülltem PSB) von  Planenden, Einzelauftragsmanagement und PMO an die Projektleitung', 1, 1)
 
 --changeset id:insert-project-task-02 context:itzbund
 INSERT INTO project_task (id, title, optional, sort_order, project_task_template_id)
@@ -35,7 +35,7 @@ VALUES (4, 'Erste Terminserien wie z.B. Jour Fixe vereinbaren', true, '', 4, 1)
 
 --changeset id:insert-project-task-05 context:itzbund
 INSERT INTO project_task (id, title, optional, explanation, sort_order, project_task_template_id)
-VALUES (5, 'Erste Termine setzen und steuern', true, 'Strukturieren des Projektablaufes mit internen Terminen, Überprüfen der Termineinhaltung und Steuerung von Auswirkungen von Terminüberschreitungen“', 5, 1)
+VALUES (5, 'Erste Termine setzen und steuern', true, 'Strukturieren des Projektablaufes mit internen Terminen, Überprüfen der Termineinhaltung und Steuerung von Auswirkungen bei Terminüberschreitungen“', 5, 1)
 
 --changeset id:insert-project-task-06 context:itzbund
 INSERT INTO project_task (id, title, optional, explanation, sort_order, project_task_template_id)
