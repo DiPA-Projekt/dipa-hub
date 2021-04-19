@@ -355,7 +355,7 @@ VALUES (42, 'goal', 'Zielzustand', false, 2, 'TEXTBOX', 'TEXT', true, 6)
 
 --changeset id:insert-project-task-05-form-entry-participants-result-06 context:itzbund
 INSERT INTO project_task_form_field (id, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
-VALUES (43, 'responsible_person', 'Verantwortung', false, 3, 'TEXTBOX', 'TEXT', true, 6)
+VALUES (43, 'responsiblePerson', 'Verantwortung', false, 3, 'TEXTBOX', 'TEXT', true, 6)
 
 --changeset id:insert-project-task-05-form-entry-note-result-06 context:itzbund
 INSERT INTO project_task_form_field (id, key, label, required, sort_order, CONTROL_TYPE, show, result_id)
@@ -431,11 +431,11 @@ VALUES (9, 'TYPE_ELBE_SC', 7)
 
 --changeset id:insert-project-task-07-form-entry-shopping_cart_number-result-09 context:itzbund
 INSERT INTO project_task_form_field (id, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
-VALUES (56, 'shopping_cart_number', 'EKW - Nummer', false, 1, 'TEXTBOX', 'TEXT', true, 9)
+VALUES (56, 'shoppingCartNumber', 'EKW - Nummer', false, 1, 'TEXTBOX', 'TEXT', true, 9)
 
 --changeset id:insert-project-task-07-form-entry-shopping_cart_content-result-09 context:itzbund
 INSERT INTO project_task_form_field (id, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
-VALUES (57, 'shopping_cart_content', 'EKW - Inhalt', false, 2, 'TEXTBOX', 'URL', true, 9)
+VALUES (57, 'shoppingCartContent', 'EKW - Inhalt', false, 2, 'TEXTBOX', 'URL', true, 9)
 
 --changeset id:insert-project-task-07-form-entry-note-result-09 context:itzbund
 INSERT INTO project_task_form_field (id, key, label, required, sort_order, CONTROL_TYPE, show, result_id)

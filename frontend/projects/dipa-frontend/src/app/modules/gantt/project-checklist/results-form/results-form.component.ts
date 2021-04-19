@@ -638,14 +638,14 @@ export class ResultsFormComponent implements OnInit {
     resultsArray.push(
       this.fb.group({
         value: '',
-        key: 'responsible_person',
+        key: 'responsiblePerson',
         label: 'Verantwortung',
         hint: '',
         required: false,
         sortOrder: 3,
         controlType: 'TEXTBOX',
         type: 'TEXT',
-        show: selectedValues.includes('formFields.responsible_person'),
+        show: selectedValues.includes('formFields.responsiblePerson'),
       })
     );
     resultsArray.push(
