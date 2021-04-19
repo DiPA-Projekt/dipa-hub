@@ -25,6 +25,15 @@ public class OptionEntryEntity extends BaseEntity {
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private FormFieldEntity formField;
 
+    public OptionEntryEntity() {
+        super();
+    }
+
+    public OptionEntryEntity(OptionEntryEntity opetionEntry) {
+        this.key = opetionEntry.getKey();
+        this.value = opetionEntry.getValue();
+    }
+
     public String getKey() {
         return key;
     }

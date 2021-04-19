@@ -107,7 +107,7 @@ VALUES (3, 'contactPerson', 'Name', 'Ansprechpartner', false, 2, 'TEXTBOX', 'TEX
 
 --changeset id:insert-project-task-01-form-entry-department-result-01 context:itzbund
 INSERT INTO project_task_form_field (id, value, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
-VALUES (4, '4', 'department', 'Referat', false, 3, 'TEXTBOX', 'TEXT', true, 1)
+VALUES (4, 'I 4', 'department', 'Referat', false, 3, 'TEXTBOX', 'TEXT', true, 1)
 
 --changeset id:insert-project-task-01-form-entry-taskArea-result-01 context:itzbund
 INSERT INTO project_task_form_field (id, value, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
