@@ -58,6 +58,7 @@
                     *ngIf="formField.get('show')?.value"
                     [ngClass]="getFormFieldClass(formField)"
                   >
+                    <mat-label>{{ formField.get('label')?.value }}</mat-label>
                     <textarea
                       matInput
                       matTextareaAutosize
@@ -80,6 +81,7 @@
                     *ngIf="formField.get('show')?.value"
                     [ngClass]="getFormFieldClass(formField)"
                   >
+                    <mat-label>{{ formField.get('label')?.value }}</mat-label>
                     <mat-select
                       *ngSwitchCase="'DROPDOWN'"
                       (selectionChange)="dataChanged.emit()"

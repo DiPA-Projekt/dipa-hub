@@ -61,6 +61,7 @@
               *ngIf="entry.get('show')?.value"
               [ngClass]="getFormFieldClass(entry)"
             >
+              <mat-label>{{ entry.get('label')?.value }}</mat-label>
               <textarea
                 matInput
                 formControlName="value"
@@ -80,6 +81,7 @@
               *ngIf="entry.get('show')?.value"
               [ngClass]="getFormFieldClass(entry)"
             >
+              <mat-label>{{ entry.get('label')?.value }}</mat-label>
               <mat-select formControlName="value">
                 <mat-option *ngFor="let opt of entry.get('options')?.value" [value]="opt.key">
                   {{ opt.value }}

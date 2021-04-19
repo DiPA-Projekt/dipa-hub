@@ -57,7 +57,7 @@ export class ProjectTaskFormComponent implements OnInit {
         break;
       case 'URL':
         // this is a first basic url pattern with port
-        const urlPattern = '(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})(:\\d+)?[/\\w .-]*/?';
+        const urlPattern = '(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})(:\\d+)?(.)*/?';
         typeValidator = Validators.pattern(urlPattern);
         break;
       case 'EMAIL':
