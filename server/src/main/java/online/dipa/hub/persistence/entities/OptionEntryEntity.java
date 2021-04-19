@@ -29,9 +29,9 @@ public class OptionEntryEntity extends BaseEntity {
         super();
     }
 
-    public OptionEntryEntity(OptionEntryEntity opetionEntry) {
-        this.key = opetionEntry.getKey();
-        this.value = opetionEntry.getValue();
+    public OptionEntryEntity(OptionEntryEntity optionEntry) {
+        this.key = optionEntry.getKey();
+        this.value = optionEntry.getValue();
     }
 
     public String getKey() {
