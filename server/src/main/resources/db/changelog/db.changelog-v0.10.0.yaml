@@ -1,0 +1,124 @@
+databaseChangeLog:
+  - changeSet:
+      id: addColumn-project-task-template-master
+      author: nguyen
+      changes:
+        - addColumn:
+            tableName: project_task_template
+            columns:
+              - column:
+                  name: master
+                  type: BOOLEAN
+                  defaultValue: true
+  - changeSet:
+      id: addColumn-project-task
+      author: nguyen
+      changes:
+        - addColumn:
+            tableName: project_task
+            columns:
+              - column:
+                  name: SORT_ORDER
+                  type: BIGINT
+  - changeSet:
+      id: rename-column-placeholder-to-hint
+      author: nguyen
+      changes:
+        - renameColumn:
+            tableName: project_task_form_field
+            newColumnName: hint
+            oldColumnName: placeholder
+  - changeSet:
+      id: add-startDate-endDate-to-project
+      author: nguyen
+      changes:
+        - addColumn:
+            tableName: project
+            columns:
+              - column:
+                  name: start_date
+                  type: TIMESTAMP
+              - column:
+                  name: end_date
+                  type: TIMESTAMP
+  - changeSet:
+      id: add-projectId-to-planTemplate
+      author: nguyen
+      changes:
+        - addColumn:
+            tableName: plan_template
+            columns:
+              - column:
+                  constraints:
+                    nullable: true
+                  name: project_id
+                  type: BIGINT
+  - changeSet:
+      id: add-timestamp-to-milestone
+      author: nguyen
+      changes:
+        - addColumn:
+            tableName: milestone_template
+            columns:
+              - column:
+                  name: date
+                  type: TIMESTAMP
+              - column:
+                  name: is_master
+                  type: boolean
+                  defaultValue: false
+  - changeSet:
+      id: createForeignKeyConstraint-projectPlanTemplate-FK
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_id
+            baseTableName: plan_template
+            constraintName: FKprojectIdPlanTemplate
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project
+            validate: true
+  - changeSet:
+      id: create-increment-table
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: incrementPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: start_date
+                  type: TIMESTAMP
+              - column:
+                  name: end_date
+                  type: TIMESTAMP
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_id
+                  type: BIGINT
+            tableName: increment
+  - changeSet:
+      id: createForeignKeyConstraint-projectIdIncrement-FK
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_id
+            baseTableName: increment
+            constraintName: FKprojectIdIncrement
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project
+            validate: true

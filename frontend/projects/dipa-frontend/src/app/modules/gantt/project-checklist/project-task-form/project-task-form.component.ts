@@ -1,6 +1,25 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { ProjectService, ProjectTask } from 'dipa-api-client';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
+import { FormField, ProjectService, ProjectTask, Result } from 'dipa-api-client';
+import { MatSelectChange } from '@angular/material/select';
+
+interface SelectOption {
+  value: string;
+  viewValue: string;
+}
+
+interface SelectOptionGroup {
+  name: string;
+  fields: SelectOption[];
+}
 
 @Component({
   selector: 'app-project-task-form',
@@ -12,81 +31,95 @@ export class ProjectTaskFormComponent implements OnInit {
   @Input() public selectedTimelineId: number;
   @Output() public stepStatusChanged = new EventEmitter();
 
+  public formFieldGroups: SelectOptionGroup[] = [];
+
   public formGroup: FormGroup;
 
-  public cartStatusList = [
-    {
-      value: 'PLANNED',
-      name: 'geplant',
-    },
-    {
-      value: 'ORDERED',
-      name: 'bestellt',
-    },
-    {
-      value: 'APPROVED',
-      name: 'genehmigt',
-    },
-    {
-      value: 'DELIVERED',
-      name: 'geliefert',
-    },
-  ];
+  public showFieldsForm: FormControl;
 
-  public standardStatusList = [
-    {
-      value: 'OPEN',
-      name: 'offen',
-    },
-    {
-      value: 'CLOSED',
-      name: 'geschlossen',
-    },
-    {
-      value: 'PLANNED',
-      name: 'geplant',
-    },
-    {
-      value: 'ASSIGNED',
-      name: 'zugewiesen',
-    },
-    {
-      value: 'IN_PROGRESS',
-      name: 'in Bearbeitung',
-    },
-    {
-      value: 'SUBMITTED',
-      name: 'vorgelegt',
-    },
-    {
-      value: 'DONE',
-      name: 'fertiggestellt',
-    },
-  ];
-
-  public personStatusList = [
-    {
-      value: 'OPEN',
-      name: 'offen',
-    },
-    {
-      value: 'CONTACTED',
-      name: 'angesprochen',
-    },
-    {
-      value: 'ANSWER_RECEIVED',
-      name: 'Antwort erhalten',
-    },
-    {
-      value: 'DONE',
-      name: 'abgeschlossen',
-    },
-  ];
+  public selectedFields: string[];
 
   public constructor(private projectService: ProjectService, private fb: FormBuilder) {}
 
+  public static getValidators(entry: FormField): ValidatorFn[] {
+    const validators: ValidatorFn[] = [];
+
+    let typeValidator;
+
+    switch (entry?.type) {
+      case 'TEXT':
+        break;
+      case 'NUMBER':
+        const numberPattern = '^[0-9]*$';
+        typeValidator = Validators.pattern(numberPattern);
+        break;
+      case 'DATE':
+        break;
+      case 'URL':
+        // this is a first basic url pattern with port
+        const urlPattern = '(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})(:\\d+)?(.)*/?';
+        typeValidator = Validators.pattern(urlPattern);
+        break;
+      case 'EMAIL':
+        typeValidator = Validators.email;
+        break;
+    }
+
+    if (typeValidator) {
+      validators.push(typeValidator);
+    }
+    if (entry?.required === true) {
+      validators.push(Validators.required);
+    }
+
+    return validators;
+  }
+
   public ngOnInit(): void {
     this.setReactiveForm(this.taskData);
+    this.showFieldsForm = new FormControl(this.getSelectedFields());
+  }
+
+  public isValidUrl(entry: FormControl): boolean {
+    const urlString = entry.value as string;
+    return urlString?.length > 0 && entry.valid;
+  }
+
+  public onClickLink(entry: FormControl): void {
+    const url = entry.get('value')?.value as string;
+
+    if (this.isValidUrl(entry.get('value') as FormControl)) {
+      window.open(url);
+    }
+  }
+
+  public get entriesArray(): FormArray {
+    return this.formGroup.get('entries') as FormArray;
+  }
+
+  public get resultsArray(): FormArray {
+    return this.formGroup.get(['results']) as FormArray;
+  }
+
+  public changeShowSelection(event: MatSelectChange): void {
+    this.selectedFields = event.value as string[];
+
+    for (const entry of this.entriesArray.controls) {
+      const showItem = this.selectedFields.includes(entry.get('key').value);
+      entry.get('show').setValue(showItem);
+    }
+
+    for (const result of this.resultsArray.controls) {
+      const formFieldsArray = result.get('formFields') as FormArray;
+
+      for (const ffEntry of formFieldsArray.controls) {
+        const currentKey = ffEntry.get('key').value as string;
+        const showItem = this.selectedFields.includes(`formFields.${currentKey}`);
+        ffEntry.get('show').setValue(showItem);
+      }
+    }
+
+    this.onSubmit(this.formGroup);
   }
 
   public toggleCompleteStatus(): void {
@@ -97,9 +130,15 @@ export class ProjectTaskFormComponent implements OnInit {
   }
 
   public onSubmit(form: FormGroup): void {
-    this.projectService.updateProjectTask(this.selectedTimelineId, form.value).subscribe(() => {
-      form.reset(form.value);
-    });
+    if (form.valid) {
+      this.projectService.updateProjectTask(this.selectedTimelineId, form.value).subscribe({
+        next: () => form.reset(form.value),
+        error: null,
+        complete: () => void 0,
+      });
+    } else {
+      console.log('form not submitted');
+    }
   }
 
   public onFocus(event: FocusEvent, path: (string | number)[]): void {
@@ -113,6 +152,24 @@ export class ProjectTaskFormComponent implements OnInit {
     this.formGroup.get(path).setValue(valueInput.value);
   }
 
+  public getFormFieldClass(formField: FormGroup | AbstractControl): string {
+    return formField.get('controlType')?.value === 'TEXTAREA' || formField.get('type')?.value === 'URL'
+      ? 'width2x'
+      : '';
+  }
+
+  private getSelectedFields(): string[] {
+    this.selectedFields = [];
+
+    for (const entry of this.entriesArray.controls) {
+      if (entry.get('show').value) {
+        this.selectedFields.push(entry.get('key').value);
+      }
+    }
+
+    return this.selectedFields;
+  }
+
   private setReactiveForm(data: ProjectTask): void {
     this.formGroup = this.fb.group({
       id: [data?.id],
@@ -120,12 +177,62 @@ export class ProjectTaskFormComponent implements OnInit {
       optional: [data?.optional],
       explanation: [data?.explanation],
       completed: [data?.completed],
-      contactPerson: [data?.contactPerson],
-      documentationLink: [data?.documentationLink],
-      results: this.fb.group({
-        type: '',
-        data: this.fb.array([]),
-      }),
+      entries: this.getFormFieldsArray(data?.entries),
+      results: this.getResultsArray(data?.results),
     });
+  }
+
+  private getFormFieldsArray(entries: FormField[]): FormArray {
+    const entriesArray = this.fb.array([]);
+
+    for (const entry of entries) {
+      const optionsArray = this.fb.array([]);
+
+      for (const option of entry?.options) {
+        optionsArray.push(
+          this.fb.group({
+            key: option?.key,
+            value: option?.value,
+          })
+        );
+      }
+
+      const formGroup = this.fb.group({
+        id: entry?.id,
+        value: entry?.value,
+        key: entry?.key,
+        label: entry?.label,
+        hint: entry?.hint,
+        required: entry?.required,
+        sortOrder: entry?.sortOrder,
+        controlType: entry?.controlType,
+        type: entry?.type,
+        options: optionsArray,
+        show: entry?.show,
+      });
+
+      const validators = ProjectTaskFormComponent.getValidators(entry);
+      formGroup.get('value').setValidators(validators);
+
+      entriesArray.push(formGroup);
+    }
+    return entriesArray;
+  }
+
+  private getResultsArray(results: Result[]): FormArray {
+    const resultsArray = this.fb.array([]);
+
+    if (results?.length) {
+      for (const entry of results) {
+        resultsArray.push(
+          this.fb.group({
+            id: entry?.id,
+            resultType: entry?.resultType,
+            formFields: this.getFormFieldsArray(entry?.formFields),
+          })
+        );
+      }
+    }
+    return resultsArray;
   }
 }

@@ -1,68 +1,106 @@
 <form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup)">
-  <mat-form-field>
-    <mat-label>Ansprechpartner</mat-label>
-    <input
-      matInput
-      placeholder="Name, Vorname"
-      formControlName="contactPerson"
-      (change)="onSubmit(formGroup)"
-      (focus)="onFocus($event, ['contactPerson'])"
-      (keyup.esc)="onEscape($event, ['contactPerson'])"
-    />
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Dokumentationsort</mat-label>
-    <input
-      matInput
-      placeholder="Link"
-      formControlName="documentationLink"
-      (change)="onSubmit(formGroup)"
-      (focus)="onFocus($event, ['documentationLink'])"
-      (keyup.esc)="onEscape($event, ['documentationLink'])"
-    />
-  </mat-form-field>
+  <div>
+    <mat-form-field style="float: right">
+      <mat-label>Felder auswählen</mat-label>
+      <mat-select [formControl]="showFieldsForm" (selectionChange)="changeShowSelection($event)" multiple>
+        <mat-option *ngFor="let entry of entriesArray.controls" [value]="entry.get('key')?.value">{{
+          entry.get('label')?.value
+        }}</mat-option>
+        <mat-optgroup *ngFor="let group of formFieldGroups" [label]="group.name">
+          <mat-option *ngFor="let formField of group.fields" [value]="formField.value">
+            {{ formField.viewValue }}
+          </mat-option>
+        </mat-optgroup>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <ng-container formArrayName="entries">
+    <ng-container *ngFor="let entry of entriesArray.controls; let i = index">
+      <ng-container [formGroupName]="i">
+        <ng-container [ngSwitch]="entry.get('controlType')?.value">
+          <ng-container *ngSwitchCase="'TEXTBOX'">
+            <mat-form-field
+              *ngIf="entry.get('show')?.value"
+              [hintLabel]="entry.get('hint')?.value"
+              [ngClass]="getFormFieldClass(entry)"
+            >
+              <mat-label>{{ entry.get('label')?.value }}</mat-label>
+              <mat-icon matPrefix *ngIf="entry.get('type')?.value === 'URL'" class="matPrefixIcon"> link </mat-icon>
+              <input
+                matInput
+                [type]="entry.get('type').value.toLowerCase()"
+                formControlName="value"
+                [id]="entry.get('key')?.value"
+                [value]="entry.get('value')?.value"
+                (change)="onSubmit(formGroup)"
+                (focus)="onFocus($event, ['entries', i, 'value'])"
+                (keyup.esc)="onEscape($event, ['entries', i, 'value'])"
+              />
+              <button
+                matSuffix
+                mat-icon-button
+                *ngIf="entry.get('type')?.value === 'URL'"
+                [disabled]="!isValidUrl(entry.get('value'))"
+                (click)="onClickLink(entry)"
+              >
+                <mat-icon style="font-size: 150%"> open_in_new </mat-icon>
+              </button>
 
-  <ng-container formGroupName="results">
-    <ng-container [ngSwitch]="taskData.results.type">
-      <app-cart-form
-        *ngSwitchCase="'TYPE_ELBE_SC'"
-        [formData]="taskData.results.data"
-        [statusList]="cartStatusList"
-        (dataChanged)="onSubmit(formGroup)"
-      ></app-cart-form>
-      <app-risk-form
-        *ngSwitchCase="'TYPE_RISK'"
-        [formData]="taskData.results.data"
-        [statusList]="standardStatusList"
-        (dataChanged)="onSubmit(formGroup)"
-      ></app-risk-form>
-      <app-contact-person-form
-        *ngSwitchCase="'TYPE_CONTACT_PERS'"
-        [formData]="taskData.results.data"
-        [statusList]="personStatusList"
-        (dataChanged)="onSubmit(formGroup)"
-      ></app-contact-person-form>
-      <app-single-appointment-form
-        *ngSwitchCase="'TYPE_SINGLE_APPOINTMENT'"
-        [formData]="taskData.results.data"
-        [statusList]="standardStatusList"
-        (dataChanged)="onSubmit(formGroup)"
-      ></app-single-appointment-form>
-      <app-appointment-series-form
-        *ngSwitchCase="'TYPE_APPT_SERIES'"
-        [formData]="taskData.results.data"
-        [statusList]="standardStatusList"
-        (dataChanged)="onSubmit(formGroup)"
-      ></app-appointment-series-form>
-      <app-default-task-form
-        *ngSwitchDefault
-        [formData]="taskData.results.data"
-        [statusList]="standardStatusList"
-        (dataChanged)="onSubmit(formGroup)"
-      >
-      </app-default-task-form>
+              <mat-error *ngIf="entry.get('value').hasError('email') && !entry.get('value').hasError('required')">
+                Bitte gültige E-Mailadresse eingeben
+              </mat-error>
+              <mat-error *ngIf="entry.get('value').hasError('url') && !entry.get('value').hasError('required')">
+                Bitte gültige URL eingeben
+              </mat-error>
+              <mat-error *ngIf="entry.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>
+            </mat-form-field>
+          </ng-container>
+          <ng-container *ngSwitchCase="'TEXTAREA'">
+            <mat-form-field
+              [hintLabel]="entry.get('hint')?.value"
+              *ngIf="entry.get('show')?.value"
+              [ngClass]="getFormFieldClass(entry)"
+            >
+              <mat-label>{{ entry.get('label')?.value }}</mat-label>
+              <textarea
+                matInput
+                formControlName="value"
+                [id]="entry.get('key')?.value"
+                [value]="entry.get('value')?.value"
+                (change)="onSubmit(formGroup)"
+                (focus)="onFocus($event, ['entries', i, 'value'])"
+                (keyup.esc)="onEscape($event, ['entries', i, 'value'])"
+              >
+              </textarea>
+              <mat-error *ngIf="entry.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>
+            </mat-form-field>
+          </ng-container>
+          <ng-container *ngSwitchCase="'DROPDOWN'">
+            <mat-form-field
+              [hintLabel]="entry.get('hint')?.value"
+              *ngIf="entry.get('show')?.value"
+              [ngClass]="getFormFieldClass(entry)"
+            >
+              <mat-label>{{ entry.get('label')?.value }}</mat-label>
+              <mat-select formControlName="value">
+                <mat-option *ngFor="let opt of entry.get('options')?.value" [value]="opt.key">
+                  {{ opt.value }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-container>
+        </ng-container>
+      </ng-container>
     </ng-container>
   </ng-container>
+
+  <app-results-form
+    [formData]="resultsArray"
+    [showFieldsForm]="showFieldsForm"
+    [formFieldGroups]="formFieldGroups"
+    [selectedFields]="selectedFields"
+    (dataChanged)="onSubmit(formGroup)"
+  ></app-results-form>
 
   <div>
     <button mat-raised-button color="primary" class="stepDoneButton" (click)="toggleCompleteStatus()">

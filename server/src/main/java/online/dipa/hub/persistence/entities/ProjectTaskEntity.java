@@ -3,7 +3,6 @@ package online.dipa.hub.persistence.entities;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import static javax.persistence.CascadeType.ALL;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,37 +23,31 @@ public class ProjectTaskEntity extends BaseEntity {
     private boolean optional;
     private String explanation;
     private boolean completed;
-
-    private String contactPerson;
-    private String documentationLink;
+    private Long sortOrder;
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private ProjectTaskTemplateEntity projectTaskTemplate;
 
-    @OneToMany(mappedBy = "projectTask", cascade = { ALL })
+    @OneToMany(mappedBy = "projectTask")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<StandardResultEntity> standardResults = new HashSet<>();
+    private Set<FormFieldEntity> entries = new HashSet<>();
 
     @OneToMany(mappedBy = "projectTask")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<ContactPersonResultEntity> contactPersonResults = new HashSet<>();
-    
-    @OneToMany(mappedBy = "projectTask")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<ELBEShoppingCartResultEntity> elbeShoppingCartResults = new HashSet<>();
+    private Set<ResultEntity> results = new HashSet<>();
 
-    @OneToMany(mappedBy = "projectTask")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<AppointmentSeriesResultEntity> appointmentSeriesResults = new HashSet<>();
-    
-    @OneToMany(mappedBy = "projectTask")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<RiskResultEntity> riskResults = new HashSet<>();
+    public ProjectTaskEntity() {
+        super();
+    }
 
-    @OneToMany(mappedBy = "projectTask")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<SingleAppointmentResultEntity> singleAppointmentResults = new HashSet<>();
+    public ProjectTaskEntity(ProjectTaskEntity projectTaskEntity) {
+        this.title = projectTaskEntity.getTitle();
+        this.optional = projectTaskEntity.getOptional();
+        this.explanation = projectTaskEntity.getExplanation();
+        this.completed = projectTaskEntity.getCompleted();
+        this.sortOrder = projectTaskEntity.getSortOrder();
+    }
     
     public ProjectTaskTemplateEntity getProjectTaskTemplate() {
         return projectTaskTemplate;
@@ -96,68 +89,28 @@ public class ProjectTaskEntity extends BaseEntity {
         this.completed = completed;
     }
 
-    public String getContactPerson() {
-        return contactPerson;
+    public Set<FormFieldEntity> getEntries() {
+        return entries;
+    }
+
+    public void setEntries(final Set<FormFieldEntity> entries) {
+        this.entries = entries;
+    }
+
+    public Set<ResultEntity> getResults() {
+        return results;
+    }
+
+    public void setResults(final Set<ResultEntity> results) {
+        this.results = results;
     }
     
-    public void setContactPerson(final String contactPerson) {
-        this.contactPerson = contactPerson;
+    public Long getSortOrder() {
+        return sortOrder;
     }
 
-    public String getDocumentationLink() {
-        return documentationLink;
-    }
-    
-    public void setDocumentationLink(final String documentationLink) {
-        this.documentationLink = documentationLink;
-    }
-
-    public Set<StandardResultEntity> getStandardResult() {
-        return standardResults;
-    }
-
-    public void setStandardResult(final Set<StandardResultEntity> standardResults) {
-        this.standardResults = standardResults;
-    }
-
-    public Set<ContactPersonResultEntity> getContactPersonResult() {
-        return contactPersonResults;
-    }
-
-    public void setContactPersonResult(final Set<ContactPersonResultEntity> contactPersonResults) {
-        this.contactPersonResults = contactPersonResults;
-    }
-    
-    public Set<ELBEShoppingCartResultEntity> getELBEShoppingCartResults() {
-        return elbeShoppingCartResults;
-    }
-
-    public void setELBEShoppingCartResults(final Set<ELBEShoppingCartResultEntity> elbeShoppingCartResults) {
-        this.elbeShoppingCartResults = elbeShoppingCartResults;
-    }
-
-    public Set<AppointmentSeriesResultEntity> getAppointmentSeriesResults() {
-        return appointmentSeriesResults;
-    }
-
-    public void setAppointmentSeriesResults(final Set<AppointmentSeriesResultEntity> appointmentSeriesResults) {
-        this.appointmentSeriesResults = appointmentSeriesResults;
-    }
-
-    public Set<RiskResultEntity> getRiskResults() {
-        return riskResults;
-    }
-
-    public void setRiskResults(final Set<RiskResultEntity> riskResults) {
-        this.riskResults = riskResults;
-    }
-
-    public Set<SingleAppointmentResultEntity> getSingleAppointmentResults() {
-        return singleAppointmentResults;
-    }
-
-    public void setSingleAppointmentResults(final Set<SingleAppointmentResultEntity> singleAppointmentResults) {
-        this.singleAppointmentResults = singleAppointmentResults;
+    public void setSortOrder(Long sortOrder) {
+        this.sortOrder = sortOrder;
     }
 
 }

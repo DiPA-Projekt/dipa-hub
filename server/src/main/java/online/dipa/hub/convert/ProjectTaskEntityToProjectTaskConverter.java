@@ -1,38 +1,28 @@
 package online.dipa.hub.convert;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import online.dipa.hub.api.model.FormField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import online.dipa.hub.api.model.ProjectTask;
-import online.dipa.hub.api.model.ProjectTaskResults;
 import online.dipa.hub.api.model.Result;
+import online.dipa.hub.persistence.entities.FormFieldEntity;
 import online.dipa.hub.persistence.entities.ProjectTaskEntity;
 
 
 @Component
 public class ProjectTaskEntityToProjectTaskConverter implements Converter<ProjectTaskEntity, ProjectTask> {
-    
-    @Autowired
-    private StandardResultEntityToStandardResult standardResultConverter;
-    
-    @Autowired
-    private ContactPersonResultEntityToContactPersonResultConverter contactPersonResultConverter;
 
     @Autowired
-    private ElbeShoppingCartResultEntityToElbeShoppingCartResultConverter elbeShoppingCartResultConverter;
-    
+    private ResultEntityToResultConverter resultEntityToResultConverter;
+
     @Autowired
-    private ApptSeriesResultEntityToApptSeriesResultConverter apptSeriesResultConverter;
-    
-    @Autowired
-    private RiskResultEntityToRiskResultConverter riskResultConverter;
-    
-    @Autowired
-    private SingleApptResultEntityToSingleApptResultConverter singleApptResultConverter;
+    private FormFieldEntityToFormFieldConverter formFieldConverter;
 
     @Override
     public ProjectTask convert(final ProjectTaskEntity template) {
@@ -41,39 +31,14 @@ public class ProjectTaskEntityToProjectTaskConverter implements Converter<Projec
                              .title(template.getTitle())
                              .optional(template.getOptional())
                              .explanation(template.getExplanation())
-                             .completed(template.getCompleted())
-                             .contactPerson(template.getContactPerson())
-                             .documentationLink(template.getDocumentationLink());
-                            
-        if (!template.getStandardResult().isEmpty()) {
-            List<Result> standardResults = template.getStandardResult().stream().map(p -> standardResultConverter.convert(p)).collect(Collectors.toList());
-            projectTask.results(new ProjectTaskResults().type("TYPE_STD").data(standardResults));
+                                                   .sortOrder(template.getSortOrder());
 
-        }
-        else if (!template.getContactPersonResult().isEmpty()) {
-            List<Result> contactPersonResults = template.getContactPersonResult().stream().map(p -> contactPersonResultConverter.convert(p)).collect(Collectors.toList());
-            projectTask.results(new ProjectTaskResults().type("TYPE_CONTACT_PERS").data(contactPersonResults));
+        List<FormField> entries = template.getEntries().stream().sorted(Comparator.comparing(FormFieldEntity::getSortOrder)).map(p -> formFieldConverter.convert(p)).collect(Collectors.toList());
+        projectTask.entries(entries);
 
-        }
-        else if (!template.getAppointmentSeriesResults().isEmpty()) {
-            List<Result> apptSeriesResults = template.getAppointmentSeriesResults().stream().map(p -> apptSeriesResultConverter.convert(p)).collect(Collectors.toList());
-            projectTask.results(new ProjectTaskResults().type("TYPE_APPT_SERIES").data(apptSeriesResults));
-
-        }
-        else if (!template.getELBEShoppingCartResults().isEmpty()) {
-            List<Result> elbeShoppingCartResults = template.getELBEShoppingCartResults().stream().map(p -> elbeShoppingCartResultConverter.convert(p)).collect(Collectors.toList());
-            projectTask.results(new ProjectTaskResults().type("TYPE_ELBE_SC").data(elbeShoppingCartResults));
-
-        }
-        else if (!template.getSingleAppointmentResults().isEmpty()) {
-            List<Result> singleApptResults = template.getSingleAppointmentResults().stream().map(p -> singleApptResultConverter.convert(p)).collect(Collectors.toList());
-            projectTask.results(new ProjectTaskResults().type("TYPE_SINGLE_APPOINTMENT").data(singleApptResults));
-
-        }
-        else if (!template.getRiskResults().isEmpty()) {
-            List<Result> riskResults = template.getRiskResults().stream().map(p -> riskResultConverter.convert(p)).collect(Collectors.toList());
-            projectTask.results(new ProjectTaskResults().type("TYPE_RISK").data(riskResults));
-            
+        if (!template.getResults().isEmpty()) {
+            List<Result> results = template.getResults().stream().map(p -> resultEntityToResultConverter.convert(p)).collect(Collectors.toList());
+            projectTask.results(results);
         }
                 
         return projectTask;

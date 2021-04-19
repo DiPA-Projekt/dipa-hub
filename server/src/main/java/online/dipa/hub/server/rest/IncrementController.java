@@ -18,6 +18,7 @@ public class IncrementController implements IncrementsApi {
     @Override
     public ResponseEntity<List<Increment>> getIncrementsForTimeline(final Long timelineId) {
         final List<Increment> incrementsList = incrementService.getIncrementsForTimeline(timelineId);
+
         return ResponseEntity.ok(incrementsList);
     }
     

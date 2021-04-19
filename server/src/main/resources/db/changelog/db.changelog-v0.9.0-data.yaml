@@ -113,3 +113,177 @@ databaseChangeLog:
               - column:
                   name: project_id
                   value: 6
+
+  ## -----------------------------------
+
+  - changeSet:
+      id: update-project-task-01-title
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: title
+                  value: Übergabe SMPL-->PL
+              - column:
+                  name: explanation
+                  value: Übergabe des Projekts inklusive der Planungsunterlagen vom Planenden (Servicemanagement Produkte und Lösungen) an die Projektleitung
+            where: id=1 OR id=18
+  - changeSet:
+      id: update-project-task-02-title
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: title
+                  value: Übergabe II A 11-->PL
+              - column:
+                  name: explanation
+                  value: Übergabe des angelegten iSAR-Projektes mit vorausgefülltem PSB vom Einzelauftragsmanagement an die Projektleitung
+            where: id=2 OR id=19
+  - changeSet:
+      id: update-project-task-03-title
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: title
+                  value: Besetzung in iSAR durchführen
+              - column:
+                  name: explanation
+                  value: Eingabe von weiteren Projektmitgliedern in iSAR, die auf das AKZ Zeiten zurückmelden sollen
+            where: id=3 OR id=20
+  - changeSet:
+      id: update-project-task-05-title
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: title
+                  value: Erste Terminserien wie z.B. Jour Fixe vereinbaren
+            where: id=5 OR id=22
+  - changeSet:
+      id: update-project-task-06-explanation
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: explanation
+                  value: Ablageorte projektrelevanter Dokumente
+            where: id=6
+  - changeSet:
+      id: update-project-task-08-title
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: title
+                  value: Einkaufswagen in ELBE anlegen
+              - column:
+                  name: explanation
+                  value: Bestellung von Software, Hardware und externen Projektteammitgliedern
+            where: id=8 OR id=25
+  - changeSet:
+      id: update-project-task-09-title
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: title
+                  value: AeDL einrichten
+              - column:
+                  name: explanation
+                  value: Einrichtung der Verträge und der externen Kolleg:innen zu diesen Verträgen im Tool "AeDL"
+            where: id=9 OR id=26
+  - changeSet:
+      id: update-project-task-10-title
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: title
+                  value: Trackingtabelle für externe Dienstleistung einrichten
+              - column:
+                  name: explanation
+                  value: Tracking der monatlichen Aufwände und Zahlungen
+            where: id=10 OR id=27
+  - changeSet:
+      id: update-project-task-11-title
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: title
+                  value: Arbeitsmittel für externe Teamkolleg:innen bestellen und einrichten
+              - column:
+                  name: explanation
+                  value: Bestellung von notwendigen Arbeitsmitteln (z.B. Servista, Verpflichtung etc.) beim Einsatz externer Teamkolleg:innen
+            where: id=11 OR id=28
+  - changeSet:
+      id: update-project-task-12-title
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: title
+                  value: Ersten Projektstatusbericht schreiben
+              - column:
+                  name: explanation
+                  value: Erstellung des ersten Statusberichtes für den vorangegangenen Berichtsmonat in iSAR und Freigabe dessen durch den Projekteigner bis zum 10. Tag des Kalendermonats
+            where: id=12 OR id=29
+  - changeSet:
+      id: update-project-task-13-title
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: title
+                  value: Erste Termine setzen und steuern
+              - column:
+                  name: explanation
+                  value: Strukturieren des Projektablaufes mit internen Terminen, Überprüfen der Termineinhaltung und Steuerung von Auswirkungen von Terminüberschreitungen
+            where: id=13 OR id=30
+  - changeSet:
+      id: update-project-task-14-title
+      context: itzbund
+      author: bock
+      changes:
+        - update:
+            tableName: project_task
+            columns:
+              - column:
+                  name: title
+                  value: Erste Risiken aufnehmen
+            where: id=14 OR id=31

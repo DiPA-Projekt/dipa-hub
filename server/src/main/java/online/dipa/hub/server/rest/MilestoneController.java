@@ -31,11 +31,11 @@ public class MilestoneController implements MilestonesApi{
     @Override
     public ResponseEntity<Void> updateMilestoneData(final Long timelineId, final Milestone milestone ) {
         if (Optional.ofNullable(milestone.getStatus()).isPresent()) {
-            milestoneService.updateMilestoneStatus(timelineId, milestone.getId(), milestone.getStatus());
+            milestoneService.updateMilestoneStatus(milestone.getId(), milestone.getStatus());
         }
         return ResponseEntity.noContent().build();
     }
-
+    
     @Override
     public ResponseEntity<List<DownloadFile>> getFilesForMilestone(final Long timelineId, final Long milestoneId) {
         final List<DownloadFile> attachedFilesList = timelineService.getFilesForMilestone(timelineId, milestoneId);

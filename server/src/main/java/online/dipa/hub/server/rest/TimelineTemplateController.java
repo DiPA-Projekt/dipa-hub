@@ -23,7 +23,7 @@ public class TimelineTemplateController implements TimelineTemplatesApi {
 
     @Override
     public ResponseEntity<Void> updateTimelineTemplate(final Long timelineId, final Long templateId) {
-        timelineTemplateService.updateTimelineTemplate (timelineId, templateId);
+        timelineTemplateService.updateTimelineTemplate(timelineId, templateId);
         return ResponseEntity.noContent().build();
     }
 
