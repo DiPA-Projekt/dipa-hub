@@ -107,7 +107,7 @@ VALUES (3, 'contactPerson', 'Name', 'Ansprechpartner', false, 2, 'TEXTBOX', 'TEX
 
 --changeset id:insert-project-task-01-form-entry-department-result-01 context:itzbund
 INSERT INTO project_task_form_field (id, value, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
-VALUES (4, '4', 'department', 'Referat', false, 3, 'TEXTBOX', 'TEXT', true, 1)
+VALUES (4, 'I 4', 'department', 'Referat', false, 3, 'TEXTBOX', 'TEXT', true, 1)
 
 --changeset id:insert-project-task-01-form-entry-taskArea-result-01 context:itzbund
 INSERT INTO project_task_form_field (id, value, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
@@ -275,7 +275,7 @@ VALUES ('BOOKED', 'besetzt', 26)
 
 --changeset id:insert-project-task-04-form-entry-documentationLink context:itzbund
 INSERT INTO project_task_form_field (id, value, key, label, hint, required, sort_order, CONTROL_TYPE, type, show, project_task_id)
-VALUES (27, 'https://***REMOVED***:52801/irj/portal', 'documentationLink', 'Link', 'Link zu iSAR', false, 1, 'TEXTBOX', 'URL', false, 4)
+VALUES (27, 'https://***REMOVED***:52801/irj/portal', 'documentationLink', 'Link', '', false, 1, 'TEXTBOX', 'URL', false, 4)
 
 --changeset id:insert-project-task-04-form-entry-contactPerson context:itzbund
 INSERT INTO project_task_form_field (id, key, label, hint, required, sort_order, CONTROL_TYPE, type, show, project_task_id)
@@ -327,7 +327,8 @@ VALUES ('INVITED', 'eingeladen', 36)
 
 --changeset id:insert-project-task-05-form-entry-documentationLink context:itzbund
 INSERT INTO project_task_form_field (id, value, key, label, hint, required, sort_order, CONTROL_TYPE, type, show, project_task_id)
-VALUES (37, 'https://***REMOVED***:52801/irj/portal', 'documentationLink', 'Link', 'Link zu iSAR', false, 1, 'TEXTBOX', 'URL', false, 5)
+VALUES (37, '', 'documentationLink', 'Link', '', false, 1, 'TEXTBOX', 'URL', false, 5)
+
 
 --changeset id:insert-project-task-05-form-entry-contactPerson context:itzbund
 INSERT INTO project_task_form_field (id, key, label, hint, required, sort_order, CONTROL_TYPE, type, show, project_task_id)
@@ -355,7 +356,7 @@ VALUES (42, 'goal', 'Zielzustand', false, 2, 'TEXTBOX', 'TEXT', true, 6)
 
 --changeset id:insert-project-task-05-form-entry-participants-result-06 context:itzbund
 INSERT INTO project_task_form_field (id, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
-VALUES (43, 'responsible_person', 'Verantwortung', false, 3, 'TEXTBOX', 'TEXT', true, 6)
+VALUES (43, 'responsiblePerson', 'Verantwortung', false, 3, 'TEXTBOX', 'TEXT', true, 6)
 
 --changeset id:insert-project-task-05-form-entry-note-result-06 context:itzbund
 INSERT INTO project_task_form_field (id, key, label, required, sort_order, CONTROL_TYPE, show, result_id)
@@ -431,11 +432,11 @@ VALUES (9, 'TYPE_ELBE_SC', 7)
 
 --changeset id:insert-project-task-07-form-entry-shopping_cart_number-result-09 context:itzbund
 INSERT INTO project_task_form_field (id, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
-VALUES (56, 'shopping_cart_number', 'EKW - Nummer', false, 1, 'TEXTBOX', 'TEXT', true, 9)
+VALUES (56, 'shoppingCartNumber', 'EKW - Nummer', false, 1, 'TEXTBOX', 'TEXT', true, 9)
 
 --changeset id:insert-project-task-07-form-entry-shopping_cart_content-result-09 context:itzbund
 INSERT INTO project_task_form_field (id, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
-VALUES (57, 'shopping_cart_content', 'EKW - Inhalt', false, 2, 'TEXTBOX', 'URL', true, 9)
+VALUES (57, 'shoppingCartContent', 'EKW - Inhalt', false, 2, 'TEXTBOX', 'TEXT', true, 9)
 
 --changeset id:insert-project-task-07-form-entry-note-result-09 context:itzbund
 INSERT INTO project_task_form_field (id, key, label, required, sort_order, CONTROL_TYPE, show, result_id)

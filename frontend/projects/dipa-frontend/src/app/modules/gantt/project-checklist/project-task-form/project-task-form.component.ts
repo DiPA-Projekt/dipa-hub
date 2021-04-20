@@ -56,10 +56,9 @@ export class ProjectTaskFormComponent implements OnInit {
       case 'DATE':
         break;
       case 'URL':
-        // const urlPattern = '(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?';
-        // const urlPattern =
-        //   '(https?://)?(?:w{1,3}.)?[^s.]+(?:.[a-z]+)*(?::d+)?((?:/w+)|(?:-w+))*/?(?![^<]*(?:</w+>|/?>))';
-        // typeValidator = Validators.pattern(urlPattern);
+        // this is a first basic url pattern with port
+        const urlPattern = '(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})(:\\d+)?(.)*/?';
+        typeValidator = Validators.pattern(urlPattern);
         break;
       case 'EMAIL':
         typeValidator = Validators.email;
@@ -79,6 +78,19 @@ export class ProjectTaskFormComponent implements OnInit {
   public ngOnInit(): void {
     this.setReactiveForm(this.taskData);
     this.showFieldsForm = new FormControl(this.getSelectedFields());
+  }
+
+  public isValidUrl(entry: FormControl): boolean {
+    const urlString = entry.value as string;
+    return urlString?.length > 0 && entry.valid;
+  }
+
+  public onClickLink(entry: FormControl): void {
+    const url = entry.get('value')?.value as string;
+
+    if (this.isValidUrl(entry.get('value') as FormControl)) {
+      window.open(url);
+    }
   }
 
   public get entriesArray(): FormArray {
