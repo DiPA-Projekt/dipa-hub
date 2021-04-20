@@ -296,7 +296,6 @@ export class ResultsFormComponent implements OnInit {
         required: false,
         sortOrder: 2,
         controlType: 'DROPDOWN',
-        type: '',
         show: selectedValues.includes('formFields.status'),
         options: this.getStatusOptions([
           { key: 'OPEN', value: 'offen' },
@@ -685,7 +684,6 @@ export class ResultsFormComponent implements OnInit {
         required: false,
         sortOrder: 5,
         controlType: 'DROPDOWN',
-        type: '',
         show: selectedValues.includes('formFields.status'),
         options: this.getStatusOptions([
           { key: 'PLANNED', value: 'geplant' },
@@ -735,7 +733,7 @@ export class ResultsFormComponent implements OnInit {
         hint: '',
         required: false,
         sortOrder: 3,
-        controlType: 'TEXTAREA',
+        controlType: 'LIST',
         show: selectedValues.includes('formFields.participants'),
       })
     );
@@ -773,7 +771,6 @@ export class ResultsFormComponent implements OnInit {
         required: false,
         sortOrder: 6,
         controlType: 'DROPDOWN',
-        type: '',
         show: selectedValues.includes('formFields.status'),
         options: this.getStatusOptions([
           { key: 'PLANNED', value: 'geplant' },
@@ -861,7 +858,6 @@ export class ResultsFormComponent implements OnInit {
         required: false,
         sortOrder: 6,
         controlType: 'DROPDOWN',
-        type: '',
         show: selectedValues.includes('formFields.status'),
         options: this.getStatusOptions([
           { key: 'PLANNED', value: 'geplant' },

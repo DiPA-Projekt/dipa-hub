@@ -34,6 +34,9 @@ import { ChartHeaderComponent } from './chart/chart-header/chart-header.componen
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ProjectTaskFormComponent } from './project-checklist/project-task-form/project-task-form.component';
 import { ResultsFormComponent } from './project-checklist/results-form/results-form.component';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { ListMatFormFieldComponent } from './project-checklist/results-form-field/list-mat-form-field.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +54,7 @@ import { ResultsFormComponent } from './project-checklist/results-form/results-f
     ChartHeaderComponent,
     ProjectTaskFormComponent,
     ResultsFormComponent,
+    ListMatFormFieldComponent,
   ],
   exports: [ChartComponent, FilesComponent, NavMenuListItemComponent],
   imports: [
@@ -76,6 +80,8 @@ import { ResultsFormComponent } from './project-checklist/results-form/results-f
     ReactiveFormsModule,
     MatStepperModule,
     MatToolbarModule,
+    MatChipsModule,
+    MatAutocompleteModule,
   ],
 })
 export class GanttModule {}
