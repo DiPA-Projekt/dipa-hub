@@ -39,14 +39,14 @@ export class ResultsFormComponent implements OnInit {
       case 'TYPE_STD':
         resultTypeName = 'Standard';
         break;
-      case 'TYPE_ELBE_SC':
-        resultTypeName = 'Einkaufswagen';
-        break;
       case 'TYPE_CONTACT_PERS':
         resultTypeName = 'Kontaktperson';
         break;
-      case 'TYPE_APPT_SERIES':
-        resultTypeName = 'Terminserie';
+      case 'TYPE_SUBTASK':
+        resultTypeName = 'Aufgabe';
+        break;
+      case 'TYPE_ELBE_SC':
+        resultTypeName = 'Einkaufswagen';
         break;
       case 'TYPE_RISK':
         resultTypeName = 'Risiko';
@@ -54,11 +54,14 @@ export class ResultsFormComponent implements OnInit {
       case 'TYPE_SINGLE_APPOINTMENT':
         resultTypeName = 'Termin';
         break;
-      case 'TYPE_LINK':
-        resultTypeName = 'Link';
+      case 'TYPE_APPT_SERIES':
+        resultTypeName = 'Terminserie';
         break;
       case 'TYPE_TEAM_PERS':
         resultTypeName = 'Team';
+        break;
+      case 'TYPE_LINK':
+        resultTypeName = 'Link';
         break;
       default:
         resultTypeName = '';
@@ -72,6 +75,19 @@ export class ResultsFormComponent implements OnInit {
     this.setFormFieldGroups();
     const currentShowFields = this.showFieldsForm.value as string[];
     this.showFieldsForm.setValue([...currentShowFields, ...this.initSelectedFields()]);
+  }
+
+  public isValidUrl(formField: FormControl): boolean {
+    const urlString = formField.value as string;
+    return urlString?.length > 0 && formField.valid;
+  }
+
+  public onClickLink(formField: FormControl): void {
+    const url = formField.get('value')?.value as string;
+
+    if (this.isValidUrl(formField.get('value') as FormControl)) {
+      window.open(url);
+    }
   }
 
   public getFormFieldsArray(resultGroup: FormGroup): FormArray {

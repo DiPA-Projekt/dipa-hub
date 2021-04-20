@@ -153,8 +153,9 @@ public class ProjectService {
                                                                     .collect(Collectors.toSet());
 
                     options.forEach(opt -> {
-                        opt.setFormField(newFormFieldResult);
-                        optionEntryRepository.save(opt);
+                        OptionEntryEntity newOptionEntry = new OptionEntryEntity(opt);
+                        newOptionEntry.setFormField(newFormFieldResult);
+                        optionEntryRepository.save(newOptionEntry);
                     });
                 }
             }
