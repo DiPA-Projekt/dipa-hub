@@ -75,3 +75,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   vertical-align: middle;
   margin-right: 5px;
 }
+
+.mat-chip-list-wrapper .smallChip {
+  min-height: 24px;
+}
