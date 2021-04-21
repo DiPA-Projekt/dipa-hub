@@ -17,6 +17,10 @@
         <mat-icon>date_range</mat-icon>
         Zeitplankonfiguration
       </a>
+      <a mat-raised-button (click)="openProjectDialog()" color="accent">
+        <mat-icon>supervisor_account</mat-icon>
+        Projekt anlegen
+      </a>
     </div>
     <span class="full-width-spacer"></span>
     <div *ngIf="isLoggedIn()">
