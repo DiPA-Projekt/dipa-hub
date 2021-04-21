@@ -26,7 +26,7 @@ export class ListMatFormFieldComponent implements OnInit {
 
   public ngOnInit(): void {
     const formFieldValue = this.formField.get('value').value as string;
-    this.chips = formFieldValue.length > 0 ? formFieldValue.split(',') : [];
+    this.chips = formFieldValue?.length > 0 ? formFieldValue.split(',') : [];
   }
 
   public add(event: MatChipInputEvent, formField: FormGroup): void {
