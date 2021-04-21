@@ -303,7 +303,7 @@ VALUES (32, 'date', 'Termin', false, 2, 'TEXTBOX', 'TEXT', true, 5)
 
 --changeset id:insert-project-task-04-form-entry-participants-result-05 context:itzbund
 INSERT INTO project_task_form_field (id, key, label, required, sort_order, CONTROL_TYPE, show, result_id)
-VALUES (33, 'participants', 'Teilnehmende', false, 3, 'TEXTAREA', true, 5)
+VALUES (33, 'participants', 'Teilnehmende', false, 3, 'LIST', true, 5)
 
 --changeset id:insert-project-task-04-form-entry-link-result-05 context:itzbund
 INSERT INTO project_task_form_field (id, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
