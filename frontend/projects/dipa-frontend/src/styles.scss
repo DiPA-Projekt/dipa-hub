@@ -48,7 +48,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   color: rgba(0,0,0,.87);
 }
 
-.mat-form-field + .mat-form-field {
+
+.entries {
+  padding: 16px 0;
+}
+
+.entries > .mat-form-field + .mat-form-field {
   margin-left: 16px;
 }
 
@@ -74,6 +79,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .matPrefixIcon {
   vertical-align: middle;
   margin-right: 5px;
+}
+
+.full-width {
+  width: 100%;
 }
 
 .mat-chip-list-wrapper .smallChip {

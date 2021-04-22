@@ -101,22 +101,22 @@ export class ProjectTaskFormComponent implements OnInit {
     return this.formGroup.get(['results']) as FormArray;
   }
 
+  public get entryOptions(): SelectOption[] {
+    const options: SelectOption[] = [];
+
+    for (const entry of this.entriesArray.controls) {
+      console.log(entry.get('key')?.value);
+      // options.push({ value: entry.get('key')?.value, viewValue: entry.get('label')?.value });
+    }
+    return options;
+  }
+
   public changeShowSelection(event: MatSelectChange): void {
     this.selectedFields = event.value as string[];
 
     for (const entry of this.entriesArray.controls) {
       const showItem = this.selectedFields.includes(entry.get('key').value);
       entry.get('show').setValue(showItem);
-    }
-
-    for (const result of this.resultsArray.controls) {
-      const formFieldsArray = result.get('formFields') as FormArray;
-
-      for (const ffEntry of formFieldsArray.controls) {
-        const currentKey = ffEntry.get('key').value as string;
-        const showItem = this.selectedFields.includes(`formFields.${currentKey}`);
-        ffEntry.get('show').setValue(showItem);
-      }
     }
 
     this.onSubmit(this.formGroup);
@@ -130,6 +130,7 @@ export class ProjectTaskFormComponent implements OnInit {
   }
 
   public onSubmit(form: FormGroup): void {
+    console.log('submit');
     if (form.valid) {
       this.projectService.updateProjectTask(this.selectedTimelineId, form.value).subscribe({
         next: () => form.reset(form.value),
@@ -144,12 +145,14 @@ export class ProjectTaskFormComponent implements OnInit {
   public onFocus(event: FocusEvent, path: (string | number)[]): void {
     const valueInput = event.target as HTMLInputElement;
     valueInput.setAttribute('data-value', this.formGroup.get(path).value || '');
+    console.log('onFocus');
   }
 
   public onEscape(event: KeyboardEvent, path: (string | number)[]): void {
     const valueInput = event.target as HTMLInputElement;
     valueInput.value = valueInput.getAttribute('data-value');
     this.formGroup.get(path).setValue(valueInput.value);
+    console.log('onEscape');
   }
 
   public getFormFieldClass(formField: FormGroup | AbstractControl): string {

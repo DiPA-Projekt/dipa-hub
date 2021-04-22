@@ -8,8 +8,16 @@
       [completed]="task.completed"
       [state]="task.completed ? 'done' : 'number'"
     >
-      <ng-template matStepLabel>{{ task.title }}</ng-template>
-      <p *ngIf="task.explanation" class="stepExplanation">{{ task.explanation }}</p>
+      <ng-template matStepLabel>
+        <div class="ellipsis" title="{{ task.title }}">{{ task.title }}</div>
+        <div
+          class="ellipsis"
+          style="font-weight: 500; font-size: 12px; color: rgba(0, 0, 0, 0.54)"
+          title="{{ task.explanation }}"
+        >
+          {{ task.explanation }}
+        </div>
+      </ng-template>
       <app-project-task-form
         [selectedTimelineId]="selectedTimelineId"
         [taskData]="task"

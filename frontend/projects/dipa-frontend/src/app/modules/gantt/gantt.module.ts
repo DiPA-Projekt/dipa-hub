@@ -18,8 +18,10 @@ import { ProjectChecklistComponent } from './project-checklist/project-checklist
 import { ChartHeaderComponent } from './chart/chart-header/chart-header.component';
 import { ProjectTaskFormComponent } from './project-checklist/project-task-form/project-task-form.component';
 import { ResultsFormComponent } from './project-checklist/results-form/results-form.component';
-import { ListMatFormFieldComponent } from './project-checklist/results-form-field/list-mat-form-field.component';
+import { ListMatFormFieldComponent } from './project-checklist/list-mat-form-field/list-mat-form-field.component';
 import { MaterialModule } from '../../material/material.module';
+import { FlexModule } from '@angular/flex-layout';
+import { ShowFieldsMenuComponent } from './project-checklist/show-fields-menu/show-fields-menu.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +40,7 @@ import { MaterialModule } from '../../material/material.module';
     ProjectTaskFormComponent,
     ResultsFormComponent,
     ListMatFormFieldComponent,
+    ShowFieldsMenuComponent,
   ],
   exports: [ChartComponent, FilesComponent, NavMenuListItemComponent],
   imports: [
@@ -48,6 +51,7 @@ import { MaterialModule } from '../../material/material.module';
     MaterialModule,
     ReactiveFormsModule,
     SharedModule,
+    FlexModule,
   ],
 })
 export class GanttModule {}
