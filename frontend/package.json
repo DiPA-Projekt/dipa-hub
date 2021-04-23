@@ -20,7 +20,9 @@
     "mocha": "mocha",
     "mocha:ci": "npm run mocha || exit 0",
     "nyc": "nyc mocha",
-    "nyc:ci": "npm run nyc || exit 0"
+    "nyc:ci": "npm run nyc || exit 0",
+    "cucumber": "cross-env NIGHTWATCH_ENV=chrome cucumber-js tests/cucumber/features/**/*.feature --require cucumber.conf.js --require tests/cucumber/step-definitions --format @cucumber/pretty-formatter --format json:.reports/cucumber/report.json",
+    "nightwatch": "nightwatch"
   },
   "private": true,
   "dependencies": {
@@ -84,7 +86,10 @@
     "nyc": "15.1.0",
     "prettier": "2.2.1",
     "protractor": "7.0.0",
-    "puppeteer": "5.5.0",
+    "@leanup/cli-cucumber": "latest",
+    "@leanup/stack": "latest",
+    "chromedriver": "90.0.0",
+    "selenium-server": "3.141.59",
     "sinon": "9.2.4",
     "ts-node": "9.1.1",
     "tslint": "6.1.3",
