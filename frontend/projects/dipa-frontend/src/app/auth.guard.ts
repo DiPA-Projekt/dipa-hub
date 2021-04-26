@@ -44,7 +44,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
       await this.authenticationService.login();
     }
 
-    let accessRole;
+    let accessRole: boolean;
 
     const requiredRoles = route.data.roles as string[];
     if (!(requiredRoles instanceof Array) || requiredRoles.length === 0) {

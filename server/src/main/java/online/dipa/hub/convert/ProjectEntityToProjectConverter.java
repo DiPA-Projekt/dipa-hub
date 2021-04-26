@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 import online.dipa.hub.api.model.Project;
 import online.dipa.hub.api.model.Project.ProjectTypeEnum;
-import online.dipa.hub.persistence.entities.OperationTypeEntity;
 import online.dipa.hub.persistence.entities.ProjectApproachEntity;
 import online.dipa.hub.persistence.entities.ProjectEntity;
 

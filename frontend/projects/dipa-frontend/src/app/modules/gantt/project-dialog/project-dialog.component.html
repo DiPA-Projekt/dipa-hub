@@ -71,8 +71,8 @@
     </div>
   </form>
 </div>
-<p align="center" *ngIf="inputNotation">Bitte alle Felder ausfüllen!</p>
-<div mat-dialog-actions align="end">
+<p align-items="end" *ngIf="inputNotation">Bitte alle Felder ausfüllen!</p>
+<div mat-dialog-actions align-items="end">
   <button mat-raised-button color="primary" type="submit" (click)="onSubmit(formGroup)">Anlegen</button>
   <button mat-button (click)="onCloseClick()">Abbrechen</button>
 </div>

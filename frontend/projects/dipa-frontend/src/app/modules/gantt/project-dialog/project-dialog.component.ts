@@ -1,8 +1,15 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { AuthenticationService } from '../../../authentication.service';
 import { MatDialogRef } from '@angular/material/dialog';
-import { OperationType, OperationTypesService, ProjectApproach, Timeline, User } from 'dipa-api-client';
-import { ProjectApproachesService } from 'dipa-api-client';
+import {
+  OperationType,
+  OperationTypesService,
+  ProjectApproachesService,
+  ProjectApproach,
+  Timeline,
+  User,
+} from 'dipa-api-client';
 import ProjectTypeEnum = Timeline.ProjectTypeEnum;
 import { Subscription } from 'rxjs';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
@@ -80,7 +87,7 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
     });
 
     this.setReactiveForm();
-    // this.allFilled = false;
+    this.inputNotation = false;
   }
 
   public ngOnDestroy(): void {
@@ -96,8 +103,9 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
         .createProject(formGroup.value)
         .subscribe((newTimeline: Timeline) => {
           if (newTimeline) {
-            void this.router.navigate([`gantt/${newTimeline.id}/project-checklist`]);
-            // .then(() => window.location.reload());
+            void this.router
+              .navigate([`gantt/${newTimeline.id}/project-checklist`])
+              .then(() => window.location.reload());
           }
           this.dialogRef.close();
         });
@@ -121,7 +129,7 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
   private setReactiveForm(): void {
     this.formGroup = this.fb.group(
       {
-        id: Math.floor(Math.random() * (1000000 - 10000000 + 1)) + 1000000,
+        id: -1,
         name: new FormControl('', { validators: [Validators.required], updateOn: 'blur' }),
         operationTypeId: new FormControl('', { validators: [Validators.required], updateOn: 'blur' }),
         projectApproachId: new FormControl('', { validators: [Validators.required], updateOn: 'blur' }),
