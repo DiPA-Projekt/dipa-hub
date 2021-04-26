@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 
 @RestApiController
@@ -39,6 +40,14 @@ public class ProjectController implements ProjectApi {
     public ResponseEntity<Void> updateProjectTask(final Long timelineId, ProjectTask projectTask) {
         projectService.updateProjectTask(timelineId, projectTask);
         return ResponseEntity.noContent().build();
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @Override
+    public ResponseEntity<Timeline> createProject(Project project) {
+        System.out.println(project);
+        Timeline newTimeline = projectService.createProject(project);
+        return ResponseEntity.ok(newTimeline);
     }
 
 }

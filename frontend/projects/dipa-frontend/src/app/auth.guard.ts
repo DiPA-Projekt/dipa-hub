@@ -11,20 +11,18 @@ import { UserService } from 'dipa-api-client';
 export class AuthGuard implements CanActivate, CanActivateChild {
   protected authenticated: boolean;
   protected roles: string[];
-  protected projects: number[];
 
-  constructor(
+  public constructor(
     private oauthService: OAuthService,
     private userService: UserService,
     private authenticationService: AuthenticationService
   ) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean | UrlTree> {
+  public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean | UrlTree> {
     return new Promise(async (resolve, reject) => {
       try {
         this.authenticated = this.authenticationService.isLoggedIn();
         this.roles = this.authenticationService.getUserRoles();
-        this.projects = this.authenticationService.getProjects();
 
         const result = await this.isAccessAllowed(route);
         resolve(result);
@@ -34,7 +32,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     });
   }
 
-  canActivateChild(
+  public canActivateChild(
     childRoute: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
@@ -47,7 +45,6 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     }
 
     let accessRole;
-    let accessProject;
 
     const requiredRoles = route.data.roles as string[];
     if (!(requiredRoles instanceof Array) || requiredRoles.length === 0) {
@@ -56,13 +53,6 @@ export class AuthGuard implements CanActivate, CanActivateChild {
       accessRole = requiredRoles.every((role) => this.roles.includes(role));
     }
 
-    const requiredProjectId = route.params.id as number;
-    if (!requiredProjectId) {
-      accessProject = true;
-    } else {
-      accessProject = this.projects.includes(Number(requiredProjectId));
-    }
-
-    return accessRole && accessProject;
+    return accessRole;
   }
 }

@@ -5,6 +5,7 @@ import online.dipa.hub.api.model.Project;
 import online.dipa.hub.api.model.ProjectTask;
 
 import online.dipa.hub.api.model.Result;
+import online.dipa.hub.api.model.Timeline;
 import online.dipa.hub.mapper.ProjectProjectEntityMapper;
 import online.dipa.hub.persistence.entities.*;
 import online.dipa.hub.persistence.repositories.*;
@@ -47,58 +48,90 @@ public class ProjectService {
     private ConversionService conversionService;
 
     @Autowired
-    private UserInformationService userInformationService;
+    private TimelineService timelineService;
+        
+    @Autowired
+    private ProjectApproachService projectApproachService;
 
     @Autowired
-    private TimelineService timelineService;
+    private TimelineTemplateService timelineTemplateService;
+    
+    @Autowired
+    private PlanTemplateRepository planTemplateRepository;
+
+    @Autowired
+    private MilestoneTemplateRepository milestoneTemplateRepository;
 
     private final ProjectProjectEntityMapper projectMapper = Mappers.getMapper(ProjectProjectEntityMapper.class);
 
 
     public Project getProjectData(final Long projectId) {
 
-        List<Long> projectIds = userInformationService.getUserData().getProjects();
-
         return projectRepository.findAll()
                                  .stream()
                                  .map(p -> conversionService.convert(p, Project.class))
                                  .filter(Objects::nonNull)
-                                 .filter(t -> projectIds.contains(t.getId()))
                                  .filter(t -> t.getId().equals(projectId)).findFirst().orElseThrow(() -> new EntityNotFoundException(
                         String.format("Project with id: %1$s not found.", projectId)));
     }
     
     public void updateProjectData(final Long projectId, final Project project) {
-        List<Long> projectIds = userInformationService.getUserData().getProjects();
 
-        if (projectIds.contains(projectId)) {
-            ProjectEntity currentProject = timelineService.getProject(projectId);
+        ProjectEntity currentProject = timelineService.getProject(projectId);
 
-            projectMapper.updateProjectEntity(project, currentProject);
+        projectMapper.updateProjectEntity(project, currentProject);
+
+    }
+
+    public Timeline createProject(final Project project) {
+        ProjectEntity newProject = new ProjectEntity(project);
+        newProject.setProjectApproach(projectApproachService.getProjectApproachFromRepo(project.getProjectApproachId()));
+
+        projectRepository.save(newProject);
+
+        PlanTemplateEntity planTemplate = projectApproachService.getDefaultPlanTemplateEntityFromRepo(project.getProjectApproachId());
+        List<MilestoneTemplateEntity> repoMilestones = new ArrayList<>(planTemplate.getMilestones());
+
+        PlanTemplateEntity projectPlanTemplate = new PlanTemplateEntity();
+        projectPlanTemplate.setProject(newProject);
+        projectPlanTemplate.setName(planTemplate.getName() + newProject.getId());
+        projectPlanTemplate.setDefaultTemplate(true);
+        projectPlanTemplate.setStandard(true);
+
+        planTemplateRepository.save(projectPlanTemplate);
+
+        List<MilestoneTemplateEntity> newMilestones = new ArrayList<>();
+
+        for (MilestoneTemplateEntity milestone: repoMilestones) {
+            MilestoneTemplateEntity newMilestone = new MilestoneTemplateEntity(milestone);
+
+            newMilestone.setPlanTemplate(projectPlanTemplate);
+
+            newMilestones.add(newMilestone);
         }
 
+        newMilestones = timelineTemplateService.updateMilestonesTimelineTemplate(newProject.getId(), newMilestones, planTemplate);
+        milestoneTemplateRepository.saveAll(newMilestones);
+
+        return conversionService.convert(newProject, Timeline.class);
     }
 
     public List<ProjectTask> getProjectTasks (final Long projectId) {
         List<ProjectTask> projectTasks = new ArrayList<>();
 
-        List<Long> projectIds = userInformationService.getUserData().getProjects();
+        ProjectEntity project = timelineService.getProject(projectId);
 
-        if (projectIds.contains(projectId)) {
-            ProjectEntity project = timelineService.getProject(projectId);
+        initializeProjectTasks(projectId);
 
-            initializeProjectTasks(projectId);
+        ProjectTaskTemplateEntity template = project.getProjectTaskTemplate();
+        if (project.getProjectSize() != null && !project.getProjectSize()
+                    .equals(Project.ProjectSizeEnum.BIG.toString())) {
 
-            ProjectTaskTemplateEntity template = project.getProjectTaskTemplate();
-            if (project.getProjectSize() != null && !project.getProjectSize()
-                        .equals(Project.ProjectSizeEnum.BIG.toString())) {
-
-                projectTasks.addAll(template.getProjectTasks()
-                                            .stream()
-                                            .map(p -> conversionService.convert(p, ProjectTask.class))
-                                            .sorted(Comparator.comparing(ProjectTask::getSortOrder))
-                                            .collect(Collectors.toList()));
-            }
+            projectTasks.addAll(template.getProjectTasks()
+                                        .stream()
+                                        .map(p -> conversionService.convert(p, ProjectTask.class))
+                                        .sorted(Comparator.comparing(ProjectTask::getSortOrder))
+                                        .collect(Collectors.toList()));
         }
         return projectTasks;
     }
@@ -163,50 +196,47 @@ public class ProjectService {
     }
 
     public void updateProjectTask (final Long projectId, final ProjectTask projectTask) {
-        List<Long> projectIds = userInformationService.getUserData().getProjects();
 
-        if (projectIds.contains(projectId)) {
+        ProjectEntity project = timelineService.getProject(projectId);
+        ProjectTaskTemplateEntity template = project.getProjectTaskTemplate();
 
-            ProjectEntity project = timelineService.getProject(projectId);
-            ProjectTaskTemplateEntity template = project.getProjectTaskTemplate();
+        template.getProjectTasks().stream()
+                .filter(t -> t.getId().equals(projectTask.getId()))
+                .findFirst()
+                .ifPresent(oldProjectTask -> {
+                    List<FormFieldEntity> oldEntriesList = new ArrayList<>(oldProjectTask.getEntries());
+                    List<FormField> newList = projectTask.getEntries().stream().map(FormField.class::cast).collect(Collectors.toList());
 
-            template.getProjectTasks().stream()
-                    .filter(t -> t.getId().equals(projectTask.getId()))
-                    .findFirst()
-                    .ifPresent(oldProjectTask -> {
-                        List<FormFieldEntity> oldEntriesList = new ArrayList<>(oldProjectTask.getEntries());
-                        List<FormField> newList = projectTask.getEntries().stream().map(FormField.class::cast).collect(Collectors.toList());
+                    for (int i = 0; i < newList.size(); i++) {
 
-                        for (int i = 0; i < newList.size(); i++) {
+                        if (i > oldEntriesList.size() - 1) {
 
-                            if (i > oldEntriesList.size() - 1) {
+                            FormFieldEntity entity = new FormFieldEntity(newList.get(i));
+                            entity.setProjectTask(oldProjectTask);
 
-                                FormFieldEntity entity = new FormFieldEntity(newList.get(i));
-                                entity.setProjectTask(oldProjectTask);
+                            if (newList.get(i).getOptions() != null) {
 
-                                if (newList.get(i).getOptions() != null) {
+                                Set<OptionEntryEntity> options = newList.get(i).getOptions()
+                                                                        .stream().map(o -> conversionService.convert(o, OptionEntryEntity.class))
+                                                                        .collect(Collectors.toSet());
 
-                                    Set<OptionEntryEntity> options = newList.get(i).getOptions()
-                                                                            .stream().map(o -> conversionService.convert(o, OptionEntryEntity.class))
-                                                                            .collect(Collectors.toSet());
-
-                                    options.forEach(opt -> {
-                                        opt.setFormField(entity);
-                                        optionEntryRepository.save(opt);
-                                    });
-                                }
-                                formFieldRepository.save(entity);
+                                options.forEach(opt -> {
+                                    opt.setFormField(entity);
+                                    optionEntryRepository.save(opt);
+                                });
                             }
-                            else {
-
-                                oldEntriesList.get(i).setValue(newList.get(i).getValue());
-                                oldEntriesList.get(i).setShow(newList.get(i).getShow());
-
-                            }
+                            formFieldRepository.save(entity);
                         }
-                        updateResults(oldProjectTask, projectTask);
-                    });
-        }
+                        else {
+
+                            oldEntriesList.get(i).setValue(newList.get(i).getValue());
+                            oldEntriesList.get(i).setShow(newList.get(i).getShow());
+
+                        }
+                    }
+                    updateResults(oldProjectTask, projectTask);
+                });
+
 
     }
 

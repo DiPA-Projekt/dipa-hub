@@ -51,8 +51,6 @@ public class TimelineService {
     @Autowired
     private ProjectApproachService projectApproachService;
 
-    @Autowired
-    private UserInformationService userInformationService;
 
     @Autowired
     private TimelineTemplateService timelineTemplateService;
@@ -62,12 +60,11 @@ public class TimelineService {
 
     public List<Timeline> getTimelines() {
 
-        List<Long> projectIds = userInformationService.getUserData().getProjects();
         return projectRepository.findAll()
                                  .stream()
                                  .map(p -> conversionService.convert(p, Timeline.class))
                                  .filter(Objects::nonNull)
-                                 .filter(t -> projectIds.contains(t.getId())).collect(Collectors.toList());
+                                 .collect(Collectors.toList());
     }
 
     public ProjectEntity getProject(final Long timelineId) {
@@ -258,11 +255,11 @@ public class TimelineService {
                 newMilestones.add(newMilestone);
             }
             
-                newMilestones = timelineTemplateService.updateMilestonesTimelineTemplate(timeline.getId(), newMilestones, planTemplate);
+            newMilestones = timelineTemplateService.updateMilestonesTimelineTemplate(timeline.getId(), newMilestones, planTemplate);
 
-                milestoneTemplateRepository.saveAll(newMilestones);
+            milestoneTemplateRepository.saveAll(newMilestones);
             project.getIncrements()
-                   .forEach(i -> incrementRepository.delete(i));
+                .forEach(i -> incrementRepository.delete(i));
                 
             project.setIncrements(null);
             projectRepository.save(project);

@@ -1,5 +1,7 @@
 package online.dipa.hub.persistence.entities;
 
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -11,6 +13,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import online.dipa.hub.api.model.Project;
 
 @Entity
 @Table(name = "project")
@@ -52,6 +56,19 @@ public class ProjectEntity extends BaseEntity {
     private String projectOwner;
     private OffsetDateTime startDate;
     private OffsetDateTime endDate;
+
+    public ProjectEntity() {
+        super();
+    }
+
+    public ProjectEntity(Project project) {
+        this.name = project.getName();
+        this.projectOwner = project.getProjectOwner();
+        this.projectSize = project.getProjectSize().toString();
+        this.projectType = project.getProjectType().toString();
+        this.startDate = OffsetDateTime.of(project.getStart(),LocalTime.MIDNIGHT, ZoneOffset.UTC);
+        this.endDate = OffsetDateTime.of(project.getEnd(), LocalTime.MIDNIGHT, ZoneOffset.UTC);
+    }
 
     public String getName() {
         return name;

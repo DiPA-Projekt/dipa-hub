@@ -16,6 +16,8 @@ paths:
     $ref: "paths/projectFlowSteps.yml"
   /status:
     $ref: "paths/status.yml"
+  /projects:
+    $ref: "paths/projects.yml"
   /timelines:
     $ref: "paths/timelines.yml"
   /timelines/operationTypes:
