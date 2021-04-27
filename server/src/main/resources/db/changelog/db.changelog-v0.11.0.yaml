@@ -1,0 +1,191 @@
+
+databaseChangeLog:
+  - changeSet:
+      id: create-user-table
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: UserPK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: email
+                  type: VARCHAR(1000)
+            tableName: user
+  - changeSet:
+      id: create-project-role-template-table
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: projectRoleTemplatePK
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: true
+                  name: project_id
+                  type: BIGINT
+              # - column:
+              #     constraints:
+              #       nullable: true
+              #     name: project_approach_id
+              #     type: BIGINT
+            tableName: project_role_template
+  - changeSet:
+      id: createForeignKeyConstraint-projectIdProjectRoleTemplate-FK
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_id
+            baseTableName: project_role_template
+            constraintName: FKprojectIdProjectRole
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project
+            validate: true
+  - changeSet:
+      id: addColumn-project-approach-project-role-template
+      author: nguyen
+      changes:
+        - addColumn:
+            tableName: project_approach
+            columns:
+              - column:
+                  constraints:
+                    nullable: true
+                  name: project_role_template_id
+                  type: BIGINT
+  - changeSet:
+      id: createForeignKeyConstraint-projectRoleTemplateIdprojecApproacht-FK
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_role_template_id
+            baseTableName: project_approach
+            constraintName: FKProjectRoleTemplateIdprojectApproach
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_role_template
+            validate: true
+  - changeSet:
+      id: create-project-role-table
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: projectRolePK
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: abbreviation
+                  type: VARCHAR(255)
+              - column:
+                  name: permission
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_role_template_id
+                  type: BIGINT
+            tableName: project_role
+  - changeSet:
+      id: createForeignKeyConstraint-projectRoleIdProjectRoleTemplate-FK
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_role_template_id
+            baseTableName: project_role
+            constraintName: FKprojectRoleTemplate
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: project_role_template
+            validate: true
+  - changeSet:
+      id: create-user-project-role-connection
+      author: nguyen
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: userProjectRolePK
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: user_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: project_role_id
+                  type: BIGINT
+            tableName: user_project_role_connection
+  - changeSet:
+      id: createForeignKeyConstraint-userIdProjectRoleConnection-FK
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: user_project_role_connection
+            constraintName: FKUserIdProjectRoleConnection
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: user
+            validate: true
+  - changeSet:
+      id: createForeignKeyConstraint-ProjectRoleIdUserConnection-FK
+      author: nguyen
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: project_role_id
+            baseTableName: user_project_role_connection
+            constraintName: FKProjectRoleUserIdConnection
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: user
+            validate: true
+  - changeSet:
+      id: dropUserGroupTable
+      author: nguyen
+      changes:
+        - dropTable:
+            cascadeConstraints: true
+            tableName: user_group

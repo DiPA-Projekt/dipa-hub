@@ -13,6 +13,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import online.dipa.hub.api.model.Project;
 
@@ -40,13 +42,17 @@ public class ProjectEntity extends BaseEntity {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private PlanTemplateEntity planTemplate;
 
-    @OneToMany(mappedBy = "project")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<UserGroupEntity> userGroups;
+    // @OneToMany(mappedBy = "project")
+    // @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    // private Set<UserEntity> userGroups;
 
     @OneToMany(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<IncrementEntity> increments;
+
+    @OneToOne(mappedBy = "project")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private ProjectRoleTemplateEntity projectRoleTemplate;
 
     private String projectType;
     private String projectSize;
@@ -120,13 +126,13 @@ public class ProjectEntity extends BaseEntity {
 
     }
 
-    public Set<UserGroupEntity> getUserGroups() {
-        return userGroups;
-    }
+    // public Set<UserEntity> getUserGroups() {
+    //     return userGroups;
+    // }
 
-    public void setUserGroups(final Set<UserGroupEntity> userGroups) {
-        this.userGroups = userGroups;
-    }
+    // public void setUserGroups(final Set<UserEntity> userGroups) {
+    //     this.userGroups = userGroups;
+    // }
 
     public Set<IncrementEntity> getIncrements() {
         return increments;
@@ -182,6 +188,14 @@ public class ProjectEntity extends BaseEntity {
 
     public void setEndDate(final OffsetDateTime endDate) {
         this.endDate = endDate;
+    }
+
+    public ProjectRoleTemplateEntity getProjectRoleTemplate() {
+        return projectRoleTemplate;
+    }
+
+    public void setProjectRoleTemplate(final ProjectRoleTemplateEntity projectRoleTemplate) {
+        this.projectRoleTemplate = projectRoleTemplate;
     }
 
 }
