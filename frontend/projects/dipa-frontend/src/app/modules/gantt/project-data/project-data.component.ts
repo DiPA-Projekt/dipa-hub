@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Project, ProjectService, ProjectTask } from 'dipa-api-client';
+import { Project, ProjectService } from 'dipa-api-client';
 import { ProjectChecklistComponent } from '../project-checklist/project-checklist.component';
 
 interface ProjectSize {
