@@ -1,9 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
-import { switchMap } from 'rxjs/operators';
-import { ActivatedRoute, Params } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ProjectService, ProjectTask } from 'dipa-api-client';
 import { MatVerticalStepper } from '@angular/material/stepper';
 
@@ -19,7 +17,7 @@ import { MatVerticalStepper } from '@angular/material/stepper';
   ],
 })
 export class ProjectChecklistComponent implements OnInit, OnDestroy {
-  public selectedTimelineId: number;
+  @Input() public timelineId: number;
 
   public formGroup: FormGroup;
 
@@ -54,18 +52,11 @@ export class ProjectChecklistComponent implements OnInit, OnDestroy {
 
   private projectChecklistSubscription: Subscription;
 
-  public constructor(private projectService: ProjectService, public activatedRoute: ActivatedRoute) {}
+  public constructor(private projectService: ProjectService) {}
 
   public ngOnInit(): void {
-    this.projectChecklistSubscription = this.activatedRoute.parent.params
-      .pipe(
-        switchMap(
-          (params: Params): Observable<ProjectTask[]> => {
-            this.selectedTimelineId = parseInt(params.id, 10);
-            return this.projectService.getProjectTasks(this.selectedTimelineId);
-          }
-        )
-      )
+    this.projectChecklistSubscription = this.projectService
+      .getProjectTasks(this.timelineId)
       .subscribe((data: ProjectTask[]) => {
         this.projectTasks = data;
       });

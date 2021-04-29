@@ -6,6 +6,9 @@ import { GanttComponent } from './gantt.component';
 import { TemplatesViewComponent } from './templates-view/templates-view.component';
 import { TimelineComponent } from './timeline/timeline.component';
 import { ProjectDataComponent } from './project-data/project-data.component';
+import { ProjectEndComponent } from './project-end/project-end.component';
+import { ProjectControlComponent } from './project-control/project-control.component';
+import { ProjectQuickstartComponent } from './project-quickstart/project-quickstart.component';
 
 const routes: Routes = [
   {
@@ -16,7 +19,14 @@ const routes: Routes = [
     children: [
       { path: 'timeline', component: TimelineComponent },
       { path: 'templates', component: TemplatesViewComponent },
-      { path: 'project-checklist', component: ProjectDataComponent },
+      {
+        path: 'project-checklist',
+        children: [
+          { path: 'quickstart', component: ProjectQuickstartComponent },
+          { path: 'control', component: ProjectControlComponent },
+          { path: 'end', component: ProjectEndComponent },
+        ],
+      },
     ],
   },
 ];
