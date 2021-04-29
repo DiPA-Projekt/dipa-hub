@@ -13,8 +13,12 @@ export class ProjectQuickstartComponent implements OnInit, OnDestroy {
   public constructor(public activatedRoute: ActivatedRoute) {}
 
   public ngOnInit(): void {
-    this.timelineIdSubscription = this.activatedRoute.parent.parent.params.subscribe((params: Params) => {
-      this.selectedTimelineId = parseInt(params.id, 10);
+    this.timelineIdSubscription = this.activatedRoute.parent.parent.params.subscribe({
+      next: (params: Params) => {
+        this.selectedTimelineId = parseInt(params.id, 10);
+      },
+      error: null,
+      complete: () => void 0,
     });
   }
 

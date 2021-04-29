@@ -55,11 +55,13 @@ export class ProjectChecklistComponent implements OnInit, OnDestroy {
   public constructor(private projectService: ProjectService) {}
 
   public ngOnInit(): void {
-    this.projectChecklistSubscription = this.projectService
-      .getProjectTasks(this.timelineId)
-      .subscribe((data: ProjectTask[]) => {
+    this.projectChecklistSubscription = this.projectService.getProjectTasks(this.timelineId).subscribe({
+      next: (data: ProjectTask[]) => {
         this.projectTasks = data;
-      });
+      },
+      error: null,
+      complete: () => void 0,
+    });
   }
 
   public ngOnDestroy(): void {
