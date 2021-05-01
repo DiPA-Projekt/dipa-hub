@@ -3,4 +3,10 @@ secretGenerator:
     literals:
       - password=dipasecret
 resources:
+  - sa.yaml
+  - role.yaml
+  - rb.yaml
+  - dipa-storage.yaml
+  - dipa-database-deployment.yaml
+  - dipa-hub-config.yaml
   - dipa-hub-deployment.yaml

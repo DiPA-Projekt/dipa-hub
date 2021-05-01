@@ -962,9 +962,14 @@ SET start_date = NOW(),
 )
 WHERE ID = 2
 
---changeset id:milestones_template_Feldberg_master_milestones context:itzbund
+--changeset id:milestones_template_Feldberg_master_milestones context:itzbund dbms:h2
 INSERT INTO milestone_template (name, date_offset, date, is_master, plan_template_id) 
 SELECT name, date_offset, date_offset + Now(), true, 11 FROM milestone_template WHERE plan_template_id = 2
+
+--changeset id:milestones_template_Feldberg_master_milestones context:itzbund dbms:postgresql
+INSERT INTO milestone_template (name, date_offset, date, is_master, plan_template_id)
+SELECT name, date_offset, NOW() + date_offset * INTERVAL '1 day', true, 11 FROM milestone_template WHERE plan_template_id = 2
+
 
 --changeset id:milestones_template_Feldberg context:itzbund
 INSERT INTO milestone_template (name, date_offset, date, plan_template_id) 

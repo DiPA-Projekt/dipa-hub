@@ -37,8 +37,8 @@ dipa:
 logging:
   file:
     name: "./logs/dipa-logfile.log"
-#  level:
-#    org.springframework.security: DEBUG
+  level:
+    org.springframework.cloud.kubernetes: DEBUG
 #    org.keycloak: DEBUG
 
 
@@ -47,6 +47,8 @@ management:
     loggers:
       enabled: true
     logfile:
+      enabled: true
+    restart:
       enabled: true
   endpoints:
     web:
