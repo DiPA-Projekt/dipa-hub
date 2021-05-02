@@ -69,9 +69,7 @@ export class ProjectOrganizationComponent implements OnInit, OnDestroy {
   }
 
   public filterRole(user: User): number[] {
-    return user.projectRoles
-      .filter((role) => role.projectId.toString() === this.selectedTimelineId.toString())
-      .map((role) => role.id);
+    return user.projectRoles.filter((role) => role.projectId === this.selectedTimelineId).map((role) => role.id);
   }
 
   public onSubmitRole(value: number[], user: User): void {
@@ -86,8 +84,8 @@ export class ProjectOrganizationComponent implements OnInit, OnDestroy {
     });
   }
 
-  public onSubmit(formGroup): void {
-    let user: User = formGroup.value.user;
+  public onSubmit(formGroup: FormGroup): void {
+    const user: User = formGroup.value.user;
     user.projectRoles.push(formGroup.value.role);
 
     this.userService.updateUser(user).subscribe((data) =>
@@ -102,7 +100,7 @@ export class ProjectOrganizationComponent implements OnInit, OnDestroy {
 
   private setReactiveForm(): void {
     this.formGroup = this.fb.group({
-      user: new FormControl('', { validators: [Validators.required], updateOn: 'change' }),
+      user: new FormControl(null, { validators: [Validators.required], updateOn: 'change' }),
       role: new FormControl('', { validators: [Validators.required], updateOn: 'change' }),
     });
   }

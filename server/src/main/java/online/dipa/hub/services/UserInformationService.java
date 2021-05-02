@@ -8,7 +8,6 @@ import online.dipa.hub.persistence.repositories.*;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.keycloak.adapters.OidcKeycloakAccount;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.keycloak.representations.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.security.core.Authentication;
@@ -52,7 +51,6 @@ public class UserInformationService {
         if (authentication instanceof KeycloakAuthenticationToken) {
 
             OidcKeycloakAccount account = ((KeycloakAuthenticationToken) authentication).getAccount();
-            AccessToken token = account.getKeycloakSecurityContext().getToken();
 
             String currentUserKeycloakId = account.getKeycloakSecurityContext().getToken().getSubject().intern();
 

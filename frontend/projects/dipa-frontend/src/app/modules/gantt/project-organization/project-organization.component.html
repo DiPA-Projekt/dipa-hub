@@ -33,14 +33,20 @@
     </form>
   </div>
 
-  <table mat-table [dataSource]="projectUsers" class="mat-elevation-z8" *ngIf="projectUsers && userRolesDict">
+  <table
+    mat-table
+    [dataSource]="projectUsers"
+    class="mat-elevation-z8"
+    *ngIf="projectUsers && userRolesDict"
+    aria-describedby="Zugriffe"
+  >
     <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>Name</th>
+      <th id="name" mat-header-cell *matHeaderCellDef>Name</th>
       <td mat-cell *matCellDef="let user">{{ user.name }}</td>
     </ng-container>
 
     <ng-container matColumnDef="role">
-      <th mat-header-cell *matHeaderCellDef>Rolle</th>
+      <th id="role" mat-header-cell *matHeaderCellDef>Rolle</th>
       <td mat-cell *matCellDef="let user">
         <div class="row">
           <div class="col">

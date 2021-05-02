@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, CanActivateChild, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { forkJoin, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AuthenticationService } from './authentication.service';
 import { Timeline, TimelinesService, User, UserService } from 'dipa-api-client';
 

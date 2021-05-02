@@ -49,10 +49,8 @@ export class AuthenticationService {
     }
 
     const projectRoles = user.projectRoles.filter((role) => role.projectId === timeline.id);
-    projectRoles
-      .sort((a) => (a.permission === 'WRITE' ? -1 : 1))
-      .map((role) => role.abbreviation)
-      .forEach((role) => projectRolesString.push(role));
+    projectRoles.sort((a) => (a.permission === 'WRITE' ? -1 : 1));
+    projectRoles.map((role) => role.abbreviation).forEach((role) => projectRolesString.push(role));
     return projectRolesString.join(', ');
   }
 

@@ -23,7 +23,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   public navMenuItems: NavItem[] = [];
   public favoriteLinkItems: NavItem[] = [];
-  public roles: String;
+  public roles: string;
 
   public constructor(
     private authenticationService: AuthenticationService,
