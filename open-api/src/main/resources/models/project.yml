@@ -61,8 +61,7 @@ Project:
       example: "II A 1"
     projectOwner:
       description: project owner's name
-      type: string
-      example: "Max Mustermann"
+      $ref: "../models/user.yml#/User"
   required:
     - id
     - name

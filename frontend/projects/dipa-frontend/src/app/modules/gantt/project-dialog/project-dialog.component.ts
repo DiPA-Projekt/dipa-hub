@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { AuthenticationService } from '../../../authentication.service';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -98,13 +97,12 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
 
   public onSubmit(formGroup: FormGroup): void {
     if (formGroup.valid) {
-      console.log(formGroup.value);
       this.createProjectSubscription = this.projectService
         .createProject(formGroup.value)
         .subscribe((newTimeline: Timeline) => {
           if (newTimeline) {
             void this.router
-              .navigate([`gantt/${newTimeline.id}/project-checklist`])
+              .navigate([`/gantt/${newTimeline.id}/project-checklist`])
               .then(() => window.location.reload());
           }
           this.dialogRef.close();
@@ -118,7 +116,7 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
     return this.sizes.find((x: ProjectSize) => x.value === size)?.display;
   }
 
-  public filterProjectApproaches(operationTypeId: number): any[] {
+  public filterProjectApproaches(operationTypeId: number): Array<ProjectApproach> {
     return this.projectApproachesList.filter((projectApproach) => projectApproach.operationTypeId === operationTypeId);
   }
 
@@ -140,7 +138,7 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
         start: new FormControl(this.startDate, { validators: [Validators.required], updateOn: 'blur' }),
         end: new FormControl(this.endDate, { validators: [Validators.required], updateOn: 'blur' }),
         projectSize: new FormControl('SMALL', { validators: [Validators.required], updateOn: 'blur' }),
-        projectOwner: new FormControl(this.userData.name, { validators: [Validators.required], updateOn: 'blur' }),
+        projectOwner: this.userData,
       },
       { updateOn: 'blur' }
     );

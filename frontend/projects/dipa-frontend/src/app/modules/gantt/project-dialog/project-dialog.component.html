@@ -10,7 +10,7 @@
     <div class="col-md-6 col-lg-4 col-xl-2">
       <mat-form-field>
         <mat-label>Projekteigner</mat-label>
-        <input matInput value="userData.name" formControlName="projectOwner" />
+        <input matInput [value]="userData.name" disabled />
       </mat-form-field>
     </div>
     <div class="col-md-6 col-lg-4 col-xl-2">
@@ -71,7 +71,6 @@
     </div>
   </form>
 </div>
-<p *ngIf="inputNotation">Bitte alle Felder ausfüllen!</p>
 <div mat-dialog-actions class="justify-content-end">
   <button mat-raised-button color="primary" type="submit" (click)="onSubmit(formGroup)">Anlegen</button>
   <button mat-button (click)="onCloseClick()">Abbrechen</button>

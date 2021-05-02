@@ -6,6 +6,7 @@ import { GanttComponent } from './gantt.component';
 import { TemplatesViewComponent } from './templates-view/templates-view.component';
 import { TimelineComponent } from './timeline/timeline.component';
 import { ProjectDataComponent } from './project-data/project-data.component';
+import { ProjectOrganizationComponent } from './project-organization/project-organization.component';
 
 const routes: Routes = [
   {
@@ -17,6 +18,7 @@ const routes: Routes = [
       { path: 'timeline', component: TimelineComponent },
       { path: 'templates', component: TemplatesViewComponent },
       { path: 'project-checklist', component: ProjectDataComponent },
+      { path: 'project-organization', component: ProjectOrganizationComponent },
     ],
   },
 ];

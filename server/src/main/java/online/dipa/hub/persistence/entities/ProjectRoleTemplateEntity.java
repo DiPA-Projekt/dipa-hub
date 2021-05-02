@@ -1,7 +1,5 @@
 package online.dipa.hub.persistence.entities;
 
-import static javax.persistence.CascadeType.ALL;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,43 +22,22 @@ public class ProjectRoleTemplateEntity extends BaseEntity {
     @Column(unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "projectRoleTemplate")
+    @OneToMany(mappedBy = "projectRoleTemplate", cascade = CascadeType.ALL,
+      fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<ProjectApproachEntity> projectApproaches = new HashSet<>();
-
-    // @OneToMany(mappedBy = "planTemplate", cascade = { ALL })
-    // @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    // private Set<TaskTemplateEntity> tasks = new HashSet<>();
-
-    // @ManyToMany(fetch = FetchType.EAGER)
-    // @JoinTable(
-    //         name = "project_approach_plan_template_connection",
-    //         joinColumns = { @JoinColumn(name = "plan_template_id") },
-    //         inverseJoinColumns = { @JoinColumn(name = "project_approach_id") }
-    // )
-    // private Set<ProjectApproachEntity> projectApproaches;
+    
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "projectRoleTemplate", cascade = CascadeType.ALL)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<ProjectRoleEntity> projectRoles = new HashSet<>();
 
     @NotNull
     @OneToOne(fetch = FetchType.EAGER)
     private ProjectEntity project;
 
-    // @ManyToMany(fetch = FetchType.EAGER)
-    // @JoinTable(
-    //         name = "operation_type_plan_template_connection",
-    //         joinColumns = { @JoinColumn(name = "plan_template_id") },
-    //         inverseJoinColumns = { @JoinColumn(name = "operation_type_id") }
-    // )
-    // private Set<OperationTypeEntity> operationTypes;
-
     public ProjectRoleTemplateEntity() {
         super();
     }
-
-    // public ProjectRoleTemplateEntity(ProjectRoleTemplateEntity planTemplate) {
-    //     this.milestones = planTemplate.getMilestones();
-    //     this.tasks = planTemplate.getTasks();
-    //     this.projectApproaches = planTemplate.getProjectApproaches();
-    // }
 
     public String getName() {
         return name;
@@ -69,22 +46,6 @@ public class ProjectRoleTemplateEntity extends BaseEntity {
     public void setName(final String name) {
         this.name = name;
     }
-
-    // public Set<MilestoneTemplateEntity> getMilestones() {
-    //     return milestones;
-    // }
-
-    // public void setMilestones(final Set<MilestoneTemplateEntity> milestones) {
-    //     this.milestones = milestones;
-    // }
-
-    // public Set<TaskTemplateEntity> getTasks() {
-    //     return tasks;
-    // }
-
-    // public void setTask(final Set<TaskTemplateEntity> tasks) {
-    //     this.tasks = tasks;
-    // }
 
     public Set<ProjectApproachEntity> getProjectApproaches() {
         return projectApproaches;
@@ -97,6 +58,17 @@ public class ProjectRoleTemplateEntity extends BaseEntity {
     public ProjectEntity getProject() {
         return project;
     }
+    
+    public void setProject(final ProjectEntity project) {
+        this.project = project;
+    }
 
-   
+
+    public Set<ProjectRoleEntity> getProjectRoles() {
+        return projectRoles;
+    }
+
+    public void setProjectRoles(final Set<ProjectRoleEntity> projectRoles) {
+        this.projectRoles = projectRoles;
+    }
 }

@@ -51,19 +51,23 @@ public class TimelineService {
     @Autowired
     private ProjectApproachService projectApproachService;
 
-
     @Autowired
     private TimelineTemplateService timelineTemplateService;
+    
+    @Autowired
+    private UserInformationService userInformationService;
 
     @Autowired
     private IncrementService incrementService;
 
     public List<Timeline> getTimelines() {
+        List<Long> projectIds = userInformationService.getProjectIdList();
 
         return projectRepository.findAll()
                                  .stream()
                                  .map(p -> conversionService.convert(p, Timeline.class))
                                  .filter(Objects::nonNull)
+                                 .filter(t -> projectIds.contains(t.getId()))
                                  .collect(Collectors.toList());
     }
 
@@ -317,17 +321,6 @@ public class TimelineService {
         downloadFileIds.addAll(vmxtProjectFiles);
 
         return downloadFileIds;
-    }
-
-    boolean filterOperationType(PlanTemplateEntity template, final Long operationTypeId) {
-        Optional<OperationType> operationType = template.getOperationTypes()
-                                                        .stream()
-                                                        .map(p -> conversionService.convert(p, OperationType.class))
-                                                        .filter(Objects::nonNull)
-                                                        .filter(o -> o.getId().equals(operationTypeId)).findFirst();
-
-        return operationType.isPresent();
-
     }
 
     boolean filterProjectApproach(PlanTemplateEntity template, final Long projectApproachId) {

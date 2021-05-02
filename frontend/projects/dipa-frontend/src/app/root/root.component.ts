@@ -11,8 +11,8 @@ import { ProjectDialogComponent } from '../modules/gantt/project-dialog/project-
 export class RootComponent {
   constructor(private authenticationService: AuthenticationService, public dialog: MatDialog) {}
 
-  public isUserInRole(role: string): boolean {
-    return this.authenticationService.isUserInRole(role);
+  public isUserInOrganisationRoles(role: string): boolean {
+    return this.authenticationService.isUserInOrganisationRoles(role);
   }
 
   public isLoggedIn(): boolean {

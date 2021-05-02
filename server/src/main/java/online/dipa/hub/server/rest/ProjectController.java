@@ -17,7 +17,6 @@ public class ProjectController implements ProjectApi {
     @Autowired
     private ProjectService projectService;
 
-
     @Override
     public ResponseEntity<Project> getProjectData(final Long timelineId) {
         final Project project = projectService.getProjectData(timelineId);
@@ -42,10 +41,20 @@ public class ProjectController implements ProjectApi {
         return ResponseEntity.noContent().build();
     }
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @CrossOrigin(origins = "*")
     @Override
     public ResponseEntity<Timeline> createProject(Project project) {
         return ResponseEntity.ok(projectService.createProject(project));
+    }
+    
+    @Override
+    public ResponseEntity<List<ProjectRole>> getProjectRoles(final Long projectId) {
+        return ResponseEntity.ok(projectService.getProjectRoles(projectId));
+    }
+
+    @Override
+    public ResponseEntity<List<User>> getProjectUsers(final Long projectId) {
+        return ResponseEntity.ok(projectService.getProjectUsers(projectId));
     }
 
 }

@@ -42,10 +42,6 @@ public class ProjectEntity extends BaseEntity {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private PlanTemplateEntity planTemplate;
 
-    // @OneToMany(mappedBy = "project")
-    // @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    // private Set<UserEntity> userGroups;
-
     @OneToMany(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<IncrementEntity> increments;
@@ -54,12 +50,16 @@ public class ProjectEntity extends BaseEntity {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private ProjectRoleTemplateEntity projectRoleTemplate;
 
+    @NotNull
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @NotFound(action = NotFoundAction.IGNORE)
+    private UserEntity user;
+
     private String projectType;
     private String projectSize;
     private String akz;
     private String client;
     private String department;
-    private String projectOwner;
     private OffsetDateTime startDate;
     private OffsetDateTime endDate;
 
@@ -69,7 +69,6 @@ public class ProjectEntity extends BaseEntity {
 
     public ProjectEntity(Project project) {
         this.name = project.getName();
-        this.projectOwner = project.getProjectOwner();
         this.projectSize = project.getProjectSize().toString();
         this.projectType = project.getProjectType().toString();
         this.startDate = OffsetDateTime.of(project.getStart(),LocalTime.MIDNIGHT, ZoneOffset.UTC);
@@ -126,14 +125,6 @@ public class ProjectEntity extends BaseEntity {
 
     }
 
-    // public Set<UserEntity> getUserGroups() {
-    //     return userGroups;
-    // }
-
-    // public void setUserGroups(final Set<UserEntity> userGroups) {
-    //     this.userGroups = userGroups;
-    // }
-
     public Set<IncrementEntity> getIncrements() {
         return increments;
     }
@@ -166,12 +157,12 @@ public class ProjectEntity extends BaseEntity {
         this.department = department;
     }
 
-    public String getProjectOwner() {
-        return projectOwner;
+    public UserEntity getUser() {
+        return user;
     }
 
-    public void setProjectOwner(final String projectOwner) {
-        this.projectOwner = projectOwner;
+    public void setUser(final UserEntity user) {
+        this.user = user;
     }
 
     public OffsetDateTime getStartDate() {

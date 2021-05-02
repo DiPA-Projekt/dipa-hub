@@ -12,17 +12,21 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'home/tour', pathMatch: 'full' },
       { path: 'home', loadChildren: () => import('./modules/home/home.module').then((m) => m.HomeModule) },
-      { path: 'gantt', loadChildren: () => import('./modules/gantt/gantt.module').then((m) => m.GanttModule) },
+      {
+        path: 'gantt',
+        loadChildren: () => import('./modules/gantt/gantt.module').then((m) => m.GanttModule),
+      },
       {
         path: 'overview',
         loadChildren: () => import('./modules/overview/overview.module').then((m) => m.OverviewModule),
-        data: { roles: ['supervisor'] },
+        canActivate: [AuthGuard],
+        data: { organisationRoles: ['PMO'] },
       },
       {
         path: 'schedules',
         loadChildren: () => import('./modules/schedules/schedules.module').then((m) => m.SchedulesModule),
         canActivate: [AuthGuard],
-        data: { roles: ['pmo'] },
+        data: { organisationRoles: ['PMO'] },
       },
     ],
   },

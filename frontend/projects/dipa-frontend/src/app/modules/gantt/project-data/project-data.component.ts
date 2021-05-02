@@ -56,7 +56,7 @@ export class ProjectDataComponent implements OnInit, OnDestroy {
       projectSize: null,
       client: '',
       department: '',
-      projectOwner: '',
+      projectOwner: null,
     });
   }
 
@@ -109,7 +109,7 @@ export class ProjectDataComponent implements OnInit, OnDestroy {
       projectSize: [data?.projectSize],
       client: [data?.client],
       department: [data?.department],
-      projectOwner: [data?.projectOwner],
+      projectOwner: [{ value: data?.projectOwner?.name, disabled: true }],
     });
   }
 }

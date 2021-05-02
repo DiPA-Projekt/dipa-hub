@@ -9,11 +9,11 @@
         <app-gantt-menu #ganttMenu="gantMenuComponent"></app-gantt-menu>
         <mat-icon>arrow_drop_down</mat-icon>
       </a>
-      <a *ngIf="isUserInRole('supervisor')" mat-button [routerLink]="'/overview/projects'">
+      <a *ngIf="isUserInOrganisationRoles('PMO')" mat-button [routerLink]="'/overview/projects'">
         <mat-icon>supervisor_account</mat-icon>
         Projektübersicht
       </a>
-      <a *ngIf="isUserInRole('pmo')" mat-button [routerLink]="'/schedules/configuration'">
+      <a *ngIf="isUserInOrganisationRoles('PMO')" mat-button [routerLink]="'/schedules/configuration'">
         <mat-icon>date_range</mat-icon>
         Zeitplankonfiguration
       </a>

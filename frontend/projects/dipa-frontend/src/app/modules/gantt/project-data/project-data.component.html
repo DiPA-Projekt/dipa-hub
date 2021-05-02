@@ -78,14 +78,7 @@
           <mat-form-field appearance="fill" class="full-width">
             <mat-label>Projekteigner/-in</mat-label>
             <label>
-              <input
-                matInput
-                maxlength="255"
-                formControlName="projectOwner"
-                (change)="onSubmit(myForm)"
-                (focus)="onFocus($event, ['projectOwner'])"
-                (keyup.esc)="onEscape($event, ['projectOwner'])"
-              />
+              <input matInput maxlength="255" formControlName="projectOwner" [disabled]="true" />
             </label>
           </mat-form-field>
         </div>

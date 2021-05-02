@@ -20,6 +20,7 @@ import { ProjectTaskFormComponent } from './project-checklist/project-task-form/
 import { ResultsFormComponent } from './project-checklist/results-form/results-form.component';
 import { ListMatFormFieldComponent } from './project-checklist/results-form-field/list-mat-form-field.component';
 import { MaterialModule } from '../../material/material.module';
+import { ProjectOrganizationComponent } from './project-organization/project-organization.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { MaterialModule } from '../../material/material.module';
     ProjectTaskFormComponent,
     ResultsFormComponent,
     ListMatFormFieldComponent,
+    ProjectOrganizationComponent,
   ],
   exports: [ChartComponent, FilesComponent, NavMenuListItemComponent],
   imports: [

@@ -1,0 +1,27 @@
+OrganisationRole:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the organisation role
+      type: integer
+      format: int64
+      example: 2
+    name:
+      description: Name of the organisation role
+      type: string
+      example: "Project Management Office"
+    abbreviation:
+      description: abbreviation
+      type: string
+      example: "PMO"
+    permission:
+      description: User's permission
+      type: string
+      enum:
+        - "READ"
+        - "WRITE"
+      example: "READ"
+  required:
+    - id
+    - abbreviation
+    - permission

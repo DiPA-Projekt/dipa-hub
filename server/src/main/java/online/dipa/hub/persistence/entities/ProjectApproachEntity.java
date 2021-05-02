@@ -41,8 +41,8 @@ public class ProjectApproachEntity extends BaseEntity {
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private OperationTypeEntity operationType;
     
-    @ManyToOne(optional = true, fetch = FetchType.EAGER)
-    // @NotFound(action = NotFoundAction.IGNORE)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @NotFound(action = NotFoundAction.IGNORE)
     private ProjectRoleTemplateEntity projectRoleTemplate;
 
     public String getName() {
