@@ -18,6 +18,7 @@ import { MatVerticalStepper } from '@angular/material/stepper';
 })
 export class ProjectChecklistComponent implements OnInit, OnDestroy {
   @Input() public timelineId: number;
+  @Input() public checklistType: string;
 
   public formGroup: FormGroup;
 
@@ -55,13 +56,23 @@ export class ProjectChecklistComponent implements OnInit, OnDestroy {
   public constructor(private projectService: ProjectService) {}
 
   public ngOnInit(): void {
-    this.projectChecklistSubscription = this.projectService.getProjectTasks(this.timelineId).subscribe({
-      next: (data: ProjectTask[]) => {
-        this.projectTasks = data;
-      },
-      error: null,
-      complete: () => void 0,
-    });
+    if (this.checklistType === 'permanentTasks') {
+      this.projectChecklistSubscription = this.projectService.getProjectPermanentTasks(this.timelineId).subscribe({
+        next: (data: ProjectTask[]) => {
+          this.projectTasks = data;
+        },
+        error: null,
+        complete: () => void 0,
+      });
+    } else {
+      this.projectChecklistSubscription = this.projectService.getProjectTasks(this.timelineId).subscribe({
+        next: (data: ProjectTask[]) => {
+          this.projectTasks = data;
+        },
+        error: null,
+        complete: () => void 0,
+      });
+    }
   }
 
   public ngOnDestroy(): void {
@@ -75,5 +86,9 @@ export class ProjectChecklistComponent implements OnInit, OnDestroy {
     const currentSelectedIndex = stepper.selectedIndex;
     stepper.selectedIndex = (currentSelectedIndex + 1) % stepper.steps.length;
     stepper.selectedIndex = currentSelectedIndex;
+  }
+
+  public getTaskTitle(task: ProjectTask): string {
+    return this.checklistType === 'permanentTasks' ? task.titlePermanentTask : task.title;
   }
 }

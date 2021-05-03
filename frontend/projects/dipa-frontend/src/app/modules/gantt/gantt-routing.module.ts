@@ -21,6 +21,7 @@ const routes: Routes = [
       {
         path: 'project-checklist',
         children: [
+          // { path: '', redirectTo: ':id/project-checklist/quickstart' },
           { path: 'quickstart', component: ProjectQuickstartComponent },
           { path: 'control', component: ProjectControlComponent },
           { path: 'end', component: ProjectEndComponent },

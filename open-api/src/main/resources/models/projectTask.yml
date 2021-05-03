@@ -18,6 +18,14 @@ ProjectTask:
       description: what is this task about
       type: string
       example: "angelegtes iSAR-Projekt mit vorausgefülltem PSB"
+    isPermanentTask:
+      description: if this task is a permanent task
+      type: boolean
+      example: false
+    titlePermanentTask:
+      description: what is this permanent task about
+      type: string
+      example: "angelegtes iSAR-Projekt mit vorausgefülltem PSB"
     completed:
       description: if this task is marked as completed
       type: boolean

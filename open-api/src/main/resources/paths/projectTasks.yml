@@ -1,8 +1,8 @@
 get:
   tags:
     - project
-  summary: Milestone List for Timeline
-  description: Retrieves the list of Milestones in a timeline.
+  summary: Project Task List for Timeline
+  description: Retrieves the list of Project Tasks.
   operationId: getProjectTasks
   parameters:
     - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
