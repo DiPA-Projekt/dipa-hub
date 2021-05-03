@@ -100,21 +100,22 @@ public class UserInformationService {
     }
 
     public List<Long> getProjectIdList() {
+        List<Long> projectIdsList = new ArrayList<>();
     
         if (getUserData().getOrganisationRoles()
                          .stream()
                          .anyMatch(o -> o.getAbbreviation()
                                          .equals("PMO"))){
-            return projectRepository.findAll()
+            projectIdsList = projectRepository.findAll()
                                     .stream().map(BaseEntity::getId).collect(Collectors.toList());
         }
         else {
 
             List<Long> projectRoleProjects = getUserData().getProjectRoles().stream().map(ProjectRole::getProjectId).collect(Collectors.toList());
             projectRoleProjects.addAll(getProjectOwnerProjects());
-            return projectRoleProjects;
-
+            projectIdsList = projectRoleProjects;
         }
+        return projectIdsList;
     }
 
     private List<Long> getProjectOwnerProjects()  {
