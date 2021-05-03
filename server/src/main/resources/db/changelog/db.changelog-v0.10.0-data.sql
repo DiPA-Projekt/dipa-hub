@@ -35,7 +35,7 @@ VALUES (4, 'Erste Terminserien wie z.B. Jour Fixe vereinbaren', true, '', 4, 1)
 
 --changeset id:insert-project-task-05 context:itzbund
 INSERT INTO project_task (id, title, optional, explanation, sort_order, project_task_template_id)
-VALUES (5, 'Erste Termine setzen und steuern', true, 'Strukturieren des Projektablaufes mit internen Terminen, Überprüfen der Termineinhaltung und Steuerung von Auswirkungen bei Terminüberschreitungen“', 5, 1)
+VALUES (5, 'Erste Termine setzen und steuern', true, 'Strukturieren des Projektablaufes mit internen Terminen, Überprüfen der Termineinhaltung und Steuerung von Auswirkungen von Terminüberschreitungen', 5, 1)
 
 --changeset id:insert-project-task-06 context:itzbund
 INSERT INTO project_task (id, title, optional, explanation, sort_order, project_task_template_id)

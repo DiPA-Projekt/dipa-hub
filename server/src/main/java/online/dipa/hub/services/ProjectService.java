@@ -79,7 +79,7 @@ public class ProjectService {
 
     }
 
-    public List<ProjectTask> getProjectTasks (final Long projectId) {
+    public List<ProjectTask> getProjectTasks (final Long projectId, final boolean isPermanentTask) {
         List<ProjectTask> projectTasks = new ArrayList<>();
 
         List<Long> projectIds = userInformationService.getUserData().getProjects();
@@ -96,6 +96,9 @@ public class ProjectService {
                 projectTasks.addAll(template.getProjectTasks()
                                             .stream()
                                             .map(p -> conversionService.convert(p, ProjectTask.class))
+                                            .filter(Objects::nonNull)
+                                            .filter(task -> !isPermanentTask || task.getIsPermanentTask()
+                                                                                    .equals(true))
                                             .sorted(Comparator.comparing(ProjectTask::getSortOrder))
                                             .collect(Collectors.toList()));
             }
