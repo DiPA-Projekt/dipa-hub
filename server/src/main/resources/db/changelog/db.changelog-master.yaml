@@ -48,7 +48,13 @@ databaseChangeLog:
       file: db.changelog-v0.10.0.yaml
       relativeToChangelogFile: true
   - include:
+      file: db.changelog-v0.10.0-reset-sequences.sql
+      relativeToChangelogFile: true
+  - include:
       file: db.changelog-v0.10.0-data.sql
+      relativeToChangelogFile: true
+  - include:
+      file: db.changelog-v0.10.0-reset-sequences-2.sql
       relativeToChangelogFile: true
   - include:
       file: db.changelog-v0.11.0.yaml

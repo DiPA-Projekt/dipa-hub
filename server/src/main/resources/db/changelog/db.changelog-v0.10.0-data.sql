@@ -936,9 +936,6 @@ UPDATE milestone_template
 SET is_master = true
 WHERE plan_template_id = 2
 
---changeset id:reset_id_sequence dbms:postgresql
-SELECT setval('milestone_template_id_seq', (SELECT max(id) + 1 FROM milestone_template));
-
 --changeset id:milestones_template_Serveraustausch context:ba dbms:h2
 INSERT INTO milestone_template (name, date_offset, date, plan_template_id) 
 SELECT name, date_offset, date_offset + Now(), 9 FROM milestone_template as m2 WHERE plan_template_id = 1
