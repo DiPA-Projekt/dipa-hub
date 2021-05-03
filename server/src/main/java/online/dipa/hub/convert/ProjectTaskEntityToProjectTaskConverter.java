@@ -31,7 +31,9 @@ public class ProjectTaskEntityToProjectTaskConverter implements Converter<Projec
                              .title(template.getTitle())
                              .optional(template.getOptional())
                              .explanation(template.getExplanation())
-                                                   .sortOrder(template.getSortOrder());
+                             .isPermanentTask(template.getIsPermanentTask())
+                             .titlePermanentTask(template.getTitlePermanentTask())
+                             .sortOrder(template.getSortOrder());
 
         List<FormField> entries = template.getEntries().stream().sorted(Comparator.comparing(FormFieldEntity::getSortOrder)).map(p -> formFieldConverter.convert(p)).collect(Collectors.toList());
         projectTask.entries(entries);

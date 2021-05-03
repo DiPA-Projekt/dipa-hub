@@ -61,6 +61,23 @@ export class SidenavComponent implements OnInit, OnDestroy {
         name: 'Meine Reise durchs Projekt',
         icon: 'directions_walk',
         route: `gantt/${this.selectedTimelineId}/project-checklist`,
+        children: [
+          {
+            name: 'Schnellstart Projektmanagement (Planung)',
+            icon: 'play_arrow',
+            route: `gantt/${this.selectedTimelineId}/project-checklist/quickstart`,
+          },
+          {
+            name: 'Umsetzung und Steuerung',
+            icon: 'build',
+            route: `gantt/${this.selectedTimelineId}/project-checklist/control`,
+          },
+          {
+            name: 'Abschluss',
+            icon: 'outlined_flag',
+            route: `gantt/${this.selectedTimelineId}/project-checklist/end`,
+          },
+        ],
       },
       {
         name: 'Zeitplan',

@@ -1,8 +1,7 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
-import { ActivatedRoute, Params } from '@angular/router';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { switchMap } from 'rxjs/operators';
 import { Project, ProjectService } from 'dipa-api-client';
 import { ProjectChecklistComponent } from '../project-checklist/project-checklist.component';
 
@@ -18,9 +17,8 @@ interface ProjectSize {
   styleUrls: ['./project-data.component.scss'],
 })
 export class ProjectDataComponent implements OnInit, OnDestroy {
+  @Input() public timelineId: number;
   @ViewChild(ProjectChecklistComponent) private projectChecklistComponent: ProjectChecklistComponent;
-
-  public selectedTimelineId: number;
 
   public myForm: FormGroup;
 
@@ -61,18 +59,13 @@ export class ProjectDataComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.projectDataSubscription = this.activatedRoute.parent.params
-      .pipe(
-        switchMap(
-          (params: Params): Observable<Project> => {
-            this.selectedTimelineId = parseInt(params.id, 10);
-            return this.projectService.getProjectData(this.selectedTimelineId);
-          }
-        )
-      )
-      .subscribe((data: Project) => {
+    this.projectDataSubscription = this.projectService.getProjectData(this.timelineId).subscribe({
+      next: (data: Project) => {
         this.setReactiveForm(data);
-      });
+      },
+      error: null,
+      complete: () => void 0,
+    });
   }
 
   public ngOnDestroy(): void {
@@ -84,9 +77,13 @@ export class ProjectDataComponent implements OnInit, OnDestroy {
   }
 
   public onSubmit(form: FormGroup): void {
-    this.projectService.updateProjectData(this.selectedTimelineId, form.value).subscribe(() => {
-      form.reset(form.value);
-      this.projectChecklistComponent.ngOnInit();
+    this.projectService.updateProjectData(this.timelineId, form.value).subscribe({
+      next: () => {
+        form.reset(form.value);
+        this.projectChecklistComponent.ngOnInit();
+      },
+      error: null,
+      complete: () => void 0,
     });
   }
 

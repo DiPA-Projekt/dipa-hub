@@ -21,6 +21,9 @@ import { ResultsFormComponent } from './project-checklist/results-form/results-f
 import { ListMatFormFieldComponent } from './project-checklist/results-form-field/list-mat-form-field.component';
 import { MaterialModule } from '../../material/material.module';
 import { ProjectOrganizationComponent } from './project-organization/project-organization.component';
+import { ProjectQuickstartComponent } from './project-quickstart/project-quickstart.component';
+import { ProjectControlComponent } from './project-control/project-control.component';
+import { ProjectEndComponent } from './project-end/project-end.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +43,9 @@ import { ProjectOrganizationComponent } from './project-organization/project-org
     ResultsFormComponent,
     ListMatFormFieldComponent,
     ProjectOrganizationComponent,
+    ProjectQuickstartComponent,
+    ProjectControlComponent,
+    ProjectEndComponent,
   ],
   exports: [ChartComponent, FilesComponent, NavMenuListItemComponent],
   imports: [
