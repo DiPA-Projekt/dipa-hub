@@ -38,7 +38,7 @@ WHERE id = 9
 --changeset id:update_project_is_permanent-project-task-11 context:itzbund
 UPDATE project_task
 SET is_permanent_task = true, title_permanent_task = 'Monatlichen Statusbericht erstellen und versenden',
-description = 'Erstellung des Statusberichtes für den vorangegangenen Berichtsmonat in iSAR und Freigabe dessen durch den Projekteigner bis zum 10. Tag des Kalendermonats'
+explanation = 'Erstellung des Statusberichtes für den vorangegangenen Berichtsmonat in iSAR und Freigabe dessen durch den Projekteigner bis zum 10. Tag des Kalendermonats'
 WHERE id = 11
 
 --changeset id:update_project_is_permanent-project-task-12 context:itzbund
