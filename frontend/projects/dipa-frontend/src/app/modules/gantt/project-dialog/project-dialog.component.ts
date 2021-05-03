@@ -101,7 +101,8 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
         .createProject(formGroup.value)
         .subscribe((newTimeline: Timeline) => {
           if (newTimeline) {
-            this.router.navigate([`/gantt/${newTimeline.id}/project-checklist`]).then(() => window.location.reload());
+            // this.router.navigate([`/gantt/${newTimeline.id}/project-checklist`]).then(() => window.location.reload());
+            console.log(newTimeline);
           }
           this.dialogRef.close();
         });
