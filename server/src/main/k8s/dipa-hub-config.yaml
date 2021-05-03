@@ -13,7 +13,8 @@ data:
             password: dipasecret
             platform: postgres
           - tenantId: ba
-            url: jdbc:h2:mem:dipahub-ba
-            platform: h2
-    test: Hello World!
+            url: jdbc:postgresql://dipa-db-ba-@k8s.release.track@:5432/dipa
+            username: dipa
+            password: dipasecret
+            platform: postgres
 
