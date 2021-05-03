@@ -11,6 +11,8 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "project_approach")
@@ -38,6 +40,10 @@ public class ProjectApproachEntity extends BaseEntity {
     @NotNull
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private OperationTypeEntity operationType;
+    
+    @ManyToOne(fetch = FetchType.EAGER)
+    @NotFound(action = NotFoundAction.IGNORE)
+    private ProjectRoleTemplateEntity projectRoleTemplate;
 
     public String getName() {
         return name;
@@ -77,5 +83,13 @@ public class ProjectApproachEntity extends BaseEntity {
 
     public void setProject(final Set<ProjectEntity> project) {
         this.project = project;
+    }
+
+    public ProjectRoleTemplateEntity getProjectRoleTemplate() {
+        return projectRoleTemplate;
+    }
+
+    public void setProjectRoleTemplate(final ProjectRoleTemplateEntity projectRoleTemplate) {
+        this.projectRoleTemplate = projectRoleTemplate;
     }
 }

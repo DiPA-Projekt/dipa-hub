@@ -2,6 +2,11 @@ User:
   type: object
   description: Current user data
   properties:
+    id:
+      description: Unique identifier of the user
+      type: integer
+      format: int64
+      example: 2
     name:
       description: User name
       type: string
@@ -10,21 +15,15 @@ User:
       description: User email adress
       type: string
       default: max@mustermann.de
-    roles:
-      description: Current user roles
+    organisationRoles:
+      description: Current user organisation roles
       type: array
       items:
-        type: string
-    groups:
-      description: Current user groups
+        $ref: "../models/organisationRole.yml#/OrganisationRole"
+    projectRoles:
+      description: Current user project roles
       type: array
       items:
-        type: string
-    projects:
-      description: Current user project's ids
-      type: array
-      items:
-        type: integer
-        format: int64
+        $ref: "../models/projectRole.yml#/ProjectRole"
   required:
     - name
