@@ -8,8 +8,8 @@ spring:
   banner:
     location: classpath:dipa-banner.txt
   jpa:
-    database: h2
-    database-platform: org.hibernate.dialect.H2Dialect
+    database: POSTGRESQL
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     hibernate:
       ddl-auto: validate
     open-in-view: false
