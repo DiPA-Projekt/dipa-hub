@@ -50,7 +50,7 @@ export class ProjectOrganizationComponent implements OnInit, OnDestroy {
 
         this.filterAllUsers(allUsers);
 
-        this.saveRolesId();
+        this.saveRoleIds();
       });
 
     this.setReactiveForm();
@@ -61,7 +61,7 @@ export class ProjectOrganizationComponent implements OnInit, OnDestroy {
     this.projectSubscription?.unsubscribe();
   }
 
-  public saveRolesId(): void {
+  public saveRoleIds(): void {
     for (const user of this.projectUsers) {
       const roles = this.filterRole(user);
       this.userRolesDict[user.id] = roles;
@@ -80,7 +80,7 @@ export class ProjectOrganizationComponent implements OnInit, OnDestroy {
 
     this.userService.updateUser(user).subscribe((data) => {
       this.filterAllUsers(this.allUsers);
-      this.saveRolesId();
+      this.saveRoleIds();
     });
   }
 
@@ -92,7 +92,7 @@ export class ProjectOrganizationComponent implements OnInit, OnDestroy {
       this.projectService.getProjectUsers(this.selectedTimelineId).subscribe((res) => {
         this.projectUsers = res;
         this.filterAllUsers(this.allUsers);
-        this.saveRolesId();
+        this.saveRoleIds();
         this.setReactiveForm();
       })
     );
@@ -106,8 +106,8 @@ export class ProjectOrganizationComponent implements OnInit, OnDestroy {
   }
 
   private filterAllUsers(allUsers: User[]): void {
-    const projectUsersIds: number[] = [];
-    this.projectUsers.forEach((u) => projectUsersIds.push(u.id));
-    this.allUsers = allUsers.filter((user) => !projectUsersIds.includes(user.id));
+    const projectUserIds: number[] = [];
+    this.projectUsers.forEach((u) => projectUserIds.push(u.id));
+    this.allUsers = allUsers.filter((user) => !projectUserIds.includes(user.id));
   }
 }

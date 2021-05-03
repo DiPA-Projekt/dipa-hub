@@ -5,7 +5,6 @@ import { AuthGuard } from '../../auth.guard';
 import { GanttComponent } from './gantt.component';
 import { TemplatesViewComponent } from './templates-view/templates-view.component';
 import { TimelineComponent } from './timeline/timeline.component';
-import { ProjectDataComponent } from './project-data/project-data.component';
 import { ProjectOrganizationComponent } from './project-organization/project-organization.component';
 import { ProjectEndComponent } from './project-end/project-end.component';
 import { ProjectControlComponent } from './project-control/project-control.component';

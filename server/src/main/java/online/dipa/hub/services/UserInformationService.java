@@ -75,9 +75,8 @@ public class UserInformationService {
                                                                                .filter(temp -> temp.getProjectApproaches().stream()
                                                                                                    .anyMatch(a -> a.getId().equals(project.getProjectApproach().getId()))).findFirst()
                                                                                .orElse(null);
-        
 
-        ProjectRoleTemplateEntity newPRoleTemplate = new ProjectRoleTemplateEntity();
+        var newPRoleTemplate = new ProjectRoleTemplateEntity();
         newPRoleTemplate.setName(project.getName() + "ProjectRoleTemplate");
         newPRoleTemplate.setProject(project);
 
@@ -85,17 +84,17 @@ public class UserInformationService {
         project.setProjectRoleTemplate(newPRoleTemplate);
         projectRepository.save(project);
 
-        Set<ProjectRoleEntity> proles = new HashSet<>();
+        Set<ProjectRoleEntity> pRoles = new HashSet<>();
         for (ProjectRoleEntity pRole: new ArrayList<>(Objects.requireNonNull(pRoleTemplate)
                                                              .getProjectRoles())) {
 
-            ProjectRoleEntity newPRole = new ProjectRoleEntity(pRole);
+            var newPRole = new ProjectRoleEntity(pRole);
             newPRole.setProjectRoleTemplate(newPRoleTemplate);
             projectRoleRepository.save(newPRole);
-            proles.add(newPRole);
+            pRoles.add(newPRole);
         }
 
-        newPRoleTemplate.setProjectRoles(proles);
+        newPRoleTemplate.setProjectRoles(pRoles);
         projectRoleTemplateRepository.save(newPRoleTemplate);
 
     }
@@ -125,8 +124,8 @@ public class UserInformationService {
 
     public void updateUser (User user) {
 
-        UserEntity userEntity = userRepository.findAll().stream().filter(u -> u.getId().equals(user.getId()))
-        .findFirst().orElse(null);
+        var userEntity = userRepository.findAll().stream().filter(u -> u.getId().equals(user.getId()))
+                                       .findFirst().orElse(null);
         
         List<ProjectRoleEntity> oldUserProjectRoles = new ArrayList<>(Objects.requireNonNull(userEntity)
                                                                              .getProjectRoles());

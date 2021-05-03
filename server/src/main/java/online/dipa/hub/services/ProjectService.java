@@ -82,7 +82,7 @@ public class ProjectService {
     
     public void updateProjectData(final Long projectId, final Project project) {
         List<Long> projectIds = userInformationService.getProjectIdList();
-        ProjectEntity projectEntity = timelineService.getProject(projectId);
+        var projectEntity = timelineService.getProject(projectId);
 
         if (projectIds.contains(projectId)) {
             projectEntity.setAkz(project.getAkz());
@@ -98,17 +98,17 @@ public class ProjectService {
 
     public Timeline createProject(final Project project) {
 
-        ProjectEntity newProject = new ProjectEntity(project);
+        var newProject = new ProjectEntity(project);
         newProject.setProjectApproach(projectApproachService.getProjectApproachFromRepo(project.getProjectApproachId()));
 
         UserEntity projectOwner = userRepository.findAll().stream().filter(u -> u.getId().equals(project.getProjectOwner().getId())).findFirst().orElse(null);
         newProject.setUser(projectOwner);
         projectRepository.save(newProject);
 
-        PlanTemplateEntity planTemplate = projectApproachService.getDefaultPlanTemplateEntityFromRepo(project.getProjectApproachId());
+        var planTemplate = projectApproachService.getDefaultPlanTemplateEntityFromRepo(project.getProjectApproachId());
         List<MilestoneTemplateEntity> repoMilestones = new ArrayList<>(planTemplate.getMilestones());
 
-        PlanTemplateEntity projectPlanTemplate = new PlanTemplateEntity();
+        var projectPlanTemplate = new PlanTemplateEntity();
         projectPlanTemplate.setProject(newProject);
         projectPlanTemplate.setName(planTemplate.getName() + newProject.getId());
         projectPlanTemplate.setDefaultTemplate(true);
@@ -119,7 +119,7 @@ public class ProjectService {
         List<MilestoneTemplateEntity> newMilestones = new ArrayList<>();
 
         for (MilestoneTemplateEntity milestone: repoMilestones) {
-            MilestoneTemplateEntity newMilestone = new MilestoneTemplateEntity(milestone);
+            var newMilestone = new MilestoneTemplateEntity(milestone);
 
             newMilestone.setPlanTemplate(projectPlanTemplate);
 

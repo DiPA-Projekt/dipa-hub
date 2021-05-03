@@ -1,6 +1,6 @@
 get:
   tags:
-    - User
+    - user
   summary: get all users
   description: get all available users
   operationId: getUsers

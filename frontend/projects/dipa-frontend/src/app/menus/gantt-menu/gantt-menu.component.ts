@@ -24,10 +24,10 @@ export class GanttMenuComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.timelinesSubscription = this.timelinesService.getTimelines().subscribe((data) => {
-      const projectUsersIds: number[] = [];
+      const userProductIds: number[] = [];
       this.authenticationService.getUserData().subscribe((user) => (this.currentUserId = user.id));
-      this.authenticationService.getProjectRoles().forEach((role) => projectUsersIds.push(role.projectId));
-      this.timelineData = data.filter((t) => projectUsersIds.includes(t.id));
+      this.authenticationService.getProjectRoles().forEach((role) => userProductIds.push(role.projectId));
+      this.timelineData = data.filter((t) => userProductIds.includes(t.id));
       data
         .filter((t: Timeline) => t.projectOwner.id === this.currentUserId)
         .forEach((t) => {
