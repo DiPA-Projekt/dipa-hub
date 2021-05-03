@@ -1,0 +1,73 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-3">
+      <h2>Personen hinzufügen:</h2>
+    </div>
+    <form [formGroup]="formGroup" (selectionChange)="onSubmit(formGroup)">
+      <div class="col-md-6">
+        <mat-form-field>
+          <mat-label>Person</mat-label>
+          <mat-select required formControlName="user">
+            <mat-option>--</mat-option>
+            <mat-option *ngFor="let user of allUsers" [value]="user">
+              {{ user.name }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="formGroup.get('user').hasError('required')"> Bitte eine Person auswählen </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col">
+        <mat-form-field>
+          <mat-label>Rolle</mat-label>
+          <mat-select required formControlName="role" (selectionChange)="onSubmit(formGroup)">
+            <mat-option>--</mat-option>
+            <mat-option *ngFor="let role of projectRoles" [value]="role">
+              {{ role.name }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="formGroup.get('user').hasError('required') || formGroup.get('role').hasError('required')">
+            Bitte eine Rolle auswählen
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+
+  <table
+    mat-table
+    [dataSource]="projectUsers"
+    class="mat-elevation-z8"
+    *ngIf="projectUsers && userRolesDict"
+    aria-describedby="Zugriffe"
+  >
+    <ng-container matColumnDef="name">
+      <th id="name" mat-header-cell *matHeaderCellDef>Name</th>
+      <td mat-cell *matCellDef="let user">{{ user.name }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="role">
+      <th id="role" mat-header-cell *matHeaderCellDef>Rolle</th>
+      <td mat-cell *matCellDef="let user">
+        <div class="row">
+          <div class="col">
+            <mat-form-field>
+              <mat-select
+                required
+                [(value)]="userRolesDict[user.id]"
+                (selectionChange)="onSubmitRole($event.value, user)"
+                multiple
+              >
+                <mat-option *ngFor="let role of projectRoles" [value]="role.id">
+                  {{ role.name }}
+                </mat-option>
+              </mat-select></mat-form-field
+            >
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</div>

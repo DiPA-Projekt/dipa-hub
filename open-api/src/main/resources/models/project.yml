@@ -10,6 +10,34 @@ Project:
       description: The name of the project
       type: string
       example: "Feldberg"
+    operationTypeId:
+      description: Unique identifier of the operation type
+      type: integer
+      format: int64
+      example: 1
+    projectApproachId:
+      description: Unique identifier of the project approach
+      type: integer
+      format: int64
+      example: 2
+    projectType:
+      description: project type of this project
+      type: string
+      enum:
+        - "internes Projekt"
+        - "AN-Projekt"
+        - null
+      example: "internes Projekt"
+    start:
+      description: The start date of the timeline
+      type: string
+      format: date
+      example: "2020-08-17"
+    end:
+      description: The end date of the timeline
+      type: string
+      format: date
+      example: "2024-8-18"
     projectSize:
       description: size of this project
       type: string
@@ -33,8 +61,7 @@ Project:
       example: "II A 1"
     projectOwner:
       description: project owner's name
-      type: string
-      example: "Max Mustermann"
+      $ref: "../models/user.yml#/User"
   required:
     - id
     - name

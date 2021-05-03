@@ -47,6 +47,9 @@ Timeline:
       description: Flag if this timeline is the default timeline.
       type: boolean
       example: true
+    projectOwner:
+      description: project owner's name
+      $ref: "../models/user.yml#/User"
   required:
     - id
     - name
