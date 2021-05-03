@@ -1,0 +1,26 @@
+<ng-container [formGroup]="controlContainer.control">
+  <mat-form-field [hintLabel]="formField.get('hint')?.value" class="width2x" *ngIf="formField.get('show')?.value">
+    <mat-label>{{ formField.get('label')?.value }}</mat-label>
+    <mat-chip-list #chipList aria-label="Chip selection">
+      <span style="max-height: 100px; overflow: auto">
+        <mat-chip
+          *ngFor="let chip of chips"
+          class="smallChip"
+          [selectable]="selectable"
+          [removable]="removable"
+          (removed)="remove(chip, formField)"
+        >
+          {{ chip }}
+          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+        </mat-chip>
+      </span>
+      <input
+        placeholder="Hinzufügen..."
+        [matChipInputFor]="chipList"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        (matChipInputTokenEnd)="add($event, formField)"
+      />
+    </mat-chip-list>
+    <mat-error *ngIf="formField.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>
+  </mat-form-field>
+</ng-container>

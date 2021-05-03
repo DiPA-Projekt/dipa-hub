@@ -35,7 +35,7 @@ VALUES (4, 'Erste Terminserien wie z.B. Jour Fixe vereinbaren', true, '', 4, 1)
 
 --changeset id:insert-project-task-05 context:itzbund
 INSERT INTO project_task (id, title, optional, explanation, sort_order, project_task_template_id)
-VALUES (5, 'Erste Termine setzen und steuern', true, 'Strukturieren des Projektablaufes mit internen Terminen, Überprüfen der Termineinhaltung und Steuerung von Auswirkungen bei Terminüberschreitungen“', 5, 1)
+VALUES (5, 'Erste Termine setzen und steuern', true, 'Strukturieren des Projektablaufes mit internen Terminen, Überprüfen der Termineinhaltung und Steuerung von Auswirkungen von Terminüberschreitungen', 5, 1)
 
 --changeset id:insert-project-task-06 context:itzbund
 INSERT INTO project_task (id, title, optional, explanation, sort_order, project_task_template_id)
@@ -303,7 +303,7 @@ VALUES (32, 'date', 'Termin', false, 2, 'TEXTBOX', 'TEXT', true, 5)
 
 --changeset id:insert-project-task-04-form-entry-participants-result-05 context:itzbund
 INSERT INTO project_task_form_field (id, key, label, required, sort_order, CONTROL_TYPE, show, result_id)
-VALUES (33, 'participants', 'Teilnehmende', false, 3, 'TEXTAREA', true, 5)
+VALUES (33, 'participants', 'Teilnehmende', false, 3, 'LIST', true, 5)
 
 --changeset id:insert-project-task-04-form-entry-link-result-05 context:itzbund
 INSERT INTO project_task_form_field (id, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)

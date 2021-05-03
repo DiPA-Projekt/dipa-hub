@@ -5,6 +5,7 @@ import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -15,11 +16,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
 import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.web.cors.CorsUtils;
 
 @Configuration
 @EnableWebSecurity
 @ComponentScan(basePackageClasses = KeycloakSecurityComponents.class)
 public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter {
+    
 
     @Autowired
     public void configureGlobal(final AuthenticationManagerBuilder auth) throws Exception {
@@ -43,8 +46,8 @@ public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter 
         super.configure(http);
         http.authorizeRequests()
             .antMatchers("/api/**")
-            .hasRole("users")
-            .anyRequest()
+            .permitAll()
+            .requestMatchers(CorsUtils::isPreFlightRequest)
             .permitAll()
             .and()
             .sessionManagement()
@@ -53,4 +56,5 @@ public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter 
             .csrf()
             .disable();
     }
+
 }

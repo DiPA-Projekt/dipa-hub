@@ -1,0 +1,8 @@
+<div class="content-container">
+  <app-project-data [timelineId]="selectedTimelineId"></app-project-data>
+  <app-project-checklist [timelineId]="selectedTimelineId"></app-project-checklist>
+  <a mat-button [routerLink]="'/gantt/' + selectedTimelineId + '/project-checklist/control'">
+    Weiter
+    <mat-icon>navigate_next</mat-icon></a
+  >
+</div>

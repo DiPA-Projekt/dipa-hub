@@ -52,22 +52,23 @@ public class TimelineService {
     private ProjectApproachService projectApproachService;
 
     @Autowired
-    private UserInformationService userInformationService;
-
-    @Autowired
     private TimelineTemplateService timelineTemplateService;
+    
+    @Autowired
+    private UserInformationService userInformationService;
 
     @Autowired
     private IncrementService incrementService;
 
     public List<Timeline> getTimelines() {
+        List<Long> projectIds = userInformationService.getProjectIdList();
 
-        List<Long> projectIds = userInformationService.getUserData().getProjects();
         return projectRepository.findAll()
                                  .stream()
                                  .map(p -> conversionService.convert(p, Timeline.class))
                                  .filter(Objects::nonNull)
-                                 .filter(t -> projectIds.contains(t.getId())).collect(Collectors.toList());
+                                 .filter(t -> projectIds.contains(t.getId()))
+                                 .collect(Collectors.toList());
     }
 
     public ProjectEntity getProject(final Long timelineId) {
@@ -258,11 +259,11 @@ public class TimelineService {
                 newMilestones.add(newMilestone);
             }
             
-                newMilestones = timelineTemplateService.updateMilestonesTimelineTemplate(timeline.getId(), newMilestones, planTemplate);
+            newMilestones = timelineTemplateService.updateMilestonesTimelineTemplate(timeline.getId(), newMilestones, planTemplate);
 
-                milestoneTemplateRepository.saveAll(newMilestones);
+            milestoneTemplateRepository.saveAll(newMilestones);
             project.getIncrements()
-                   .forEach(i -> incrementRepository.delete(i));
+                .forEach(i -> incrementRepository.delete(i));
                 
             project.setIncrements(null);
             projectRepository.save(project);
@@ -320,17 +321,6 @@ public class TimelineService {
         downloadFileIds.addAll(vmxtProjectFiles);
 
         return downloadFileIds;
-    }
-
-    boolean filterOperationType(PlanTemplateEntity template, final Long operationTypeId) {
-        Optional<OperationType> operationType = template.getOperationTypes()
-                                                        .stream()
-                                                        .map(p -> conversionService.convert(p, OperationType.class))
-                                                        .filter(Objects::nonNull)
-                                                        .filter(o -> o.getId().equals(operationTypeId)).findFirst();
-
-        return operationType.isPresent();
-
     }
 
     boolean filterProjectApproach(PlanTemplateEntity template, final Long projectApproachId) {

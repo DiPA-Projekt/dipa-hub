@@ -4,6 +4,7 @@ import { ExternalLinksService, Timeline, TimelinesService } from 'dipa-api-clien
 import { ActivatedRoute, Params } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { Observable, Subscription } from 'rxjs';
+import { AuthenticationService } from '../../../authentication.service';
 
 @Component({
   selector: 'app-sidenav',
@@ -11,25 +12,27 @@ import { Observable, Subscription } from 'rxjs';
   styleUrls: ['./sidenav.component.scss'],
 })
 export class SidenavComponent implements OnInit, OnDestroy {
-  timelineData: Timeline[] = [];
+  public timelineData: Timeline[] = [];
 
-  timeline: Timeline;
+  public timeline: Timeline;
 
-  selectedTimelineId: number;
+  public selectedTimelineId: number;
 
-  favoriteLinksSubscription: Subscription;
-  timelinesSubscription: Subscription;
+  public favoriteLinksSubscription: Subscription;
+  public timelinesSubscription: Subscription;
 
-  navMenuItems: NavItem[] = [];
-  favoriteLinkItems: NavItem[] = [];
+  public navMenuItems: NavItem[] = [];
+  public favoriteLinkItems: NavItem[] = [];
+  public roles: string;
 
-  constructor(
+  public constructor(
+    private authenticationService: AuthenticationService,
     private timelinesService: TimelinesService,
     private externalLinksService: ExternalLinksService,
     public activatedRoute: ActivatedRoute
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.timelinesSubscription = this.activatedRoute.params
       .pipe(
         switchMap(
@@ -42,21 +45,39 @@ export class SidenavComponent implements OnInit, OnDestroy {
       .subscribe((data: Timeline[]) => {
         this.timelineData = data;
         this.timeline = this.timelineData.find((c) => c.id === Number(this.selectedTimelineId));
+
         this.setSideNavMenu();
       });
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.favoriteLinksSubscription?.unsubscribe();
     this.timelinesSubscription?.unsubscribe();
   }
 
-  setSideNavMenu(): void {
+  public setSideNavMenu(): void {
     this.navMenuItems = [
       {
         name: 'Meine Reise durchs Projekt',
         icon: 'directions_walk',
         route: `gantt/${this.selectedTimelineId}/project-checklist`,
+        children: [
+          {
+            name: 'Schnellstart Projektmanagement (Planung)',
+            icon: 'play_arrow',
+            route: `gantt/${this.selectedTimelineId}/project-checklist/quickstart`,
+          },
+          {
+            name: 'Umsetzung und Steuerung',
+            icon: 'build',
+            route: `gantt/${this.selectedTimelineId}/project-checklist/control`,
+          },
+          {
+            name: 'Abschluss',
+            icon: 'outlined_flag',
+            route: `gantt/${this.selectedTimelineId}/project-checklist/end`,
+          },
+        ],
       },
       {
         name: 'Zeitplan',
@@ -67,6 +88,11 @@ export class SidenavComponent implements OnInit, OnDestroy {
         name: 'Stöbern & Vergleichen',
         icon: 'find_replace',
         route: `gantt/${this.selectedTimelineId}/templates`,
+      },
+      {
+        name: 'Meine Projektorganisation',
+        icon: 'person_add_alt_1',
+        route: `gantt/${this.selectedTimelineId}/project-organization`,
       },
     ];
 
@@ -83,5 +109,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
         },
       ];
     });
+    this.roles = this.authenticationService.getCurrentUserProjectRoles(this.timeline);
   }
 }
