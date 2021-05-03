@@ -58,7 +58,6 @@ public class UserInformationService {
             .filter(user -> user.getKeycloakId().equals(currentUserKeycloakId))
             .map(u -> conversionService.convert(u, User.class)).findFirst().orElse(null);
 
-            System.out.println(currentUser.getId());
         }
         return currentUser;
     }
@@ -116,13 +115,11 @@ public class UserInformationService {
             projectRoleProjects.addAll(getProjectOwnerProjects());
             projectIdsList = projectRoleProjects;
         }
-        System.out.println(projectIdsList.size());
+
         return projectIdsList;
     }
 
     private List<Long> getProjectOwnerProjects()  {
-        System.out.println("getProjectOwnerProjects"+projectRepository.findAll().stream().filter(p -> p.getUser().getId().equals(getUserData().getId())).map(
-                ProjectEntity::getId).count());
         return projectRepository.findAll().stream().filter(p -> p.getUser().getId().equals(getUserData().getId())).map(
                 ProjectEntity::getId).collect(Collectors.toList());
     }

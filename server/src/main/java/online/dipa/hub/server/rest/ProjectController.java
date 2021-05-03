@@ -48,7 +48,7 @@ public class ProjectController implements ProjectApi {
         return ResponseEntity.noContent().build();
     }
 
-    @CrossOrigin(origins = "*")
+    @CrossOrigin(origins = "*", allowedHeaders="*")
     @Override
     public ResponseEntity<Timeline> createProject(Project project) {
         return ResponseEntity.ok(projectService.createProject(project));
