@@ -31,7 +31,13 @@ public class ProjectController implements ProjectApi {
     
     @Override
     public ResponseEntity<List<ProjectTask>> getProjectTasks(final Long timelineId) {
-        List<ProjectTask> projectTasks =  projectService.getProjectTasks(timelineId);
+        List<ProjectTask> projectTasks =  projectService.getProjectTasks(timelineId, false);
+        return ResponseEntity.ok(projectTasks);
+    }
+
+    @Override
+    public ResponseEntity<List<ProjectTask>> getProjectPermanentTasks(final Long timelineId) {
+        List<ProjectTask> projectTasks =  projectService.getProjectTasks(timelineId, true);
         return ResponseEntity.ok(projectTasks);
     }
 

@@ -8,10 +8,10 @@
       [completed]="task.completed"
       [state]="task.completed ? 'done' : 'number'"
     >
-      <ng-template matStepLabel>{{ task.title }}</ng-template>
+      <ng-template matStepLabel>{{ getTaskTitle(task) }}</ng-template>
       <p *ngIf="task.explanation" class="stepExplanation">{{ task.explanation }}</p>
       <app-project-task-form
-        [selectedTimelineId]="selectedTimelineId"
+        [selectedTimelineId]="timelineId"
         [taskData]="task"
         (stepStatusChanged)="stepStatusChanged(stepper, $event)"
       ></app-project-task-form>

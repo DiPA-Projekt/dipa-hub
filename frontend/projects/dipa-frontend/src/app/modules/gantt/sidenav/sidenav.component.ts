@@ -23,13 +23,13 @@ export class SidenavComponent implements OnInit, OnDestroy {
   navMenuItems: NavItem[] = [];
   favoriteLinkItems: NavItem[] = [];
 
-  constructor(
+  public constructor(
     private timelinesService: TimelinesService,
     private externalLinksService: ExternalLinksService,
     public activatedRoute: ActivatedRoute
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.timelinesSubscription = this.activatedRoute.params
       .pipe(
         switchMap(
@@ -46,17 +46,34 @@ export class SidenavComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.favoriteLinksSubscription?.unsubscribe();
     this.timelinesSubscription?.unsubscribe();
   }
 
-  setSideNavMenu(): void {
+  private setSideNavMenu(): void {
     this.navMenuItems = [
       {
         name: 'Meine Reise durchs Projekt',
         icon: 'directions_walk',
         route: `gantt/${this.selectedTimelineId}/project-checklist`,
+        children: [
+          {
+            name: 'Schnellstart Projektmanagement (Planung)',
+            icon: 'play_arrow',
+            route: `gantt/${this.selectedTimelineId}/project-checklist/quickstart`,
+          },
+          {
+            name: 'Umsetzung und Steuerung',
+            icon: 'build',
+            route: `gantt/${this.selectedTimelineId}/project-checklist/control`,
+          },
+          {
+            name: 'Abschluss',
+            icon: 'outlined_flag',
+            route: `gantt/${this.selectedTimelineId}/project-checklist/end`,
+          },
+        ],
       },
       {
         name: 'Zeitplan',

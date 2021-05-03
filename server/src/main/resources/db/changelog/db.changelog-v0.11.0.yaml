@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: addColumn-project-task-is-permanent
+      author: bock
+      changes:
+        - addColumn:
+            tableName: project_task
+            columns:
+              - column:
+                  name: is_permanent_task
+                  type: BOOLEAN
+                  defaultValue: false
+              - column:
+                  name: title_permanent_task
+                  type: VARCHAR(255)
