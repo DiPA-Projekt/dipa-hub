@@ -266,8 +266,7 @@ public class TimelineService {
                 .forEach(i -> incrementRepository.delete(i));
                 
             project.setIncrements(null);
-            // project.setProjectRoleTemplate(null);
-                        projectRepository.save(project);
+            projectRepository.save(project);
 
             userInformationService.createNewProjectRoles1(project);
 
