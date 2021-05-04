@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.Set;
 
@@ -70,11 +71,7 @@ public class UserInformationService {
     }
 
     public void createNewProjectRoles (ProjectEntity project) {
-
-        ProjectRoleTemplateEntity pRoleTemplate = projectRoleTemplateRepository.findAll().stream()
-                                                                               .filter(temp -> temp.getProjectApproaches().stream()
-                                                                                                   .anyMatch(a -> a.getId().equals(project.getProjectApproach().getId()))).findFirst()
-                                                                               .orElse(null);
+        ProjectRoleTemplateEntity pRoleTemplate = findProjectRoleTemplate(project);
 
         var newPRoleTemplate = new ProjectRoleTemplateEntity();
         newPRoleTemplate.setName(project.getName() + "ProjectRoleTemplate");
@@ -97,6 +94,43 @@ public class UserInformationService {
         newPRoleTemplate.setProjectRoles(pRoles);
         projectRoleTemplateRepository.save(newPRoleTemplate);
 
+    }
+
+    public void createNewProjectRoles1 (ProjectEntity project) {
+
+        ProjectRoleTemplateEntity pRoleTemplate = findProjectRoleTemplate(project);
+
+        Set<ProjectRoleEntity> newProjectRoles = new HashSet<>();
+
+        for (ProjectRoleEntity projectRole: new ArrayList<>(Objects.requireNonNull(pRoleTemplate)
+                                                                   .getProjectRoles())) {
+            var newPRole = new ProjectRoleEntity(projectRole);
+            projectRoleRepository.save(newPRole);
+            newProjectRoles.add(newPRole);
+        }
+
+        for (ProjectRoleEntity projectRole: project.getProjectRoleTemplate().getProjectRoles()) {
+            for (UserEntity user: new ArrayList<>(projectRole.getUsers())) {
+                user.getProjectRoles().remove(projectRole);
+
+                Optional<ProjectRoleEntity> userRoleOptional = newProjectRoles.stream().filter(r -> r.getAbbreviation().equals(projectRole.getAbbreviation())).findFirst();
+                if (userRoleOptional.isPresent()) {
+                    user.getProjectRoles().add(userRoleOptional.get());
+
+                } else {
+                    newProjectRoles.stream().filter(r -> r.getAbbreviation().equals("PT")).findFirst().ifPresent(member -> user.getProjectRoles()
+                                                              .add(member));
+                    newProjectRoles.stream().filter(r -> r.getAbbreviation().equals("ET")).findFirst().ifPresent(developer -> user.getProjectRoles()
+                                                                                                                                 .add(developer));
+                }
+
+            }
+            projectRoleRepository.delete(projectRole);
+        }
+        newProjectRoles.forEach(role -> role.setProjectRoleTemplate(project.getProjectRoleTemplate()));
+
+        project.getProjectRoleTemplate().setProjectRoles(newProjectRoles);
+        projectRoleTemplateRepository.save(project.getProjectRoleTemplate());
     }
 
     public List<Long> getProjectIdList() {
@@ -141,6 +175,15 @@ public class UserInformationService {
             userEntity.getProjectRoles().add(newPRoleEntity);
         }
         userRepository.save(userEntity);
+    }
+
+    private ProjectRoleTemplateEntity findProjectRoleTemplate (ProjectEntity project) {
+
+        return projectRoleTemplateRepository.findAll().stream()
+                                                               .filter(temp -> temp.getProjectApproaches().stream()
+                                                                                   .anyMatch(a -> a.getId().equals(project.getProjectApproach().getId()))).findFirst()
+                                                               .orElse(null);
+
     }
 
 

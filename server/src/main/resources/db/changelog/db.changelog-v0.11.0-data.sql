@@ -109,7 +109,6 @@ SELECT name, abbreviation, permission, 8 FROM project_role WHERE project_role_te
 --changeset id:insert-project-approach-non-agile-project-role-template
 UPDATE project_approach
 SET project_role_template_id = 1
-WHERE id = 1 OR id = 3 OR id = 4 OR id = 5 OR id = 6
 
 --changeset id:insert-project-approach-agile-project-role-template context:itzbund
 UPDATE project_approach

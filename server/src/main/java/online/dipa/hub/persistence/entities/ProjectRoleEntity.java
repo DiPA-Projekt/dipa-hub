@@ -34,11 +34,11 @@ public class ProjectRoleEntity extends BaseEntity {
     @Basic(optional = false)
     private String permission;
 
-    @ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch=FetchType.EAGER)
     @NotFound(action = NotFoundAction.IGNORE)
     private ProjectRoleTemplateEntity projectRoleTemplate;
 
-    @ManyToMany(mappedBy = "projectRoles", cascade = { ALL })
+    @ManyToMany(mappedBy = "projectRoles")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<UserEntity> users;
 
