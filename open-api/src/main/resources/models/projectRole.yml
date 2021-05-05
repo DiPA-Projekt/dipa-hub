@@ -19,6 +19,10 @@ ProjectRole:
       type: integer
       format: int64
       example: 1
+    defaultRole:
+      description: Flag if this role is the default project role.
+      type: boolean
+      example: true
     permission:
       description: User's permission
       type: string

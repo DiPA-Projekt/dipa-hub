@@ -9,3 +9,15 @@ databaseChangeLog:
               - column:
                   name: icon
                   type: VARCHAR(255)
+  - changeSet:
+      id: addColumn-project-role-default-role
+      author: nguyen
+      changes:
+        - addColumn:
+            tableName: project_role
+            columns:
+              - column:
+                  name: default_role
+                  type: boolean
+                  defaultValue: false
+

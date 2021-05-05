@@ -44,3 +44,13 @@ WHERE id = 11
 UPDATE project_task
 SET icon = 'warning'
 WHERE id = 12
+
+--changeset id:update_default_role_project_role_itzbund context:itzbund
+UPDATE project_role
+SET default_role = true
+WHERE abbreviation = 'PT' OR abbreviation = 'ET'
+
+--changeset id:update_default_role_project_role_ba context:ba
+UPDATE project_role
+SET default_role = true
+WHERE abbreviation = 'PT'
