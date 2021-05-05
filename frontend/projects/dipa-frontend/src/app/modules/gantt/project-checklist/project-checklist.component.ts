@@ -70,6 +70,9 @@ export class ProjectChecklistComponent implements OnDestroy {
   }
 
   public getTaskIcon(task: ProjectTask): string {
-    return this.checklistType === 'permanentTasks' ? task.icon : task.completed ? 'done' : 'number';
+    if (this.checklistType === 'permanentTasks') {
+      return task.icon;
+    }
+    return task.completed ? 'done' : 'number';
   }
 }
