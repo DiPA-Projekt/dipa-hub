@@ -16,7 +16,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
 import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-import org.springframework.web.cors.CorsUtils;
 
 @Configuration
 @EnableWebSecurity
@@ -47,8 +46,8 @@ public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter 
         http.authorizeRequests()
             .antMatchers("/api/**")
             .permitAll()
-            .requestMatchers(CorsUtils::isPreFlightRequest)
-            .permitAll()
+            .and()
+            .cors()
             .and()
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

@@ -267,6 +267,9 @@ public class TimelineService {
                 
             project.setIncrements(null);
             projectRepository.save(project);
+
+            userInformationService.updateNewProjectRolesForTemplate(project);
+
         }
 
 

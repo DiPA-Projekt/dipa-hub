@@ -12,7 +12,6 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import online.dipa.hub.api.model.ProjectRole;
-import static javax.persistence.CascadeType.ALL;
 
 
 @Entity
@@ -33,12 +32,15 @@ public class ProjectRoleEntity extends BaseEntity {
     @NotEmpty
     @Basic(optional = false)
     private String permission;
+    
+    @Basic(optional = true)
+    private boolean defaultRole;
 
-    @ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch=FetchType.EAGER)
     @NotFound(action = NotFoundAction.IGNORE)
     private ProjectRoleTemplateEntity projectRoleTemplate;
 
-    @ManyToMany(mappedBy = "projectRoles", cascade = { ALL })
+    @ManyToMany(mappedBy = "projectRoles")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<UserEntity> users;
 
@@ -50,12 +52,14 @@ public class ProjectRoleEntity extends BaseEntity {
         this.name = projectRole.getName();
         this.abbreviation = projectRole.getAbbreviation();
         this.permission = projectRole.getPermission();
+        this.defaultRole = projectRole.isDefaultRole();
     }
     
     public ProjectRoleEntity(ProjectRole projectRole) {
         this.name = projectRole.getName();
         this.abbreviation = projectRole.getAbbreviation();
         this.permission = projectRole.getPermission().toString();
+        this.defaultRole = projectRole.getDefaultRole();
     }
 
     public String getName() {
@@ -81,6 +85,14 @@ public class ProjectRoleEntity extends BaseEntity {
 
     public void setPermission(final String permission) {
         this.permission = permission;
+    }
+
+    public boolean isDefaultRole() {
+        return defaultRole;
+    }
+
+    public void setDefaultRole(final boolean defaultRole) {
+        this.defaultRole = defaultRole;
     }
 
     public ProjectRoleTemplateEntity getProjectRoleTemplate() {
