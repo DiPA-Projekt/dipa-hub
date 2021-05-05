@@ -118,10 +118,8 @@ public class UserInformationService {
                     user.getProjectRoles().add(userRoleOptional.get());
 
                 } else {
-                    newProjectRoles.stream().filter(r -> r.getAbbreviation().equals("PT")).findFirst().ifPresent(member -> user.getProjectRoles()
+                    newProjectRoles.stream().filter(r -> r.isDefaultRole()).findFirst().ifPresent(member -> user.getProjectRoles()
                                                               .add(member));
-                    newProjectRoles.stream().filter(r -> r.getAbbreviation().equals("ET")).findFirst().ifPresent(developer -> user.getProjectRoles()
-                                                                                                                                 .add(developer));
                 }
 
             }

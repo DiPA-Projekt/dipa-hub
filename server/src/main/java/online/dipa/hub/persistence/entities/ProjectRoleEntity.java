@@ -32,6 +32,9 @@ public class ProjectRoleEntity extends BaseEntity {
     @NotEmpty
     @Basic(optional = false)
     private String permission;
+    
+    @Basic(optional = true)
+    private boolean defaultRole;
 
     @ManyToOne(fetch=FetchType.EAGER)
     @NotFound(action = NotFoundAction.IGNORE)
@@ -49,12 +52,14 @@ public class ProjectRoleEntity extends BaseEntity {
         this.name = projectRole.getName();
         this.abbreviation = projectRole.getAbbreviation();
         this.permission = projectRole.getPermission();
+        this.defaultRole = projectRole.isDefaultRole();
     }
     
     public ProjectRoleEntity(ProjectRole projectRole) {
         this.name = projectRole.getName();
         this.abbreviation = projectRole.getAbbreviation();
         this.permission = projectRole.getPermission().toString();
+        this.defaultRole = projectRole.getDefaultRole();
     }
 
     public String getName() {
@@ -80,6 +85,14 @@ public class ProjectRoleEntity extends BaseEntity {
 
     public void setPermission(final String permission) {
         this.permission = permission;
+    }
+
+    public boolean isDefaultRole() {
+        return defaultRole;
+    }
+
+    public void setDefaultRole(final boolean defaultRole) {
+        this.defaultRole = defaultRole;
     }
 
     public ProjectRoleTemplateEntity getProjectRoleTemplate() {
