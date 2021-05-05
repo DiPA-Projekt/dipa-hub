@@ -96,7 +96,7 @@ public class UserInformationService {
 
     }
 
-    public void createNewProjectRoles1 (ProjectEntity project) {
+    public void updateNewProjectRolesForTemplate (ProjectEntity project) {
 
         ProjectRoleTemplateEntity pRoleTemplate = findProjectRoleTemplate(project);
 
