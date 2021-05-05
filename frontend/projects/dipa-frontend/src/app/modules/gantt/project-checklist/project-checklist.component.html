@@ -1,21 +1,25 @@
-<h2 class="project-checklist-header">Projektcheckliste</h2>
 <ng-container *ngIf="projectTasks?.length; else noProjectTask">
   <mat-vertical-stepper [linear]="false" #stepper>
     <mat-step
       *ngFor="let task of projectTasks"
       [stepControl]="formGroup"
-      [optional]="task.optional"
+      [optional]="this.checklistType === 'permanentTasks' ? false : task.optional"
       [completed]="task.completed"
-      [state]="task.completed ? 'done' : 'number'"
+      [state]="getTaskIcon(task)"
     >
       <ng-template matStepLabel>{{ getTaskTitle(task) }}</ng-template>
       <p *ngIf="task.explanation" class="stepExplanation">{{ task.explanation }}</p>
       <app-project-task-form
+        [completable]="checklistType !== 'permanentTasks'"
         [selectedTimelineId]="timelineId"
         [taskData]="task"
         (stepStatusChanged)="stepStatusChanged(stepper, $event)"
       ></app-project-task-form>
     </mat-step>
+
+    <ng-template *ngFor="let task of projectTasks" [matStepperIcon]="task.icon">
+      <mat-icon>{{ task.icon }}</mat-icon>
+    </ng-template>
   </mat-vertical-stepper>
 </ng-container>
 <ng-template #noProjectTask>

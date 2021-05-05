@@ -1,9 +1,8 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Project, ProjectService } from 'dipa-api-client';
-import { ProjectChecklistComponent } from '../project-checklist/project-checklist.component';
 
 interface ProjectSize {
   value: string;
@@ -18,7 +17,7 @@ interface ProjectSize {
 })
 export class ProjectDataComponent implements OnInit, OnDestroy {
   @Input() public timelineId: number;
-  @ViewChild(ProjectChecklistComponent) private projectChecklistComponent: ProjectChecklistComponent;
+  @Output() public projectSizeChanged = new EventEmitter();
 
   public myForm: FormGroup;
 
@@ -80,7 +79,8 @@ export class ProjectDataComponent implements OnInit, OnDestroy {
     this.projectService.updateProjectData(this.timelineId, form.value).subscribe({
       next: () => {
         form.reset(form.value);
-        this.projectChecklistComponent.ngOnInit();
+        // in the future should be emitted only if projectSize field changes
+        this.projectSizeChanged.emit();
       },
       error: null,
       complete: () => void 0,
