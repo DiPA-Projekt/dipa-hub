@@ -58,7 +58,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   public setSideNavMenu(): void {
     this.navMenuItems = [
       {
-        name: 'Meine Reise durchs Projekt',
+        name: 'Unsere Reise durchs Projekt',
         icon: 'directions_walk',
         route: `gantt/${this.selectedTimelineId}/project-checklist`,
         children: [
@@ -90,7 +90,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
         route: `gantt/${this.selectedTimelineId}/templates`,
       },
       {
-        name: 'Meine Projektorganisation',
+        name: 'Unsere Projektorganisation',
         icon: 'person_add_alt_1',
         route: `gantt/${this.selectedTimelineId}/project-organization`,
       },

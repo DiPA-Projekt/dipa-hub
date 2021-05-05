@@ -252,6 +252,12 @@ UPDATE project_task
 SET is_permanent_task = true, title_permanent_task = 'ELBE Einkaufswagen verwalten'
 WHERE id = 7
 
+--changeset id:update_project_is_permanent-project-task-08 context:itzbund
+UPDATE project_task
+SET is_permanent_task = true, title_permanent_task = 'Monatliche Leistungsnachweise freigeben',
+explanation = 'Einrichtung der Verträge und der Externen zu diesen Verträgen und Erstellung der monatlichen Leistungsnachweise im Tool "AeDL"'
+WHERE id = 8
+
 --changeset id:update_project_is_permanent-project-task-09 context:itzbund
 UPDATE project_task
 SET is_permanent_task = true, title_permanent_task = 'Trackingtabelle externe Dienstleistung pflegen'
@@ -260,11 +266,13 @@ WHERE id = 9
 --changeset id:update_project_is_permanent-project-task-11 context:itzbund
 UPDATE project_task
 SET is_permanent_task = true, title_permanent_task = 'Monatlichen Statusbericht erstellen und versenden',
-explanation = 'Erstellung des Statusberichtes für den vorangegangenen Berichtsmonat in iSAR und Freigabe dessen durch den Projekteigner bis zum 10. Tag des Kalendermonats'
+explanation = 'Erstellung des Statusberichtes für den vorangegangenen Berichtsmonat in iSAR und Freigabe dessen durch den Projekteigner bis zum 10. Tag des Kalendermonats',
+sort_order = 12
 WHERE id = 11
 
 --changeset id:update_project_is_permanent-project-task-12 context:itzbund
 UPDATE project_task
-SET is_permanent_task = true, title_permanent_task = 'Risiken managen'
+SET is_permanent_task = true, title_permanent_task = 'Risiken managen',
+sort_order = 11
 WHERE id = 12
 

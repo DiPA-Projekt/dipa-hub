@@ -20,6 +20,7 @@ public class ProjectTaskEntity extends BaseEntity {
     @Basic(optional = false)
     private String title;
 
+    private String icon;
     private boolean optional;
     private String explanation;
     private boolean isPermanentTask;
@@ -46,6 +47,7 @@ public class ProjectTaskEntity extends BaseEntity {
     public ProjectTaskEntity(ProjectTaskEntity projectTaskEntity) {
         this.title = projectTaskEntity.getTitle();
         this.optional = projectTaskEntity.getOptional();
+        this.icon = projectTaskEntity.getIcon();
         this.explanation = projectTaskEntity.getExplanation();
         this.isPermanentTask = projectTaskEntity.getIsPermanentTask();
         this.titlePermanentTask = projectTaskEntity.getTitlePermanentTask();
@@ -67,6 +69,14 @@ public class ProjectTaskEntity extends BaseEntity {
 
     public void setTitle(final String title) {
         this.title = title;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(final String icon) {
+        this.icon = icon;
     }
 
     public boolean getOptional() {

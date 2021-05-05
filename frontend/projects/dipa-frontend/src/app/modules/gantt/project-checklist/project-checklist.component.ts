@@ -1,8 +1,8 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { Subscription } from 'rxjs';
-import { ProjectService, ProjectTask } from 'dipa-api-client';
+import { ProjectTask } from 'dipa-api-client';
 import { MatVerticalStepper } from '@angular/material/stepper';
 
 @Component({
@@ -16,9 +16,10 @@ import { MatVerticalStepper } from '@angular/material/stepper';
     },
   ],
 })
-export class ProjectChecklistComponent implements OnInit, OnDestroy {
+export class ProjectChecklistComponent implements OnDestroy {
   @Input() public timelineId: number;
   @Input() public checklistType: string;
+  @Input() public projectTasks: ProjectTask[];
 
   public formGroup: FormGroup;
 
@@ -49,31 +50,7 @@ export class ProjectChecklistComponent implements OnInit, OnDestroy {
     },
   ];
 
-  public projectTasks: ProjectTask[];
-
   private projectChecklistSubscription: Subscription;
-
-  public constructor(private projectService: ProjectService) {}
-
-  public ngOnInit(): void {
-    if (this.checklistType === 'permanentTasks') {
-      this.projectChecklistSubscription = this.projectService.getProjectPermanentTasks(this.timelineId).subscribe({
-        next: (data: ProjectTask[]) => {
-          this.projectTasks = data;
-        },
-        error: null,
-        complete: () => void 0,
-      });
-    } else {
-      this.projectChecklistSubscription = this.projectService.getProjectTasks(this.timelineId).subscribe({
-        next: (data: ProjectTask[]) => {
-          this.projectTasks = data;
-        },
-        error: null,
-        complete: () => void 0,
-      });
-    }
-  }
 
   public ngOnDestroy(): void {
     this.projectChecklistSubscription?.unsubscribe();
@@ -90,5 +67,9 @@ export class ProjectChecklistComponent implements OnInit, OnDestroy {
 
   public getTaskTitle(task: ProjectTask): string {
     return this.checklistType === 'permanentTasks' ? task.titlePermanentTask : task.title;
+  }
+
+  public getTaskIcon(task: ProjectTask): string {
+    return this.checklistType === 'permanentTasks' ? task.icon : task.completed ? 'done' : 'number';
   }
 }
