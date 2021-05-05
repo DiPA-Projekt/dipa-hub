@@ -22,7 +22,7 @@ const routes: Routes = [
       {
         path: 'project-checklist',
         children: [
-          // { path: '', redirectTo: ':id/project-checklist/quickstart' },
+          { path: '', redirectTo: 'quickstart', pathMatch: 'full' },
           { path: 'quickstart', component: ProjectQuickstartComponent },
           { path: 'control', component: ProjectControlComponent },
           { path: 'end', component: ProjectEndComponent },

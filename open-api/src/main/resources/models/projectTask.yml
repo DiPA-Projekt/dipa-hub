@@ -10,6 +10,10 @@ ProjectTask:
       description: The title of the task
       type: string
       example: "Übergabe TLM-->PL"
+    icon:
+      description: icon of the task
+      type: string
+      example: "shopping_cart"
     optional:
       description: if this task is optional
       type: boolean

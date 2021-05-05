@@ -1,4 +1,8 @@
 <div class="content-container">
-  <app-project-data [timelineId]="selectedTimelineId"></app-project-data>
-  <app-project-checklist [timelineId]="selectedTimelineId" checklistType="permanentTasks"></app-project-checklist>
+  <app-project-data (projectSizeChanged)="reloadProjectTasks()" [timelineId]="selectedTimelineId"></app-project-data>
+  <app-project-checklist
+    [projectTasks]="projectTasks"
+    [timelineId]="selectedTimelineId"
+    checklistType="permanentTasks"
+  ></app-project-checklist>
 </div>

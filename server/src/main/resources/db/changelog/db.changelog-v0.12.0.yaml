@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: addColumn-project-task-icon
+      author: bock
+      changes:
+        - addColumn:
+            tableName: project_task
+            columns:
+              - column:
+                  name: icon
+                  type: VARCHAR(255)
