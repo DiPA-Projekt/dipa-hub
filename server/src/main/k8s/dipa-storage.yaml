@@ -1,0 +1,30 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: dipa-pv-@k8s.release.track@
+  labels:
+    app: dipa-hub
+    track: @k8s.release.track@
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/var/local/data/@k8s.release.track@"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: dipa-pv-claim-@k8s.release.track@
+  labels:
+    app: dipa-hub
+    track: @k8s.release.track@
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi

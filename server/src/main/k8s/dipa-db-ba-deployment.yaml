@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dipa-db-ba-@k8s.release.track@
+  labels:
+    app: dipa-hub
+    track: @k8s.release.track@
+    tenant: ba
+spec:
+  type: NodePort
+  ports:
+    - port: 5432
+  selector:
+    app: dipa-hub
+    tier: db
+    tenant: ba
+    track: @k8s.release.track@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dipa-db-ba-@k8s.release.track@
+  labels:
+    app: dipa-hub
+    track: @k8s.release.track@
+    tenant: ba
+spec:
+  selector:
+    matchLabels:
+      app: dipa-hub
+      tier: db
+      tenant: ba
+      track: @k8s.release.track@
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: dipa-hub
+        tier: db
+        tenant: ba
+        track: @k8s.release.track@
+    spec:
+      containers:
+        - name: dipa-db-ba
+          image: postgres:13.2
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: dipa
+            - name: POSTGRES_USER
+              value: dipa
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: database-password
+                  key: password
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgresdb
+              subPath: ba
+      volumes:
+        - name: postgresdb
+          persistentVolumeClaim:
+            claimName: dipa-pv-claim-@k8s.release.track@
