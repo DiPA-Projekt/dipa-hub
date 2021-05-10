@@ -20,6 +20,11 @@ npm start
 
 
 // 3. CLI
+cd frontend
 npm run cucumber
 
 ```
+
+Empfohlene Plugins für VSCode:
+Cucumber (Gherkin) Full Support
+
