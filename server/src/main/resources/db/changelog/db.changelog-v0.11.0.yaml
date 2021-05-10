@@ -25,7 +25,7 @@ databaseChangeLog:
               - column:
                   name: email
                   type: VARCHAR(1000)
-            tableName: user
+            tableName: app_user
   - changeSet:
       id: create-project-role-template-table
       author: nguyen
@@ -124,7 +124,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     foreignKeyName: FKUserIdProjectRoleConnection
-                    references: user(id)
+                    references: app_user(id)
                   name: user_id
                   type: BIGINT
               - column:
@@ -184,7 +184,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     foreignKeyName: FKOrganisationRoleUserIdConnection
-                    references: user(id)
+                    references: app_user(id)
                   name: user_id
                   type: BIGINT
               - column:
@@ -225,10 +225,10 @@ databaseChangeLog:
       author: nguyen
       changes:
         - dropColumn:
-              columns:
-                - column:
-                    name: project_owner
-              tableName: project
+            columns:
+              - column:
+                  name: project_owner
+            tableName: project
   - changeSet:
       id: addColumn-user-id-project
       author: nguyen
@@ -240,7 +240,7 @@ databaseChangeLog:
                   constraints:
                     nullable: true
                     foreignKeyName: FKUserIdProject
-                    references: user(id)
+                    references: app_user(id)
                   name: user_id
                   type: BIGINT
   - changeSet:

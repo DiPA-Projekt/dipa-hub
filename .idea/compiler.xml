@@ -8,12 +8,22 @@
         <outputRelativeToContentRoot value="true" />
         <module name="ecamp-frontend" />
         <module name="dipa-open-api" />
-        <module name="dipa-server" />
         <module name="dipa-frontend" />
         <module name="ecamp-server" />
       </profile>
+      <profile name="Annotation profile for DiPA :: Parent" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.4.2.Final/mapstruct-processor-1.4.2.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.4.2.Final/mapstruct-1.4.2.Final.jar" />
+        </processorPath>
+        <module name="dipa-server" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="dipa-client" target="11" />
       <module name="dipa-frontend" target="11" />
       <module name="dipa-hub" target="11" />
       <module name="dipa-open-api" target="11" />
@@ -25,6 +35,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="dipa-client" options="-parameters" />
       <module name="dipa-frontend" options="-parameters" />
       <module name="dipa-open-api" options="-parameters" />
       <module name="dipa-server" options="-parameters" />
