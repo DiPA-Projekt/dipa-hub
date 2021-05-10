@@ -6,13 +6,13 @@ import {
   OperationTypesService,
   ProjectApproachesService,
   ProjectApproach,
+  ProjectService,
   Timeline,
   User,
 } from 'dipa-api-client';
 import ProjectTypeEnum = Timeline.ProjectTypeEnum;
 import { Subscription } from 'rxjs';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { ProjectService } from 'projects/dipa-api-client/src';
 import { Router } from '@angular/router';
 
 interface ProjectSize {
