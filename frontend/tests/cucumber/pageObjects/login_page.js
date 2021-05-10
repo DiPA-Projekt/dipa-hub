@@ -1,3 +1,3 @@
-var tf_username = By.id("username")
-var tf_password = By.id("password")
-var btn_sign_in = By.id("kc-login")
+var tf_username = 'input[id="username"]'
+var tf_password = 'input[id="password"]'
+var btn_sign_in = 'button[id=kc-login]'
