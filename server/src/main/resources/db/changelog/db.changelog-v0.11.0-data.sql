@@ -14,17 +14,17 @@ INSERT INTO project_approach_plan_template_connection (project_approach_id, plan
 INSERT INTO milestone_template (name, date_offset, date, plan_template_id) 
 VALUES ('Projekteinrichtung', 14, Now() + 14, 15)
 
---changeset id:milestones-template-swe-small-project-Projekteinrichtung context:itzbund dbms:postgres
+--changeset id:milestones-template-swe-small-project-Projekteinrichtung context:itzbund dbms:postgresql
 INSERT INTO milestone_template (name, date_offset, date, plan_template_id)
 VALUES ('Projekteinrichtung', 14,NOW() + 14 * INTERVAL '1 day', 15)
 
 --changeset id:milestones-template-swe-small-project-Projektabschluss context:itzbund dbms:h2
 INSERT INTO milestone_template (name, date_offset, date, plan_template_id) 
-VALUES ('Projektabschluss', 180, Now() + 14, 15)
+VALUES ('Projektabschluss', 180, Now() + 180, 15)
 
---changeset id:milestones-template-swe-small-project-Projektabschluss context:itzbund dbms:postgres
+--changeset id:milestones-template-swe-small-project-Projektabschluss context:itzbund dbms:postgressql
 INSERT INTO milestone_template (name, date_offset, date, plan_template_id)
-VALUES ('Projektabschluss', 180, NOW() + 14 * INTERVAL '1 day', 15)
+VALUES ('Projektabschluss', 180, NOW() + 180 * INTERVAL '1 day', 15)
 
 --changeset id:insert-project-role-non-agil-template
 INSERT INTO project_role_template (id, name)
