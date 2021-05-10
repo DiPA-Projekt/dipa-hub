@@ -175,7 +175,7 @@ VALUES (4, 'Frau Maria', 'itzbund', '387add7c-ff8a-4206-a74e-78ccdf54bcad')
 
 --changeset id:insert-user-Maria-PE-Feldberg-LA context:itzbund
 INSERT INTO user_project_role_connection (user_id, project_role_id)
-VALUES (4, SELECT id FROM project_role WHERE project_role_template_id = 5 AND abbreviation = 'LA')
+VALUES (4, (SELECT id FROM project_role WHERE project_role_template_id = 5 AND abbreviation = 'LA'))
 
 --changeset id:insert-user-Maria-PE-Zugspitze-PE context:itzbund
 UPDATE project
@@ -188,7 +188,7 @@ VALUES (5, 'Herr Meyer', 'itzbund', 'bad74bcf-50f7-43f3-a81a-236c91b74458')
 
 --changeset id:insert-user-Meyer-PE-Feldberg-PL context:itzbund
 INSERT INTO user_project_role_connection (user_id, project_role_id)
-VALUES (5, SELECT id FROM project_role WHERE project_role_template_id = 5 AND abbreviation = 'PL')
+VALUES (5, (SELECT id FROM project_role WHERE project_role_template_id = 5 AND abbreviation = 'PL'))
 
 --changeset id:insert-user-Schulze
 INSERT INTO app_user (id, name, tenant_id, keycloak_id)
@@ -196,7 +196,7 @@ VALUES (6, 'Herr Schulze', 'itzbund', 'c95b47da-17ae-4eb2-93b9-d93bfb7a2d9c')
 
 --changeset id:insert-user-Schulze-PE-Bergsteigerausrüstung-PL context:itzbund
 INSERT INTO user_project_role_connection (user_id, project_role_id)
-VALUES (6, SELECT id FROM project_role WHERE project_role_template_id = 7 AND abbreviation = 'PL')
+VALUES (6, (SELECT id FROM project_role WHERE project_role_template_id = 7 AND abbreviation = 'PL'))
 
 --changeset id:insert-user-Rolf
 INSERT INTO app_user (id, name, tenant_id, keycloak_id)
@@ -209,7 +209,7 @@ WHERE id = 1
 
 --changeset id:insert-user-Rolf-Cisco-LA context:ba
 INSERT INTO user_project_role_connection (user_id, project_role_id)
-VALUES (7, SELECT id FROM project_role WHERE project_role_template_id = 4 AND abbreviation = 'LA')
+VALUES (7, (SELECT id FROM project_role WHERE project_role_template_id = 4 AND abbreviation = 'LA'))
 
 --changeset id:insert-user-Rolf-Oranienburg-LA context:ba
 UPDATE project
@@ -231,7 +231,7 @@ VALUES (9, 'Frau Müller', 'ba', 'e8a4069f-5815-41a3-90a2-48cd6d32cb8d')
 
 --changeset id:insert-user-Müller-Cisco-PL context:ba
 INSERT INTO user_project_role_connection (user_id, project_role_id)
-VALUES (9, SELECT id FROM project_role WHERE project_role_template_id = 4 AND abbreviation = 'PL')
+VALUES (9, (SELECT id FROM project_role WHERE project_role_template_id = 4 AND abbreviation = 'PL'))
 
 --changeset id:update_project_is_permanent-project_default_false context:itzbund
 UPDATE project_task

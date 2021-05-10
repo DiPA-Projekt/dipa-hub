@@ -13,7 +13,6 @@ SELECT setval('project_approach_plan_template_connection_id_seq', (SELECT max(id
 SELECT setval('operation_type_plan_template_connection_id_seq', (SELECT max(id) FROM operation_type_plan_template_connection));
 SELECT setval('project_task_template_id_seq', (SELECT max(id) FROM project_task_template));
 SELECT setval('project_task_id_seq', (SELECT max(id) FROM project_task));
-SELECT setval('user_group_id_seq', (SELECT max(id) FROM user_group));
 SELECT setval('project_task_result_id_seq', (SELECT max(id) FROM project_task_result));
 SELECT setval('option_entry_id_seq', (SELECT max(id) FROM option_entry));
 SELECT setval('project_task_form_field_id_seq', (SELECT max(id) FROM project_task_form_field));
