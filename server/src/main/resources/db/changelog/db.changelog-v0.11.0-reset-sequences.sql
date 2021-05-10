@@ -20,6 +20,6 @@ SELECT setval('project_task_form_field_id_seq', (SELECT max(id) FROM project_tas
 SELECT setval('project_id_seq', (SELECT max(id) FROM project));
 SELECT setval('increment_id_seq', (SELECT max(id) FROM increment));
 SELECT setval('project_type_id_seq', (SELECT max(id) FROM operation_type));
-SELECT setval('user_id_seq', (SELECT max(id) FROM user));
+SELECT setval('app_user_id_seq', (SELECT max(id) FROM app_user));
 SELECT setval('project_role_template_id_seq', (SELECT max(id) FROM project_role_template));
 SELECT setval('project_role_id_seq', (SELECT max(id) FROM project_role));
