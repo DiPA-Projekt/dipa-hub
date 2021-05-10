@@ -1,0 +1,17 @@
+get:
+  tags:
+    - project
+  summary: Project's roles
+  description: Retrieves all project roles
+  operationId: getProjectRoles
+  parameters:
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../models/projectRole.yml#/ProjectRole"

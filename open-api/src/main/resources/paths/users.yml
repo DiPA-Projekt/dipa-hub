@@ -1,0 +1,31 @@
+get:
+  tags:
+    - user
+  summary: get all users
+  description: get all available users
+  operationId: getUsers
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../models/user.yml#/User"
+patch:
+  tags:
+    - user
+  summary: Update user data
+  description: Update user data
+  operationId: updateUser
+  requestBody:
+    description: User
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../models/user.yml#/User"
+  responses:
+    204:
+      description: The update was applied successfully.

@@ -102,7 +102,7 @@
     (dataChanged)="onSubmit(formGroup)"
   ></app-results-form>
 
-  <div>
+  <div *ngIf="completable">
     <button mat-raised-button color="primary" class="stepDoneButton" (click)="toggleCompleteStatus()">
       <mat-icon>{{ formGroup.get('completed').value === true ? 'undo' : 'done' }}</mat-icon>
       {{ formGroup.get('completed').value === true ? 'Schritt erneut öffnen' : 'Schritt abschließen' }}

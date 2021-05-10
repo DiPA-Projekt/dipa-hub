@@ -21,8 +21,7 @@ public class ProjectToProjectEntityConverter implements Converter<Project, Proje
                              projectEntity.setAkz(project.getAkz());
                              projectEntity.setClient(project.getClient());
                              projectEntity.setDepartment(project.getDepartment());
-                             projectEntity.setProjectOwner(project.getProjectOwner());
-      
+
         return projectEntity;
     }
 

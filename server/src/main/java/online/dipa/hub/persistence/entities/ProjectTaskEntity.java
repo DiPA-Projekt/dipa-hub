@@ -20,8 +20,11 @@ public class ProjectTaskEntity extends BaseEntity {
     @Basic(optional = false)
     private String title;
 
+    private String icon;
     private boolean optional;
     private String explanation;
+    private boolean isPermanentTask;
+    private String titlePermanentTask;
     private boolean completed;
     private Long sortOrder;
 
@@ -44,7 +47,10 @@ public class ProjectTaskEntity extends BaseEntity {
     public ProjectTaskEntity(ProjectTaskEntity projectTaskEntity) {
         this.title = projectTaskEntity.getTitle();
         this.optional = projectTaskEntity.getOptional();
+        this.icon = projectTaskEntity.getIcon();
         this.explanation = projectTaskEntity.getExplanation();
+        this.isPermanentTask = projectTaskEntity.getIsPermanentTask();
+        this.titlePermanentTask = projectTaskEntity.getTitlePermanentTask();
         this.completed = projectTaskEntity.getCompleted();
         this.sortOrder = projectTaskEntity.getSortOrder();
     }
@@ -65,6 +71,14 @@ public class ProjectTaskEntity extends BaseEntity {
         this.title = title;
     }
 
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(final String icon) {
+        this.icon = icon;
+    }
+
     public boolean getOptional() {
         return optional;
     }
@@ -79,6 +93,22 @@ public class ProjectTaskEntity extends BaseEntity {
     
     public void setExplanation(final String explanation) {
         this.explanation = explanation;
+    }
+
+    public boolean getIsPermanentTask() {
+        return isPermanentTask;
+    }
+
+    public void setIsPermanentTask(final boolean isPermanentTask) {
+        this.isPermanentTask = isPermanentTask;
+    }
+
+    public String getTitlePermanentTask() {
+        return titlePermanentTask;
+    }
+
+    public void setTitlePermanentTask(final String titlePermanentTask) {
+        this.titlePermanentTask = titlePermanentTask;
     }
 
     public boolean getCompleted() {

@@ -3,7 +3,7 @@
     <mat-spinner *ngIf="loading"></mat-spinner>
   </div>
   <ng-container *ngFor="let vm of vmAll$ | async">
-    <div class="content-container" style="padding-right: 15px">
+    <div class="content-container">
       <div class="row">
         <div class="col">
           <div id="gantt{{ vm.timeline.id }}" class="gantt">

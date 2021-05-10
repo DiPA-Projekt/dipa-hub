@@ -2,14 +2,15 @@ package online.dipa.hub.services;
 
 import online.dipa.hub.api.model.FormField;
 import online.dipa.hub.api.model.Project;
+import online.dipa.hub.api.model.ProjectRole;
 import online.dipa.hub.api.model.ProjectTask;
 
 import online.dipa.hub.api.model.Result;
-import online.dipa.hub.mapper.ProjectProjectEntityMapper;
+import online.dipa.hub.api.model.Timeline;
+import online.dipa.hub.api.model.User;
 import online.dipa.hub.persistence.entities.*;
 import online.dipa.hub.persistence.repositories.*;
 
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
@@ -47,17 +48,28 @@ public class ProjectService {
     private ConversionService conversionService;
 
     @Autowired
-    private UserInformationService userInformationService;
+    private TimelineService timelineService;
+        
+    @Autowired
+    private ProjectApproachService projectApproachService;
 
     @Autowired
-    private TimelineService timelineService;
+    private TimelineTemplateService timelineTemplateService;
 
-    private final ProjectProjectEntityMapper projectMapper = Mappers.getMapper(ProjectProjectEntityMapper.class);
+    @Autowired
+    private UserInformationService userInformationService;
+    
+    @Autowired
+    private PlanTemplateRepository planTemplateRepository;
 
+    @Autowired
+    private MilestoneTemplateRepository milestoneTemplateRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public Project getProjectData(final Long projectId) {
-
-        List<Long> projectIds = userInformationService.getUserData().getProjects();
+        List<Long> projectIds = userInformationService.getProjectIdList();
 
         return projectRepository.findAll()
                                  .stream()
@@ -69,22 +81,64 @@ public class ProjectService {
     }
     
     public void updateProjectData(final Long projectId, final Project project) {
-        List<Long> projectIds = userInformationService.getUserData().getProjects();
+        List<Long> projectIds = userInformationService.getProjectIdList();
+        var projectEntity = timelineService.getProject(projectId);
 
         if (projectIds.contains(projectId)) {
-            ProjectEntity currentProject = timelineService.getProject(projectId);
+            projectEntity.setAkz(project.getAkz());
+            projectEntity.setName(project.getName());
+            projectEntity.setProjectSize(project.getProjectSize().toString());
+            projectEntity.setClient(project.getClient());
+            projectEntity.setDepartment(project.getDepartment());
+          
+            projectRepository.save(projectEntity);
 
-            projectMapper.updateProjectEntity(project, currentProject);
         }
-
     }
 
-    public List<ProjectTask> getProjectTasks (final Long projectId) {
-        List<ProjectTask> projectTasks = new ArrayList<>();
+    public Timeline createProject(final Project project) {
 
-        List<Long> projectIds = userInformationService.getUserData().getProjects();
+        var newProject = new ProjectEntity(project);
+        newProject.setProjectApproach(projectApproachService.getProjectApproachFromRepo(project.getProjectApproachId()));
+
+        UserEntity projectOwner = userRepository.findAll().stream().filter(u -> u.getId().equals(project.getProjectOwner().getId())).findFirst().orElse(null);
+        newProject.setUser(projectOwner);
+        projectRepository.save(newProject);
+
+        var planTemplate = projectApproachService.getDefaultPlanTemplateEntityFromRepo(project.getProjectApproachId());
+        List<MilestoneTemplateEntity> repoMilestones = new ArrayList<>(planTemplate.getMilestones());
+
+        var projectPlanTemplate = new PlanTemplateEntity();
+        projectPlanTemplate.setProject(newProject);
+        projectPlanTemplate.setName(planTemplate.getName() + newProject.getId());
+        projectPlanTemplate.setDefaultTemplate(true);
+        projectPlanTemplate.setStandard(true);
+
+        planTemplateRepository.save(projectPlanTemplate);
+
+        List<MilestoneTemplateEntity> newMilestones = new ArrayList<>();
+
+        for (MilestoneTemplateEntity milestone: repoMilestones) {
+            var newMilestone = new MilestoneTemplateEntity(milestone);
+
+            newMilestone.setPlanTemplate(projectPlanTemplate);
+
+            newMilestones.add(newMilestone);
+        }
+
+        newMilestones = timelineTemplateService.updateMilestonesTimelineTemplate(newProject.getId(), newMilestones, planTemplate);
+        milestoneTemplateRepository.saveAll(newMilestones);
+
+        userInformationService.createNewProjectRoles(newProject);
+        return conversionService.convert(newProject, Timeline.class);
+    }
+
+    public List<ProjectTask> getProjectTasks (final Long projectId, final boolean isPermanentTask) {
+        List<ProjectTask> projectTasks = new ArrayList<>();
+        List<Long> projectIds = userInformationService.getProjectIdList();
 
         if (projectIds.contains(projectId)) {
+
             ProjectEntity project = timelineService.getProject(projectId);
 
             initializeProjectTasks(projectId);
@@ -96,6 +150,9 @@ public class ProjectService {
                 projectTasks.addAll(template.getProjectTasks()
                                             .stream()
                                             .map(p -> conversionService.convert(p, ProjectTask.class))
+                                            .filter(Objects::nonNull)
+                                            .filter(task -> !isPermanentTask || task.getIsPermanentTask()
+                                                                                    .equals(true))
                                             .sorted(Comparator.comparing(ProjectTask::getSortOrder))
                                             .collect(Collectors.toList()));
             }
@@ -137,7 +194,7 @@ public class ProjectService {
         for (ResultEntity result: oldProjectTask.getResults()) {
 
             ResultEntity newResultEntity = new ResultEntity();
-            newResultEntity.setResultType(result.getResultType()); // "TYPE_ELBE_SC"
+            newResultEntity.setResultType(result.getResultType());
             newResultEntity.setProjectTask(newProjectTask);
             resultRepository.save(newResultEntity);
 
@@ -163,7 +220,8 @@ public class ProjectService {
     }
 
     public void updateProjectTask (final Long projectId, final ProjectTask projectTask) {
-        List<Long> projectIds = userInformationService.getUserData().getProjects();
+
+        List<Long> projectIds = userInformationService.getProjectIdList();
 
         if (projectIds.contains(projectId)) {
 
@@ -206,7 +264,7 @@ public class ProjectService {
                         }
                         updateResults(oldProjectTask, projectTask);
                     });
-        }
+                }
 
     }
 
@@ -278,6 +336,24 @@ public class ProjectService {
         }
     }
 
+    public List<ProjectRole> getProjectRoles (final Long projectId) {
+        ProjectEntity project = timelineService.getProject(projectId);
+
+        return project.getProjectRoleTemplate().getProjectRoles().stream().map(r -> conversionService.convert(r, ProjectRole.class))
+        .collect(Collectors.toList());
+
+    }
+    
+    public List<User> getProjectUsers (final Long projectId) {
+        ProjectEntity project = timelineService.getProject(projectId);
+        
+
+        return userRepository.findAll().stream().filter(u -> u.getProjectRoles().stream()
+                                                              .anyMatch(role ->role.getProjectRoleTemplate().getProject().equals(project)))
+        .map(user -> conversionService.convert(user, User.class)).collect(Collectors.toList());
+        
+    }
+    
     private ResultEntity findResultEntity (List<ResultEntity> results, Long id) {
         return results.stream().filter(r -> r.getId().equals(id)).findFirst().orElseThrow(() -> new EntityNotFoundException(
                 String.format("Result with id: %1$s not found.", id)));
