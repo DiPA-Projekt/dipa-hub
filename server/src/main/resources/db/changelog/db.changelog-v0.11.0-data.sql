@@ -62,6 +62,10 @@ VALUES (8, 'Product Owner', 'PO', 'WRITE', 2)
 INSERT INTO project_role_template (id, name, project_id)
 VALUES (3, 'Project roles Serveraustausch', 1)
 
+--changeset id:reset_id_sequence-project-role-11 author:becker dbms:postgresql
+--comment: sequence reset is necessary after manual id inserts.
+SELECT setval('project_role_id_seq', (SELECT max(id) FROM project_role));
+
 --changeset id:insert-project-role-Serveraustausch context:ba
 INSERT INTO project_role (name, abbreviation, permission, project_role_template_id)
 SELECT name, abbreviation, permission, 3 FROM project_role WHERE project_role_template_id = 1

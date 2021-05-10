@@ -1,4 +1,4 @@
---changeset id:reset_id_sequences-2 author:becker dbms:postgresql
+--changeset id:reset_id_sequences-11 author:becker dbms:postgresql
 --comment: sequence reset is necessary after manual id inserts.
 SELECT setval('milestone_template_id_seq', (SELECT max(id) FROM milestone_template));
 SELECT setval('plan_template_id_seq', (SELECT max(id) FROM plan_template));
