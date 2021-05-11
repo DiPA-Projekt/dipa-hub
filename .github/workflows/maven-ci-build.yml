@@ -67,21 +67,21 @@ jobs:
           server-username: DOCKER_REGISTRY_USERNAME
           server-password: DOCKER_REGISTRY_TOKEN
       - name: Cache local Maven repository
-        uses: actions/cache@v2.1.4
+        uses: actions/cache@v2.1.5
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Cache Frontend Build Node Modules
-        uses: actions/cache@v2.1.4
+        uses: actions/cache@v2.1.5
         with:
           path: frontend/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
       - name: Cache SonarCloud packages
-        uses: actions/cache@v2.1.4
+        uses: actions/cache@v2.1.5
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
