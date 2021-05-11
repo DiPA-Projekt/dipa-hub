@@ -54,6 +54,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
 
     let accessOrganisationRole: boolean;
     let accessProject: boolean;
+    let accessOverviewProjects: boolean;
 
     const requiredOrganisationRoles = route.data.organisationRoles as string[];
     if (!(requiredOrganisationRoles instanceof Array) || requiredOrganisationRoles.length === 0) {
@@ -73,7 +74,10 @@ export class AuthGuard implements CanActivate, CanActivateChild {
         .map((t) => t.id)
         .includes(Number(requiredProjectId));
     }
+    console.log(route.data.overviewProjects);
+console.log(route.data.organisationRoles);
+    const accessProjectsOverview = route.data.overviewProjects as boolean;
 
-    return accessOrganisationRole || accessProject;
+    return accessOrganisationRole || accessProject || accessProjectsOverview;
   }
 }
