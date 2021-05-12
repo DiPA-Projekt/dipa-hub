@@ -41,11 +41,11 @@
         <slf4j.version>1.7.30</slf4j.version>
         <logback.version>1.2.3</logback.version>
         <liquibase.version>4.3.2</liquibase.version>
-        <spring-data-jpa.version>2.4.7</spring-data-jpa.version>
+        <spring-data-jpa.version>2.5.0</spring-data-jpa.version>
 
         <!-- maven plugins -->
         <openapi-generator-maven-plugin.version>5.1.0</openapi-generator-maven-plugin.version>
-        <frontend-maven-plugin.version>1.11.3</frontend-maven-plugin.version>
+        <frontend-maven-plugin.version>1.12.0</frontend-maven-plugin.version>
         <dockerfile-maven.version>1.4.13</dockerfile-maven.version>
 
         <!-- build profile defaults -->
