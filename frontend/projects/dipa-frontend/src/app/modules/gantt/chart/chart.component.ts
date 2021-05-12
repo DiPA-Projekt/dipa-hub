@@ -316,7 +316,10 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   }
 
   changeMilestoneName(): void {
-    const changeMilestoneName$ = this.milestonesService.updateMilestoneData(this.timelineData.id, this.selectedMilestoneDataMenu);
+    const changeMilestoneName$ = this.milestonesService.updateMilestoneData(
+      this.timelineData.id,
+      this.selectedMilestoneDataMenu
+    );
 
     this.milestoneSubscription = this.subscribeForReset(changeMilestoneName$);
   }
