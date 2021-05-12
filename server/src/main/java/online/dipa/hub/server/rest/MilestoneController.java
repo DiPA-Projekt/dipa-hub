@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestApiController
 public class MilestoneController implements MilestonesApi{
@@ -29,10 +28,18 @@ public class MilestoneController implements MilestonesApi{
 
     
     @Override
-    public ResponseEntity<Void> updateMilestoneData(final Long timelineId, final Milestone milestone ) {
-        if (Optional.ofNullable(milestone.getStatus()).isPresent()) {
-            milestoneService.updateMilestoneStatus(milestone.getId(), milestone.getStatus());
-        }
+    public ResponseEntity<Void> updateMilestoneData(final Long timelineId, final Milestone milestone) {
+        // if (Optional.ofNullable(milestone.getStatus()).isPresent()) {
+        //     milestoneService.updateMilestoneStatus(milestone.getId(), milestone.getStatus());
+        // }
+        milestoneService.updateMilestoneData(milestone.getId(), milestone);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteMilestone(final Long timelineId, final Long milestoneId) {
+        System.out.println(milestoneId);
+        milestoneService.deleteMilestone(milestoneId);
         return ResponseEntity.noContent().build();
     }
     

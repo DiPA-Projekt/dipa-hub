@@ -306,12 +306,26 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   }
 
   changeStatus(event: MatRadioChange): void {
-    const changeMilestoneStatus$ = this.milestonesService.updateMilestoneData(this.timelineData.id, {
-      id: this.selectedMilestoneDataMenu.id,
-      status: event.value as Milestone.StatusEnum,
-    });
+    this.selectedMilestoneDataMenu.status = event.value as Milestone.StatusEnum;
+    const changeMilestoneStatus$ = this.milestonesService.updateMilestoneData(
+      this.timelineData.id,
+      this.selectedMilestoneDataMenu
+    );
 
     this.milestoneSubscription = this.subscribeForReset(changeMilestoneStatus$);
+  }
+
+  changeMilestoneName(): void {
+    const changeMilestoneName$ = this.milestonesService.updateMilestoneData(this.timelineData.id, this.selectedMilestoneDataMenu);
+
+    this.milestoneSubscription = this.subscribeForReset(changeMilestoneName$);
+  }
+
+  deleteMilestone(): void {
+    console.log(this.selectedMilestoneDataMenu)
+    const deleteMilestone$ = this.milestonesService.deleteMilestone(this.timelineData.id, this.selectedMilestoneDataMenu.id);
+    this.milestoneSubscription = this.subscribeForReset(deleteMilestone$);
+
   }
 
   closeMenu(): void {

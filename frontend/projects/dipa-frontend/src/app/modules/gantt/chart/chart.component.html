@@ -3,15 +3,24 @@
     <div class="card-container">
       <div class="card-header">
         <div class="subheading-1 title">Meilenstein</div>
+        <button mat-raised-button color="warn" (click)="deleteMilestone()">Delete</button>
         <button mat-icon-button color="warn" (click)="closeMenu()">
           <mat-icon>close</mat-icon>
         </button>
       </div>
       <div class="card-content">
-        <p style="font-weight: 500; font-size: medium; text-align: center">{{ selectedMilestoneDataMenu.name }}</p>
-        <p style="font-weight: 200; font-size: small; text-align: center; color: grey">
-          Fällig am {{ getDate(selectedMilestoneDataMenu.date) }}
-        </p>
+        <div style="text-align: center;">
+          <mat-form-field>
+            <textarea matInput type="text"
+            [(ngModel)]="selectedMilestoneDataMenu.name" 
+            (change)="changeMilestoneName()"
+            cdkTextareaAutosize
+            #autosize="cdkTextareaAutosize"></textarea>
+          </mat-form-field>
+          <p style="font-weight: 200; font-size: small; text-align: center; color: grey">
+            Fällig am {{ getDate(selectedMilestoneDataMenu.date) }}
+          </p>
+        </div>
         <p>Status</p>
         <mat-radio-group
           [(ngModel)]="selectedMilestoneDataMenu.status"

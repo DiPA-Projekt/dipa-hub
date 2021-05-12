@@ -206,7 +206,6 @@ mat-sidenav-content {
   padding-top: 5%;
   position: static;
   overflow: hidden;
-  // text-align: center;
 }
 
 .name-container {
@@ -219,4 +218,22 @@ mat-sidenav-content {
 
 .mat-button-focus-overlay {
   background-color: transparent!important;
+}
+
+textarea.mat-input-element {
+  font-weight: 500; 
+  font-size: medium; 
+  text-align: center !important;
+  // word-wrap: break-word !important;
+}
+
+
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
 }

@@ -216,4 +216,19 @@ public class MilestoneService {
         
     }
 
+    public void updateMilestoneData(final Long milestoneId, final Milestone milestone) {
+
+        milestoneTemplateRepository.findAll().stream().filter(m -> m.getId().equals(milestoneId)).findFirst()
+            .ifPresent(milestoneEntity -> {
+                milestoneEntity.setName(milestone.getName());
+                milestoneEntity.setStatus(milestone.getStatus().toString());});
+    }
+
+    public void deleteMilestone(final Long milestoneId) {
+        System.out.println("delete");
+        System.out.println(milestoneTemplateRepository.findAll().stream().filter(m -> m.getId().equals(milestoneId)).findFirst().get().getName());
+        milestoneTemplateRepository.findAll().stream().filter(m -> m.getId().equals(milestoneId)).findFirst()
+            .ifPresent(milestoneEntity -> milestoneTemplateRepository.delete(milestoneEntity));
+    }
+
 }

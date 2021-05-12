@@ -24,7 +24,7 @@ patch:
   parameters:
     - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
   requestBody:
-    description: operation type with parameters
+    description: milestone as request body
     required: true
     content:
       application/json:
