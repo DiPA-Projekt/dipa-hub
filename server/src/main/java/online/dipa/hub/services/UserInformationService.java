@@ -169,7 +169,7 @@ public class UserInformationService {
 
             ProjectRoleEntity newPRoleEntity = projectRoleRepository.findAll().stream()
             .filter(role -> role.getId().equals(projectRole.getId())).findFirst().orElse(null);
-       
+            
             userEntity.getProjectRoles().add(newPRoleEntity);
         }
         userRepository.save(userEntity);

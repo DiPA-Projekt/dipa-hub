@@ -9,7 +9,7 @@
         <app-gantt-menu #ganttMenu="gantMenuComponent"></app-gantt-menu>
         <mat-icon>arrow_drop_down</mat-icon>
       </a>
-      <a *ngIf="isUserInOrganisationRoles('PMO')" mat-button [routerLink]="'/overview/projects'">
+      <a *ngIf="isUserInOrganisationRoles('PMO') || hasProjectRoles()" mat-button [routerLink]="'/overview/projects'">
         <mat-icon>supervisor_account</mat-icon>
         Projektübersicht
       </a>
