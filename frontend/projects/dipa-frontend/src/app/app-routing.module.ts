@@ -20,7 +20,7 @@ const routes: Routes = [
         path: 'overview',
         loadChildren: () => import('./modules/overview/overview.module').then((m) => m.OverviewModule),
         canActivate: [AuthGuard],
-        data: { organisationRoles: ['PMO'], overviewProjects: [true] },
+        data: { organisationRoles: ['PMO'] },
       },
       {
         path: 'schedules',
