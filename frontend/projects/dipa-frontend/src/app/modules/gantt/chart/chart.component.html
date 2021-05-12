@@ -3,14 +3,13 @@
     <div class="card-container">
       <div class="card-header">
         <div class="subheading-1 title">Meilenstein</div>
-        <button mat-raised-button color="warn" (click)="deleteMilestone()">Delete</button>
         <button mat-icon-button color="warn" (click)="closeMenu()">
           <mat-icon>close</mat-icon>
         </button>
       </div>
       <div class="card-content">
         <div style="text-align: center;">
-          <mat-form-field>
+          <mat-form-field class="milestone-name">
             <textarea matInput type="text"
             [(ngModel)]="selectedMilestoneDataMenu.name" 
             (change)="changeMilestoneName()"

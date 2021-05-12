@@ -224,16 +224,9 @@ textarea.mat-input-element {
   font-weight: 500; 
   font-size: medium; 
   text-align: center !important;
-  // word-wrap: break-word !important;
 }
 
 
-.example-form {
-  min-width: 150px;
-  max-width: 500px;
-  width: 100%;
-}
-
-.example-full-width {
+.mat-form-field.milestone-name {
   width: 100%;
 }

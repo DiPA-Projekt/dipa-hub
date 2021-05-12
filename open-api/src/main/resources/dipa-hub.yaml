@@ -46,8 +46,6 @@ paths:
     $ref: "paths/ical.yml"
   /timelines/{timelineId}/milestones:
     $ref: "paths/milestones.yml"
-  /timelines/{timelineId}/milestones/{milestoneId}:
-    $ref: "paths/deleteMilestone.yml"
   /timelines/{timelineId}/milestones/{milestoneId}/files:
     $ref: "paths/milestoneFiles.yml"
   /timelines/{timelineId}/tasks:

@@ -224,11 +224,4 @@ public class MilestoneService {
                 milestoneEntity.setStatus(milestone.getStatus().toString());});
     }
 
-    public void deleteMilestone(final Long milestoneId) {
-        System.out.println("delete");
-        System.out.println(milestoneTemplateRepository.findAll().stream().filter(m -> m.getId().equals(milestoneId)).findFirst().get().getName());
-        milestoneTemplateRepository.findAll().stream().filter(m -> m.getId().equals(milestoneId)).findFirst()
-            .ifPresent(milestoneEntity -> milestoneTemplateRepository.delete(milestoneEntity));
-    }
-
 }

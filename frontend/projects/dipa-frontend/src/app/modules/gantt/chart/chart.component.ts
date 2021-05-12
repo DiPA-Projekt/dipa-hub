@@ -321,13 +321,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.milestoneSubscription = this.subscribeForReset(changeMilestoneName$);
   }
 
-  deleteMilestone(): void {
-    console.log(this.selectedMilestoneDataMenu)
-    const deleteMilestone$ = this.milestonesService.deleteMilestone(this.timelineData.id, this.selectedMilestoneDataMenu.id);
-    this.milestoneSubscription = this.subscribeForReset(deleteMilestone$);
-
-  }
-
   closeMenu(): void {
     this.showMilestoneMenu = false;
     this.milestoneViewItem.onCloseMenu();

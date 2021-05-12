@@ -35,13 +35,6 @@ public class MilestoneController implements MilestonesApi{
         milestoneService.updateMilestoneData(milestone.getId(), milestone);
         return ResponseEntity.noContent().build();
     }
-
-    @Override
-    public ResponseEntity<Void> deleteMilestone(final Long timelineId, final Long milestoneId) {
-        System.out.println(milestoneId);
-        milestoneService.deleteMilestone(milestoneId);
-        return ResponseEntity.noContent().build();
-    }
     
     @Override
     public ResponseEntity<List<DownloadFile>> getFilesForMilestone(final Long timelineId, final Long milestoneId) {
