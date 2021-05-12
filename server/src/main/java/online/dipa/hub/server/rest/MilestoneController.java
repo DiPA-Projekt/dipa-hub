@@ -29,9 +29,6 @@ public class MilestoneController implements MilestonesApi{
     
     @Override
     public ResponseEntity<Void> updateMilestoneData(final Long timelineId, final Milestone milestone) {
-        // if (Optional.ofNullable(milestone.getStatus()).isPresent()) {
-        //     milestoneService.updateMilestoneStatus(milestone.getId(), milestone.getStatus());
-        // }
         milestoneService.updateMilestoneData(milestone.getId(), milestone);
         return ResponseEntity.noContent().build();
     }
