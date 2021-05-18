@@ -10,7 +10,7 @@ import { AuthenticationService } from '../../authentication.service';
   exportAs: 'gantMenuComponent',
 })
 export class GanttMenuComponent implements OnInit, OnDestroy {
-  @ViewChild(MatMenu, { static: true }) menu: MatMenu;
+  @ViewChild(MatMenu, { static: true }) public menu: MatMenu;
 
   public timelineData: Timeline[];
 
@@ -24,17 +24,15 @@ export class GanttMenuComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.timelinesSubscription = this.timelinesService.getTimelines().subscribe((data) => {
-      const userProductIds: number[] = [];
+      const userProjectIds: number[] = [];
       this.authenticationService.getUserData().subscribe((user) => (this.currentUserId = user.id));
-      this.authenticationService.getProjectRoles().forEach((role) => userProductIds.push(role.projectId));
-      this.timelineData = data.filter((t) => userProductIds.includes(t.id));
-      data
-        .filter((t: Timeline) => t.projectOwner.id === this.currentUserId)
-        .forEach((t) => {
-          if (!this.timelineData.includes(t)) {
-            this.timelineData.push(t);
-          }
-        });
+      this.authenticationService.getProjectRoles().forEach((role) => userProjectIds.push(role.projectId));
+      this.timelineData = data.filter((t) => userProjectIds.includes(t.id));
+      data.forEach((t) => {
+        if (!this.timelineData.includes(t)) {
+          this.timelineData.push(t);
+        }
+      });
     });
   }
 

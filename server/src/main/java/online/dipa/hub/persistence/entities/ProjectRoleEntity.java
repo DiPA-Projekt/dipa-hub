@@ -29,12 +29,19 @@ public class ProjectRoleEntity extends BaseEntity {
     @Basic(optional = false)
     private String abbreviation;
 
+    @Basic(optional = true)
+    private String icon;
+
     @NotEmpty
     @Basic(optional = false)
     private String permission;
     
     @Basic(optional = true)
     private boolean defaultRole;
+
+    @Basic
+    @Column(nullable = false)
+    private int maxCount;
 
     @ManyToOne(fetch=FetchType.EAGER)
     @NotFound(action = NotFoundAction.IGNORE)
@@ -53,6 +60,8 @@ public class ProjectRoleEntity extends BaseEntity {
         this.abbreviation = projectRole.getAbbreviation();
         this.permission = projectRole.getPermission();
         this.defaultRole = projectRole.isDefaultRole();
+        this.icon = projectRole.getIcon();
+        this.maxCount = projectRole.getMaxCount();
     }
     
     public ProjectRoleEntity(ProjectRole projectRole) {
@@ -60,6 +69,8 @@ public class ProjectRoleEntity extends BaseEntity {
         this.abbreviation = projectRole.getAbbreviation();
         this.permission = projectRole.getPermission().toString();
         this.defaultRole = projectRole.getDefaultRole();
+        this.icon = projectRole.getIcon();
+        this.maxCount = projectRole.getMaxCount();
     }
 
     public String getName() {
@@ -79,6 +90,14 @@ public class ProjectRoleEntity extends BaseEntity {
         this.abbreviation = abbreviation;
     }
 
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
     public String getPermission() {
         return permission;
     }
@@ -93,6 +112,14 @@ public class ProjectRoleEntity extends BaseEntity {
 
     public void setDefaultRole(final boolean defaultRole) {
         this.defaultRole = defaultRole;
+    }
+
+    public int getMaxCount() {
+        return maxCount;
+    }
+
+    public void setMaxCount(int maxCount) {
+        this.maxCount = maxCount;
     }
 
     public ProjectRoleTemplateEntity getProjectRoleTemplate() {

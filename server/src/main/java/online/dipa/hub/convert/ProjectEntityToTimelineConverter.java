@@ -12,9 +12,6 @@ import online.dipa.hub.persistence.entities.OperationTypeEntity;
 @Component
 public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity, Timeline> {
 
-    @Autowired
-    protected UserEntityToUserConverter userConverter;
-    
     @Override
     public Timeline convert(final ProjectEntity project) {
 
@@ -30,8 +27,7 @@ public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity
                              .projectApproachId(projectApproach.getId())
                              .start(project.getStartDate().toLocalDate())
                              .end(project.getEndDate().toLocalDate())
-                             .defaultTimeline(operationType.isDefaultType())
-                             .projectOwner(userConverter.convert(project.getUser()));
+                             .defaultTimeline(operationType.isDefaultType());
 
         if (project.getProjectType() != null) {
                 timeline.projectType(ProjectTypeEnum.fromValue(project.getProjectType()));

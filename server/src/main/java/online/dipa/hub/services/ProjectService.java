@@ -96,13 +96,11 @@ public class ProjectService {
         }
     }
 
-    public Timeline createProject(final Project project) {
+    public Timeline createProject(final Project project, final User projectOwner) {
 
         var newProject = new ProjectEntity(project);
         newProject.setProjectApproach(projectApproachService.getProjectApproachFromRepo(project.getProjectApproachId()));
 
-        UserEntity projectOwner = userRepository.findAll().stream().filter(u -> u.getId().equals(project.getProjectOwner().getId())).findFirst().orElse(null);
-        newProject.setUser(projectOwner);
         projectRepository.save(newProject);
 
         var planTemplate = projectApproachService.getDefaultPlanTemplateEntityFromRepo(project.getProjectApproachId());
@@ -129,7 +127,7 @@ public class ProjectService {
         newMilestones = timelineTemplateService.updateMilestonesTimelineTemplate(newProject.getId(), newMilestones, planTemplate);
         milestoneTemplateRepository.saveAll(newMilestones);
 
-        userInformationService.createNewProjectRoles(newProject);
+        userInformationService.createNewProjectRoles(newProject, projectOwner);
         return conversionService.convert(newProject, Timeline.class);
     }
 
@@ -256,10 +254,8 @@ public class ProjectService {
                                 formFieldRepository.save(entity);
                             }
                             else {
-
                                 oldEntriesList.get(i).setValue(newList.get(i).getValue());
                                 oldEntriesList.get(i).setShow(newList.get(i).getShow());
-
                             }
                         }
                         updateResults(oldProjectTask, projectTask);

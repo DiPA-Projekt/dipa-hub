@@ -24,6 +24,8 @@ import { ProjectOrganizationComponent } from './project-organization/project-org
 import { ProjectQuickstartComponent } from './project-quickstart/project-quickstart.component';
 import { ProjectControlComponent } from './project-control/project-control.component';
 import { ProjectEndComponent } from './project-end/project-end.component';
+import { FlexModule } from '@angular/flex-layout';
+import { ProjectRoleComponent } from './project-role/project-role.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +48,7 @@ import { ProjectEndComponent } from './project-end/project-end.component';
     ProjectQuickstartComponent,
     ProjectControlComponent,
     ProjectEndComponent,
+    ProjectRoleComponent,
   ],
   exports: [ChartComponent, FilesComponent, NavMenuListItemComponent],
   imports: [
@@ -56,6 +59,7 @@ import { ProjectEndComponent } from './project-end/project-end.component';
     MaterialModule,
     ReactiveFormsModule,
     SharedModule,
+    FlexModule,
   ],
 })
 export class GanttModule {}

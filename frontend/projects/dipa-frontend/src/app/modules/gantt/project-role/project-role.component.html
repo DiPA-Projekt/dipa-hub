@@ -1,0 +1,67 @@
+<form [formGroup]="formGroup">
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-icon mat-card-avatar>{{ role.icon }}</mat-icon>
+      <mat-card-title>{{ role.name }}</mat-card-title>
+      <mat-card-subtitle>{{ role.abbreviation }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <table mat-table [dataSource]="filterAllUsersInRole(role)" aria-describedby="Benutzer in Rolle">
+        <ng-container matColumnDef="name">
+          <th id="name" mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let user">{{ user.name }}</td>
+        </ng-container>
+        <ng-container matColumnDef="action">
+          <th id="action" mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let user" style="text-align: right">
+            <button
+              *ngIf="role.maxCount !== 1"
+              mat-icon-button
+              aria-label="Entferne Benutzer aus Gruppe"
+              (click)="delete(user, role)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns" class="example-element-row"></tr>
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="2">Keine Mitglieder</td>
+        </tr>
+      </table>
+    </mat-card-content>
+    <mat-card-actions style="margin: 0">
+      <form [formGroup]="formGroup">
+        <ng-container *ngIf="role.maxCount !== 1">
+          <mat-icon style="vertical-align: middle; margin-right: 5px">person_add_alt_1</mat-icon>
+          <mat-form-field>
+            <mat-placeholder>Person hinzufügen</mat-placeholder>
+            <mat-select (selectionChange)="onSubmit(formGroup, role)" formControlName="user">
+              <mat-option *ngFor="let user of filterAllUsersNotInRole(role)" [value]="user">
+                {{ user.name }}
+              </mat-option>
+            </mat-select>
+            <mat-hint *ngIf="role.maxCount > -1"
+              >Max. {{ role.maxCount }} {{ role.maxCount === 1 ? 'Person' : 'Personen' }}</mat-hint
+            >
+          </mat-form-field>
+        </ng-container>
+        <ng-container *ngIf="role.maxCount === 1">
+          <mat-form-field>
+            <mat-placeholder>Person auswählen</mat-placeholder>
+            <mat-select (selectionChange)="onSubmit(formGroup, role)" formControlName="user">
+              <mat-option *ngFor="let user of filterAllUsersNotInRole(role)" [value]="user">
+                {{ user.name }}
+              </mat-option>
+            </mat-select>
+            <mat-hint *ngIf="role.maxCount > -1"
+              >Max. {{ role.maxCount }} {{ role.maxCount === 1 ? 'Person' : 'Personen' }}</mat-hint
+            >
+          </mat-form-field>
+        </ng-container>
+      </form>
+    </mat-card-actions>
+  </mat-card>
+</form>

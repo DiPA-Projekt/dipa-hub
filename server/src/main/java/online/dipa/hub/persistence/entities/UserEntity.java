@@ -32,10 +32,6 @@ public class UserEntity extends BaseEntity {
     @Basic(optional = false)
     private String name;
 
-    @OneToMany(mappedBy = "user")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @NotFound(action = NotFoundAction.IGNORE)
-    private Set<ProjectEntity> projects;
 
     private String tenantId;
     private String email;
@@ -108,12 +104,6 @@ public class UserEntity extends BaseEntity {
         this.organisationRoles = organisationRoles;
     }
 
-    public Set<ProjectEntity> getProjects() {
-        return projects;
-    }
 
-    public void setProjects(final Set<ProjectEntity> projects) {
-        this.projects = projects;
-    }
 
 }

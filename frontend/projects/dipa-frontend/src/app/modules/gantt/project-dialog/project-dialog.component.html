@@ -9,8 +9,12 @@
     </div>
     <div class="col-md-6 col-lg-4 col-xl-2">
       <mat-form-field>
-        <mat-label>Projekteigner</mat-label>
-        <input matInput [value]="userData.name" disabled />
+        <mat-placeholder>Projekteigner</mat-placeholder>
+        <mat-select formControlName="projectOwner">
+          <mat-option *ngFor="let user of allUsers" [value]="user">
+            {{ user.name }}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
     </div>
     <div class="col-md-6 col-lg-4 col-xl-2">

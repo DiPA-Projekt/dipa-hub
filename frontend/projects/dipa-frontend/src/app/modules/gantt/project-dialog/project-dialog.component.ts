@@ -9,6 +9,7 @@ import {
   ProjectService,
   Timeline,
   User,
+  UserService,
 } from 'dipa-api-client';
 import ProjectTypeEnum = Timeline.ProjectTypeEnum;
 import { Subscription } from 'rxjs';
@@ -35,8 +36,8 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
   public operationTypeId: number;
   public startDate = new Date();
   public endDate = new Date(new Date().setMonth(new Date().getMonth() + 6));
-  public projectOwner: string;
   public userData: User;
+  public allUsers: User[];
   public formGroup: FormGroup;
   public inputNotation: boolean;
 
@@ -59,6 +60,7 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
   ];
 
   private operationTypesSubscription: Subscription;
+  private usersSubscription: Subscription;
   private projectApproachesSubscription: Subscription;
   private createProjectSubscription: Subscription;
 
@@ -68,6 +70,7 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
     private operationTypesService: OperationTypesService,
     private projectApproachesService: ProjectApproachesService,
     private projectService: ProjectService,
+    private userService: UserService,
     private fb: FormBuilder,
     private router: Router
   ) {}
@@ -75,6 +78,10 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.authenticationService.getUserData().subscribe((data) => {
       this.userData = data;
+    });
+
+    this.usersSubscription = this.userService.getUsers().subscribe((data: User[]) => {
+      this.allUsers = data;
     });
 
     this.operationTypesSubscription = this.operationTypesService.getOperationTypes().subscribe((data) => {
@@ -91,6 +98,7 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.operationTypesSubscription?.unsubscribe();
+    this.usersSubscription?.unsubscribe();
     this.projectApproachesSubscription?.unsubscribe();
     this.createProjectSubscription?.unsubscribe();
   }
@@ -98,7 +106,7 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
   public onSubmit(formGroup: FormGroup): void {
     if (formGroup.valid) {
       this.createProjectSubscription = this.projectService
-        .createProject(formGroup.value)
+        .createProject({ project: formGroup.value, projectOwner: formGroup.value.projectOwner })
         .subscribe((newTimeline: Timeline) => {
           if (newTimeline) {
             this.router.navigate([`/gantt/${newTimeline.id}/project-checklist`]).then(() => window.location.reload());

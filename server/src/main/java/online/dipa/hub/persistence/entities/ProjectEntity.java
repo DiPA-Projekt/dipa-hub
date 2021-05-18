@@ -13,8 +13,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 import online.dipa.hub.api.model.Project;
 
@@ -49,11 +47,6 @@ public class ProjectEntity extends BaseEntity {
     @OneToOne(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private ProjectRoleTemplateEntity projectRoleTemplate;
-
-    @NotNull
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    @NotFound(action = NotFoundAction.IGNORE)
-    private UserEntity user;
 
     private String projectType;
     private String projectSize;
@@ -155,14 +148,6 @@ public class ProjectEntity extends BaseEntity {
 
     public void setDepartment(final String department) {
         this.department = department;
-    }
-
-    public UserEntity getUser() {
-        return user;
-    }
-
-    public void setUser(final UserEntity user) {
-        this.user = user;
     }
 
     public OffsetDateTime getStartDate() {

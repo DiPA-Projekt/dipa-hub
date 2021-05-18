@@ -9,17 +9,8 @@
         <module name="ecamp-frontend" />
         <module name="dipa-open-api" />
         <module name="dipa-frontend" />
-        <module name="ecamp-server" />
-      </profile>
-      <profile name="Annotation profile for DiPA :: Parent" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.4.2.Final/mapstruct-processor-1.4.2.Final.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.4.2.Final/mapstruct-1.4.2.Final.jar" />
-        </processorPath>
         <module name="dipa-server" />
+        <module name="ecamp-server" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
