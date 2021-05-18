@@ -8,9 +8,8 @@ describe('MilestoneDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MilestoneDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [MilestoneDialogComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
