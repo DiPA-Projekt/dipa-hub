@@ -227,7 +227,7 @@ public class MilestoneService {
     public void deleteMilestone(final Long timelineId, final Long milestoneId) {
         
         ProjectEntity currentProject = timelineService.getProject(timelineId);
-        PlanTemplateEntity planTemplateEntity = currentProject.getPlanTemplate();
+        var planTemplateEntity = currentProject.getPlanTemplate();
 
         Optional<MilestoneTemplateEntity> toDeleteMilestone = milestoneTemplateRepository.findAll().stream().filter(m -> m.getId().equals(milestoneId)).findFirst();
         
@@ -256,7 +256,7 @@ public class MilestoneService {
         ProjectEntity currentProject = timelineService.getProject(timelineId);
         PlanTemplateEntity planTemplate = currentProject.getPlanTemplate();
 
-        MilestoneTemplateEntity newMilestone = new MilestoneTemplateEntity(milestone);
+        var newMilestone = new MilestoneTemplateEntity(milestone);
 
         newMilestone.setPlanTemplate(planTemplate);
         milestoneTemplateRepository.save(newMilestone);
