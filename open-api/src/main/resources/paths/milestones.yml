@@ -30,6 +30,21 @@ patch:
       application/json:
         schema:
           $ref: "../models/milestone.yml#/Milestone"
+post:
+  tags:
+    - milestones
+  summary: create a new milestone
+  description: Create a new milestone
+  operationId: createMilestone
+  parameters:
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
+  requestBody:
+    description: milestone as request body
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../models/milestone.yml#/Milestone"
   responses:
     204:
-      description: The update was applied successfully.
+      description: The milestone was created successfully.

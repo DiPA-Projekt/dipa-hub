@@ -29,17 +29,19 @@ public class MilestoneController implements MilestonesApi{
     
     @Override
     public ResponseEntity<Void> updateMilestoneData(final Long timelineId, final Milestone milestone) {
-        // if (Optional.ofNullable(milestone.getStatus()).isPresent()) {
-        //     milestoneService.updateMilestoneStatus(milestone.getId(), milestone.getStatus());
-        // }
-        milestoneService.updateMilestoneData(milestone.getId(), milestone);
+         milestoneService.updateMilestoneData(milestone.getId(), milestone);
         return ResponseEntity.noContent().build();
     }
 
     @Override
     public ResponseEntity<Void> deleteMilestone(final Long timelineId, final Long milestoneId) {
-        System.out.println(milestoneId);
-        milestoneService.deleteMilestone(milestoneId);
+        milestoneService.deleteMilestone(timelineId, milestoneId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> createMilestone(final Long timelineId, final Milestone milestone) {
+        milestoneService.createMilestone(timelineId, milestone);
         return ResponseEntity.noContent().build();
     }
     

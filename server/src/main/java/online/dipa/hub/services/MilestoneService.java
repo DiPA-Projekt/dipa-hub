@@ -224,11 +224,41 @@ public class MilestoneService {
                 milestoneEntity.setStatus(milestone.getStatus().toString());});
     }
 
-    public void deleteMilestone(final Long milestoneId) {
-        System.out.println("delete");
-        System.out.println(milestoneTemplateRepository.findAll().stream().filter(m -> m.getId().equals(milestoneId)).findFirst().get().getName());
-        milestoneTemplateRepository.findAll().stream().filter(m -> m.getId().equals(milestoneId)).findFirst()
-            .ifPresent(milestoneEntity -> milestoneTemplateRepository.delete(milestoneEntity));
+    public void deleteMilestone(final Long timelineId, final Long milestoneId) {
+        
+        ProjectEntity currentProject = timelineService.getProject(timelineId);
+        PlanTemplateEntity planTemplateEntity = currentProject.getPlanTemplate();
+
+        Optional<MilestoneTemplateEntity> toDeleteMilestone = milestoneTemplateRepository.findAll().stream().filter(m -> m.getId().equals(milestoneId)).findFirst();
+        
+        if (toDeleteMilestone.isPresent()) {
+            planTemplateEntity.getMilestones().remove(toDeleteMilestone.get());
+            milestoneTemplateRepository.delete(toDeleteMilestone.get());
+        }
+        
+        Optional<OffsetDateTime> newLastMilestoneOptionalDate = planTemplateEntity.getMilestones().stream()
+            .map(MilestoneTemplateEntity::getDate).max(OffsetDateTime::compareTo);
+
+        if (newLastMilestoneOptionalDate.isPresent()) {
+            OffsetDateTime newLastMilestoneDate = newLastMilestoneOptionalDate.get();
+
+            OffsetDateTime oldProjectEnd = currentProject.getEndDate();
+
+            long hoursOffsetEnd = HOURS.between(oldProjectEnd, newLastMilestoneDate);
+            OffsetDateTime newProjectEnd = currentProject.getEndDate().plusHours(hoursOffsetEnd);
+
+            currentProject.setEndDate(newProjectEnd);
+        }
     }
 
+    public void createMilestone(final Long timelineId, final Milestone milestone) {
+
+        ProjectEntity currentProject = timelineService.getProject(timelineId);
+        PlanTemplateEntity planTemplate = currentProject.getPlanTemplate();
+
+        MilestoneTemplateEntity newMilestone = new MilestoneTemplateEntity(milestone);
+
+        newMilestone.setPlanTemplate(planTemplate);
+        milestoneTemplateRepository.save(newMilestone);
+    }
 }

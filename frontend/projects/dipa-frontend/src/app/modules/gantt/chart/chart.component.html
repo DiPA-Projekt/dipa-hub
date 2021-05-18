@@ -3,23 +3,29 @@
     <div class="card-container">
       <div class="card-header">
         <div class="subheading-1 title">Meilenstein</div>
-        <button mat-raised-button color="warn" (click)="deleteMilestone()">Delete</button>
         <button mat-icon-button color="warn" (click)="closeMenu()">
           <mat-icon>close</mat-icon>
         </button>
       </div>
       <div class="card-content">
-        <div style="text-align: center;">
+        <div style="text-align: center">
           <mat-form-field>
-            <textarea matInput type="text"
-            [(ngModel)]="selectedMilestoneDataMenu.name" 
-            (change)="changeMilestoneName()"
-            cdkTextareaAutosize
-            #autosize="cdkTextareaAutosize"></textarea>
+            <textarea
+              matInput
+              type="text"
+              [(ngModel)]="selectedMilestoneDataMenu.name"
+              (change)="changeMilestoneName()"
+              cdkTextareaAutosize
+              #autosize="cdkTextareaAutosize"
+            ></textarea>
           </mat-form-field>
           <p style="font-weight: 200; font-size: small; text-align: center; color: grey">
             Fällig am {{ getDate(selectedMilestoneDataMenu.date) }}
           </p>
+          <button *ngIf="incrementsData.length === 0" mat-raised-button color="primary" (click)="deleteMilestone()">
+            <mat-icon>delete</mat-icon>
+            Löschen
+          </button>
         </div>
         <p>Status</p>
         <mat-radio-group
@@ -48,6 +54,9 @@
       (operationTypeChanged)="operationTypeChanged.emit($event)"
       (projectApproachChanged)="projectApproachChanged.emit($event)"
     ></app-chart-header>
+    <button *ngIf="incrementsData.length === 0" mat-raised-button color="primary" (click)="openMilestoneDialog()">
+      Meilenstein hinzufügen
+    </button>
     <div class="chart">
       <figure id="chart" (resized)="onResized($event)" #chart></figure>
     </div>

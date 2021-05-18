@@ -1,0 +1,47 @@
+<h1 mat-dialog-title>Meilenstein anlegen</h1>
+<div mat-dialog-content>
+  <form [formGroup]="formGroup" (submit)="onSubmit(formGroup)">
+    <div class="col-md-6 col-lg-4 col-xl-2">
+      <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" required />
+      </mat-form-field>
+    </div>
+    <div class="col-md-6 col-lg-4 col-xl-2">
+      <label>Status</label>
+      <mat-radio-group color="primary" formControlName="status" required>
+        <div *ngFor="let status of statusList">
+          <mat-radio-button [value]="status.value" class="status-radio">
+            {{ status.name }}
+          </mat-radio-button>
+        </div>
+        <br />
+      </mat-radio-group>
+    </div>
+    <div class="col-md-6 col-lg-4 col-xl-2">
+      <mat-form-field class="example-form-field" appearance="fill">
+        <mat-label>Datum</mat-label>
+        <input
+          [min]="timeline.start || 'yyyy-MM-dd'"
+          [max]="timeline.end || 'yyyy-MM-dd'"
+          matInput
+          [matDatepicker]="datepicker"
+          formControlName="date"
+          required
+        />
+        <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+        <mat-datepicker #datepicker>
+          <mat-datepicker-actions>
+            <button mat-button matDatepickerCancel>Cancel</button>
+            <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+          </mat-datepicker-actions>
+        </mat-datepicker>
+      </mat-form-field>
+    </div>
+  </form>
+</div>
+<mat-error *ngIf="errorVisible"> Bitte alle Felder ausfüllen </mat-error>
+<div mat-dialog-actions class="justify-content-end">
+  <button mat-raised-button color="primary" type="submit" (click)="onSubmit(formGroup)">Anlegen</button>
+  <button mat-button (click)="onCloseClick()">Abbrechen</button>
+</div>

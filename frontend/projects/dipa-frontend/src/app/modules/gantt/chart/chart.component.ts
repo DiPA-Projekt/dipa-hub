@@ -39,6 +39,8 @@ import { MatRadioChange } from '@angular/material/radio';
 import { ScaleTime } from 'd3-scale';
 import { ZoomBehavior } from 'd3-zoom';
 import StatusEnum = Milestone.StatusEnum;
+import { MilestoneDialogComponent } from './milestone-dialog/milestone-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-chart',
@@ -133,7 +135,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     private tasksService: TasksService,
     private timelinesService: TimelinesService,
     private incrementsService: IncrementsService,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    public dialog: MatDialog
   ) {
     d3.formatLocale({
       decimal: ',',
@@ -316,16 +319,27 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   }
 
   changeMilestoneName(): void {
-    const changeMilestoneName$ = this.milestonesService.updateMilestoneData(this.timelineData.id, this.selectedMilestoneDataMenu);
+    const changeMilestoneName$ = this.milestonesService.updateMilestoneData(
+      this.timelineData.id,
+      this.selectedMilestoneDataMenu
+    );
 
     this.milestoneSubscription = this.subscribeForReset(changeMilestoneName$);
   }
 
   deleteMilestone(): void {
-    console.log(this.selectedMilestoneDataMenu)
-    const deleteMilestone$ = this.milestonesService.deleteMilestone(this.timelineData.id, this.selectedMilestoneDataMenu.id);
+    const deleteMilestone$ = this.milestonesService.deleteMilestone(
+      this.timelineData.id,
+      this.selectedMilestoneDataMenu.id
+    );
     this.milestoneSubscription = this.subscribeForReset(deleteMilestone$);
+    this.showMilestoneMenu = false;
+  }
 
+  public openMilestoneDialog(): void {
+    const dialogRef = this.dialog.open(MilestoneDialogComponent, { data: this.timelineData });
+    const $dialogSubscription = dialogRef.afterClosed();
+    this.subscribeForReset($dialogSubscription);
   }
 
   closeMenu(): void {
