@@ -26,6 +26,7 @@ import { ProjectControlComponent } from './project-control/project-control.compo
 import { ProjectEndComponent } from './project-end/project-end.component';
 import { FlexModule } from '@angular/flex-layout';
 import { ProjectRoleComponent } from './project-role/project-role.component';
+import { MilestoneDialogComponent } from './chart/milestone-dialog/milestone-dialog.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { ProjectRoleComponent } from './project-role/project-role.component';
     ProjectControlComponent,
     ProjectEndComponent,
     ProjectRoleComponent,
+    MilestoneDialogComponent,
   ],
   exports: [ChartComponent, FilesComponent, NavMenuListItemComponent],
   imports: [

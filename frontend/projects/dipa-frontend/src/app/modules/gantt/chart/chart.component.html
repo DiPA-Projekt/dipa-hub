@@ -8,10 +8,23 @@
         </button>
       </div>
       <div class="card-content">
-        <p style="font-weight: 500; font-size: medium; text-align: center">{{ selectedMilestoneDataMenu.name }}</p>
-        <p style="font-weight: 200; font-size: small; text-align: center; color: grey">
-          Fällig am {{ getDate(selectedMilestoneDataMenu.date) }}
-        </p>
+        <div style="text-align: center">
+          <mat-form-field class="full-width">
+            <input
+              class="milestone-title"
+              matInput
+              [(ngModel)]="selectedMilestoneDataMenu.name"
+              (change)="changeMilestoneName()"
+            />
+          </mat-form-field>
+          <p style="font-weight: 200; font-size: small; text-align: center; color: grey">
+            Fällig am {{ getDate(selectedMilestoneDataMenu.date) }}
+          </p>
+          <button *ngIf="incrementsData.length === 0" mat-raised-button color="primary" (click)="deleteMilestone()">
+            <mat-icon>delete</mat-icon>
+            Löschen
+          </button>
+        </div>
         <p>Status</p>
         <mat-radio-group
           [(ngModel)]="selectedMilestoneDataMenu.status"
@@ -39,6 +52,9 @@
       (operationTypeChanged)="operationTypeChanged.emit($event)"
       (projectApproachChanged)="projectApproachChanged.emit($event)"
     ></app-chart-header>
+    <button *ngIf="incrementsData.length === 0" mat-raised-button color="primary" (click)="openMilestoneDialog()">
+      Meilenstein hinzufügen
+    </button>
     <div class="chart">
       <figure id="chart" (resized)="onResized($event)" #chart></figure>
     </div>
