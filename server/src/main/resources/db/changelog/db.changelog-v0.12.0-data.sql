@@ -125,3 +125,27 @@ VALUES (3, (SELECT id FROM project_role WHERE project_role_template_id = 7 AND a
 --changeset id:insert-user-Maria-Zugspitze-PE context:itzbund
 INSERT INTO user_project_role_connection (user_id, project_role_id)
 VALUES (4, (SELECT id FROM project_role WHERE project_role_template_id = 6 AND abbreviation = 'PE'))
+
+--changeset id:insert-project-role-Serveraustausch-pe context:ba
+INSERT INTO project_role (name, abbreviation, permission, project_role_template_id, icon, max_count)
+VALUES ('Projekteigner', 'PE', 'WRITE', 3, 'phone', 1)
+
+--changeset id:insert-project-role-Cisco_Router_Nürnberg-pe context:ba
+INSERT INTO project_role (name, abbreviation, permission, project_role_template_id, icon, max_count)
+VALUES ('Projekteigner', 'PE', 'WRITE', 4, 'phone', 1)
+
+--changeset id:insert-project-role-Oranienburg-pe context:ba
+INSERT INTO project_role (name, abbreviation, permission, project_role_template_id, icon, max_count)
+VALUES ('Projekteigner', 'PE', 'WRITE', 8, 'phone', 1)
+
+--changeset id:insert-user-Rolf-Serveraustausch-connection context:ba
+INSERT INTO user_project_role_connection (user_id, project_role_id)
+VALUES (7, (SELECT id FROM project_role WHERE project_role_template_id = 3 AND abbreviation = 'PE'))
+
+--changeset id:insert-user-Schmidt-PE-Cisco_Router_Nürnberg-connection context:ba
+INSERT INTO user_project_role_connection (user_id, project_role_id)
+VALUES (8, (SELECT id FROM project_role WHERE project_role_template_id = 4 AND abbreviation = 'PE'))
+
+--changeset id:insert-user-Rolf-Oranienburg-PE context:ba
+INSERT INTO user_project_role_connection (user_id, project_role_id)
+VALUES (7, (SELECT id FROM project_role WHERE project_role_template_id = 8 AND abbreviation = 'PE'))
