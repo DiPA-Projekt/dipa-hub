@@ -15,7 +15,9 @@ public class ProjectRoleEntityToProjectConverter implements Converter<ProjectRol
         return new ProjectRole().id(template.getId())
                              .name(template.getName())
                              .abbreviation(template.getAbbreviation())
+                             .icon(template.getIcon())
                              .permission(ProjectRole.PermissionEnum.fromValue(template.getPermission()))
+                             .maxCount(template.getMaxCount())
                              .projectId(template.getProjectRoleTemplate().getProject().getId());
                 
     }

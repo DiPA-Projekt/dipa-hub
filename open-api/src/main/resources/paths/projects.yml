@@ -10,7 +10,7 @@ post:
     content:
       application/json:
         schema:
-          $ref: "../models/project.yml#/Project"
+          $ref: "../models/projectWithUser.yml#/ProjectWithUser"
   responses:
     200:
       description: OK

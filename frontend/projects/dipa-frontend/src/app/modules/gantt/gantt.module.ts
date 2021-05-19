@@ -24,6 +24,8 @@ import { ProjectOrganizationComponent } from './project-organization/project-org
 import { ProjectQuickstartComponent } from './project-quickstart/project-quickstart.component';
 import { ProjectControlComponent } from './project-control/project-control.component';
 import { ProjectEndComponent } from './project-end/project-end.component';
+import { FlexModule } from '@angular/flex-layout';
+import { ProjectRoleComponent } from './project-role/project-role.component';
 import { MilestoneDialogComponent } from './chart/milestone-dialog/milestone-dialog.component';
 
 @NgModule({
@@ -47,6 +49,7 @@ import { MilestoneDialogComponent } from './chart/milestone-dialog/milestone-dia
     ProjectQuickstartComponent,
     ProjectControlComponent,
     ProjectEndComponent,
+    ProjectRoleComponent,
     MilestoneDialogComponent,
   ],
   exports: [ChartComponent, FilesComponent, NavMenuListItemComponent],
@@ -58,6 +61,7 @@ import { MilestoneDialogComponent } from './chart/milestone-dialog/milestone-dia
     MaterialModule,
     ReactiveFormsModule,
     SharedModule,
+    FlexModule,
   ],
 })
 export class GanttModule {}
