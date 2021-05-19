@@ -220,10 +220,9 @@ mat-sidenav-content {
   background-color: transparent!important;
 }
 
-textarea.mat-input-element {
-  font-weight: 500; 
-  font-size: medium; 
-  text-align: center !important;
+input.milestone-title {
+  font-weight: 500;
+  font-size: medium;
 }
 
 .example-form {
@@ -232,6 +231,6 @@ textarea.mat-input-element {
   width: 100%;
 }
 
-.example-full-width {
+.full-width {
   width: 100%;
 }

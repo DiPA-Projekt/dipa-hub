@@ -9,15 +9,13 @@
       </div>
       <div class="card-content">
         <div style="text-align: center">
-          <mat-form-field>
-            <textarea
+          <mat-form-field class="full-width">
+            <input
+              class="milestone-title"
               matInput
-              type="text"
               [(ngModel)]="selectedMilestoneDataMenu.name"
               (change)="changeMilestoneName()"
-              cdkTextareaAutosize
-              #autosize="cdkTextareaAutosize"
-            ></textarea>
+            />
           </mat-form-field>
           <p style="font-weight: 200; font-size: small; text-align: center; color: grey">
             Fällig am {{ getDate(selectedMilestoneDataMenu.date) }}
