@@ -48,8 +48,8 @@ public class ProjectController implements ProjectApi {
     }
 
     @Override
-    public ResponseEntity<Timeline> createProject(Project project) {
-        return ResponseEntity.ok(projectService.createProject(project));
+    public ResponseEntity<Timeline> createProject(ProjectWithUser projectWithUser) {
+        return ResponseEntity.ok(projectService.createProject(projectWithUser.getProject(), projectWithUser.getProjectOwner()));
     }
     
     @Override

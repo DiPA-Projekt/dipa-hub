@@ -70,7 +70,7 @@ public class UserInformationService {
         .map(user -> conversionService.convert(user, User.class)).collect(Collectors.toList());
     }
 
-    public void createNewProjectRoles (ProjectEntity project) {
+    public void createNewProjectRoles (ProjectEntity project, User projectOwner) {
         ProjectRoleTemplateEntity pRoleTemplate = findProjectRoleTemplate(project);
 
         var newPRoleTemplate = new ProjectRoleTemplateEntity();
@@ -94,6 +94,16 @@ public class UserInformationService {
         newPRoleTemplate.setProjectRoles(pRoles);
         projectRoleTemplateRepository.save(newPRoleTemplate);
 
+        // insert projectOwner user into project role PE
+        ProjectRoleEntity projectRolePE = projectRoleRepository.findAll().stream()
+                                                      .filter(temp -> temp.getProjectRoleTemplate().getId().equals(newPRoleTemplate.getId()))
+                                                      .filter(a -> a.getAbbreviation().equals("PE")).findFirst().orElse(null);
+
+        var userEntity = userRepository.findAll().stream().filter(u -> u.getId().equals(projectOwner.getId()))
+                                       .findFirst().orElse(null);
+
+        userEntity.getProjectRoles().add(projectRolePE);
+        userRepository.save(userEntity);
     }
 
     public void updateNewProjectRolesForTemplate (ProjectEntity project) {
@@ -142,18 +152,10 @@ public class UserInformationService {
                                     .stream().map(BaseEntity::getId).collect(Collectors.toList());
         }
         else if(getUserData().getProjectRoles() !=null) {
-
-            List<Long> projectRoleProjects = getUserData().getProjectRoles().stream().map(ProjectRole::getProjectId).collect(Collectors.toList());
-            projectRoleProjects.addAll(getProjectOwnerProjects());
-            projectIdsList = projectRoleProjects;
+            projectIdsList = getUserData().getProjectRoles().stream().map(ProjectRole::getProjectId).collect(Collectors.toList());
         }
 
         return projectIdsList;
-    }
-
-    private List<Long> getProjectOwnerProjects()  {
-        return projectRepository.findAll().stream().filter(p -> p.getUser().getId().equals(getUserData().getId())).map(
-                ProjectEntity::getId).collect(Collectors.toList());
     }
 
     public void updateUser (User user) {
@@ -163,7 +165,7 @@ public class UserInformationService {
         
         List<ProjectRoleEntity> oldUserProjectRoles = new ArrayList<>(Objects.requireNonNull(userEntity)
                                                                              .getProjectRoles());
-        userEntity.getProjectRoles().removeAll(oldUserProjectRoles);      
+        userEntity.getProjectRoles().removeAll(oldUserProjectRoles);
 
         for (ProjectRole projectRole: user.getProjectRoles()) {
 
@@ -183,6 +185,4 @@ public class UserInformationService {
                                                                .orElse(null);
 
     }
-
-
 }

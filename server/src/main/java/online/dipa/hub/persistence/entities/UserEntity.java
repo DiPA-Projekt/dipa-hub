@@ -10,14 +10,11 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "app_user")
@@ -32,10 +29,6 @@ public class UserEntity extends BaseEntity {
     @Basic(optional = false)
     private String name;
 
-    @OneToMany(mappedBy = "user")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @NotFound(action = NotFoundAction.IGNORE)
-    private Set<ProjectEntity> projects;
 
     private String tenantId;
     private String email;
@@ -108,12 +101,6 @@ public class UserEntity extends BaseEntity {
         this.organisationRoles = organisationRoles;
     }
 
-    public Set<ProjectEntity> getProjects() {
-        return projects;
-    }
 
-    public void setProjects(final Set<ProjectEntity> projects) {
-        this.projects = projects;
-    }
 
 }
