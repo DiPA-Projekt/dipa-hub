@@ -80,14 +80,26 @@ export class SidenavComponent implements OnInit, OnDestroy {
         ],
       },
       {
-        name: 'Zeitplan',
-        icon: 'event_note',
+        name: 'Unser Zeitplan',
+        icon: 'calendar_today',
         route: `gantt/${this.selectedTimelineId}/timeline`,
-      },
-      {
-        name: 'Stöbern & Vergleichen',
-        icon: 'find_replace',
-        route: `gantt/${this.selectedTimelineId}/templates`,
+        children: [
+          {
+            name: 'Unsere Aufgaben',
+            icon: 'list_alt',
+            route: `gantt/${this.selectedTimelineId}/timeline/tasks`,
+          },
+          {
+            name: 'Unsere Termine',
+            icon: 'event_note',
+            route: `gantt/${this.selectedTimelineId}/timeline/schedules`,
+          },
+          {
+            name: 'Stöbern & Vergleichen',
+            icon: 'find_replace',
+            route: `gantt/${this.selectedTimelineId}/timeline/templates`,
+          },
+        ],
       },
       {
         name: 'Unsere Projektorganisation',

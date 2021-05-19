@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { forkJoin, Observable, Subscription } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { GanttControlsService } from '../gantt-controls.service';
+import { GanttControlsService } from '../../gantt-controls.service';
 import {
   IncrementsService,
   MilestonesService,
@@ -12,9 +12,9 @@ import {
   TimelinesService,
 } from 'dipa-api-client';
 import { ActivatedRoute, Params } from '@angular/router';
-import { ChartComponent } from '../chart/chart.component';
+import { ChartComponent } from '../../chart/chart.component';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
-import Utils from '../../../shared/utils';
+import Utils from '../../../../shared/utils';
 
 @Component({
   selector: 'app-timeline',
@@ -62,7 +62,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.timelinesSubscription = this.activatedRoute.parent.params
+    this.timelinesSubscription = this.activatedRoute.parent.parent.params
       .pipe(
         switchMap(
           (params: Params): Observable<Timeline[]> => {
