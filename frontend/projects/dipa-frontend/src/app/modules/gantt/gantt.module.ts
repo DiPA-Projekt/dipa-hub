@@ -24,6 +24,7 @@ import { ProjectOrganizationComponent } from './project-organization/project-org
 import { ProjectQuickstartComponent } from './project-quickstart/project-quickstart.component';
 import { ProjectControlComponent } from './project-control/project-control.component';
 import { ProjectEndComponent } from './project-end/project-end.component';
+import { MilestoneDialogComponent } from './chart/milestone-dialog/milestone-dialog.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { ProjectEndComponent } from './project-end/project-end.component';
     ProjectQuickstartComponent,
     ProjectControlComponent,
     ProjectEndComponent,
+    MilestoneDialogComponent,
   ],
   exports: [ChartComponent, FilesComponent, NavMenuListItemComponent],
   imports: [
