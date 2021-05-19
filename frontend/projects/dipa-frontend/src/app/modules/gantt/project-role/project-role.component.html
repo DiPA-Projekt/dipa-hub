@@ -43,9 +43,6 @@
                 {{ user.name }}
               </mat-option>
             </mat-select>
-            <mat-hint *ngIf="role.maxCount > -1"
-              >Max. {{ role.maxCount }} {{ role.maxCount === 1 ? 'Person' : 'Personen' }}</mat-hint
-            >
           </mat-form-field>
         </ng-container>
         <ng-container *ngIf="role.maxCount === 1">
@@ -56,9 +53,6 @@
                 {{ user.name }}
               </mat-option>
             </mat-select>
-            <mat-hint *ngIf="role.maxCount > -1"
-              >Max. {{ role.maxCount }} {{ role.maxCount === 1 ? 'Person' : 'Personen' }}</mat-hint
-            >
           </mat-form-field>
         </ng-container>
       </form>
