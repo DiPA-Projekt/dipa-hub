@@ -20,6 +20,13 @@ databaseChangeLog:
                   name: default_role
                   type: boolean
                   defaultValue: false
+  - changeSet:
+      id: addColumn-project-role-icon-max_count
+      author: bock
+      changes:
+        - addColumn:
+            tableName: project_role
+            columns:          
               - column:
                   name: icon
                   type: VARCHAR(255)
