@@ -61,6 +61,8 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
   private operationTypesSubscription: Subscription;
   private projectApproachesSubscription: Subscription;
   private createProjectSubscription: Subscription;
+  private itzBundSmallProjectApproachId = 7;
+  private itzBundSoftwareDevelopmentId = 2;
 
   public constructor(
     public dialogRef: MatDialogRef<ProjectDialogComponent>,
@@ -123,12 +125,19 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
   }
 
   private setReactiveForm(): void {
+    this.operationTypeId = this.itzBundSoftwareDevelopmentId;
     this.formGroup = this.fb.group(
       {
         id: -1,
         name: new FormControl('', { validators: [Validators.required], updateOn: 'blur' }),
-        operationTypeId: new FormControl('', { validators: [Validators.required], updateOn: 'blur' }),
-        projectApproachId: new FormControl('', { validators: [Validators.required], updateOn: 'blur' }),
+        operationTypeId: new FormControl(this.itzBundSoftwareDevelopmentId, {
+          validators: [Validators.required],
+          updateOn: 'blur',
+        }),
+        projectApproachId: new FormControl(this.itzBundSmallProjectApproachId, {
+          validators: [Validators.required],
+          updateOn: 'blur',
+        }),
         projectType: new FormControl(ProjectTypeEnum.InternesProjekt, {
           validators: [Validators.required],
           updateOn: 'blur',
