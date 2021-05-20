@@ -11,7 +11,7 @@
       <mat-form-field>
         <mat-placeholder>Projekteigner</mat-placeholder>
         <mat-select formControlName="projectOwner">
-          <mat-option *ngFor="let user of allUsers" [value]="user">
+          <mat-option *ngFor="let user of allUsers" [value]="user.id">
             {{ user.name }}
           </mat-option>
         </mat-select>

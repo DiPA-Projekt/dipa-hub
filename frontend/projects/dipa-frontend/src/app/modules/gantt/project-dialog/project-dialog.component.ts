@@ -108,7 +108,10 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
   public onSubmit(formGroup: FormGroup): void {
     if (formGroup.valid) {
       this.createProjectSubscription = this.projectService
-        .createProject({ project: formGroup.value, projectOwner: formGroup.value.projectOwner })
+        .createProject({
+          project: formGroup.value,
+          projectOwner: this.filterProjectOwner(formGroup.value.projectOwner),
+        })
         .subscribe((newTimeline: Timeline) => {
           if (newTimeline) {
             this.router.navigate([`/gantt/${newTimeline.id}/project-checklist`]).then(() => window.location.reload());
@@ -132,6 +135,10 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.close();
   }
 
+  private filterProjectOwner(projectOwnerId: number): User {
+    return this.allUsers.find((user) => user.id === projectOwnerId);
+  }
+
   private setReactiveForm(): void {
     this.operationTypeId = this.itzBundSoftwareDevelopmentId;
     this.formGroup = this.fb.group(
@@ -153,7 +160,7 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
         start: new FormControl(this.startDate, { validators: [Validators.required], updateOn: 'blur' }),
         end: new FormControl(this.endDate, { validators: [Validators.required], updateOn: 'blur' }),
         projectSize: new FormControl('SMALL', { validators: [Validators.required], updateOn: 'blur' }),
-        projectOwner: this.userData,
+        projectOwner: this.userData.id,
       },
       { updateOn: 'blur' }
     );

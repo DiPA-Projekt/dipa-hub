@@ -71,8 +71,6 @@ export class AuthGuard implements CanActivate, CanActivateChild {
       accessProject = this.projects.includes(Number(requiredProjectId));
     }
 
-    const accessProjectsOverview = this.hasProjectRoles;
-
-    return accessOrganisationRole || accessProject || accessProjectsOverview;
+    return accessOrganisationRole || accessProject;
   }
 }

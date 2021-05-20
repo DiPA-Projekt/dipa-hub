@@ -60,6 +60,8 @@ public class TimelineService {
     @Autowired
     private IncrementService incrementService;
 
+    private final String milestoneFileName = "Projekteinrichtung";
+
     public List<Timeline> getTimelines() {
         List<Long> projectIds = userInformationService.getProjectIdList();
 
@@ -291,15 +293,13 @@ public class TimelineService {
         ProjectEntity currentProject = getProject(timelineId);
         final ProjectApproachEntity projectApproach = currentProject.getProjectApproach();
 
-        Long firstMilestoneId = Objects.requireNonNull(currentProject.getPlanTemplate()
-                                                                     .getMilestones()
-                                                                     .stream()
-                                                                     .min(Comparator.comparing(
-                                                                             MilestoneTemplateEntity::getDateOffset))
-                                                                     .orElse(null))
-                                       .getId();
+        Optional<MilestoneTemplateEntity> firstMilestone = currentProject.getPlanTemplate()
+                                                                         .getMilestones()
+                                                                         .stream()
+                                                                         .filter(m -> m.getName().equals(milestoneFileName))
+                                                                         .findFirst();
 
-        if (!milestoneId.equals(firstMilestoneId) || projectApproach == null ||
+        if (firstMilestone.isEmpty() || !milestoneId.equals(firstMilestone.get().getId()) || projectApproach == null ||
                 !projectApproach.getOperationType().getId().equals(2L)) {
             return Collections.emptyList();
         }
