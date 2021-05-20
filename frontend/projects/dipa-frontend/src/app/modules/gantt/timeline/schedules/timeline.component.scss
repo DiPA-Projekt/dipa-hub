@@ -6,7 +6,6 @@
   margin-right: 10px;
 }
 
-
 .mat-sidenav-container {
   width: 100%;
   height: calc(100vh - 84px);
@@ -43,4 +42,13 @@ mat-sidenav-content {
   width: 100%;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.mat-input-element:disabled {
+  color: black;
+}
+
+.appointments-card {
+  width: 50%;
+  margin: 10px;
 }
