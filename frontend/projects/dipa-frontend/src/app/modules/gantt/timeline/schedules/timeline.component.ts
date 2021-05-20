@@ -93,13 +93,13 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
     this.projectTasksSubscription = this.projectService.getProjectTasks(this.selectedTimelineId).subscribe((data) => {
       this.projectTask = data[4];
-      this.projectTask.results = this.projectTask.results.sort(
+      this.projectTask.results.sort(
         (b, a) =>
           new Date(b.formFields.find((field) => field.key === 'date').value).getTime() -
           new Date(a.formFields.find((field) => field.key === 'date').value).getTime()
       );
 
-      const keysOrder = [];
+      const keysOrder = {};
       this.apptFormfieldsKeys.forEach((id, i) => {
         keysOrder[id] = i + 1;
       });
