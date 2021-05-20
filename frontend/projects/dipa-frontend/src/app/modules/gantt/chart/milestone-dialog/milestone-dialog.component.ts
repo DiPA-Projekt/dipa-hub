@@ -56,7 +56,7 @@ export class MilestoneDialogComponent implements OnInit {
     this.formGroup = this.fb.group({
       id: -1,
       name: new FormControl('', { validators: [Validators.required], updateOn: 'change' }),
-      status: new FormControl('', { validators: [Validators.required], updateOn: 'change' }),
+      status: new FormControl(StatusEnum.Open, { validators: [Validators.required], updateOn: 'change' }),
       date: new FormControl('', { validators: [Validators.required], updateOn: 'change' }),
     });
   }
