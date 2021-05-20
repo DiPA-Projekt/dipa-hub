@@ -26,11 +26,11 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { Increments } from '../../chart/chart-elements/Increments';
-import { MilestonesArea } from '../../chart/chart-elements/MilestonesArea';
-import { ProjectDuration } from '../../chart/chart-elements/ProjectDuration';
-import { TasksArea } from '../../chart/chart-elements/TasksArea';
-import { XAxis } from '../../chart/chart-elements/XAxis';
+import { Increments } from '../../../chart/chart-elements/Increments';
+import { MilestonesArea } from '../../../chart/chart-elements/MilestonesArea';
+import { ProjectDuration } from '../../../chart/chart-elements/ProjectDuration';
+import { TasksArea } from '../../../chart/chart-elements/TasksArea';
+import { XAxis } from '../../../chart/chart-elements/XAxis';
 import { TemplatesViewControlsService } from '../templates-view-controls.service';
 import { ScaleTime } from 'd3-scale';
 import { ZoomBehavior } from 'd3-zoom';
