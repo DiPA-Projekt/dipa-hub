@@ -124,10 +124,6 @@ export class TimelineComponent implements OnInit, OnDestroy {
       this.incrementsService.getIncrementsForTimeline(this.selectedTimelineId),
     ]).pipe(
       map(([taskData, milestoneData, incrementsData]) => {
-        const milestoneDates = milestoneData.map((x) => Utils.createDateAtMidnight(x.date));
-        const taskStartDates = taskData.map((x) => Utils.createDateAtMidnight(x.start));
-        const taskEndDates = taskData.map((x) => Utils.createDateAtMidnight(x.end));
-
         const selectedTimeline = this.timelineData.find((c) => c.id === Number(this.selectedTimelineId));
 
         const periodStartDate = new Date(selectedTimeline.start);
