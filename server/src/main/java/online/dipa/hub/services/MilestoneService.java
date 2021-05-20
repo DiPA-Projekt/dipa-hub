@@ -20,6 +20,7 @@ import online.dipa.hub.persistence.entities.MilestoneTemplateEntity;
 import online.dipa.hub.persistence.entities.PlanTemplateEntity;
 import online.dipa.hub.persistence.repositories.MilestoneTemplateRepository;
 import online.dipa.hub.persistence.repositories.PlanTemplateRepository;
+import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
 
 @Service
@@ -262,8 +263,8 @@ public class MilestoneService {
 
             OffsetDateTime oldProjectEnd = currentProject.getEndDate();
 
-            long hoursOffsetEnd = HOURS.between(oldProjectEnd, newLastMilestoneDate);
-            OffsetDateTime newProjectEnd = currentProject.getEndDate().plusHours(hoursOffsetEnd);
+            long daysOffsetEnd = DAYS.between(oldProjectEnd, newLastMilestoneDate);
+            OffsetDateTime newProjectEnd = currentProject.getEndDate().plusDays(daysOffsetEnd);
 
             currentProject.setEndDate(newProjectEnd);
         }
