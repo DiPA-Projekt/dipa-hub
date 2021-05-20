@@ -21,7 +21,7 @@ const routes: Routes = [
       {
         path: 'timeline',
         children: [
-          { path: '', redirectTo: 'quickstart', pathMatch: 'full' },
+          { path: '', redirectTo: 'schedules', pathMatch: 'full' },
           { path: 'tasks', component: TasksComponent },
           { path: 'schedules', component: TimelineComponent },
           { path: 'templates', component: TemplatesViewComponent },
