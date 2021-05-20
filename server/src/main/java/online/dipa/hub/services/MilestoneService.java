@@ -227,15 +227,33 @@ public class MilestoneService {
     public void deleteMilestone(final Long timelineId, final Long milestoneId) {
         
         ProjectEntity currentProject = timelineService.getProject(timelineId);
-        var planTemplateEntity = currentProject.getPlanTemplate();
+        var planTemplate = currentProject.getPlanTemplate();
 
         Optional<MilestoneTemplateEntity> toDeleteMilestone = milestoneTemplateRepository.findAll().stream().filter(m -> m.getId().equals(milestoneId)).findFirst();
         
         if (toDeleteMilestone.isPresent()) {
-            planTemplateEntity.getMilestones().remove(toDeleteMilestone.get());
+            planTemplate.getMilestones().remove(toDeleteMilestone.get());
             milestoneTemplateRepository.delete(toDeleteMilestone.get());
         }
         
+        setNewProjectEndDate(planTemplate, currentProject);
+
+    }
+
+    public void createMilestone(final Long timelineId, final Milestone milestone) {
+
+        ProjectEntity currentProject = timelineService.getProject(timelineId);
+        PlanTemplateEntity planTemplate = currentProject.getPlanTemplate();
+
+        var newMilestone = new MilestoneTemplateEntity(milestone);
+
+        newMilestone.setPlanTemplate(planTemplate);
+        milestoneTemplateRepository.save(newMilestone);
+
+        setNewProjectEndDate(planTemplate, currentProject);
+    }
+
+    public void setNewProjectEndDate(PlanTemplateEntity planTemplateEntity, ProjectEntity currentProject) {
         Optional<OffsetDateTime> newLastMilestoneOptionalDate = planTemplateEntity.getMilestones().stream()
             .map(MilestoneTemplateEntity::getDate).max(OffsetDateTime::compareTo);
 
@@ -249,16 +267,5 @@ public class MilestoneService {
 
             currentProject.setEndDate(newProjectEnd);
         }
-    }
-
-    public void createMilestone(final Long timelineId, final Milestone milestone) {
-
-        ProjectEntity currentProject = timelineService.getProject(timelineId);
-        PlanTemplateEntity planTemplate = currentProject.getPlanTemplate();
-
-        var newMilestone = new MilestoneTemplateEntity(milestone);
-
-        newMilestone.setPlanTemplate(planTemplate);
-        milestoneTemplateRepository.save(newMilestone);
     }
 }

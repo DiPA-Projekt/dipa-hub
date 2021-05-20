@@ -17,7 +17,6 @@ import {
 import { ActivatedRoute, Params } from '@angular/router';
 import { ChartComponent } from '../../chart/chart.component';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
-import Utils from '../../../../shared/utils';
 
 @Component({
   selector: 'app-timeline',
@@ -124,16 +123,10 @@ export class TimelineComponent implements OnInit, OnDestroy {
       this.incrementsService.getIncrementsForTimeline(this.selectedTimelineId),
     ]).pipe(
       map(([taskData, milestoneData, incrementsData]) => {
-        const milestoneDates = milestoneData.map((x) => Utils.createDateAtMidnight(x.date));
-        const taskStartDates = taskData.map((x) => Utils.createDateAtMidnight(x.start));
-        const taskEndDates = taskData.map((x) => Utils.createDateAtMidnight(x.end));
-
-        const datesArray: Date[] = [...milestoneDates, ...taskStartDates, ...taskEndDates];
-
-        const periodStartDate = TimelineComponent.getMinimumDate(datesArray);
-        const periodEndDate = TimelineComponent.getMaximumDate(datesArray);
-
         const selectedTimeline = this.timelineData.find((c) => c.id === Number(this.selectedTimelineId));
+
+        const periodStartDate = new Date(selectedTimeline.start);
+        const periodEndDate = new Date(selectedTimeline.end);
 
         return {
           milestoneData,
@@ -181,13 +174,5 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
   public filterOpenAppointments(appointments): boolean {
     return appointments.formFields.find((field) => field.key === 'status').value !== 'DONE';
-  }
-
-  private static getMinimumDate(data: Date[]): Date {
-    return data.reduce((acc, curr) => (acc < curr ? acc : curr));
-  }
-
-  private static getMaximumDate(data: Date[]): Date {
-    return data.reduce((acc, curr) => (acc > curr ? acc : curr));
   }
 }
