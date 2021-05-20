@@ -60,7 +60,7 @@ public class TimelineService {
     @Autowired
     private IncrementService incrementService;
 
-    private final String milestoneFileName = "Projekteinrichtung";
+    private final static String milestoneFileName = "Projekteinrichtung";
 
     public List<Timeline> getTimelines() {
         List<Long> projectIds = userInformationService.getProjectIdList();
