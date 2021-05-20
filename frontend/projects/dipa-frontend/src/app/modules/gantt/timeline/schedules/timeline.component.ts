@@ -128,8 +128,6 @@ export class TimelineComponent implements OnInit, OnDestroy {
         const taskStartDates = taskData.map((x) => Utils.createDateAtMidnight(x.start));
         const taskEndDates = taskData.map((x) => Utils.createDateAtMidnight(x.end));
 
-        const datesArray: Date[] = [...milestoneDates, ...taskStartDates, ...taskEndDates];
-
         const selectedTimeline = this.timelineData.find((c) => c.id === Number(this.selectedTimelineId));
 
         const periodStartDate = new Date(selectedTimeline.start);
