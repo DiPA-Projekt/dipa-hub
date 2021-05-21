@@ -17,7 +17,6 @@ import {
 import { ActivatedRoute, Params } from '@angular/router';
 import { ChartComponent } from '../../chart/chart.component';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
-import Utils from '../../../../shared/utils';
 
 @Component({
   selector: 'app-timeline',

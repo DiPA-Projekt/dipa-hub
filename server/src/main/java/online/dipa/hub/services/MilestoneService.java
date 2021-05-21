@@ -254,6 +254,7 @@ public class MilestoneService {
         setNewProjectEndDate(planTemplate, currentProject);
     }
 
+
     public void setNewProjectEndDate(PlanTemplateEntity planTemplateEntity, ProjectEntity currentProject) {
         Optional<OffsetDateTime> newLastMilestoneOptionalDate = planTemplateEntity.getMilestones().stream()
             .map(MilestoneTemplateEntity::getDate).max(OffsetDateTime::compareTo);
