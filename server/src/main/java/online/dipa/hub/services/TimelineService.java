@@ -200,9 +200,9 @@ public class TimelineService {
                 OffsetDateTime oldProjectEnd = currentProject.getEndDate();
 
                 long hoursOffsetEnd = HOURS.between(oldProjectEnd, newLastMilestoneDate);
-                OffsetDateTime newProjectEnd = currentProject.getEndDate().plusHours(hoursOffsetEnd);
-
-                currentProject.setEndDate(newProjectEnd);
+                if (hoursOffsetEnd != 0) {
+                    currentProject.setEndDate(newLastMilestoneDate);
+                }
             }
         }
         

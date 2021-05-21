@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -15,7 +15,7 @@ interface ProjectSize {
   templateUrl: './project-data.component.html',
   styleUrls: ['./project-data.component.scss'],
 })
-export class ProjectDataComponent implements OnInit, OnDestroy {
+export class ProjectDataComponent implements OnInit, OnDestroy, OnChanges {
   @Input() public timelineId: number;
   @Output() public projectSizeChanged = new EventEmitter();
 
@@ -64,6 +64,18 @@ export class ProjectDataComponent implements OnInit, OnDestroy {
       error: null,
       complete: () => void 0,
     });
+  }
+
+  public ngOnChanges(changes: SimpleChanges): void {
+    if ('timelineId' in changes) {
+      this.projectDataSubscription = this.projectService.getProjectData(this.timelineId).subscribe({
+        next: (data: Project) => {
+          this.setReactiveForm(data);
+        },
+        error: null,
+        complete: () => void 0,
+      });
+    }
   }
 
   public ngOnDestroy(): void {
