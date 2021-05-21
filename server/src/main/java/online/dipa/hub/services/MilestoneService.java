@@ -20,6 +20,7 @@ import online.dipa.hub.persistence.entities.MilestoneTemplateEntity;
 import online.dipa.hub.persistence.entities.PlanTemplateEntity;
 import online.dipa.hub.persistence.repositories.MilestoneTemplateRepository;
 import online.dipa.hub.persistence.repositories.PlanTemplateRepository;
+import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
 
 @Service
@@ -253,6 +254,7 @@ public class MilestoneService {
         setNewProjectEndDate(planTemplate, currentProject);
     }
 
+
     public void setNewProjectEndDate(PlanTemplateEntity planTemplateEntity, ProjectEntity currentProject) {
         Optional<OffsetDateTime> newLastMilestoneOptionalDate = planTemplateEntity.getMilestones().stream()
             .map(MilestoneTemplateEntity::getDate).max(OffsetDateTime::compareTo);
@@ -263,9 +265,11 @@ public class MilestoneService {
             OffsetDateTime oldProjectEnd = currentProject.getEndDate();
 
             long hoursOffsetEnd = HOURS.between(oldProjectEnd, newLastMilestoneDate);
-            OffsetDateTime newProjectEnd = currentProject.getEndDate().plusHours(hoursOffsetEnd);
 
-            currentProject.setEndDate(newProjectEnd);
+            if (hoursOffsetEnd != 0) {
+                currentProject.setEndDate(newLastMilestoneDate);
+
+            }
         }
     }
 }
