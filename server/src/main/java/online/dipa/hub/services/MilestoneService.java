@@ -263,10 +263,12 @@ public class MilestoneService {
 
             OffsetDateTime oldProjectEnd = currentProject.getEndDate();
 
-            long daysOffsetEnd = DAYS.between(oldProjectEnd, newLastMilestoneDate);
-            OffsetDateTime newProjectEnd = currentProject.getEndDate().plusDays(daysOffsetEnd);
+            long hoursOffsetEnd = HOURS.between(oldProjectEnd, newLastMilestoneDate);
 
-            currentProject.setEndDate(newProjectEnd);
+            if (hoursOffsetEnd != 0) {
+                currentProject.setEndDate(newLastMilestoneDate);
+
+            }
         }
     }
 }
