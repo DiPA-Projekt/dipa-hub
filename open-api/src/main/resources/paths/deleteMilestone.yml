@@ -1,0 +1,12 @@
+delete:
+  tags:
+    - milestones
+  summary: Delete a milestone
+  description: Delete a milestone
+  operationId: deleteMilestone
+  parameters:
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
+    - $ref: "./params/milestoneIdParam.yml#/milestoneIdParam"
+  responses:
+    204:
+      description: The milestone was deleted successfully.

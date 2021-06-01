@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dipa-hub-@k8s.release.track@
+data:
+  application.yaml: |-
+    dipa:
+      tenants:
+        dataSources:
+          - tenantId: itzbund
+            url: jdbc:postgresql://dipa-db-itzbund-@k8s.release.track@:5432/dipa
+            username: dipa
+            password: dipasecret
+            platform: postgres
+          - tenantId: ba
+            url: jdbc:postgresql://dipa-db-ba-@k8s.release.track@:5432/dipa
+            username: dipa
+            password: dipasecret
+            platform: postgres
+

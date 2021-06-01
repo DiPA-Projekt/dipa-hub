@@ -20,4 +20,26 @@ databaseChangeLog:
                   name: default_role
                   type: boolean
                   defaultValue: false
-
+  - changeSet:
+      id: addColumn-project-role-icon-max_count
+      author: bock
+      changes:
+        - addColumn:
+            tableName: project_role
+            columns:          
+              - column:
+                  name: icon
+                  type: VARCHAR(255)
+              - column:
+                  name: max_count
+                  type: INTEGER
+                  defaultValue: -1
+  - changeSet:
+      id: dropColumn-project-user_id
+      author: bock
+      changes:
+        - dropColumn:
+            columns:
+              - column:
+                  name: user_id
+            tableName: project

@@ -59,9 +59,6 @@ Project:
       description: responsible department for this project
       type: string
       example: "II A 1"
-    projectOwner:
-      description: project owner's name
-      $ref: "../models/user.yml#/User"
   required:
     - id
     - name

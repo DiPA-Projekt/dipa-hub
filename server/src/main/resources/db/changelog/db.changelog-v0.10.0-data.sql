@@ -936,11 +936,16 @@ UPDATE milestone_template
 SET is_master = true
 WHERE plan_template_id = 2
 
---changeset id:milestones_template_Serveraustausch context:ba
+--changeset id:milestones_template_Serveraustausch context:ba dbms:h2
 INSERT INTO milestone_template (name, date_offset, date, plan_template_id) 
 SELECT name, date_offset, date_offset + Now(), 9 FROM milestone_template as m2 WHERE plan_template_id = 1
 
---changeset id:project_Serveraustausch_start_date_end_date context:ba
+--changeset id:milestones_template_Serveraustausch context:ba dbms:postgresql
+INSERT INTO milestone_template (name, date_offset, date, plan_template_id)
+SELECT name, date_offset, NOW() + date_offset * INTERVAL '1 day', 9 FROM milestone_template as m2 WHERE plan_template_id = 1
+
+
+--changeset id:project_Serveraustausch_start_date_end_date context:ba dbms:h2
 UPDATE project
 SET start_date = NOW(),
     end_date = (
@@ -949,11 +954,24 @@ SET start_date = NOW(),
 )
 WHERE ID = 1
 
---changeset id:milestones_template_Cisco_Router_Nürnberg context:ba
+--changeset id:project_Serveraustausch_start_date_end_date context:ba dbms:postgresql
+UPDATE project
+SET start_date = NOW(),
+    end_date = (
+  SELECT NOW() + MAX(date_offset) * INTERVAL '1 day'
+  FROM milestone_template WHERE plan_template_id = 9
+)
+WHERE ID = 1
+
+--changeset id:milestones_template_Cisco_Router_Nürnberg context:ba dbms:h2
 INSERT INTO milestone_template (name, date_offset, date, plan_template_id) 
 SELECT name, date_offset, date_offset + Now(), 10 FROM milestone_template WHERE plan_template_id = 5
 
---changeset id:project_Cisco_Router_Nürnberg_start_date_end_date context:ba
+--changeset id:milestones_template_Cisco_Router_Nürnberg context:ba dbms:postgresql
+INSERT INTO milestone_template (name, date_offset, date, plan_template_id)
+SELECT name, date_offset, NOW() + date_offset * INTERVAL '1 day', 10 FROM milestone_template WHERE plan_template_id = 5
+
+--changeset id:project_Cisco_Router_Nürnberg_start_date_end_date context:ba dbms:h2
 UPDATE project
 SET start_date = NOW(),
     end_date = (
@@ -962,15 +980,33 @@ SET start_date = NOW(),
 )
 WHERE ID = 2
 
---changeset id:milestones_template_Feldberg_master_milestones context:itzbund
+--changeset id:project_Cisco_Router_Nürnberg_start_date_end_date context:ba dbms:postgresql
+UPDATE project
+SET start_date = NOW(),
+    end_date = (
+  SELECT NOW() + MAX(date_offset) * INTERVAL '1 day'
+  FROM milestone_template WHERE plan_template_id = 10
+)
+WHERE ID = 2
+
+--changeset id:milestones_template_Feldberg_master_milestones context:itzbund dbms:h2
 INSERT INTO milestone_template (name, date_offset, date, is_master, plan_template_id) 
 SELECT name, date_offset, date_offset + Now(), true, 11 FROM milestone_template WHERE plan_template_id = 2
 
---changeset id:milestones_template_Feldberg context:itzbund
+--changeset id:milestones_template_Feldberg_master_milestones context:itzbund dbms:postgresql
+INSERT INTO milestone_template (name, date_offset, date, is_master, plan_template_id)
+SELECT name, date_offset, NOW() + date_offset * INTERVAL '1 day', true, 11 FROM milestone_template WHERE plan_template_id = 2
+
+
+--changeset id:milestones_template_Feldberg context:itzbund dbms:h2
 INSERT INTO milestone_template (name, date_offset, date, plan_template_id) 
 SELECT name, date_offset, date_offset + Now(), 11 FROM milestone_template WHERE plan_template_id = 3
 
---changeset id:project_Feldberg_start_date_end_date context:itzbund
+--changeset id:milestones_template_Feldberg context:itzbund dbms:postgresql
+INSERT INTO milestone_template (name, date_offset, date, plan_template_id)
+SELECT name, date_offset, NOW() + date_offset * INTERVAL '1 day', 11 FROM milestone_template WHERE plan_template_id = 3
+
+--changeset id:project_Feldberg_start_date_end_date context:itzbund dbms:h2
 UPDATE project
 SET start_date = NOW(),
     end_date = (
@@ -979,19 +1015,41 @@ SET start_date = NOW(),
 )
 WHERE ID = 3
 
---changeset id:milestones_template_Agil_SWE_master_milestones context:itzbund
+--changeset id:project_Feldberg_start_date_end_date context:itzbund dbms:postgresql
+UPDATE project
+SET start_date = NOW(),
+    end_date = (
+  SELECT NOW() + MAX(date_offset) * INTERVAL '1 day'
+  FROM milestone_template WHERE plan_template_id = 11
+)
+WHERE ID = 3
+
+
+--changeset id:milestones_template_Agil_SWE_master_milestones context:itzbund dbms:h2
 INSERT INTO milestone_template (name, date_offset, date, is_master, plan_template_id) 
 SELECT name, date_offset, date_offset + Now(), true, 3 FROM milestone_template WHERE plan_template_id = 2
 
---changeset id:milestones_template_Zugspitze_master_milestones context:itzbund
+--changeset id:milestones_template_Agil_SWE_master_milestones context:itzbund dbms:postgresql
+INSERT INTO milestone_template (name, date_offset, date, is_master, plan_template_id)
+SELECT name, date_offset, NOW() + date_offset * INTERVAL '1 day', true, 3 FROM milestone_template WHERE plan_template_id = 2
+
+--changeset id:milestones_template_Zugspitze_master_milestones context:itzbund dbms:h2
 INSERT INTO milestone_template (name, date_offset, date, is_master, plan_template_id) 
 SELECT name, date_offset, date_offset + Now(), true, 12 FROM milestone_template WHERE plan_template_id = 2
 
---changeset id:milestones_template_Zugspitze context:itzbund
+--changeset id:milestones_template_Zugspitze_master_milestones context:itzbund dbms:postgresql
+INSERT INTO milestone_template (name, date_offset, date, is_master, plan_template_id)
+SELECT name, date_offset, NOW() + date_offset * INTERVAL '1 day', true, 12 FROM milestone_template WHERE plan_template_id = 2
+
+--changeset id:milestones_template_Zugspitze context:itzbund dbms:h2
 INSERT INTO milestone_template (name, date_offset, date, plan_template_id) 
 SELECT name, date_offset, date_offset + Now(), 12 FROM milestone_template WHERE plan_template_id = 4
 
---changeset id:project_Zugspitzeg_start_date_end_date context:itzbund
+--changeset id:milestones_template_Zugspitze context:itzbund dbms:postgresql
+INSERT INTO milestone_template (name, date_offset, date, plan_template_id)
+SELECT name, date_offset, NOW() + date_offset * INTERVAL '1 day', 12 FROM milestone_template WHERE plan_template_id = 4
+
+--changeset id:project_Zugspitzeg_start_date_end_date context:itzbund dbms:h2
 UPDATE project
 SET start_date = NOW(),
     end_date = (
@@ -1000,23 +1058,49 @@ SET start_date = NOW(),
 )
 WHERE ID = 4
 
---changeset id:milestones_template_inkrementell_SWE_master_milestones context:itzbund
+--changeset id:project_Zugspitzeg_start_date_end_date context:itzbund dbms:postgresql
+UPDATE project
+SET start_date = NOW(),
+    end_date = (
+  SELECT NOW() + MAX(date_offset) * INTERVAL '1 day'
+  FROM milestone_template WHERE plan_template_id = 12
+)
+WHERE ID = 4
+
+--changeset id:milestones_template_inkrementell_SWE_master_milestones context:itzbund dbms:h2
 INSERT INTO milestone_template (name, date_offset, date, is_master, plan_template_id) 
 SELECT name, date_offset, date_offset + Now(), true, 4 FROM milestone_template WHERE plan_template_id = 2
 
---changeset id:milestones_template_NonStandard_1_inkrementell_SWE_master_milestones context:itzbund
+--changeset id:milestones_template_inkrementell_SWE_master_milestones context:itzbund dbms:postgresql
+INSERT INTO milestone_template (name, date_offset, date, is_master, plan_template_id)
+SELECT name, date_offset,  NOW() + date_offset * INTERVAL '1 day', true, 4 FROM milestone_template WHERE plan_template_id = 2
+
+--changeset id:milestones_template_NonStandard_1_inkrementell_SWE_master_milestones context:itzbund dbms:h2
 INSERT INTO milestone_template (name, date_offset, date, is_master, plan_template_id) 
 SELECT name, date_offset, date_offset + Now(), true, 7 FROM milestone_template WHERE plan_template_id = 2
 
---changeset id:milestones_template_NonStandard_2_inkrementell_SWE_master_milestones context:itzbund
+--changeset id:milestones_template_NonStandard_1_inkrementell_SWE_master_milestones context:itzbund dbms:postgresql
+INSERT INTO milestone_template (name, date_offset, date, is_master, plan_template_id)
+SELECT name, date_offset,  NOW() + date_offset * INTERVAL '1 day', true, 7 FROM milestone_template WHERE plan_template_id = 2
+
+--changeset id:milestones_template_NonStandard_2_inkrementell_SWE_master_milestones context:itzbund dbms:h2
 INSERT INTO milestone_template (name, date_offset, date, is_master, plan_template_id) 
 SELECT name, date_offset, date_offset + Now(), true, 8 FROM milestone_template WHERE plan_template_id = 2
 
---changeset id:milestones_template_Bergsteigerausrüstung context:itzbund
+--changeset id:milestones_template_NonStandard_2_inkrementell_SWE_master_milestones context:itzbund dbms:postgresql
+INSERT INTO milestone_template (name, date_offset, date, is_master, plan_template_id)
+SELECT name, date_offset, NOW() + date_offset * INTERVAL '1 day', true, 8 FROM milestone_template WHERE plan_template_id = 2
+
+--changeset id:milestones_template_Bergsteigerausrüstung context:itzbund dbms:h2
 INSERT INTO milestone_template (name, date_offset, date, plan_template_id) 
 SELECT name, date_offset, date_offset + Now(), 13 FROM milestone_template WHERE plan_template_id = 5
 
---changeset id:project_Bergsteigerausrüstung_start_date_end_date context:itzbund
+--changeset id:milestones_template_Bergsteigerausrüstung context:itzbund dbms:postgresql
+INSERT INTO milestone_template (name, date_offset, date, plan_template_id)
+SELECT name, date_offset,  NOW() + date_offset * INTERVAL '1 day', 13 FROM milestone_template WHERE plan_template_id = 5
+
+
+--changeset id:project_Bergsteigerausrüstung_start_date_end_date context:itzbund dbms:h2
 UPDATE project
 SET start_date = NOW(),
     end_date = (
@@ -1025,15 +1109,37 @@ SET start_date = NOW(),
 )
 WHERE ID = 5
 
---changeset id:milestones_template_Oranienburg context:ba
+--changeset id:project_Bergsteigerausrüstung_start_date_end_date context:itzbund dbms:postgresql
+UPDATE project
+SET start_date = NOW(),
+    end_date = (
+  SELECT NOW() + MAX(date_offset) * INTERVAL '1 day'
+  FROM milestone_template WHERE plan_template_id = 13
+)
+WHERE ID = 5
+
+--changeset id:milestones_template_Oranienburg context:ba dbms:h2
 INSERT INTO milestone_template (name, date_offset, date, plan_template_id) 
 SELECT name, date_offset, date_offset + Now(), 14 FROM milestone_template WHERE plan_template_id = 1
 
---changeset id:project_Oranienburg_start_date_end_date context:ba
+--changeset id:milestones_template_Oranienburg context:ba dbms:postgresql
+INSERT INTO milestone_template (name, date_offset, date, plan_template_id)
+SELECT name, date_offset,NOW() + date_offset * INTERVAL '1 day', 14 FROM milestone_template WHERE plan_template_id = 1
+
+--changeset id:project_Oranienburg_start_date_end_date context:ba dbms:h2
 UPDATE project
 SET start_date = NOW(),
     end_date = (
   SELECT NOW() + MAX(date_offset)
+  FROM milestone_template WHERE plan_template_id = 14
+)
+WHERE ID = 6
+
+--changeset id:project_Oranienburg_start_date_end_date context:ba dbms:postgresql
+UPDATE project
+SET start_date = NOW(),
+    end_date = (
+  SELECT NOW() + MAX(date_offset) * INTERVAL '1 day'
   FROM milestone_template WHERE plan_template_id = 14
 )
 WHERE ID = 6

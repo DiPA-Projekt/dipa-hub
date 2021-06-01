@@ -14,6 +14,10 @@ ProjectRole:
       description: abbreviation
       type: string
       example: "PL"
+    icon:
+      description: icon of the role
+      type: string
+      example: "group"
     projectId:
       description: Unique identifier of the project
       type: integer
@@ -23,6 +27,11 @@ ProjectRole:
       description: Flag if this role is the default project role.
       type: boolean
       example: true
+    maxCount:
+      description: max count of group members.
+      type: integer
+      format: int
+      example: 2
     permission:
       description: User's permission
       type: string

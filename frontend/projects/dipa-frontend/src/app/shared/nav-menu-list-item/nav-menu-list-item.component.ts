@@ -22,17 +22,19 @@ export class NavMenuListItemComponent implements OnInit {
   @Input() item: NavItem;
   @Input() depth: number;
 
-  expanded: boolean;
-  baseApiPath: string;
+  public expanded: boolean;
+  public baseApiPath: string;
 
-  constructor(public navService: NavService, private fileService: FilesService, public router: Router) {
+  public constructor(public navService: NavService, private fileService: FilesService, public router: Router) {
     if (this.depth === undefined) {
       this.depth = 0;
     }
   }
 
-  ngOnInit(): void {
-    this.expanded = false;
+  public ngOnInit(): void {
+    this.expanded =
+      this.item.children?.filter((child) => this.router.isActive(child.route, true)).length > 0 ? true : false;
+
     this.ariaExpanded = this.expanded;
     this.baseApiPath = this.fileService.configuration.basePath;
 
@@ -44,7 +46,7 @@ export class NavMenuListItemComponent implements OnInit {
     });
   }
 
-  onItemSelected(item: NavItem): void {
+  public onItemSelected(item: NavItem): void {
     if (!item.children || !item.children.length) {
       if (item.route) {
         void this.router.navigate([item.route]);

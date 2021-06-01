@@ -8,8 +8,8 @@ spring:
   banner:
     location: classpath:dipa-banner.txt
   jpa:
-    database: h2
-    database-platform: org.hibernate.dialect.H2Dialect
+    database: POSTGRESQL
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     hibernate:
       ddl-auto: validate
     open-in-view: false
@@ -28,17 +28,30 @@ dipa:
   tenants:
     dataSources:
       - tenantId: itzbund
-        url: jdbc:h2:mem:dipahub-itzbund
-        platform: h2
+        url: jdbc:postgresql://localhost:5432/dipa
+        username: dipa
+        password: dipasecret
+        platform: postgres
       - tenantId: ba
-        url: jdbc:h2:mem:dipahub-ba
-        platform: h2
+        url: jdbc:postgresql://localhost:5433/dipa
+        username: dipa
+        password: dipasecret
+        platform: postgres
+#dipa:
+#  tenants:
+#    dataSources:
+#      - tenantId: itzbund
+#        url: jdbc:h2:mem:dipahub-itzbund
+#        platform: h2
+#      - tenantId: ba
+#        url: jdbc:h2:mem:dipahub-ba
+#        platform: h2
 
 logging:
   file:
     name: "./logs/dipa-logfile.log"
-#  level:
-#    org.springframework.security: DEBUG
+  level:
+    org.springframework.cloud.kubernetes: DEBUG
 #    org.keycloak: DEBUG
 
 
@@ -47,6 +60,8 @@ management:
     loggers:
       enabled: true
     logfile:
+      enabled: true
+    restart:
       enabled: true
   endpoints:
     web:

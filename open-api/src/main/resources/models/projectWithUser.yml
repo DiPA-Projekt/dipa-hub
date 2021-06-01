@@ -1,0 +1,10 @@
+ProjectWithUser:
+  type: object
+  properties:
+    projectOwner:
+      $ref: "./user.yml#/User"
+    project:
+      $ref: "./project.yml#/Project"
+  required:
+    - projectOwner
+    - project

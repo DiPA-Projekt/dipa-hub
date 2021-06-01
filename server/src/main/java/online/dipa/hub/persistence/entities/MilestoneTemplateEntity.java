@@ -16,7 +16,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
-
+import online.dipa.hub.api.model.Milestone;
 
 @Entity
 @Table(name = "milestone_template")
@@ -57,6 +57,13 @@ public class MilestoneTemplateEntity extends BaseEntity {
         this.date = milestone.getDate();
         this.status = milestone.getStatus();
         this.isMaster = milestone.getIsMaster();
+    }
+
+    public MilestoneTemplateEntity(Milestone milestone) {
+        this.name = milestone.getName();
+        this.date = milestone.getDate();
+        this.status = milestone.getStatus().toString();
+        this.isMaster = false;
     }
 
     public String getName() {

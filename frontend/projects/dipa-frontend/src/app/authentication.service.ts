@@ -44,10 +44,6 @@ export class AuthenticationService {
     const user: User = this.userData.getValue();
     const projectRolesString = [];
 
-    if (timeline.projectOwner.id === user.id) {
-      projectRolesString.push('PE');
-    }
-
     const projectRoles = user.projectRoles.filter((role) => role.projectId === timeline.id);
     projectRoles.sort((a) => (a.permission === 'WRITE' ? -1 : 1));
     projectRoles.map((role) => role.abbreviation).forEach((role) => projectRolesString.push(role));

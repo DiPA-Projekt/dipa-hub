@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { GanttControlsService } from '../gantt-controls.service';
+import { GanttControlsService } from '../../gantt-controls.service';
 import { TemplatesComponent } from './templates/templates.component';
 
 import {
@@ -64,7 +64,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.selectedStandardTemplateIndex = null;
 
-    this.timelinesSubscription = this.activatedRoute.parent.params
+    this.timelinesSubscription = this.activatedRoute.parent.parent.params
       .pipe(
         switchMap(
           (params: Params): Observable<Timeline[]> => {

@@ -15,6 +15,10 @@ export class RootComponent {
     return this.authenticationService.isUserInOrganisationRoles(role);
   }
 
+  public hasProjectRoles(): boolean {
+    return this.authenticationService.getProjectRoles().length > 0;
+  }
+
   public isLoggedIn(): boolean {
     return this.authenticationService.isLoggedIn();
   }

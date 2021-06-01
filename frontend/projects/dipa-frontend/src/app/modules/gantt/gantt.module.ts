@@ -9,11 +9,11 @@ import { SharedModule } from '../../shared/shared.module';
 import { NavMenuListItemComponent } from '../../shared/nav-menu-list-item/nav-menu-list-item.component';
 import { ProjectDataComponent } from './project-data/project-data.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
-import { TemplatesComponent } from './templates-view/templates/templates.component';
-import { TemplatesViewComponent } from './templates-view/templates-view.component';
+import { TemplatesComponent } from './timeline/templates-view/templates/templates.component';
+import { TemplatesViewComponent } from './timeline/templates-view/templates-view.component';
 import { FilesComponent } from './files/files.component';
 import { ChartComponent } from './chart/chart.component';
-import { TimelineComponent } from './timeline/timeline.component';
+import { TimelineComponent } from './timeline/schedules/timeline.component';
 import { ProjectChecklistComponent } from './project-checklist/project-checklist.component';
 import { ChartHeaderComponent } from './chart/chart-header/chart-header.component';
 import { ProjectTaskFormComponent } from './project-checklist/project-task-form/project-task-form.component';
@@ -24,6 +24,10 @@ import { ProjectOrganizationComponent } from './project-organization/project-org
 import { ProjectQuickstartComponent } from './project-quickstart/project-quickstart.component';
 import { ProjectControlComponent } from './project-control/project-control.component';
 import { ProjectEndComponent } from './project-end/project-end.component';
+import { FlexModule } from '@angular/flex-layout';
+import { ProjectRoleComponent } from './project-role/project-role.component';
+import { MilestoneDialogComponent } from './chart/milestone-dialog/milestone-dialog.component';
+import { TasksComponent } from './timeline/tasks/tasks.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +50,9 @@ import { ProjectEndComponent } from './project-end/project-end.component';
     ProjectQuickstartComponent,
     ProjectControlComponent,
     ProjectEndComponent,
+    ProjectRoleComponent,
+    MilestoneDialogComponent,
+    TasksComponent,
   ],
   exports: [ChartComponent, FilesComponent, NavMenuListItemComponent],
   imports: [
@@ -56,6 +63,7 @@ import { ProjectEndComponent } from './project-end/project-end.component';
     MaterialModule,
     ReactiveFormsModule,
     SharedModule,
+    FlexModule,
   ],
 })
 export class GanttModule {}
