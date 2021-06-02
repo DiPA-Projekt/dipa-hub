@@ -3,15 +3,9 @@ const { Given, When, Then } = require('@cucumber/cucumber');
 const { ELEMENTS, CREDENTIALS, login } = require('../pageObjects/login');
 
 
-Given(/^Ich starte die App$/i, async () => {
-  await client.url('https://develop.dipa.online/');
-  await client.waitForElementVisible('body', 1000);
-});
-
 When(/^Ich melde mich mit falschen Daten an$/, () => {
   return login(CREDENTIALS.invalid.user, CREDENTIALS.invalid.pass);
 });
-
 
 // TODO: Erkennungsmerkmale für Elemente auslagern in pageObjects
 When(/^Ich melde mich als "([^"]*)" an$/, username => {
