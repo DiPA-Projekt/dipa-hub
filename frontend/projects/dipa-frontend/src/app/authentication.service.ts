@@ -40,16 +40,6 @@ export class AuthenticationService {
     return user && typeof user.projectRoles !== 'undefined' ? user.projectRoles : [];
   }
 
-  public getCurrentUserProjectRoles(timeline: Timeline): string {
-    const user: User = this.userData.getValue();
-    const projectRolesString = [];
-
-    const projectRoles = user.projectRoles.filter((role) => role.projectId === timeline.id);
-    projectRoles.sort((a) => (a.permission === 'WRITE' ? -1 : 1));
-    projectRoles.map((role) => role.abbreviation).forEach((role) => projectRolesString.push(role));
-    return projectRolesString.join(', ');
-  }
-
   public isUserInOrganisationRoles(userRole: string): boolean {
     const roles = this.getOrganisationRoles().map((r) => r.abbreviation);
     return roles.indexOf(userRole) !== -1;
