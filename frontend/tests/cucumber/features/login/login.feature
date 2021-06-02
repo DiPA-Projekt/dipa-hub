@@ -8,7 +8,7 @@ Feature: Login Tests
     Given Ich starte die App
 
   Scenario: fehlschlagender Login
-    When Ich melde mich als "MEYER" mit "falschesPasswort" an
+    When Ich melde mich mit falschen Daten an
     Then Wird der Login wegen falscher Credentials abgewiesen
 
   Scenario: Login ohne Credentials
