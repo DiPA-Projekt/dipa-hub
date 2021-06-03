@@ -6,12 +6,10 @@ Feature: VMXT ITZBund agil
     When Ich melde mich als "MEYER" an
     And Ich klicke auf den Text "Meine Projekte"
     And Ich klicke auf den Text "Testprojekt"
-    And Ich klicke auf den Text "Unser Zeitplan"
-    And Ich klicke auf den Text "Unsere Termine"
+    And Ich navigiere zu "Unsere Termine"
 
   # Kann nur lokal funktionieren. Sollte dann in der CI angepasst werden
   Scenario: Export Kalender
     And Ich klicke auf den Text "Export"
     Then Ich warte 3 Sekunden
-    # Muss
     And sollte die Datei "Meilensteine.ics" unter dem Pfad "C:/Users/Tansu/Downloads" existieren
