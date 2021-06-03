@@ -7,5 +7,7 @@ When(/^Ich klicke auf den Button "([^"]*)"$/, title => {
 });
 
 When(/^Ich klicke auf den Text "([^"]*)"$/, text => {
-  return client.click('xpath', '*//*[contains(text(), "' + text + '")]')
+  return client
+    .waitForElementVisible('xpath', '*//*[contains(text(), "' + text + '")]', 5000)
+    .click('xpath', '*//*[contains(text(), "' + text + '")]')
 });
