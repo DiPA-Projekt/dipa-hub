@@ -32,8 +32,4 @@ Then(/^Wird der Login wegen falscher Credentials abgewiesen$/, () => {
     .assert.containsText(ELEMENTS.span_input_error, 'Invalid username or password');
 });
 
-Then(/^sollte ich den Text "([^"]*)" sehen$/, errorText => {
-  return client
-    .waitForElementVisible(ELEMENTS.span_input_error)
-    .assert.containsText(ELEMENTS.span_input_error, errorText);
-});
+
