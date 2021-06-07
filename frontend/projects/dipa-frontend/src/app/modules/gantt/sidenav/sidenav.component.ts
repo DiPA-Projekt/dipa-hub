@@ -4,7 +4,7 @@ import { ExternalLinksService, Timeline, TimelinesService } from 'dipa-api-clien
 import { ActivatedRoute, Params } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthenticationService } from '../../../authentication.service';
-import { SideNavService } from './sidenavService';
+import { TimelineDataService } from '../../../shared/timelineDataService';
 
 @Component({
   selector: 'app-sidenav',
@@ -32,21 +32,23 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private timelinesService: TimelinesService,
     private externalLinksService: ExternalLinksService,
     public activatedRoute: ActivatedRoute,
-    private sideNavService: SideNavService
+    private timelineDataService: TimelineDataService
   ) {}
 
   public ngOnInit(): void {
     this.paramsSubscription = this.activatedRoute.params.subscribe((params: Params) => {
       this.selectedTimelineId = parseInt(params.id, 10);
-      this.sideNavService.setTimeline(this.selectedTimelineId);
-      this.sideNavService.setRoles(this.selectedTimelineId);
+      this.timelineDataService.setTimeline();
+      this.timelineDataService.setRoles(this.selectedTimelineId);
     });
 
-    this.timelineDataSubscription = this.sideNavService.getTimeline().subscribe((data) => {
-      this.timeline = data;
+    this.timelineDataSubscription = this.timelineDataService.getTimeline().subscribe((data) => {
+      if (data !== null) {
+        this.timeline = data.find((c) => c.id === Number(this.selectedTimelineId));
+      }
     });
 
-    this.rolesSubscription = this.sideNavService.getRoles().subscribe((data) => {
+    this.rolesSubscription = this.timelineDataService.getRoles().subscribe((data) => {
       this.roles = data;
     });
     this.setSideNavMenu();

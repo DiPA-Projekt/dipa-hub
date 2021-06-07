@@ -5,22 +5,20 @@ import { BehaviorSubject, Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class SideNavService {
-  public timeline: BehaviorSubject<Timeline> = new BehaviorSubject<Timeline>(null);
+export class TimelineDataService {
+  public timelines: BehaviorSubject<Timeline[]> = new BehaviorSubject<Timeline[]>(null);
   public roles: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
   public constructor(private timelinesService: TimelinesService, private userService: UserService) {}
 
-  public getTimeline(): Observable<Timeline> {
-    return this.timeline;
+  public getTimeline(): Observable<Timeline[]> {
+    return this.timelines;
   }
 
-  public setTimeline(timelineId: number): void {
+  public setTimeline(): void {
     this.timelinesService.getTimelines().subscribe({
       next: (data: Timeline[]) => {
-        const timeline = data.find((c) => c.id === Number(timelineId));
-        this.timeline.next(timeline);
-        console.log('settimelines');
+        this.timelines.next(data);
       },
       error: null,
       complete: () => void 0,
@@ -33,7 +31,6 @@ export class SideNavService {
 
   public setRoles(timelineId: number): void {
     this.userService.getCurrentUser().subscribe((data: User) => {
-      console.log('setRoles');
       this.roles.next(this.getCurrentUserProjectRoles(data, timelineId));
     });
   }
