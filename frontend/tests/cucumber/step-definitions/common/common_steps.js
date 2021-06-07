@@ -15,3 +15,12 @@ Then('Ich warte {int} Sekunden', seconds => {
 When(/^Ich navigiere zu "([^"]*)"$/, menu => {
   navigate(menu)
 });
+
+Then(/^Ich lösche die Datei "([^"]*)" unter dem Pfad "([^"]*)"$/, (fileName, path) => {
+  const pathToFile = path + '/' + fileName;
+  if (!fs.existsSync(pathToFile)) {
+    throw Error('Die Datei "' + pathToFile + '" existiert nicht');
+  }else{
+    fs.unlink(pathToFile)
+  }
+});
