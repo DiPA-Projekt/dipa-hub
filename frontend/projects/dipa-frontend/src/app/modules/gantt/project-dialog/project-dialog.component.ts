@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { AuthenticationService } from '../../../authentication.service';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import {
   OperationType,
   OperationTypesService,
@@ -66,8 +67,12 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
   private itzBundSmallProjectApproachId = 7;
   private itzBundSoftwareDevelopmentId = 2;
 
+  private horizontalPosition: MatSnackBarHorizontalPosition = 'center';
+  private verticalPosition: MatSnackBarVerticalPosition = 'top';
+
   public constructor(
     public dialogRef: MatDialogRef<ProjectDialogComponent>,
+    private snackBar: MatSnackBar,
     private authenticationService: AuthenticationService,
     private operationTypesService: OperationTypesService,
     private projectApproachesService: ProjectApproachesService,
@@ -114,13 +119,29 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
         })
         .subscribe((newTimeline: Timeline) => {
           if (newTimeline) {
-            this.router.navigate([`/gantt/${newTimeline.id}/project-checklist`]).then(() => window.location.reload());
+            let snackBarRef = this.snackBar.open(`Das Projekt ${newTimeline.name} wurde erstellt.`, 'click', {
+              horizontalPosition: this.horizontalPosition,
+              verticalPosition: this.verticalPosition,
+            });
+            snackBarRef.onAction().subscribe(() => {
+              console.log(newTimeline.id);
+              const id = newTimeline.id;
+              console.log(this.router);
+              this.router.navigate([`/gantt/${Number(id)}/project-checklist/quickstart`]);
+            });
+            // this.router.navigate([`/gantt/${newTimeline.id}/project-checklist`]).then(() => window.location.reload());
           }
           this.dialogRef.close();
         });
     } else {
       this.inputNotation = true;
     }
+  }
+
+  onclicK() {
+    const id = 18;
+
+    this.router.navigate([`/gantt/${id}/project-checklist/quickstart`]);
   }
 
   public displayProjectSize(size: string): string {
@@ -137,6 +158,13 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
 
   private filterProjectOwner(projectOwnerId: number): User {
     return this.allUsers.find((user) => user.id === projectOwnerId);
+  }
+
+  private openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      horizontalPosition: this.horizontalPosition,
+      verticalPosition: this.verticalPosition,
+    });
   }
 
   private setReactiveForm(): void {
