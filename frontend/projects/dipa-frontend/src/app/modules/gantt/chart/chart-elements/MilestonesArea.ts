@@ -279,7 +279,7 @@ export class MilestonesArea implements IChartElement {
     });
   }
 
-  showTooltip(d: Milestone, x: number, y: number): void {
+  public showTooltip(d: Milestone, x: number, y: number): void {
     this.tooltip
       .style('top', `${y + 20}px`)
       .style('left', `${x}px`)
@@ -291,7 +291,7 @@ export class MilestonesArea implements IChartElement {
       .style('opacity', 1);
   }
 
-  wrapLabel(svgText: d3.Selection<SVGGElement, {}, any, any>, maxWidth: number): void {
+  public wrapLabel(svgText: d3.Selection<SVGGElement, {}, any, any>, maxWidth: number): void {
     svgText.each(function (): void {
       const text = d3.select(this);
       const words = text.text().split(/\s+/);
@@ -317,7 +317,7 @@ export class MilestonesArea implements IChartElement {
     });
   }
 
-  getAreaHeight(): number {
+  public getAreaHeight(): number {
     // for now the milestones are spread over 3 rows
     return Math.max(this.data.length, 3) * this.elementHeightWithMargin;
   }

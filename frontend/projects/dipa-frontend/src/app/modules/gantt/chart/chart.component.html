@@ -20,7 +20,12 @@
           <p style="font-weight: 200; font-size: small; text-align: center; color: grey">
             Fällig am {{ getDate(selectedMilestoneDataMenu.date) }}
           </p>
-          <button *ngIf="incrementsData.length === 0" mat-raised-button color="primary" (click)="deleteMilestone()">
+          <button
+            *ngIf="incrementsData.length === 0 && milestoneData.length > 1"
+            mat-raised-button
+            color="primary"
+            (click)="deleteMilestone()"
+          >
             <mat-icon>delete</mat-icon>
             Löschen
           </button>
