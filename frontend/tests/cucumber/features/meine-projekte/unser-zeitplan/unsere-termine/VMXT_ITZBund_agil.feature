@@ -13,11 +13,11 @@ Feature: VMXT ITZBund agil
     And sollte die "Vorhabensart" Selectbox "Softwareneuentwicklung" beinhalten
     And sollte die "Vorgehensweise" Selectbox "VMXT ITZBund agil" beinhalten
     And sollten 8 Meilensteine existieren
-    Wenn Ich auf den Meilenstein "Projekteinrichtung" klicke
-    Dann sollte ich den Text "Fällig am 24.4.2021" sehen
+    When Ich auf den Meilenstein "Projekteinrichtung" klicke
+    Then sollte ich den Text "Fällig am 24.4.2021" sehen
 
-  #Kann nur lokal funktionieren. Sollte dann in der CI angepasst werden
-  # Scenario: Export Kalender
-    # And Ich klicke auf den Text "Export"
-    # Then Ich warte 3 Sekunden
-    # And sollte die Datei "Meilensteine.ics" unter dem Pfad "C:/Users/Tansu/Downloads" existieren
+#Kann nur lokal funktionieren. Sollte dann in der CI angepasst werden
+# Scenario: Export Kalender
+# And Ich klicke auf den Text "Export"
+# Then Ich warte 3 Sekunden
+# And sollte die Datei "Meilensteine.ics" unter dem Pfad "C:/Users/Tansu/Downloads" existieren
