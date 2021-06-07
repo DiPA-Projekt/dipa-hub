@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { User, UserService, ProjectRole, Timeline } from 'dipa-api-client';
+import { User, UserService, ProjectRole } from 'dipa-api-client';
 import { environment } from '../environments/environment';
 import { OrganisationRole } from 'projects/dipa-api-client/src/model/organisationRole';
 
