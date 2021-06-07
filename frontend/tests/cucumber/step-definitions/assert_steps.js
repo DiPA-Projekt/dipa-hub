@@ -1,15 +1,11 @@
 const { client } = require('nightwatch-api');
 const { Then } = require('@cucumber/cucumber');
-const fs = require('fs');
-// import assert from 'assert/strict';
+const { sollteDateiUnterPfadExistieren, sollteTextSehen } = require('../page-objects/reusable/assert');
 
-Then(/^sollte die Datei "([^"]*)" unter dem Pfad "([^"]*)" existieren$/, (fileName, path) => {
-  const pathToFile = path + '/' + fileName;
-  if (!fs.existsSync(pathToFile)) {
-    throw Error('Die Datei "' + pathToFile + '" existiert nicht');
-  }
+Then('sollte die Datei {string} unter dem Pfad {string} existieren', (fileName, path) => {
+  return sollteDateiUnterPfadExistieren(fileName, path);
 });
 
-Then(/^sollte ich den Text "([^"]*)" sehen$/, (text) => {
-  return client.waitForElementVisible('xpath', '*//*[contains(text(), "' + text + '")]')
+Then('sollte ich den Text {string} sehen', (text) => {
+  return sollteTextSehen(text);
 });

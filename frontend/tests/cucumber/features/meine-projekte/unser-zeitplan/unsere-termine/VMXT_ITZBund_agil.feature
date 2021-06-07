@@ -15,9 +15,17 @@ Feature: VMXT ITZBund agil
     And sollten 8 Meilensteine existieren
     When Ich auf den Meilenstein "Projekteinrichtung" klicke
     Then sollte ich den Text "Fällig am 24.4.2021" sehen
+    And sollte ich den Text "PHB-Vorlage Internes Projekt (Agile SWE)" sehen
+    And sollte ich den Text "ITZBund Risikoliste" sehen
+    And sollte ich den Text "Trackingtabelle externe Dienstleistung" sehen
+    And sollte ich den Text "QS-Handbuch" sehen
 
-#Kann nur lokal funktionieren. Sollte dann in der CI angepasst werden
-# Scenario: Export Kalender
-# And Ich klicke auf den Text "Export"
-# Then Ich warte 3 Sekunden
-# And sollte die Datei "Meilensteine.ics" unter dem Pfad "C:/Users/Tansu/Downloads" existieren
+  Scenario: Meilenstein hinzufügen
+    When Ich erstelle einen Meilenstein "TestMeilenstein" mit dem Status "offen"
+
+ #Kann nur lokal funktionieren. Sollte dann in der CI angepasst werden
+  # Scenario: Export Kalender
+  #   And Ich klicke auf den Text "Export"
+  #   Then Ich warte 3 Sekunden
+  #   And sollte die Datei "Meilensteine.ics" unter dem Pfad "C:/Users/Tansu/Downloads" existieren
+    #And Ich lösche die Datei "Meilensteine.ics" unter dem Pfad "C:/Users/Tansu/Downloads"
