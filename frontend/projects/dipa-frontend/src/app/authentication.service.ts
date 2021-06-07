@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { User, UserService, ProjectRole, Timeline } from 'dipa-api-client';
+import { User, UserService, ProjectRole } from 'dipa-api-client';
 import { environment } from '../environments/environment';
 import { OrganisationRole } from 'projects/dipa-api-client/src/model/organisationRole';
 
@@ -38,16 +38,6 @@ export class AuthenticationService {
   public getProjectRoles(): ProjectRole[] {
     const user: User = this.userData.getValue();
     return user && typeof user.projectRoles !== 'undefined' ? user.projectRoles : [];
-  }
-
-  public getCurrentUserProjectRoles(timeline: Timeline): string {
-    const user: User = this.userData.getValue();
-    const projectRolesString = [];
-
-    const projectRoles = user.projectRoles.filter((role) => role.projectId === timeline.id);
-    projectRoles.sort((a) => (a.permission === 'WRITE' ? -1 : 1));
-    projectRoles.map((role) => role.abbreviation).forEach((role) => projectRolesString.push(role));
-    return projectRolesString.join(', ');
   }
 
   public isUserInOrganisationRoles(userRole: string): boolean {
