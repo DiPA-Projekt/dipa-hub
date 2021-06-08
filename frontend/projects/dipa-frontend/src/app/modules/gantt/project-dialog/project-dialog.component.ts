@@ -116,7 +116,7 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
         })
         .subscribe({
           next: (newTimeline: Timeline) => {
-            this.timelineDataService.setTimeline();
+            this.timelineDataService.setTimelines();
             this.openSnackBar(newTimeline);
           },
           error: null,

@@ -38,11 +38,11 @@ export class SidenavComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.paramsSubscription = this.activatedRoute.params.subscribe((params: Params) => {
       this.selectedTimelineId = parseInt(params.id, 10);
-      this.timelineDataService.setTimeline();
+      this.timelineDataService.setTimelines();
       this.timelineDataService.setRoles(this.selectedTimelineId);
     });
 
-    this.timelineDataSubscription = this.timelineDataService.getTimeline().subscribe((data) => {
+    this.timelineDataSubscription = this.timelineDataService.getTimelines().subscribe((data) => {
       if (data !== null) {
         this.timeline = data.find((c) => c.id === Number(this.selectedTimelineId));
         this.setSideNavMenu();

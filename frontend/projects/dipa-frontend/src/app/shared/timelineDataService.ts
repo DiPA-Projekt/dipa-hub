@@ -1,4 +1,4 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Timeline, TimelinesService, UserService, User } from 'dipa-api-client';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -10,20 +10,14 @@ export class TimelineDataService {
   public roles: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
   public constructor(private timelinesService: TimelinesService, private userService: UserService) {
-    this.timelinesService.getTimelines().subscribe({
-      next: (data: Timeline[]) => {
-        this.timelines.next(data);
-      },
-      error: null,
-      complete: () => void 0,
-    });
+    this.setTimelines();
   }
 
-  public getTimeline(): Observable<Timeline[]> {
+  public getTimelines(): Observable<Timeline[]> {
     return this.timelines;
   }
 
-  public setTimeline(): void {
+  public setTimelines(): void {
     this.timelinesService.getTimelines().subscribe({
       next: (data: Timeline[]) => {
         this.timelines.next(data);

@@ -21,7 +21,7 @@ export class GanttMenuComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.timelinesSubscription = this.timelineDataService
-      .getTimeline()
+      .getTimelines()
       .pipe(
         switchMap(
           (timelines: Timeline[]): Observable<User> => {

@@ -94,7 +94,7 @@ export class ProjectDataComponent implements OnInit, OnDestroy, OnChanges {
         form.reset(form.value);
         // in the future should be emitted only if projectSize field changes
         this.projectSizeChanged.emit();
-        this.timelineDataService.setTimeline();
+        this.timelineDataService.setTimelines();
       },
       error: null,
       complete: () => void 0,

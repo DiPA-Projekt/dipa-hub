@@ -39,7 +39,6 @@ export class TimelineComponent implements OnInit, OnDestroy {
   public projectApproachesList: ProjectApproach[] = [];
   public projectTask: ProjectTask;
   public appoinmentsList: Result[];
-  public appointments: any[] = [];
   public vm$: Observable<any>;
 
   public apptFormfieldsKeys = ['goal', 'date', 'status'];
@@ -172,13 +171,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
     });
   }
 
-  public filterAllOpenAppointments(appointments): any[] {
-    let openAppointments = [];
-    for (const appt of appointments) {
-      if (appt.formFields.find((field) => field.key === 'status').value !== 'DONE') {
-        openAppointments.push(appt);
-      }
-    }
-    return openAppointments;
+  public filterAllOpenAppointments(appointments: Result[]): Result[] {
+    return appointments.filter((appt) => appt.formFields.find((field) => field.key === 'status').value !== 'DONE');
   }
 }
