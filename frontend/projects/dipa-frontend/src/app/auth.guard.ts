@@ -11,6 +11,7 @@ import { Timeline, TimelinesService, User, UserService } from 'dipa-api-client';
 export class AuthGuard implements CanActivate, CanActivateChild {
   protected authenticated: boolean;
   protected organisationRoles: string[];
+  protected hasProjectRoles: boolean;
   protected projects: number[];
   protected timelines: Timeline[];
   protected currentUser: User;
@@ -27,6 +28,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
       try {
         this.authenticated = this.authenticationService.isLoggedIn();
         this.organisationRoles = this.authenticationService.getOrganisationRoles().map((r) => r.abbreviation);
+        this.hasProjectRoles = this.authenticationService.getProjectRoles().length > 0;
         this.projects = this.authenticationService.getProjectRoles().map((r) => r.projectId);
 
         this.authenticationService.getUserData().subscribe((data) => (this.currentUser = data));
@@ -65,13 +67,8 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     const requiredProjectId = route.params.id as number;
     if (!requiredProjectId) {
       accessProject = true;
-    } else if (this.projects.includes(Number(requiredProjectId))) {
-      accessProject = true;
     } else {
-      accessProject = this.timelines
-        .filter((t: Timeline) => t.projectOwner.id === this.currentUser.id)
-        .map((t) => t.id)
-        .includes(Number(requiredProjectId));
+      accessProject = this.projects.includes(Number(requiredProjectId));
     }
 
     return accessOrganisationRole || accessProject;

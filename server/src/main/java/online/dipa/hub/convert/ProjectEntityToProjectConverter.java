@@ -1,6 +1,5 @@
 package online.dipa.hub.convert;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -11,9 +10,6 @@ import online.dipa.hub.persistence.entities.ProjectEntity;
 
 @Component
 public class ProjectEntityToProjectConverter implements Converter<ProjectEntity, Project> {
-
-    @Autowired
-    protected UserEntityToUserConverter userConverter;
 
     @Override
     public Project convert(final ProjectEntity template) {
@@ -27,7 +23,6 @@ public class ProjectEntityToProjectConverter implements Converter<ProjectEntity,
                              .akz(template.getAkz())
                              .client(template.getClient())
                              .department(template.getDepartment())
-                             .projectOwner(userConverter.convert(template.getUser()))
                              .operationTypeId(operationTypeId)
                              .projectApproachId(projectApproach.getId())
                              .start(template.getStartDate().toLocalDate())

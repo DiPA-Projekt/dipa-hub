@@ -8,12 +8,13 @@
         <outputRelativeToContentRoot value="true" />
         <module name="ecamp-frontend" />
         <module name="dipa-open-api" />
-        <module name="dipa-server" />
         <module name="dipa-frontend" />
+        <module name="dipa-server" />
         <module name="ecamp-server" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="dipa-client" target="11" />
       <module name="dipa-frontend" target="11" />
       <module name="dipa-hub" target="11" />
       <module name="dipa-open-api" target="11" />
@@ -25,6 +26,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="dipa-client" options="-parameters" />
       <module name="dipa-frontend" options="-parameters" />
       <module name="dipa-open-api" options="-parameters" />
       <module name="dipa-server" options="-parameters" />

@@ -1,9 +1,8 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Project, ProjectService } from 'dipa-api-client';
-import { ProjectChecklistComponent } from '../project-checklist/project-checklist.component';
 
 interface ProjectSize {
   value: string;
@@ -16,9 +15,9 @@ interface ProjectSize {
   templateUrl: './project-data.component.html',
   styleUrls: ['./project-data.component.scss'],
 })
-export class ProjectDataComponent implements OnInit, OnDestroy {
+export class ProjectDataComponent implements OnInit, OnDestroy, OnChanges {
   @Input() public timelineId: number;
-  @ViewChild(ProjectChecklistComponent) private projectChecklistComponent: ProjectChecklistComponent;
+  @Output() public projectSizeChanged = new EventEmitter();
 
   public myForm: FormGroup;
 
@@ -54,7 +53,6 @@ export class ProjectDataComponent implements OnInit, OnDestroy {
       projectSize: null,
       client: '',
       department: '',
-      projectOwner: null,
     });
   }
 
@@ -66,6 +64,18 @@ export class ProjectDataComponent implements OnInit, OnDestroy {
       error: null,
       complete: () => void 0,
     });
+  }
+
+  public ngOnChanges(changes: SimpleChanges): void {
+    if ('timelineId' in changes) {
+      this.projectDataSubscription = this.projectService.getProjectData(this.timelineId).subscribe({
+        next: (data: Project) => {
+          this.setReactiveForm(data);
+        },
+        error: null,
+        complete: () => void 0,
+      });
+    }
   }
 
   public ngOnDestroy(): void {
@@ -80,7 +90,8 @@ export class ProjectDataComponent implements OnInit, OnDestroy {
     this.projectService.updateProjectData(this.timelineId, form.value).subscribe({
       next: () => {
         form.reset(form.value);
-        this.projectChecklistComponent.ngOnInit();
+        // in the future should be emitted only if projectSize field changes
+        this.projectSizeChanged.emit();
       },
       error: null,
       complete: () => void 0,
@@ -106,7 +117,6 @@ export class ProjectDataComponent implements OnInit, OnDestroy {
       projectSize: [data?.projectSize],
       client: [data?.client],
       department: [data?.department],
-      projectOwner: [{ value: data?.projectOwner?.name, disabled: true }],
     });
   }
 }

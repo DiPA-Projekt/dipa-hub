@@ -6,13 +6,14 @@ import {
   OperationTypesService,
   ProjectApproachesService,
   ProjectApproach,
+  ProjectService,
   Timeline,
   User,
+  UserService,
 } from 'dipa-api-client';
 import ProjectTypeEnum = Timeline.ProjectTypeEnum;
 import { Subscription } from 'rxjs';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { ProjectService } from 'projects/dipa-api-client/src';
 import { Router } from '@angular/router';
 
 interface ProjectSize {
@@ -35,8 +36,8 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
   public operationTypeId: number;
   public startDate = new Date();
   public endDate = new Date(new Date().setMonth(new Date().getMonth() + 6));
-  public projectOwner: string;
   public userData: User;
+  public allUsers: User[];
   public formGroup: FormGroup;
   public inputNotation: boolean;
 
@@ -59,8 +60,11 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
   ];
 
   private operationTypesSubscription: Subscription;
+  private usersSubscription: Subscription;
   private projectApproachesSubscription: Subscription;
   private createProjectSubscription: Subscription;
+  private itzBundSmallProjectApproachId = 7;
+  private itzBundSoftwareDevelopmentId = 2;
 
   public constructor(
     public dialogRef: MatDialogRef<ProjectDialogComponent>,
@@ -68,6 +72,7 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
     private operationTypesService: OperationTypesService,
     private projectApproachesService: ProjectApproachesService,
     private projectService: ProjectService,
+    private userService: UserService,
     private fb: FormBuilder,
     private router: Router
   ) {}
@@ -75,6 +80,10 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.authenticationService.getUserData().subscribe((data) => {
       this.userData = data;
+    });
+
+    this.usersSubscription = this.userService.getUsers().subscribe((data: User[]) => {
+      this.allUsers = data;
     });
 
     this.operationTypesSubscription = this.operationTypesService.getOperationTypes().subscribe((data) => {
@@ -91,6 +100,7 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.operationTypesSubscription?.unsubscribe();
+    this.usersSubscription?.unsubscribe();
     this.projectApproachesSubscription?.unsubscribe();
     this.createProjectSubscription?.unsubscribe();
   }
@@ -98,7 +108,10 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
   public onSubmit(formGroup: FormGroup): void {
     if (formGroup.valid) {
       this.createProjectSubscription = this.projectService
-        .createProject(formGroup.value)
+        .createProject({
+          project: formGroup.value,
+          projectOwner: this.filterProjectOwner(formGroup.value.projectOwner),
+        })
         .subscribe((newTimeline: Timeline) => {
           if (newTimeline) {
             this.router.navigate([`/gantt/${newTimeline.id}/project-checklist`]).then(() => window.location.reload());
@@ -122,13 +135,24 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.close();
   }
 
+  private filterProjectOwner(projectOwnerId: number): User {
+    return this.allUsers.find((user) => user.id === projectOwnerId);
+  }
+
   private setReactiveForm(): void {
+    this.operationTypeId = this.itzBundSoftwareDevelopmentId;
     this.formGroup = this.fb.group(
       {
         id: -1,
         name: new FormControl('', { validators: [Validators.required], updateOn: 'blur' }),
-        operationTypeId: new FormControl('', { validators: [Validators.required], updateOn: 'blur' }),
-        projectApproachId: new FormControl('', { validators: [Validators.required], updateOn: 'blur' }),
+        operationTypeId: new FormControl(this.itzBundSoftwareDevelopmentId, {
+          validators: [Validators.required],
+          updateOn: 'blur',
+        }),
+        projectApproachId: new FormControl(this.itzBundSmallProjectApproachId, {
+          validators: [Validators.required],
+          updateOn: 'blur',
+        }),
         projectType: new FormControl(ProjectTypeEnum.InternesProjekt, {
           validators: [Validators.required],
           updateOn: 'blur',
@@ -136,7 +160,7 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
         start: new FormControl(this.startDate, { validators: [Validators.required], updateOn: 'blur' }),
         end: new FormControl(this.endDate, { validators: [Validators.required], updateOn: 'blur' }),
         projectSize: new FormControl('SMALL', { validators: [Validators.required], updateOn: 'blur' }),
-        projectOwner: this.userData,
+        projectOwner: this.userData.id,
       },
       { updateOn: 'blur' }
     );

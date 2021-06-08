@@ -58,7 +58,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   public setSideNavMenu(): void {
     this.navMenuItems = [
       {
-        name: 'Meine Reise durchs Projekt',
+        name: 'Unsere Reise durchs Projekt',
         icon: 'directions_walk',
         route: `gantt/${this.selectedTimelineId}/project-checklist`,
         children: [
@@ -80,17 +80,29 @@ export class SidenavComponent implements OnInit, OnDestroy {
         ],
       },
       {
-        name: 'Zeitplan',
-        icon: 'event_note',
+        name: 'Unser Zeitplan',
+        icon: 'calendar_today',
         route: `gantt/${this.selectedTimelineId}/timeline`,
+        children: [
+          {
+            name: 'Unsere Aufgaben',
+            icon: 'list_alt',
+            route: `gantt/${this.selectedTimelineId}/timeline/tasks`,
+          },
+          {
+            name: 'Unsere Termine',
+            icon: 'event_note',
+            route: `gantt/${this.selectedTimelineId}/timeline/schedules`,
+          },
+          {
+            name: 'Stöbern & Vergleichen',
+            icon: 'find_replace',
+            route: `gantt/${this.selectedTimelineId}/timeline/templates`,
+          },
+        ],
       },
       {
-        name: 'Stöbern & Vergleichen',
-        icon: 'find_replace',
-        route: `gantt/${this.selectedTimelineId}/templates`,
-      },
-      {
-        name: 'Meine Projektorganisation',
+        name: 'Unsere Projektorganisation',
         icon: 'person_add_alt_1',
         route: `gantt/${this.selectedTimelineId}/project-organization`,
       },

@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: dipa-hub-@k8s.release.track@
+  cloud:
+    kubernetes:
+      reload:
+        enabled: true
+        mode: polling
+        period: 60000
+      config:
+        sources:
+          - name: other
+          - name: ${spring.application.name}

@@ -20,6 +20,7 @@ import online.dipa.hub.persistence.entities.MilestoneTemplateEntity;
 import online.dipa.hub.persistence.entities.PlanTemplateEntity;
 import online.dipa.hub.persistence.repositories.MilestoneTemplateRepository;
 import online.dipa.hub.persistence.repositories.PlanTemplateRepository;
+import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
 
 @Service
@@ -216,4 +217,59 @@ public class MilestoneService {
         
     }
 
+    public void updateMilestoneData(final Long milestoneId, final Milestone milestone) {
+
+        milestoneTemplateRepository.findAll().stream().filter(m -> m.getId().equals(milestoneId)).findFirst()
+            .ifPresent(milestoneEntity -> {
+                milestoneEntity.setName(milestone.getName());
+                milestoneEntity.setStatus(milestone.getStatus().toString());});
+    }
+
+    public void deleteMilestone(final Long timelineId, final Long milestoneId) {
+        
+        ProjectEntity currentProject = timelineService.getProject(timelineId);
+        var planTemplate = currentProject.getPlanTemplate();
+
+        Optional<MilestoneTemplateEntity> toDeleteMilestone = milestoneTemplateRepository.findAll().stream().filter(m -> m.getId().equals(milestoneId)).findFirst();
+        
+        if (toDeleteMilestone.isPresent()) {
+            planTemplate.getMilestones().remove(toDeleteMilestone.get());
+            milestoneTemplateRepository.delete(toDeleteMilestone.get());
+        }
+        
+        setNewProjectEndDate(planTemplate, currentProject);
+
+    }
+
+    public void createMilestone(final Long timelineId, final Milestone milestone) {
+
+        ProjectEntity currentProject = timelineService.getProject(timelineId);
+        PlanTemplateEntity planTemplate = currentProject.getPlanTemplate();
+
+        var newMilestone = new MilestoneTemplateEntity(milestone);
+
+        newMilestone.setPlanTemplate(planTemplate);
+        milestoneTemplateRepository.save(newMilestone);
+
+        setNewProjectEndDate(planTemplate, currentProject);
+    }
+
+
+    public void setNewProjectEndDate(PlanTemplateEntity planTemplateEntity, ProjectEntity currentProject) {
+        Optional<OffsetDateTime> newLastMilestoneOptionalDate = planTemplateEntity.getMilestones().stream()
+            .map(MilestoneTemplateEntity::getDate).max(OffsetDateTime::compareTo);
+
+        if (newLastMilestoneOptionalDate.isPresent()) {
+            OffsetDateTime newLastMilestoneDate = newLastMilestoneOptionalDate.get();
+
+            OffsetDateTime oldProjectEnd = currentProject.getEndDate();
+
+            long hoursOffsetEnd = HOURS.between(oldProjectEnd, newLastMilestoneDate);
+
+            if (hoursOffsetEnd != 0) {
+                currentProject.setEndDate(newLastMilestoneDate);
+
+            }
+        }
+    }
 }

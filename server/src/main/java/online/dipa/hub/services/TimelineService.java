@@ -60,6 +60,8 @@ public class TimelineService {
     @Autowired
     private IncrementService incrementService;
 
+    private final static String milestoneFileName = "Projekteinrichtung";
+
     public List<Timeline> getTimelines() {
         List<Long> projectIds = userInformationService.getProjectIdList();
 
@@ -198,9 +200,9 @@ public class TimelineService {
                 OffsetDateTime oldProjectEnd = currentProject.getEndDate();
 
                 long hoursOffsetEnd = HOURS.between(oldProjectEnd, newLastMilestoneDate);
-                OffsetDateTime newProjectEnd = currentProject.getEndDate().plusHours(hoursOffsetEnd);
-
-                currentProject.setEndDate(newProjectEnd);
+                if (hoursOffsetEnd != 0) {
+                    currentProject.setEndDate(newLastMilestoneDate);
+                }
             }
         }
         
@@ -267,6 +269,9 @@ public class TimelineService {
                 
             project.setIncrements(null);
             projectRepository.save(project);
+
+            userInformationService.updateNewProjectRolesForTemplate(project);
+
         }
 
 
@@ -288,15 +293,13 @@ public class TimelineService {
         ProjectEntity currentProject = getProject(timelineId);
         final ProjectApproachEntity projectApproach = currentProject.getProjectApproach();
 
-        Long firstMilestoneId = Objects.requireNonNull(currentProject.getPlanTemplate()
-                                                                     .getMilestones()
-                                                                     .stream()
-                                                                     .min(Comparator.comparing(
-                                                                             MilestoneTemplateEntity::getDateOffset))
-                                                                     .orElse(null))
-                                       .getId();
+        Optional<MilestoneTemplateEntity> firstMilestone = currentProject.getPlanTemplate()
+                                                                         .getMilestones()
+                                                                         .stream()
+                                                                         .filter(m -> m.getName().equals(milestoneFileName))
+                                                                         .findFirst();
 
-        if (!milestoneId.equals(firstMilestoneId) || projectApproach == null ||
+        if (firstMilestone.isEmpty() || !milestoneId.equals(firstMilestone.get().getId()) || projectApproach == null ||
                 !projectApproach.getOperationType().getId().equals(2L)) {
             return Collections.emptyList();
         }

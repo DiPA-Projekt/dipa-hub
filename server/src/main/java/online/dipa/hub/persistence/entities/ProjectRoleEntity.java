@@ -12,7 +12,6 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import online.dipa.hub.api.model.ProjectRole;
-import static javax.persistence.CascadeType.ALL;
 
 
 @Entity
@@ -30,15 +29,25 @@ public class ProjectRoleEntity extends BaseEntity {
     @Basic(optional = false)
     private String abbreviation;
 
+    @Basic(optional = true)
+    private String icon;
+
     @NotEmpty
     @Basic(optional = false)
     private String permission;
+    
+    @Basic(optional = true)
+    private boolean defaultRole;
 
-    @ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+    @Basic
+    @Column(nullable = false)
+    private int maxCount;
+
+    @ManyToOne(fetch=FetchType.EAGER)
     @NotFound(action = NotFoundAction.IGNORE)
     private ProjectRoleTemplateEntity projectRoleTemplate;
 
-    @ManyToMany(mappedBy = "projectRoles", cascade = { ALL })
+    @ManyToMany(mappedBy = "projectRoles")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<UserEntity> users;
 
@@ -50,12 +59,18 @@ public class ProjectRoleEntity extends BaseEntity {
         this.name = projectRole.getName();
         this.abbreviation = projectRole.getAbbreviation();
         this.permission = projectRole.getPermission();
+        this.defaultRole = projectRole.isDefaultRole();
+        this.icon = projectRole.getIcon();
+        this.maxCount = projectRole.getMaxCount();
     }
     
     public ProjectRoleEntity(ProjectRole projectRole) {
         this.name = projectRole.getName();
         this.abbreviation = projectRole.getAbbreviation();
         this.permission = projectRole.getPermission().toString();
+        this.defaultRole = projectRole.getDefaultRole();
+        this.icon = projectRole.getIcon();
+        this.maxCount = projectRole.getMaxCount();
     }
 
     public String getName() {
@@ -75,12 +90,36 @@ public class ProjectRoleEntity extends BaseEntity {
         this.abbreviation = abbreviation;
     }
 
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
     public String getPermission() {
         return permission;
     }
 
     public void setPermission(final String permission) {
         this.permission = permission;
+    }
+
+    public boolean isDefaultRole() {
+        return defaultRole;
+    }
+
+    public void setDefaultRole(final boolean defaultRole) {
+        this.defaultRole = defaultRole;
+    }
+
+    public int getMaxCount() {
+        return maxCount;
+    }
+
+    public void setMaxCount(int maxCount) {
+        this.maxCount = maxCount;
     }
 
     public ProjectRoleTemplateEntity getProjectRoleTemplate() {
