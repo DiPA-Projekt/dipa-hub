@@ -48,7 +48,6 @@ export class TimelineComponent implements OnInit, OnDestroy {
   private periodEndDateSubscription: Subscription;
 
   private timelinesSubscription: Subscription;
-  private activatedRouteSubscription: Subscription;
   private projectTasksSubscription: Subscription;
 
   public constructor(
@@ -62,20 +61,10 @@ export class TimelineComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
-    this.timelinesSubscription = this.activatedRoute.parent.parent.params
-      .pipe(
-        switchMap(
-          (params: Params): Observable<Timeline[]> => {
-            this.selectedTimelineId = parseInt(params.id, 10);
-            return this.timelinesService.getTimelines();
-          }
-        )
-      )
-      .subscribe((data: Timeline[]) => {
-        this.timelineData = data;
-
-        this.setData();
-      });
+    this.timelinesSubscription = this.activatedRoute.parent.parent.params.subscribe((params: Params) => {
+      this.selectedTimelineId = Number(params.id);
+      this.setData();
+    });
 
     this.periodStartDateSubscription = this.ganttControlsService.getPeriodStartDate().subscribe((data) => {
       if (this.periodStartDate !== data) {
@@ -110,6 +99,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
+    this.timelinesSubscription?.unsubscribe();
     this.periodStartDateSubscription?.unsubscribe();
     this.periodEndDateSubscription?.unsubscribe();
     this.projectTasksSubscription?.unsubscribe();
@@ -117,13 +107,14 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
   public setData(): void {
     this.vm$ = forkJoin([
+      this.timelinesService.getTimelines(),
       this.tasksService.getTasksForTimeline(this.selectedTimelineId),
       this.milestonesService.getMilestonesForTimeline(this.selectedTimelineId),
       this.incrementsService.getIncrementsForTimeline(this.selectedTimelineId),
     ]).pipe(
-      map(([taskData, milestoneData, incrementsData]) => {
+      map(([timelineData, taskData, milestoneData, incrementsData]) => {
+        this.timelineData = timelineData;
         const selectedTimeline = this.timelineData.find((c) => c.id === Number(this.selectedTimelineId));
-
         const periodStartDate = new Date(selectedTimeline.start);
         const periodEndDate = new Date(selectedTimeline.end);
 
