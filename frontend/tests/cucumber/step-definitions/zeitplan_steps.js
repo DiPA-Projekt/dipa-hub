@@ -1,19 +1,28 @@
 const { client } = require('nightwatch-api');
 const { Given, When, Then } = require('@cucumber/cucumber');
-const { closeMilestoneDescription, createNewMilestone } = require('../page-objects/meine-projekte/unser-zeitplan/unsere_termine');
+const { closeMilestoneDescription, createNewMilestone, fillMilestoneName, pickTodaysDate} = require('../page-objects/meine-projekte/unser-zeitplan/unsere_termine');
 
-When('Ich auf den Meilenstein {string} klicke', (mileStoneName) => {
+When('Ich auf den Meilenstein {string} klicke', (milestoneName) => {
   // sucht und klickt auf das Meilenstein-Element mit einem bestimmten Titel
   return client.click(
     'xpath',
     '//*[local-name()="svg"]//*[local-name()="tspan" and text()="' +
-      mileStoneName +
+      milestoneName +
       '"]/parent::*/parent::*/*[local-name()="path"]'
   );
 });
 
-When('Ich erstelle einen Meilenstein {string} mit dem Status {string}', (mileStoneName, status) => {
-  return createNewMilestone(mileStoneName, status);
+// TODO: Funktioniert so nicht
+When('Ich erstelle einen Meilenstein {string} mit dem Status {string}', (milestoneName, status) => {
+  return createNewMilestone(milestoneName, status);
+});
+
+When('Ich fülle den Namen {string} für den Meilenstein aus', (milestoneName) => {
+  return fillMilestoneName(milestoneName);
+});
+
+When('Ich wähle den heutigen Tag im Kalender aus', () => {
+  return pickTodaysDate();
 });
 
 // ********** Asserts **********
@@ -37,6 +46,26 @@ Then('sollten {int} Meilensteine existieren', (number) => {
       throw Error('Expected: ' + number + ' elements but got: ' + result.value.length);
     }
   });
+});
+
+Then('sollte der Meilenstein {string} existieren', (milestoneName) => {
+  return client
+    .useXpath()
+    .assert.elementPresent(
+      '//*[local-name()="svg"]//*[local-name()="tspan" and text()="' +
+      milestoneName +
+      '"]/parent::*/parent::*/*[local-name()="path"]'
+    );
+});
+
+Then('sollte der Meilenstein {string} nicht existieren', (milestoneName) => {
+  return client
+    .useXpath()
+    .assert.not.elementPresent(
+      '//*[local-name()="svg"]//*[local-name()="tspan" and text()="' +
+      milestoneName +
+      '"]/parent::*/parent::*/*[local-name()="path"]'
+    );
 });
 
 Then('Ich schließe die Meilensteindetails', () => {
