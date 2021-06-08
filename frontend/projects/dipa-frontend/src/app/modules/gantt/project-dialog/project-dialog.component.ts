@@ -16,6 +16,7 @@ import ProjectTypeEnum = Timeline.ProjectTypeEnum;
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { forkJoin, Subscription } from 'rxjs';
+import { TimelineDataService } from '../../../shared/timelineDataService';
 
 interface ProjectSize {
   value: string;
@@ -76,6 +77,7 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
     private projectApproachesService: ProjectApproachesService,
     private projectService: ProjectService,
     private userService: UserService,
+    private timelineDataService: TimelineDataService,
     private fb: FormBuilder,
     private router: Router
   ) {}
@@ -112,31 +114,19 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
           project: formGroup.value,
           projectOwner: this.filterProjectOwner(formGroup.value.projectOwner),
         })
-        .subscribe((newTimeline: Timeline) => {
-          if (newTimeline) {
-            let snackBarRef = this.snackBar.open(`Das Projekt ${newTimeline.name} wurde erstellt.`, 'click', {
-              horizontalPosition: this.horizontalPosition,
-              verticalPosition: this.verticalPosition,
-            });
-            snackBarRef.onAction().subscribe(() => {
-              console.log(newTimeline.id);
-              const id = newTimeline.id;
-              console.log(this.router);
-              this.router.navigate([`/gantt/${Number(id)}/project-checklist/quickstart`]);
-            });
-            // this.router.navigate([`/gantt/${newTimeline.id}/project-checklist`]).then(() => window.location.reload());
-          }
-          this.dialogRef.close();
+        .subscribe({
+          next: (newTimeline: Timeline) => {
+            this.timelineDataService.setTimeline();
+            this.openSnackBar(newTimeline);
+          },
+          error: null,
+          complete: () => {
+            this.dialogRef.close();
+          },
         });
     } else {
       this.inputNotation = true;
     }
-  }
-
-  onclicK() {
-    const id = 18;
-
-    this.router.navigate([`/gantt/${id}/project-checklist/quickstart`]);
   }
 
   public displayProjectSize(size: string): string {
@@ -155,10 +145,15 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
     return this.allUsers.find((user) => user.id === projectOwnerId);
   }
 
-  private openSnackBar(message: string, action: string) {
-    this.snackBar.open(message, action, {
+  private openSnackBar(newTimeline: Timeline): void {
+    const snackBarRef = this.snackBar.open(`Das Projekt ${newTimeline.name} wurde erstellt.`, 'Zu dem Projekt', {
       horizontalPosition: this.horizontalPosition,
       verticalPosition: this.verticalPosition,
+      duration: 4000,
+      panelClass: ['panel'],
+    });
+    snackBarRef.onAction().subscribe(() => {
+      this.router.navigate([`/gantt/${newTimeline.id}/project-checklist/quickstart`]);
     });
   }
 

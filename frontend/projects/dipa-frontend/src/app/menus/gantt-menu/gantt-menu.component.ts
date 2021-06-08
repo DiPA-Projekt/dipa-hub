@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatMenu } from '@angular/material/menu';
-import { Timeline, TimelinesService } from 'dipa-api-client';
-import { Subscription } from 'rxjs';
-import { AuthenticationService } from '../../authentication.service';
+import { Timeline, User, UserService } from 'dipa-api-client';
+import { Subscription, Observable } from 'rxjs';
+import { TimelineDataService } from '../../shared/timelineDataService';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-gantt-menu',
@@ -15,24 +16,33 @@ export class GanttMenuComponent implements OnInit, OnDestroy {
   public timelineData: Timeline[];
 
   private timelinesSubscription: Subscription;
-  private currentUserId: number;
-
-  public constructor(
-    private timelinesService: TimelinesService,
-    private authenticationService: AuthenticationService
-  ) {}
+  private timelines: Timeline[];
+  public constructor(private userService: UserService, private timelineDataService: TimelineDataService) {}
 
   public ngOnInit(): void {
-    this.timelinesSubscription = this.timelinesService.getTimelines().subscribe((data) => {
-      const userProjectIds: number[] = [];
-      this.authenticationService.getUserData().subscribe((user) => (this.currentUserId = user.id));
-      this.authenticationService
-        .getProjectRoles()
-        .filter((role) => role.abbreviation !== 'PMO')
-        .forEach((role) => userProjectIds.push(role.projectId));
-
-      this.timelineData = data.filter((t) => userProjectIds.includes(t.id));
-    });
+    this.timelinesSubscription = this.timelineDataService
+      .getTimeline()
+      .pipe(
+        switchMap(
+          (timelines: Timeline[]): Observable<User> => {
+            this.timelines = timelines;
+            return this.userService.getCurrentUser();
+          }
+        )
+      )
+      .subscribe({
+        next: (user: User) => {
+          const userProjectIds: number[] = [];
+          user.projectRoles
+            .filter((role) => role.abbreviation !== 'PMO')
+            .forEach((role) => userProjectIds.push(role.projectId));
+          if (this.timelines !== null) {
+            this.timelineData = this.timelines.filter((t) => userProjectIds.includes(t.id));
+          }
+        },
+        error: null,
+        complete: () => void 0,
+      });
   }
 
   public ngOnDestroy(): void {

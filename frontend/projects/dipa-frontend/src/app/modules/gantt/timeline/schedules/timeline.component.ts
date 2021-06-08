@@ -92,7 +92,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
     this.projectTasksSubscription = this.projectService.getProjectTasks(this.selectedTimelineId).subscribe((data) => {
       this.projectTask = data[4];
-      this.projectTask.results.sort(
+      this.appoinmentsList = this.projectTask.results.sort(
         (b, a) =>
           new Date(b.formFields.find((field) => field.key === 'date').value).getTime() -
           new Date(a.formFields.find((field) => field.key === 'date').value).getTime()
@@ -103,7 +103,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
         keysOrder[id] = i + 1;
       });
 
-      this.projectTask.results.forEach((result) => {
+      this.appoinmentsList.forEach((result) => {
         result.formFields = result.formFields.filter((field) => this.apptFormfieldsKeys.includes(field.key));
         result.formFields.sort((a, b) => keysOrder[a.key] - keysOrder[b.key]);
       });
@@ -172,7 +172,13 @@ export class TimelineComponent implements OnInit, OnDestroy {
     });
   }
 
-  public filterOpenAppointments(appointments): boolean {
-    return appointments.formFields.find((field) => field.key === 'status').value !== 'DONE';
+  public filterAllOpenAppointments(appointments): any[] {
+    let openAppointments = [];
+    for (const appt of appointments) {
+      if (appt.formFields.find((field) => field.key === 'status').value !== 'DONE') {
+        openAppointments.push(appt);
+      }
+    }
+    return openAppointments;
   }
 }
