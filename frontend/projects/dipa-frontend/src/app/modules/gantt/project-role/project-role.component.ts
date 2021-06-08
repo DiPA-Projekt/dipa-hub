@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ProjectRole, ProjectService, User, UserService } from 'dipa-api-client';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { TimelineDataService } from '../../../shared/timelineDataService';
 
 @Component({
   selector: 'app-project-role',
@@ -18,7 +19,8 @@ export class ProjectRoleComponent implements OnInit {
   public constructor(
     private projectService: ProjectService,
     private userService: UserService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private timelineDataService: TimelineDataService
   ) {}
 
   public ngOnInit(): void {
@@ -46,13 +48,13 @@ export class ProjectRoleComponent implements OnInit {
       }
     }
 
-    this.userService.updateUser(user).subscribe(() => void 0);
+    this.userService.updateUser(user).subscribe(() => this.timelineDataService.setRoles(this.timelineId));
   }
 
   public delete(user: User, projectRole: ProjectRole): void {
     user.projectRoles = user.projectRoles.filter((role) => role.id !== projectRole.id);
 
-    this.userService.updateUser(user).subscribe(() => void 0);
+    this.userService.updateUser(user).subscribe(() => this.timelineDataService.setRoles(this.timelineId));
   }
 
   private setReactiveForm(): void {
