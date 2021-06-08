@@ -19,13 +19,5 @@ Feature: VMXT ITZBund agil
     And sollte ich den Text "ITZBund Risikoliste" sehen
     And sollte ich den Text "Trackingtabelle externe Dienstleistung" sehen
     And sollte ich den Text "QS-Handbuch" sehen
-
-  Scenario: Meilenstein hinzufügen
-    When Ich erstelle einen Meilenstein "TestMeilenstein" mit dem Status "offen"
-
- #Kann nur lokal funktionieren. Sollte dann in der CI angepasst werden
-  # Scenario: Export Kalender
-  #   And Ich klicke auf den Text "Export"
-  #   Then Ich warte 3 Sekunden
-  #   And sollte die Datei "Meilensteine.ics" unter dem Pfad "C:/Users/Tansu/Downloads" existieren
-    #And Ich lösche die Datei "Meilensteine.ics" unter dem Pfad "C:/Users/Tansu/Downloads"
+    When Ich schließe die Meilensteindetails
+    Then sollte ich den Text "Fällig am 24.4.2021" nicht sehen

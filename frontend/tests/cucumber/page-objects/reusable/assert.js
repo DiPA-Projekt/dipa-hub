@@ -9,10 +9,19 @@ const sollteDateiUnterPfadExistieren = function (fileName, path) {
 };
 
 const sollteTextSehen = function (text) {
-  return client.waitForElementVisible('xpath', '*//*[contains(text(), "' + text + '")]');
+  return client
+  .useXpath()
+  .assert.elementPresent('//*[contains(text(), "' + text + '")]');
+};
+
+const sollteTextNichtSehen = function (text) {
+  return client
+  .useXpath()
+  .assert.not.elementPresent('//*[contains(text(), "' + text + '")]');
 };
 
 module.exports = {
   sollteDateiUnterPfadExistieren: sollteDateiUnterPfadExistieren,
-  sollteTextSehen: sollteTextSehen
+  sollteTextSehen: sollteTextSehen,
+  sollteTextNichtSehen: sollteTextNichtSehen
 };

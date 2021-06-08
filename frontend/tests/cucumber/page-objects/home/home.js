@@ -1,9 +1,9 @@
 const { client } = require('nightwatch-api');
 
 const ELEMENTS = {
-  txt_unsereReiseDurchsProjekt: '*//*[contains(text(), "Unsere Reise durchs Projekt")]',
-  txt_unserZeitplan: '*//*[contains(text(), "Unser Zeitplan")]',
-  txt_favoritenLinks: '*//*[contains(text(), "Favoriten-Links")]',
+  txt_unsereReiseDurchsProjekt: '//*[contains(text(), "Unsere Reise durchs Projekt")]',
+  txt_unserZeitplan: '//*[contains(text(), "Unser Zeitplan")]',
+  txt_favoritenLinks: '//*[contains(text(), "Favoriten-Links")]',
 };
 
 const navigate = function (menu) {
@@ -13,6 +13,7 @@ const navigate = function (menu) {
     case 'Projektübersicht':
     case 'Projekt anlegen':
       client.click('xpath', elementContainsText(menu));
+      break;
 
     // Nur über Home zugängliche Menüs
     case 'Nützliche Links':
@@ -24,6 +25,7 @@ const navigate = function (menu) {
           .click('xpath', elementContainsText('Home'))
           .click('xpath', elementContainsText(menu));
       }
+      break;
 
     // Nur über ein Projekt zugängliche Menüs
     case 'Schnellstart Projektmanagement (Planung)':
@@ -38,6 +40,7 @@ const navigate = function (menu) {
           .waitForElementVisible('xpath', elementContainsText(menu), 3000)
           .click('xpath', elementContainsText(menu));
       });
+      break;
 
     case 'Unsere Aufgaben':
     case 'Unsere Termine':
@@ -51,9 +54,11 @@ const navigate = function (menu) {
           .waitForElementVisible('xpath', elementContainsText(menu), 3000)
           .click('xpath', elementContainsText(menu));
       });
+      break;
 
     case 'Unsere Projektorganisation':
       client.click('xpath', elementContainsText(menu));
+      break;
 
     case 'Jira':
     case 'Service Desk und WebSelfService':
@@ -71,6 +76,7 @@ const navigate = function (menu) {
           .waitForElementVisible('xpath', elementContainsText(menu), 3000)
           .click('xpath', elementContainsText(menu));
       });
+      break;
 
     default:
       console.log('"' + menu + '" does not exist. Please check typo or implement');
@@ -79,7 +85,7 @@ const navigate = function (menu) {
 };
 
 const elementContainsText = function (text) {
-  return '*//*[contains(text(), "' + text + '")]';
+  return '//*[contains(text(), "' + text + '")]';
 };
 
 module.exports = {
