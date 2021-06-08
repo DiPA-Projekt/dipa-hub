@@ -58,7 +58,11 @@ export class AuthenticationService {
   public async login(): Promise<boolean> {
     return this.oAuthService.loadDiscoveryDocumentAndLogin().then(async (loggedIn) => {
       await this.loadUserProfile();
-      this.authenticated = true;
+      if (this.userData.getValue() === null) {
+        this.authenticated = false;
+      } else {
+        this.authenticated = true;
+      }
       return loggedIn;
     });
   }

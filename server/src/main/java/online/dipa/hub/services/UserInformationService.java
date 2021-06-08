@@ -60,6 +60,7 @@ public class UserInformationService {
             .map(u -> conversionService.convert(u, User.class)).findFirst().orElse(null);
 
         }
+        System.out.println(currentUser);
         return currentUser;
     }
 

@@ -11,3 +11,5 @@ get:
         application/json:
           schema:
             $ref: "../models/user.yml#/User"
+    403:
+      description: forbidden

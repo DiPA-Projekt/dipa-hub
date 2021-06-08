@@ -6,6 +6,9 @@ import online.dipa.hub.services.UserInformationService;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
@@ -18,7 +21,16 @@ public class UserInformationController implements UserApi {
     @Override
     public ResponseEntity<User> getCurrentUser() {
         final User user = userInformationService.getUserData();
-        return ResponseEntity.ok(user);
+        // ResponseEntity.
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        }    
+        else {
+            return ResponseEntity.status(HttpStatus.SC_FORBIDDEN).body(user);
+        }
+// return ResponseEntity.ok(user);
+            // return ResponseEntity.status(403).body(user);
+
     }
 
     @Override
