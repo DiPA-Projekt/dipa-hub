@@ -17,7 +17,6 @@ When('Ich navigiere zu {string}', menu => {
   navigate(menu)
 });
 
-
 //TODO: zum laufen bringen
 Then('Ich lösche die Datei {string} unter dem Pfad {string}', (fileName, path) => {
   const pathToFile = path + '/' + fileName;

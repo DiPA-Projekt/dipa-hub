@@ -1,6 +1,6 @@
 const { client } = require('nightwatch-api');
 const { Given, When, Then } = require('@cucumber/cucumber');
-const { closeMilestoneDescription, createNewMilestone, fillMilestoneName, pickTodaysDate} = require('../page-objects/meine-projekte/unser-zeitplan/unsere_termine');
+const { closeMilestoneDescription, createNewMilestone, fillMilestoneName, pickTodaysDate, axisContains} = require('../page-objects/meine-projekte/unser-zeitplan/unsere_termine');
 
 When('Ich auf den Meilenstein {string} klicke', (milestoneName) => {
   // sucht und klickt auf das Meilenstein-Element mit einem bestimmten Titel
@@ -70,4 +70,9 @@ Then('sollte der Meilenstein {string} nicht existieren', (milestoneName) => {
 
 Then('Ich schließe die Meilensteindetails', () => {
   return closeMilestoneDescription();
+});
+
+
+Then('sollte die Zeitachse {string} beinhalten', (text) => {
+  return axisContains(text);
 });
