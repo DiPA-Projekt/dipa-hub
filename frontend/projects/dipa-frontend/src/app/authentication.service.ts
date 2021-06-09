@@ -10,6 +10,7 @@ import { OrganisationRole } from 'projects/dipa-api-client/src/model/organisatio
 })
 export class AuthenticationService {
   private authenticated = false;
+  private authorized = false;
 
   private userData = new BehaviorSubject<User>(null);
 
@@ -28,6 +29,10 @@ export class AuthenticationService {
 
   public isLoggedIn(): boolean {
     return this.authenticated;
+  }
+
+  public isAuthorized(): boolean {
+    return this.authorized;
   }
 
   public getOrganisationRoles(): OrganisationRole[] {
@@ -58,11 +63,8 @@ export class AuthenticationService {
   public async login(): Promise<boolean> {
     return this.oAuthService.loadDiscoveryDocumentAndLogin().then(async (loggedIn) => {
       await this.loadUserProfile();
-      if (this.userData.getValue() === null) {
-        this.authenticated = false;
-      } else {
-        this.authenticated = true;
-      }
+
+      // this.authenticated = true;
       return loggedIn;
     });
   }
@@ -76,15 +78,20 @@ export class AuthenticationService {
 
   private loadUserProfile() {
     return new Promise((resolve, reject) => {
-      this.userService.getCurrentUser().subscribe(
-        (data: User) => {
+      this.userService.getCurrentUser().subscribe({
+        next: (data: User) => {
           this.userData.next(data);
+          console.log(data);
           resolve(true);
         },
-        (err) => {
+        error: (err) => {
+          if (err.code === 403) {
+            this.authorized = false;
+          }
           resolve(false);
-        }
-      );
+        },
+        complete: () => void 0,
+      });
     });
   }
 }

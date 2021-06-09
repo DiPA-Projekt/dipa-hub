@@ -11,12 +11,15 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { Observable } from 'rxjs';
 import { AuthenticationService } from './authentication.service';
 import { Timeline, TimelinesService, User, UserService } from 'dipa-api-client';
+import { T } from '@angular/cdk/keycodes';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate, CanActivateChild {
   protected authenticated: boolean;
+  protected authorized: boolean;
+
   protected organisationRoles: string[];
   protected hasProjectRoles: boolean;
   protected projects: number[];
@@ -34,14 +37,14 @@ export class AuthGuard implements CanActivate, CanActivateChild {
   public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean | UrlTree> {
     return new Promise(async (resolve, reject) => {
       try {
-        // console.log(route);
+        await this.authenticationService.login();
         this.authenticated = this.authenticationService.isLoggedIn();
-        if (this.authenticated === false) {
-          resolve(false);
-          console.log(this.authenticated);
+        this.authorized = this.authenticationService.isAuthorized();
+
+        if (this.authenticationService.isAuthorized() === false) {
           this.router.navigate([`userUnauthorized`]);
+          resolve(false);
         } else {
-          console.log(this.authenticated);
           this.organisationRoles = this.authenticationService.getOrganisationRoles().map((r) => r.abbreviation);
           this.hasProjectRoles = this.authenticationService.getProjectRoles().length > 0;
           this.projects = this.authenticationService.getProjectRoles().map((r) => r.projectId);
@@ -51,7 +54,6 @@ export class AuthGuard implements CanActivate, CanActivateChild {
 
           const result = await this.isAccessAllowed(route);
           resolve(result);
-          console.log(result);
         }
 
         // console.log(result);
