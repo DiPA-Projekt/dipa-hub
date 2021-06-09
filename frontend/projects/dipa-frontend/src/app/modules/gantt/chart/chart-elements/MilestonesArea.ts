@@ -125,8 +125,6 @@ export class MilestonesArea implements IChartElement {
         this.initMilestoneDate = Utils.createDateAtMidnight(
           this.data.find((d: Milestone) => d.id === event.subject.id).date
         );
-        // this.initMilestoneDate = new Date(this.data.find((d: Milestone) => d.id === event.subject.id).date);
-        // this.initMilestoneDate.setHours(0, 0, 0, 0);
       })
       .on('end', (event: d3.D3DragEvent<any, any, Milestone>) => {
         this.adjustMilestonePosition(event.subject);
@@ -149,9 +147,6 @@ export class MilestonesArea implements IChartElement {
       .attr('id', (d: Milestone) => `milestoneEntry_${d.id}`)
       .attr('transform', (d: Milestone) => {
         const milestoneDate = Utils.createDateAtMidnight(d.date);
-        console.log(milestoneDate);
-        // const milestoneDate = new Date(d.date);
-        // milestoneDate.setHours(0, 0, 0, 0);
         return `translate(${offset.left + parseInt(this.xScale(milestoneDate), 10)},${
           offset.top + this.elementHeight / 2
         })`;
@@ -227,8 +222,6 @@ export class MilestonesArea implements IChartElement {
       .ease(d3.easeCubic)
       .duration(animationDuration)
       .attr('transform', (d: Milestone) => {
-        // const milestoneDate = new Date(d.date);
-        // milestoneDate.setHours(0, 0, 0, 0);
         const milestoneDate = Utils.createDateAtMidnight(d.date);
 
         return `translate(${offset.left + parseInt(this.xScale(milestoneDate), 10)},${
@@ -366,8 +359,6 @@ export class MilestonesArea implements IChartElement {
 
     const milestone = dataGroup.select(`#milestoneEntry_${milestoneData.id}`);
 
-    // const milestoneDate = new Date(milestoneData.date);
-    // milestoneDate.setHours(0, 0, 0, 0);
     const milestoneDate = Utils.createDateAtMidnight(milestoneData.date);
 
     const xValueNew = parseInt(this.xScale(milestoneDate), 10);
