@@ -27,6 +27,7 @@ interface SelectOptionGroup {
   styleUrls: ['./project-task-form.component.scss'],
 })
 export class ProjectTaskFormComponent implements OnInit {
+  @Input() public completable: boolean;
   @Input() public taskData: ProjectTask;
   @Input() public selectedTimelineId: number;
   @Output() public stepStatusChanged = new EventEmitter();

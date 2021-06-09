@@ -1,0 +1,9 @@
+<div class="content-container">
+  <app-project-data (projectSizeChanged)="reloadProjectTasks()" [timelineId]="selectedTimelineId"></app-project-data>
+  <h2 class="project-checklist-header">Projektcheckliste</h2>
+  <app-project-checklist [projectTasks]="projectTasks" [timelineId]="selectedTimelineId"></app-project-checklist>
+  <a mat-button [routerLink]="'/gantt/' + selectedTimelineId + '/project-checklist/control'">
+    Weiter
+    <mat-icon>navigate_next</mat-icon>
+  </a>
+</div>

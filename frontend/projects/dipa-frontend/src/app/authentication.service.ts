@@ -1,51 +1,47 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { User, UserService } from 'dipa-api-client';
+import { User, UserService, ProjectRole } from 'dipa-api-client';
 import { environment } from '../environments/environment';
+import { OrganisationRole } from 'projects/dipa-api-client/src/model/organisationRole';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthenticationService {
-  authenticated = false;
+  private authenticated = false;
 
-  userData = new BehaviorSubject<User>(null);
+  private userData = new BehaviorSubject<User>(null);
 
-  constructor(private oAuthService: OAuthService, private userService: UserService) {
+  public constructor(private oAuthService: OAuthService, private userService: UserService) {
     this.oAuthService.configure(environment.keycloakConfig);
     this.oAuthService.setupAutomaticSilentRefresh();
   }
 
-  getUserData(): Observable<User> {
+  public getUserData(): Observable<User> {
     return this.userData;
   }
 
-  setUserData(userData: User): void {
+  public setUserData(userData: User): void {
     this.userData.next(userData);
   }
 
-  isLoggedIn(): boolean {
+  public isLoggedIn(): boolean {
     return this.authenticated;
   }
 
-  getUserRoles(): string[] {
+  public getOrganisationRoles(): OrganisationRole[] {
     const user: User = this.userData.getValue();
-    return user && typeof user.roles !== 'undefined' ? user.roles : [];
+    return user && typeof user.organisationRoles !== 'undefined' ? user.organisationRoles : [];
   }
 
-  getUserGroups(): string[] {
+  public getProjectRoles(): ProjectRole[] {
     const user: User = this.userData.getValue();
-    return user && typeof user.groups !== 'undefined' ? user.groups : [];
+    return user && typeof user.projectRoles !== 'undefined' ? user.projectRoles : [];
   }
 
-  getProjects(): number[] {
-    const user: User = this.userData.getValue();
-    return user && typeof user.projects !== 'undefined' ? user.projects : [];
-  }
-
-  isUserInRole(userRole: string): boolean {
-    const roles = this.getUserRoles();
+  public isUserInOrganisationRoles(userRole: string): boolean {
+    const roles = this.getOrganisationRoles().map((r) => r.abbreviation);
     return roles.indexOf(userRole) !== -1;
   }
 
@@ -66,7 +62,7 @@ export class AuthenticationService {
 
   private loadUserProfile() {
     return new Promise((resolve, reject) => {
-      this.userService.getUserData().subscribe(
+      this.userService.getCurrentUser().subscribe(
         (data: User) => {
           this.userData.next(data);
           resolve(true);

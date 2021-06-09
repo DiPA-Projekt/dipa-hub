@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthenticationService } from '../authentication.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ProjectDialogComponent } from '../modules/gantt/project-dialog/project-dialog.component';
 
 @Component({
   selector: 'app-root-component',
@@ -7,13 +9,21 @@ import { AuthenticationService } from '../authentication.service';
   styleUrls: ['./root.component.scss'],
 })
 export class RootComponent {
-  constructor(private authenticationService: AuthenticationService) {}
+  constructor(private authenticationService: AuthenticationService, public dialog: MatDialog) {}
 
-  public isUserInRole(role: string): boolean {
-    return this.authenticationService.isUserInRole(role);
+  public isUserInOrganisationRoles(role: string): boolean {
+    return this.authenticationService.isUserInOrganisationRoles(role);
+  }
+
+  public hasProjectRoles(): boolean {
+    return this.authenticationService.getProjectRoles().length > 0;
   }
 
   public isLoggedIn(): boolean {
     return this.authenticationService.isLoggedIn();
+  }
+
+  public openProjectDialog(): void {
+    this.dialog.open(ProjectDialogComponent);
   }
 }

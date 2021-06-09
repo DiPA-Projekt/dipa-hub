@@ -1,0 +1,84 @@
+server:
+  port: 9080
+  use-forward-headers: true
+  tomcat:
+    internal-proxies: 139\.174\.11\.9|127\.\d{1,3}\.\d{1,3}\.\d{1,3}
+
+spring:
+  banner:
+    location: classpath:dipa-banner.txt
+  jpa:
+    database: POSTGRESQL
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+keycloak:
+  auth-server-url: https://auth.dipa.online/auth
+  realm: DiPA
+  resource: dipa-app
+  public-client: true
+  principal-attribute: preferred_username
+  bearer-only: true
+
+dipa:
+  tenants:
+    dataSources:
+      - tenantId: itzbund
+        url: jdbc:postgresql://localhost:5432/dipa
+        username: dipa
+        password: dipasecret
+        platform: postgres
+      - tenantId: ba
+        url: jdbc:postgresql://localhost:5433/dipa
+        username: dipa
+        password: dipasecret
+        platform: postgres
+#dipa:
+#  tenants:
+#    dataSources:
+#      - tenantId: itzbund
+#        url: jdbc:h2:mem:dipahub-itzbund
+#        platform: h2
+#      - tenantId: ba
+#        url: jdbc:h2:mem:dipahub-ba
+#        platform: h2
+
+logging:
+  file:
+    name: "./logs/dipa-logfile.log"
+  level:
+    org.springframework.cloud.kubernetes: DEBUG
+#    org.keycloak: DEBUG
+
+
+management:
+  endpoint:
+    loggers:
+      enabled: true
+    logfile:
+      enabled: true
+    restart:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "info,health,loggers,logfile"
+
+#server.port=9080
+#server.use-forward-headers=true
+#spring.jpa.hibernate.ddl-auto=validate
+#spring.jpa.open-in-view=false
+#spring.datasource.platform=h2
+#spring.h2.console.enabled=true
+#spring.datasource.url=jdbc:h2:mem:dipahub
+#spring.datasource.initialization-mode=always
+#spring.datasource.platform=postgres
+#spring.datasource.url=jdbc:postgresql://localhost:5432/dipa-core
+#spring.datasource.username=dipa
+#spring.datasource.password=secret-pwd
+#logging.path=logs
+#spring.liquibase.change-log=classpath:db/changelog/db.changelog-master.yaml

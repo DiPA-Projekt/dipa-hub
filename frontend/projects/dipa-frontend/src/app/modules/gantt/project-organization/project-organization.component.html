@@ -1,0 +1,14 @@
+<div class="content-container">
+  <div fxLayout="row wrap" fxLayoutGap="16px grid">
+    <div
+      fxFlex="25%"
+      fxFlex.xs="100%"
+      fxFlex.sm="100%"
+      fxFlex.md="50%"
+      fxFlex.lg="33%"
+      *ngFor="let role of projectRoles; let i = index"
+    >
+      <app-project-role [timelineId]="selectedTimelineId" [allUsers]="allUsers" [role]="role"></app-project-role>
+    </div>
+  </div>
+</div>

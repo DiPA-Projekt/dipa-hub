@@ -13,9 +13,11 @@ import { NavService } from './nav.service';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { RootComponent } from './root/root.component';
 import { ProfileSettingsMenuComponent } from './menus/profile-settings-menu/profile-settings-menu.component';
+import { ProjectDialogComponent } from './modules/gantt/project-dialog/project-dialog.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [AppComponent, GanttMenuComponent, RootComponent, ProfileSettingsMenuComponent],
+  declarations: [AppComponent, GanttMenuComponent, RootComponent, ProfileSettingsMenuComponent, ProjectDialogComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -25,6 +27,8 @@ import { ProfileSettingsMenuComponent } from './menus/profile-settings-menu/prof
     BrowserAnimationsModule,
     CoreModule,
     SharedModule,
+    FormsModule,
+    ReactiveFormsModule,
     OAuthModule.forRoot({
       resourceServer: {
         allowedUrls: ['/'],

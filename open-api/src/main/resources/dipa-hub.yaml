@@ -16,6 +16,12 @@ paths:
     $ref: "paths/projectFlowSteps.yml"
   /status:
     $ref: "paths/status.yml"
+  /projects:
+    $ref: "paths/projects.yml"
+  /projects/{timelineId}/projectRoles:
+    $ref: "paths/projectRoles.yml"
+  /projects/{timelineId}/projectUsers:
+    $ref: "paths/projectUsers.yml"
   /timelines:
     $ref: "paths/timelines.yml"
   /timelines/operationTypes:
@@ -28,6 +34,8 @@ paths:
     $ref: "paths/projectData.yml"
   /timelines/{timelineId}/projectTasks:
     $ref: "paths/projectTasks.yml"
+  /timelines/{timelineId}/projectPermanentTasks:
+    $ref: "paths/projectPermanentTasks.yml"
   /timelines/{timelineId}/timelineTemplates:
     $ref: "paths/timelineTemplates.yml"
   /timelines/{timelineId}/timelineTemplates/{timelineTemplateId}:
@@ -38,9 +46,13 @@ paths:
     $ref: "paths/ical.yml"
   /timelines/{timelineId}/milestones:
     $ref: "paths/milestones.yml"
+  /timelines/{timelineId}/milestones/{milestoneId}:
+    $ref: "paths/deleteMilestone.yml"
   /timelines/{timelineId}/milestones/{milestoneId}/files:
     $ref: "paths/milestoneFiles.yml"
   /timelines/{timelineId}/tasks:
     $ref: "paths/tasks.yml"
-  /user:
-    $ref: "paths/user.yml"
+  /users:
+    $ref: "paths/users.yml"
+  /users/currentUser:
+    $ref: "paths/currentUser.yml"

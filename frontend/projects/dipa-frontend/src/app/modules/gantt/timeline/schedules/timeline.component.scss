@@ -1,0 +1,54 @@
+.full-width-spacer {
+  flex: 1 1 auto;
+}
+
+.mat-form-field--inline .mat-form-field {
+  margin-right: 10px;
+}
+
+.mat-sidenav-container {
+  width: 100%;
+  height: calc(100vh - 84px);
+  background-color: transparent;
+  margin-top: 15px;
+}
+
+mat-sidenav-content {
+  background-color: white;
+  align-items: center;
+  justify-content: center;
+}
+
+.operationType-container {
+  display: inline-block;
+  padding: 6px 9px 9px 9px;
+  background-color: rgba(0, 0, 0, 0.04);
+  width: 190.5px;
+  height: 51.326px;
+  border-bottom: 0.5px solid grey;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.label {
+  width: 100%;
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.6);
+  padding: 0;
+  margin: 0;
+}
+
+.name {
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.mat-input-element:disabled {
+  color: black;
+}
+
+.appointments-card {
+  width: 50%;
+  margin: 10px;
+}

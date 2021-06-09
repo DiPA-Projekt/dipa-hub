@@ -1,10 +1,9 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
-import { ActivatedRoute, Params } from '@angular/router';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { switchMap } from 'rxjs/operators';
 import { Project, ProjectService } from 'dipa-api-client';
-import { ProjectChecklistComponent } from '../project-checklist/project-checklist.component';
+import { TimelineDataService } from '../../../shared/timelineDataService';
 
 interface ProjectSize {
   value: string;
@@ -17,10 +16,9 @@ interface ProjectSize {
   templateUrl: './project-data.component.html',
   styleUrls: ['./project-data.component.scss'],
 })
-export class ProjectDataComponent implements OnInit, OnDestroy {
-  @ViewChild(ProjectChecklistComponent) private projectChecklistComponent: ProjectChecklistComponent;
-
-  public selectedTimelineId: number;
+export class ProjectDataComponent implements OnInit, OnDestroy, OnChanges {
+  @Input() public timelineId: number;
+  @Output() public projectSizeChanged = new EventEmitter();
 
   public myForm: FormGroup;
 
@@ -46,6 +44,7 @@ export class ProjectDataComponent implements OnInit, OnDestroy {
 
   public constructor(
     private projectService: ProjectService,
+    private timelineDataService: TimelineDataService,
     public activatedRoute: ActivatedRoute,
     public fb: FormBuilder
   ) {
@@ -56,23 +55,29 @@ export class ProjectDataComponent implements OnInit, OnDestroy {
       projectSize: null,
       client: '',
       department: '',
-      projectOwner: '',
     });
   }
 
   public ngOnInit(): void {
-    this.projectDataSubscription = this.activatedRoute.parent.params
-      .pipe(
-        switchMap(
-          (params: Params): Observable<Project> => {
-            this.selectedTimelineId = parseInt(params.id, 10);
-            return this.projectService.getProjectData(this.selectedTimelineId);
-          }
-        )
-      )
-      .subscribe((data: Project) => {
+    this.projectDataSubscription = this.projectService.getProjectData(this.timelineId).subscribe({
+      next: (data: Project) => {
         this.setReactiveForm(data);
+      },
+      error: null,
+      complete: () => void 0,
+    });
+  }
+
+  public ngOnChanges(changes: SimpleChanges): void {
+    if ('timelineId' in changes) {
+      this.projectDataSubscription = this.projectService.getProjectData(this.timelineId).subscribe({
+        next: (data: Project) => {
+          this.setReactiveForm(data);
+        },
+        error: null,
+        complete: () => void 0,
       });
+    }
   }
 
   public ngOnDestroy(): void {
@@ -84,9 +89,15 @@ export class ProjectDataComponent implements OnInit, OnDestroy {
   }
 
   public onSubmit(form: FormGroup): void {
-    this.projectService.updateProjectData(this.selectedTimelineId, form.value).subscribe(() => {
-      form.reset(form.value);
-      this.projectChecklistComponent.ngOnInit();
+    this.projectService.updateProjectData(this.timelineId, form.value).subscribe({
+      next: () => {
+        form.reset(form.value);
+        // in the future should be emitted only if projectSize field changes
+        this.projectSizeChanged.emit();
+        this.timelineDataService.setTimeline();
+      },
+      error: null,
+      complete: () => void 0,
     });
   }
 
@@ -109,7 +120,6 @@ export class ProjectDataComponent implements OnInit, OnDestroy {
       projectSize: [data?.projectSize],
       client: [data?.client],
       department: [data?.department],
-      projectOwner: [data?.projectOwner],
     });
   }
 }

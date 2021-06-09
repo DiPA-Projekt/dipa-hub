@@ -2,8 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavItem } from '../../../nav-item';
 import { ExternalLinksService, Timeline, TimelinesService } from 'dipa-api-client';
 import { ActivatedRoute, Params } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
+import { AuthenticationService } from '../../../authentication.service';
+import { TimelineDataService } from '../../../shared/timelineDataService';
 
 @Component({
   selector: 'app-sidenav',
@@ -11,62 +12,105 @@ import { Observable, Subscription } from 'rxjs';
   styleUrls: ['./sidenav.component.scss'],
 })
 export class SidenavComponent implements OnInit, OnDestroy {
-  timelineData: Timeline[] = [];
+  public timelineData: Timeline[] = [];
 
-  timeline: Timeline;
+  public timeline: Timeline;
 
-  selectedTimelineId: number;
+  public selectedTimelineId: number;
 
-  favoriteLinksSubscription: Subscription;
-  timelinesSubscription: Subscription;
+  public favoriteLinksSubscription: Subscription;
+  public rolesSubscription: Subscription;
+  public timelineDataSubscription: Subscription;
+  public paramsSubscription: Subscription;
 
-  navMenuItems: NavItem[] = [];
-  favoriteLinkItems: NavItem[] = [];
+  public navMenuItems: NavItem[] = [];
+  public favoriteLinkItems: NavItem[] = [];
+  public roles: string;
 
-  constructor(
+  public constructor(
+    private authenticationService: AuthenticationService,
     private timelinesService: TimelinesService,
     private externalLinksService: ExternalLinksService,
-    public activatedRoute: ActivatedRoute
+    public activatedRoute: ActivatedRoute,
+    private timelineDataService: TimelineDataService
   ) {}
 
-  ngOnInit(): void {
-    this.timelinesSubscription = this.activatedRoute.params
-      .pipe(
-        switchMap(
-          (params: Params): Observable<Timeline[]> => {
-            this.selectedTimelineId = parseInt(params.id, 10);
-            return this.timelinesService.getTimelines();
-          }
-        )
-      )
-      .subscribe((data: Timeline[]) => {
-        this.timelineData = data;
-        this.timeline = this.timelineData.find((c) => c.id === Number(this.selectedTimelineId));
+  public ngOnInit(): void {
+    this.paramsSubscription = this.activatedRoute.params.subscribe((params: Params) => {
+      this.selectedTimelineId = parseInt(params.id, 10);
+      this.timelineDataService.setTimeline();
+      this.timelineDataService.setRoles(this.selectedTimelineId);
+    });
+
+    this.timelineDataSubscription = this.timelineDataService.getTimeline().subscribe((data) => {
+      if (data !== null) {
+        this.timeline = data.find((c) => c.id === Number(this.selectedTimelineId));
         this.setSideNavMenu();
-      });
+      }
+    });
+
+    this.rolesSubscription = this.timelineDataService.getRoles().subscribe((data) => {
+      this.roles = data;
+    });
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.favoriteLinksSubscription?.unsubscribe();
-    this.timelinesSubscription?.unsubscribe();
+    this.paramsSubscription?.unsubscribe();
+    this.timelineDataSubscription?.unsubscribe();
+    this.rolesSubscription?.unsubscribe();
   }
 
-  setSideNavMenu(): void {
+  public setSideNavMenu(): void {
     this.navMenuItems = [
       {
-        name: 'Meine Reise durchs Projekt',
+        name: 'Unsere Reise durchs Projekt',
         icon: 'directions_walk',
         route: `gantt/${this.selectedTimelineId}/project-checklist`,
+        children: [
+          {
+            name: 'Schnellstart Projektmanagement (Planung)',
+            icon: 'play_arrow',
+            route: `gantt/${this.selectedTimelineId}/project-checklist/quickstart`,
+          },
+          {
+            name: 'Umsetzung und Steuerung',
+            icon: 'build',
+            route: `gantt/${this.selectedTimelineId}/project-checklist/control`,
+          },
+          {
+            name: 'Abschluss',
+            icon: 'outlined_flag',
+            route: `gantt/${this.selectedTimelineId}/project-checklist/end`,
+          },
+        ],
       },
       {
-        name: 'Zeitplan',
-        icon: 'event_note',
+        name: 'Unser Zeitplan',
+        icon: 'calendar_today',
         route: `gantt/${this.selectedTimelineId}/timeline`,
+        children: [
+          {
+            name: 'Unsere Aufgaben',
+            icon: 'list_alt',
+            route: `gantt/${this.selectedTimelineId}/timeline/tasks`,
+          },
+          {
+            name: 'Unsere Termine',
+            icon: 'event_note',
+            route: `gantt/${this.selectedTimelineId}/timeline/schedules`,
+          },
+          {
+            name: 'Stöbern & Vergleichen',
+            icon: 'find_replace',
+            route: `gantt/${this.selectedTimelineId}/timeline/templates`,
+          },
+        ],
       },
       {
-        name: 'Stöbern & Vergleichen',
-        icon: 'find_replace',
-        route: `gantt/${this.selectedTimelineId}/templates`,
+        name: 'Unsere Projektorganisation',
+        icon: 'person_add_alt_1',
+        route: `gantt/${this.selectedTimelineId}/project-organization`,
       },
     ];
 

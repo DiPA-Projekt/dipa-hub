@@ -3,9 +3,13 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AuthGuard } from '../../auth.guard';
 import { GanttComponent } from './gantt.component';
-import { TemplatesViewComponent } from './templates-view/templates-view.component';
-import { TimelineComponent } from './timeline/timeline.component';
-import { ProjectDataComponent } from './project-data/project-data.component';
+import { TemplatesViewComponent } from './timeline/templates-view/templates-view.component';
+import { TimelineComponent } from './timeline/schedules/timeline.component';
+import { TasksComponent } from './timeline/tasks/tasks.component';
+import { ProjectOrganizationComponent } from './project-organization/project-organization.component';
+import { ProjectEndComponent } from './project-end/project-end.component';
+import { ProjectControlComponent } from './project-control/project-control.component';
+import { ProjectQuickstartComponent } from './project-quickstart/project-quickstart.component';
 
 const routes: Routes = [
   {
@@ -14,9 +18,25 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     canActivateChild: [AuthGuard],
     children: [
-      { path: 'timeline', component: TimelineComponent },
-      { path: 'templates', component: TemplatesViewComponent },
-      { path: 'project-checklist', component: ProjectDataComponent },
+      {
+        path: 'timeline',
+        children: [
+          { path: '', redirectTo: 'schedules', pathMatch: 'full' },
+          { path: 'tasks', component: TasksComponent },
+          { path: 'schedules', component: TimelineComponent },
+          { path: 'templates', component: TemplatesViewComponent },
+        ],
+      },
+      {
+        path: 'project-checklist',
+        children: [
+          { path: '', redirectTo: 'quickstart', pathMatch: 'full' },
+          { path: 'quickstart', component: ProjectQuickstartComponent },
+          { path: 'control', component: ProjectControlComponent },
+          { path: 'end', component: ProjectEndComponent },
+        ],
+      },
+      { path: 'project-organization', component: ProjectOrganizationComponent },
     ],
   },
 ];

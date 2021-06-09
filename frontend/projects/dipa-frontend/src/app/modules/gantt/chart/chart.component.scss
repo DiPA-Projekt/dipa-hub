@@ -175,10 +175,6 @@
   background-color: transparent;
 }
 
-mat-sidenav {
-  width: 240px;
-}
-
 mat-sidenav-content {
   background-color: white;
   height: 100%;
@@ -210,7 +206,6 @@ mat-sidenav-content {
   padding-top: 5%;
   position: static;
   overflow: hidden;
-  // text-align: center;
 }
 
 .name-container {
@@ -223,4 +218,19 @@ mat-sidenav-content {
 
 .mat-button-focus-overlay {
   background-color: transparent!important;
+}
+
+input.milestone-title {
+  font-weight: 500;
+  font-size: medium;
+}
+
+.example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.full-width {
+  width: 100%;
 }

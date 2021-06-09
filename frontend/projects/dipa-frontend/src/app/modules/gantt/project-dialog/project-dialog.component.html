@@ -1,0 +1,81 @@
+<h1 mat-dialog-title>Projekt anlegen</h1>
+<div mat-dialog-content>
+  <form [formGroup]="formGroup" (submit)="onSubmit(formGroup)">
+    <div class="col-md-6 col-lg-4 col-xl-2">
+      <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" />
+      </mat-form-field>
+    </div>
+    <div class="col-md-6 col-lg-4 col-xl-2">
+      <mat-form-field>
+        <mat-placeholder>Projekteigner</mat-placeholder>
+        <mat-select formControlName="projectOwner">
+          <mat-option *ngFor="let user of allUsers" [value]="user.id">
+            {{ user.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-md-6 col-lg-4 col-xl-2">
+      <mat-form-field>
+        <mat-label>Vorhabensart</mat-label>
+        <mat-select formControlName="operationTypeId" [(value)]="operationTypeId" required>
+          <mat-option *ngFor="let operationType of operationTypesList" [value]="operationType.id">
+            {{ operationType.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-md-6 col-lg-4 col-xl-2">
+      <mat-form-field>
+        <mat-label>Vorgehensweise</mat-label>
+        <mat-select formControlName="projectApproachId" required>
+          <mat-option
+            *ngFor="let projectApproach of filterProjectApproaches(operationTypeId)"
+            [value]="projectApproach.id"
+          >
+            {{ projectApproach.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-md-6 col-lg-4 col-xl-2">
+      <mat-form-field>
+        <mat-label>Projekttyp</mat-label>
+        <mat-select formControlName="projectType" required>
+          <mat-option *ngFor="let projectType of projectTypesList" [value]="projectType">
+            {{ projectType }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-md-6 col-lg-4 col-xl-2">
+      <mat-form-field>
+        <mat-label>Projektgröße</mat-label>
+        <mat-select #projectSizeSelect formControlName="projectSize" required>
+          <mat-select-trigger>{{ displayProjectSize(projectSizeSelect.value) }}</mat-select-trigger>
+          <mat-option *ngFor="let size of sizes" [value]="size.value" class="multi-line-option">
+            <h4 mat-line>{{ size.display }}</h4>
+            <p mat-line>{{ size.description }}</p>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-md-6 col-lg-4 col-xl-2">
+      <mat-form-field appearance="fill">
+        <mat-label>Start Datum</mat-label>
+        <mat-date-range-input [rangePicker]="durationPicker">
+          <input matStartDate placeholder="Start date" formControlName="start" [value]="startDate" />
+          <input matEndDate placeholder="End date" formControlName="end" [value]="endDate" />
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="durationPicker"></mat-datepicker-toggle>
+        <mat-date-range-picker #durationPicker></mat-date-range-picker>
+      </mat-form-field>
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions class="justify-content-end">
+  <button mat-raised-button color="primary" type="submit" (click)="onSubmit(formGroup)">Anlegen</button>
+  <button mat-button (click)="onCloseClick()">Abbrechen</button>
+</div>

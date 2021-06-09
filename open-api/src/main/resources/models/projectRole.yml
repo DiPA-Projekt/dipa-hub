@@ -1,0 +1,45 @@
+ProjectRole:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the project role
+      type: integer
+      format: int64
+      example: 2
+    name:
+      description: Name of the project role
+      type: string
+      example: "Projektleiter"
+    abbreviation:
+      description: abbreviation
+      type: string
+      example: "PL"
+    icon:
+      description: icon of the role
+      type: string
+      example: "group"
+    projectId:
+      description: Unique identifier of the project
+      type: integer
+      format: int64
+      example: 1
+    defaultRole:
+      description: Flag if this role is the default project role.
+      type: boolean
+      example: true
+    maxCount:
+      description: max count of group members.
+      type: integer
+      format: int
+      example: 2
+    permission:
+      description: User's permission
+      type: string
+      enum:
+        - "READ"
+        - "WRITE"
+      example: "READ"
+  required:
+    - id
+    - projectId
+    - permission

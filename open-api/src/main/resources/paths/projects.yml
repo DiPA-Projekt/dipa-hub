@@ -1,0 +1,20 @@
+post:
+  tags:
+    - project
+  summary: Create a new project
+  description: Create a new project
+  operationId: createProject
+  requestBody:
+    description: project's data as requestBody
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../models/projectWithUser.yml#/ProjectWithUser"
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "../models/timeline.yml#/Timeline"

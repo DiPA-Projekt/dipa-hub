@@ -1,0 +1,13 @@
+get:
+  tags:
+    - user
+  summary: Benutzerdaten
+  description: Liefert die Daten zum eingeloggten Benutzer zurück.
+  operationId: getCurrentUser
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "../models/user.yml#/User"

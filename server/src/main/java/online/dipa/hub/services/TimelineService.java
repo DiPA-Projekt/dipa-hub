@@ -52,22 +52,25 @@ public class TimelineService {
     private ProjectApproachService projectApproachService;
 
     @Autowired
-    private UserInformationService userInformationService;
-
-    @Autowired
     private TimelineTemplateService timelineTemplateService;
+    
+    @Autowired
+    private UserInformationService userInformationService;
 
     @Autowired
     private IncrementService incrementService;
 
-    public List<Timeline> getTimelines() {
+    private final static String milestoneFileName = "Projekteinrichtung";
 
-        List<Long> projectIds = userInformationService.getUserData().getProjects();
+    public List<Timeline> getTimelines() {
+        List<Long> projectIds = userInformationService.getProjectIdList();
+
         return projectRepository.findAll()
                                  .stream()
                                  .map(p -> conversionService.convert(p, Timeline.class))
                                  .filter(Objects::nonNull)
-                                 .filter(t -> projectIds.contains(t.getId())).collect(Collectors.toList());
+                                 .filter(t -> projectIds.contains(t.getId()))
+                                 .collect(Collectors.toList());
     }
 
     public ProjectEntity getProject(final Long timelineId) {
@@ -197,9 +200,9 @@ public class TimelineService {
                 OffsetDateTime oldProjectEnd = currentProject.getEndDate();
 
                 long hoursOffsetEnd = HOURS.between(oldProjectEnd, newLastMilestoneDate);
-                OffsetDateTime newProjectEnd = currentProject.getEndDate().plusHours(hoursOffsetEnd);
-
-                currentProject.setEndDate(newProjectEnd);
+                if (hoursOffsetEnd != 0) {
+                    currentProject.setEndDate(newLastMilestoneDate);
+                }
             }
         }
         
@@ -234,11 +237,12 @@ public class TimelineService {
     public void updateTimeline(final Timeline timeline) {
 
         ProjectEntity project = getProject(timeline.getId());
+        project.setProjectType(timeline.getProjectType().toString());
+        projectRepository.save(project);
 
         if (!timeline.getProjectApproachId().equals(project.getProjectApproach().getId())) {
             
             project.setProjectApproach(projectApproachService.getProjectApproachFromRepo(timeline.getProjectApproachId()));
-            project.setProjectType(timeline.getProjectType().toString());
 
             PlanTemplateEntity planTemplate = projectApproachService.getDefaultPlanTemplateEntityFromRepo(timeline.getProjectApproachId()); 
             List<MilestoneTemplateEntity> repoMilestones = new ArrayList<>(planTemplate.getMilestones());
@@ -258,14 +262,17 @@ public class TimelineService {
                 newMilestones.add(newMilestone);
             }
             
-                newMilestones = timelineTemplateService.updateMilestonesTimelineTemplate(timeline.getId(), newMilestones, planTemplate);
+            newMilestones = timelineTemplateService.updateMilestonesTimelineTemplate(timeline.getId(), newMilestones, planTemplate);
 
-                milestoneTemplateRepository.saveAll(newMilestones);
+            milestoneTemplateRepository.saveAll(newMilestones);
             project.getIncrements()
-                   .forEach(i -> incrementRepository.delete(i));
+                .forEach(i -> incrementRepository.delete(i));
                 
             project.setIncrements(null);
             projectRepository.save(project);
+
+            userInformationService.updateNewProjectRolesForTemplate(project);
+
         }
 
 
@@ -287,15 +294,13 @@ public class TimelineService {
         ProjectEntity currentProject = getProject(timelineId);
         final ProjectApproachEntity projectApproach = currentProject.getProjectApproach();
 
-        Long firstMilestoneId = Objects.requireNonNull(currentProject.getPlanTemplate()
-                                                                     .getMilestones()
-                                                                     .stream()
-                                                                     .min(Comparator.comparing(
-                                                                             MilestoneTemplateEntity::getDateOffset))
-                                                                     .orElse(null))
-                                       .getId();
+        Optional<MilestoneTemplateEntity> firstMilestone = currentProject.getPlanTemplate()
+                                                                         .getMilestones()
+                                                                         .stream()
+                                                                         .filter(m -> m.getName().equals(milestoneFileName))
+                                                                         .findFirst();
 
-        if (!milestoneId.equals(firstMilestoneId) || projectApproach == null ||
+        if (firstMilestone.isEmpty() || !milestoneId.equals(firstMilestone.get().getId()) || projectApproach == null ||
                 !projectApproach.getOperationType().getId().equals(2L)) {
             return Collections.emptyList();
         }
@@ -320,17 +325,6 @@ public class TimelineService {
         downloadFileIds.addAll(vmxtProjectFiles);
 
         return downloadFileIds;
-    }
-
-    boolean filterOperationType(PlanTemplateEntity template, final Long operationTypeId) {
-        Optional<OperationType> operationType = template.getOperationTypes()
-                                                        .stream()
-                                                        .map(p -> conversionService.convert(p, OperationType.class))
-                                                        .filter(Objects::nonNull)
-                                                        .filter(o -> o.getId().equals(operationTypeId)).findFirst();
-
-        return operationType.isPresent();
-
     }
 
     boolean filterProjectApproach(PlanTemplateEntity template, final Long projectApproachId) {

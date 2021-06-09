@@ -1,10 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
-import { switchMap } from 'rxjs/operators';
-import { ActivatedRoute, Params } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
-import { ProjectService, ProjectTask } from 'dipa-api-client';
+import { Subscription } from 'rxjs';
+import { ProjectTask } from 'dipa-api-client';
 import { MatVerticalStepper } from '@angular/material/stepper';
 
 @Component({
@@ -18,8 +16,10 @@ import { MatVerticalStepper } from '@angular/material/stepper';
     },
   ],
 })
-export class ProjectChecklistComponent implements OnInit, OnDestroy {
-  public selectedTimelineId: number;
+export class ProjectChecklistComponent implements OnDestroy {
+  @Input() public timelineId: number;
+  @Input() public checklistType: string;
+  @Input() public projectTasks: ProjectTask[];
 
   public formGroup: FormGroup;
 
@@ -50,26 +50,7 @@ export class ProjectChecklistComponent implements OnInit, OnDestroy {
     },
   ];
 
-  public projectTasks: ProjectTask[];
-
   private projectChecklistSubscription: Subscription;
-
-  public constructor(private projectService: ProjectService, public activatedRoute: ActivatedRoute) {}
-
-  public ngOnInit(): void {
-    this.projectChecklistSubscription = this.activatedRoute.parent.params
-      .pipe(
-        switchMap(
-          (params: Params): Observable<ProjectTask[]> => {
-            this.selectedTimelineId = parseInt(params.id, 10);
-            return this.projectService.getProjectTasks(this.selectedTimelineId);
-          }
-        )
-      )
-      .subscribe((data: ProjectTask[]) => {
-        this.projectTasks = data;
-      });
-  }
 
   public ngOnDestroy(): void {
     this.projectChecklistSubscription?.unsubscribe();
@@ -82,5 +63,16 @@ export class ProjectChecklistComponent implements OnInit, OnDestroy {
     const currentSelectedIndex = stepper.selectedIndex;
     stepper.selectedIndex = (currentSelectedIndex + 1) % stepper.steps.length;
     stepper.selectedIndex = currentSelectedIndex;
+  }
+
+  public getTaskTitle(task: ProjectTask): string {
+    return this.checklistType === 'permanentTasks' ? task.titlePermanentTask : task.title;
+  }
+
+  public getTaskIcon(task: ProjectTask): string {
+    if (this.checklistType === 'permanentTasks') {
+      return task.icon;
+    }
+    return task.completed ? 'done' : 'number';
   }
 }
