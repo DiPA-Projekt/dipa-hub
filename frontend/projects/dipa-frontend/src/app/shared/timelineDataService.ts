@@ -9,13 +9,15 @@ export class TimelineDataService {
   public timelines: BehaviorSubject<Timeline[]> = new BehaviorSubject<Timeline[]>(null);
   public roles: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
-  public constructor(private timelinesService: TimelinesService, private userService: UserService) {}
+  public constructor(private timelinesService: TimelinesService, private userService: UserService) {
+    this.setTimelines();
+  }
 
-  public getTimeline(): Observable<Timeline[]> {
+  public getTimelines(): Observable<Timeline[]> {
     return this.timelines;
   }
 
-  public setTimeline(): void {
+  public setTimelines(): void {
     this.timelinesService.getTimelines().subscribe({
       next: (data: Timeline[]) => {
         this.timelines.next(data);

@@ -35,7 +35,13 @@ export class AuthenticationService {
     return user && typeof user.organisationRoles !== 'undefined' ? user.organisationRoles : [];
   }
 
-  public getProjectRoles(): ProjectRole[] {
+  public getProjectRolesAfterLoggedIn(): ProjectRole[] {
+    const user: User = this.userData.getValue();
+    return user && typeof user.projectRoles !== 'undefined' ? user.projectRoles : [];
+  }
+
+  public async getProjectRoles(): Promise<ProjectRole[]> {
+    await this.loadUserProfile();
     const user: User = this.userData.getValue();
     return user && typeof user.projectRoles !== 'undefined' ? user.projectRoles : [];
   }
@@ -60,7 +66,7 @@ export class AuthenticationService {
     this.userData.next(null);
   }
 
-  private loadUserProfile() {
+  public loadUserProfile() {
     return new Promise((resolve, reject) => {
       this.userService.getCurrentUser().subscribe(
         (data: User) => {

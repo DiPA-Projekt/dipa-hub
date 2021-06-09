@@ -15,6 +15,7 @@ import { RootComponent } from './root/root.component';
 import { ProfileSettingsMenuComponent } from './menus/profile-settings-menu/profile-settings-menu.component';
 import { ProjectDialogComponent } from './modules/gantt/project-dialog/project-dialog.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TimelineDataService } from '../app/shared/timelineDataService';
 
 @NgModule({
   declarations: [AppComponent, GanttMenuComponent, RootComponent, ProfileSettingsMenuComponent, ProjectDialogComponent],
@@ -36,7 +37,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
       },
     }),
   ],
-  providers: [NavService, { provide: LOCALE_ID, useValue: 'de-DE' }],
+  providers: [NavService, TimelineDataService, { provide: LOCALE_ID, useValue: 'de-DE' }],
   bootstrap: [AppComponent],
 })
 export class AppModule {
