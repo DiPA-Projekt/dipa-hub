@@ -7,24 +7,65 @@ Feature: Allgemeine Funktionalitäten des Zeitplans
     And Ich klicke auf den Text "Meine Projekte"
     And Ich klicke auf den Text "Testprojekt"
     And Ich navigiere zu "Unsere Termine"
+    And Ich warte 2 Sekunden
 
   Scenario: Überprüfung der Elemente
-    Then sollte die "Projekttyp" Selectbox "internes Projekt" beinhalten
-    And sollte die "Vorhabensart" Selectbox "Softwareneuentwicklung" beinhalten
-    And sollte die "Vorgehensweise" Selectbox "VMXT ITZBund agil" beinhalten
-    And sollten 8 Meilensteine existieren
-    When Ich auf den Meilenstein "Projekteinrichtung" klicke
-    Then sollte ich den Text "Fällig am 24.4.2021" sehen
-    And sollte ich den Text "PHB-Vorlage Internes Projekt (Agile SWE)" sehen
-    And sollte ich den Text "ITZBund Risikoliste" sehen
-    And sollte ich den Text "Trackingtabelle externe Dienstleistung" sehen
-    And sollte ich den Text "QS-Handbuch" sehen
-    When Ich schließe die Meilensteindetails
-    Then sollte ich den Text "Fällig am 24.4.2021" nicht sehen
+    # Standardansicht
+    Then sollte die Zeitachse "Apr" beinhalten
+    And sollte die Zeitachse "Mai" beinhalten
+    And sollte die Zeitachse "Jun" beinhalten
+    And sollte die Zeitachse "Jul" beinhalten
+    And sollte die Zeitachse "Aug" beinhalten
+    And sollte die Zeitachse "Sep" beinhalten
+    And sollte die Zeitachse "Okt" beinhalten
+    And sollte die Zeitachse "Nov" beinhalten
+    And sollte die Zeitachse "Dez" beinhalten
+    And sollte die Zeitachse "2022" beinhalten
+
+    When Ich klicke auf den Button "Jahre"
+    Then sollte die Zeitachse "2022" beinhalten
+
+    When Ich klicke auf den Button "Monate"
+    Then sollte die Zeitachse "April" beinhalten
+    And sollte die Zeitachse "Mai" beinhalten
+    And sollte die Zeitachse "Juni" beinhalten
+    And sollte die Zeitachse "Juli" beinhalten
+    And sollte die Zeitachse "August" beinhalten
+    And sollte die Zeitachse "September" beinhalten
+    And sollte die Zeitachse "Oktober" beinhalten
+    And sollte die Zeitachse "November" beinhalten
+    And sollte die Zeitachse "Dezember" beinhalten
+    And sollte die Zeitachse "Jan 22" beinhalten
+
+    When Ich klicke auf den Button "Wochen"
+    Then sollte die Zeitachse "KW 09" beinhalten
+    And sollte die Zeitachse "KW 13" beinhalten
+    And sollte die Zeitachse "KW 17" beinhalten
+    And sollte die Zeitachse "KW 22" beinhalten
+    And sollte die Zeitachse "KW 26" beinhalten
+    And sollte die Zeitachse "KW 30" beinhalten
+    And sollte die Zeitachse "KW 35" beinhalten
+    And sollte die Zeitachse "KW 39" beinhalten
+    And sollte die Zeitachse "KW 44" beinhalten
+    And sollte die Zeitachse "KW 48" beinhalten
+    And sollte die Zeitachse "KW 52" beinhalten
+
+    When Ich klicke auf den Button "Tage"
+    Then sollte die Zeitachse "01. Mär" beinhalten
+    And sollte die Zeitachse "01. Mai" beinhalten
+    And sollte die Zeitachse "01. Jun" beinhalten
+    And sollte die Zeitachse "01. Jul" beinhalten
+    And sollte die Zeitachse "01. Aug" beinhalten
+    And sollte die Zeitachse "01. Sep" beinhalten
+    And sollte die Zeitachse "01. Okt" beinhalten
+    And sollte die Zeitachse "01. Nov" beinhalten
+    And sollte die Zeitachse "01. Dez" beinhalten
+    And sollte die Zeitachse "01.01.22" beinhalten
 
   Scenario: Meilenstein hinzufügen
     When Ich klicke auf den Text "Meilenstein hinzufügen"
     Then sollte ich den Text "Meilenstein anlegen" sehen
+
     When Ich fülle den Namen "Test Meilenstein" für den Meilenstein aus
     And Ich wähle den heutigen Tag im Kalender aus
     And Ich klicke auf den Text "Apply"
