@@ -41,6 +41,7 @@ import { ZoomBehavior } from 'd3-zoom';
 import StatusEnum = Milestone.StatusEnum;
 import { MilestoneDialogComponent } from './milestone-dialog/milestone-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import Utils from '../../../shared/utils';
 
 @Component({
   selector: 'app-chart',
@@ -305,7 +306,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   getDate(date: string): any {
     const dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
 
-    return new Date(date).toLocaleDateString('de-DE', dateOptions);
+    return Utils.createDateAtMidnight(date).toLocaleDateString('de-DE', dateOptions);
   }
 
   changeStatus(event: MatRadioChange): void {

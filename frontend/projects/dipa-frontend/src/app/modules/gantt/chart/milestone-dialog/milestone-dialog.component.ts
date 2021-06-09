@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Milestone, MilestonesService, Timeline } from 'dipa-api-client';
 import StatusEnum = Milestone.StatusEnum;
+import Utils from '../../../../shared/utils';
 
 @Component({
   selector: 'app-milestone-dialog',
@@ -36,6 +37,9 @@ export class MilestoneDialogComponent implements OnInit {
 
   public onSubmit(formGroup: FormGroup): void {
     if (formGroup.valid) {
+      console.log(formGroup.value);
+      // formGroup.value.date = Utils.createDateAtMidnight(formGroup.value.date);
+      console.log(new Date(formGroup.value.date).toISOString());
       this.milestoneService.createMilestone(this.timeline.id, formGroup.value).subscribe({
         next: () => formGroup.reset(formGroup.value),
         error: null,

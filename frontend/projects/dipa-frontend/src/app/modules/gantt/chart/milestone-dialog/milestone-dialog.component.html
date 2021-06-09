@@ -28,6 +28,7 @@
           [matDatepicker]="datepicker"
           formControlName="date"
           required
+          ng-model-options="{timezone: 'utc'}"
         />
         <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
         <mat-datepicker #datepicker>

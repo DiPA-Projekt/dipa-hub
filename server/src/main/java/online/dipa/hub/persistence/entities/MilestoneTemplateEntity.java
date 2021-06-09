@@ -1,6 +1,7 @@
 package online.dipa.hub.persistence.entities;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import javax.persistence.Basic;
 import javax.persistence.Cacheable;
@@ -61,7 +62,7 @@ public class MilestoneTemplateEntity extends BaseEntity {
 
     public MilestoneTemplateEntity(Milestone milestone) {
         this.name = milestone.getName();
-        this.date = milestone.getDate();
+        this.date = milestone.getDate().withOffsetSameInstant(ZoneOffset.UTC);
         this.status = milestone.getStatus().toString();
         this.isMaster = false;
     }
@@ -83,7 +84,7 @@ public class MilestoneTemplateEntity extends BaseEntity {
     }
     
     public OffsetDateTime getDate() {
-        return date;
+        return date.withOffsetSameInstant(ZoneOffset.UTC);
     }
 
     public void setDate(final OffsetDateTime date) {

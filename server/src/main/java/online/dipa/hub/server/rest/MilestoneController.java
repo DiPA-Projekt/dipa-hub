@@ -23,6 +23,7 @@ public class MilestoneController implements MilestonesApi{
     @Override
     public ResponseEntity<List<Milestone>> getMilestonesForTimeline(final Long timelineId) {
         final List<Milestone> milestoneList = milestoneService.getMilestonesForTimeline(timelineId);
+        System.out.println(milestoneList);
         return ResponseEntity.ok(milestoneList);
     }
 

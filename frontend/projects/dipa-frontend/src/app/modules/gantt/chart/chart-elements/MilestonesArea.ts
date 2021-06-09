@@ -1,11 +1,10 @@
 import * as d3 from 'd3';
 import { parseSvg } from 'd3-interpolate/src/transform/parse';
 import { Timeline, Milestone } from 'dipa-api-client';
-
 import { IChartElement } from './IChartElement';
-
 import ProjectTypeEnum = Timeline.ProjectTypeEnum;
 import { ScaleTime } from 'd3-scale';
+import Utils from '../../../../shared/utils';
 
 interface SvgParse {
   translateX: number;
@@ -123,8 +122,11 @@ export class MilestonesArea implements IChartElement {
         );
       })
       .on('start', (event: d3.D3DragEvent<any, any, Milestone>) => {
-        this.initMilestoneDate = new Date(this.data.find((d: Milestone) => d.id === event.subject.id).date);
-        this.initMilestoneDate.setHours(0, 0, 0, 0);
+        this.initMilestoneDate = Utils.createDateAtMidnight(
+          this.data.find((d: Milestone) => d.id === event.subject.id).date
+        );
+        // this.initMilestoneDate = new Date(this.data.find((d: Milestone) => d.id === event.subject.id).date);
+        // this.initMilestoneDate.setHours(0, 0, 0, 0);
       })
       .on('end', (event: d3.D3DragEvent<any, any, Milestone>) => {
         this.adjustMilestonePosition(event.subject);
@@ -146,8 +148,10 @@ export class MilestonesArea implements IChartElement {
       .attr('class', 'milestoneEntry')
       .attr('id', (d: Milestone) => `milestoneEntry_${d.id}`)
       .attr('transform', (d: Milestone) => {
-        const milestoneDate = new Date(d.date);
-        milestoneDate.setHours(0, 0, 0, 0);
+        const milestoneDate = Utils.createDateAtMidnight(d.date);
+        console.log(milestoneDate);
+        // const milestoneDate = new Date(d.date);
+        // milestoneDate.setHours(0, 0, 0, 0);
         return `translate(${offset.left + parseInt(this.xScale(milestoneDate), 10)},${
           offset.top + this.elementHeight / 2
         })`;
@@ -223,8 +227,10 @@ export class MilestonesArea implements IChartElement {
       .ease(d3.easeCubic)
       .duration(animationDuration)
       .attr('transform', (d: Milestone) => {
-        const milestoneDate = new Date(d.date);
-        milestoneDate.setHours(0, 0, 0, 0);
+        // const milestoneDate = new Date(d.date);
+        // milestoneDate.setHours(0, 0, 0, 0);
+        const milestoneDate = Utils.createDateAtMidnight(d.date);
+
         return `translate(${offset.left + parseInt(this.xScale(milestoneDate), 10)},${
           offset.top + this.elementHeight / 2
         })`;
@@ -329,7 +335,8 @@ export class MilestonesArea implements IChartElement {
 
   public tooltipContent(data: Milestone): any {
     let tooltip =
-      `${data.name}<br>` + `Fällig: ${new Date(data.date).toLocaleDateString('de-DE', this.dateOptions)}<br>`;
+      `${data.name}<br>` +
+      `Fällig: ${Utils.createDateAtMidnight(data.date).toLocaleDateString('de-DE', this.dateOptions)}<br>`;
     // alle Meilensteine der agilen Softwareentwicklung im ITZBund
     if (data.id >= 22 && data.id <= 27) {
       let projectType = '';
@@ -359,8 +366,9 @@ export class MilestonesArea implements IChartElement {
 
     const milestone = dataGroup.select(`#milestoneEntry_${milestoneData.id}`);
 
-    const milestoneDate = new Date(milestoneData.date);
-    milestoneDate.setHours(0, 0, 0, 0);
+    // const milestoneDate = new Date(milestoneData.date);
+    // milestoneDate.setHours(0, 0, 0, 0);
+    const milestoneDate = Utils.createDateAtMidnight(milestoneData.date);
 
     const xValueNew = parseInt(this.xScale(milestoneDate), 10);
 
