@@ -38,6 +38,7 @@ export class GanttMenuComponent implements OnInit, OnDestroy {
             .forEach((role) => userProjectIds.push(role.projectId));
           if (this.timelines !== null) {
             this.timelineData = this.timelines.filter((t) => userProjectIds.includes(t.id));
+            this.timelineData.sort((a, b) => a.name.localeCompare(b.name));
           }
         },
         error: null,
