@@ -28,7 +28,6 @@ import { FlexModule } from '@angular/flex-layout';
 import { ProjectRoleComponent } from './project-role/project-role.component';
 import { MilestoneDialogComponent } from './chart/milestone-dialog/milestone-dialog.component';
 import { TasksComponent } from './timeline/tasks/tasks.component';
-import { TimelineDataService } from '../../shared/timelineDataService';
 
 @NgModule({
   declarations: [
@@ -66,6 +65,6 @@ import { TimelineDataService } from '../../shared/timelineDataService';
     SharedModule,
     FlexModule,
   ],
-  providers: [TimelineDataService],
+  providers: [],
 })
 export class GanttModule {}

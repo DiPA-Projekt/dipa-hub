@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { AuthenticationService } from '../../../authentication.service';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import {
   OperationType,
   OperationTypesService,
@@ -15,6 +16,7 @@ import ProjectTypeEnum = Timeline.ProjectTypeEnum;
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { forkJoin, Subscription } from 'rxjs';
+import { TimelineDataService } from '../../../shared/timelineDataService';
 
 interface ProjectSize {
   value: string;
@@ -64,13 +66,18 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
   private itzBundSmallProjectApproachId = 7;
   private itzBundSoftwareDevelopmentId = 2;
 
+  private horizontalPosition: MatSnackBarHorizontalPosition = 'center';
+  private verticalPosition: MatSnackBarVerticalPosition = 'top';
+
   public constructor(
     public dialogRef: MatDialogRef<ProjectDialogComponent>,
+    private snackBar: MatSnackBar,
     private authenticationService: AuthenticationService,
     private operationTypesService: OperationTypesService,
     private projectApproachesService: ProjectApproachesService,
     private projectService: ProjectService,
     private userService: UserService,
+    private timelineDataService: TimelineDataService,
     private fb: FormBuilder,
     private router: Router
   ) {}
@@ -107,11 +114,15 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
           project: formGroup.value,
           projectOwner: this.filterProjectOwner(formGroup.value.projectOwner),
         })
-        .subscribe((newTimeline: Timeline) => {
-          if (newTimeline) {
-            this.router.navigate([`/gantt/${newTimeline.id}/project-checklist`]).then(() => window.location.reload());
-          }
-          this.dialogRef.close();
+        .subscribe({
+          next: (newTimeline: Timeline) => {
+            this.timelineDataService.setTimelines();
+            this.openSnackBar(newTimeline);
+          },
+          error: null,
+          complete: () => {
+            this.dialogRef.close();
+          },
         });
     } else {
       this.inputNotation = true;
@@ -132,6 +143,18 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
 
   private filterProjectOwner(projectOwnerId: number): User {
     return this.allUsers.find((user) => user.id === projectOwnerId);
+  }
+
+  private openSnackBar(newTimeline: Timeline): void {
+    const snackBarRef = this.snackBar.open(`Das Projekt ${newTimeline.name} wurde erstellt.`, 'Zu dem Projekt', {
+      horizontalPosition: this.horizontalPosition,
+      verticalPosition: this.verticalPosition,
+      duration: 4000,
+      panelClass: ['panel'],
+    });
+    snackBarRef.onAction().subscribe(() => {
+      this.router.navigate([`/gantt/${newTimeline.id}/project-checklist/quickstart`]);
+    });
   }
 
   private setReactiveForm(): void {
