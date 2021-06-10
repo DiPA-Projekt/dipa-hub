@@ -52,10 +52,19 @@ const AXISCONTAINS = function (text) {
     .assert.elementPresent('//*[local-name()="svg"]//*[local-name()="text" and text()="' + text + '"]');
 };
 
+const DRAGANDDROPMILESTONETODATE = function (milestoneName, dateString) {
+  browser.moveToElement(
+    'xpath', '//*[local-name()="svg"]//*[local-name()="tspan" and text()="' + milestoneName + '"]/parent::*/parent::*/*[local-name()="path"]', 0, 0);
+  // browser.mouseButtonDown(0);
+  // browser.moveToElement('yourLocator', '#endingElement', 0, 0);
+  // browser.mouseButtonUp(0);
+};
+
 module.exports = {
   closeMilestoneDescription: CLOSEMILESTONEDESCRIPTION,
   createNewMilestone: CREATENEWMILESTONE,
   fillMilestoneName: FILLMILESTONENAME,
   pickTodaysDate: PICKTODAYSDATE,
   axisContains: AXISCONTAINS,
+  dragAndDropMilestoneToDate: DRAGANDDROPMILESTONETODATE,
 };
