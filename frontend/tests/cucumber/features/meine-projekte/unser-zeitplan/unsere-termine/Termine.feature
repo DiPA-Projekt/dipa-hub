@@ -6,8 +6,8 @@ Feature: Allgemeine Funktionalitäten des Zeitplans
     When Ich melde mich als "MEYER" an
     And Ich klicke auf den Text "Meine Projekte"
     And Ich klicke auf den Text "Testprojekt"
-    And Ich navigiere zu "Unsere Termine"
     And Ich warte 2 Sekunden
+    And Ich navigiere zu "Unsere Termine"
 
   Scenario: Überprüfung der Elemente
     # Standardansicht
@@ -79,6 +79,17 @@ Feature: Allgemeine Funktionalitäten des Zeitplans
     Then sollte der Meilenstein "Test Meilenstein" nicht existieren
     And sollten 8 Meilensteine existieren
 
+  # Noch nicht ganz implementiert
+  # Scenario: Meilenstein verschieben
+  #   When Ich auf den Meilenstein "Projekteinrichtung" klicke
+  #   Then sollte ich den Text "Fällig am 24.4.2021" sehen
+
+  #   When Ich verschiebe den Meilenstein "Projekteinrichtung" zum "29.4.2021"
+  #   Then sollte ich den Text "Fällig am 24.4.2021" sehen
+
+  #   When Ich verschiebe den Meilenstein "Projekteinrichtung" zum "29.4.2021"
+  #   Then sollte ich den Text "Fällig am 24.4.2021" sehen
+  #   And Ich melde mich ab
 
 #Kann nur lokal funktionieren. Sollte dann in der CI angepasst werden
 # Scenario: Export Kalender

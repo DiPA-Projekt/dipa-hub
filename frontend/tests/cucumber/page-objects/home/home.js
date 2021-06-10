@@ -4,7 +4,16 @@ const ELEMENTS = {
   txt_unsereReiseDurchsProjekt: '//*[contains(text(), "Unsere Reise durchs Projekt")]',
   txt_unserZeitplan: '//*[contains(text(), "Unser Zeitplan")]',
   txt_favoritenLinks: '//*[contains(text(), "Favoriten-Links")]',
+  icon_profil: '//*[contains(text(), "account_circle")]',
+  txt_logout: '//*[contains(text(), "Ausloggen")]'
 };
+
+const logout = function () {
+  return client
+    .click('xpath', ELEMENTS.icon_profil)
+    .click('xpath', ELEMENTS.txt_logout)
+    .assert.elementPresent('.card-pf');
+}
 
 const navigate = function (menu) {
   switch (menu) {
@@ -23,6 +32,7 @@ const navigate = function (menu) {
       } else {
         client
           .click('xpath', elementContainsText('Home'))
+          .pause(1000)
           .click('xpath', elementContainsText(menu));
       }
       break;
@@ -34,7 +44,8 @@ const navigate = function (menu) {
       client.elements('xpath', elementContainsText(menu), function (result) {
         // Wenn die Menüs unter "Unsere Reise durchs Projekt" nicht sichtbar sind, dann erst auf "Unsere Reise durchs Projekt" klicken
         if (result.status == 0) {
-          client.click('xpath', ELEMENTS.txt_unsereReiseDurchsProjekt);
+          client.click('xpath', ELEMENTS.txt_unsereReiseDurchsProjekt)
+          .pause(1000);
         }
         client
           .waitForElementVisible('xpath', elementContainsText(menu), 3000)
@@ -48,7 +59,8 @@ const navigate = function (menu) {
       client.elements('xpath', elementContainsText(menu), function (result) {
         // Wenn die Menüs UNTER "Unser Zeitplan" nicht sichtbar sind, dann erst auf "Unser Zeitplan" klicken
         if (result.status == 0) {
-          client.click('xpath', ELEMENTS.txt_unserZeitplan);
+          client.click('xpath', ELEMENTS.txt_unserZeitplan)
+          .pause(1000);
         }
         client
           .waitForElementVisible('xpath', elementContainsText(menu), 3000)
@@ -70,7 +82,8 @@ const navigate = function (menu) {
       client.elements('xpath', elementContainsText(menu), function (result) {
         // Wenn die Menüs UNTER "Favoriten-Links" nicht sichtbar sind, dann erst auf "Favoriten-Links" klicken
         if (result.status == 0) {
-          client.click('xpath', ELEMENTS.txt_favoritenLinks);
+          client.click('xpath', ELEMENTS.txt_favoritenLinks)
+          .pause(1000);
         }
         client
           .waitForElementVisible('xpath', elementContainsText(menu), 3000)
@@ -90,4 +103,5 @@ const elementContainsText = function (text) {
 
 module.exports = {
   navigate: navigate,
+  logout: logout
 };
