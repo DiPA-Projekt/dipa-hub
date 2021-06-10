@@ -25,10 +25,14 @@ When('Ich wähle den heutigen Tag im Kalender aus', () => {
   return pickTodaysDate();
 });
 
+When('Ich verschiebe den Meilenstein {string} zum {string}', (milestoneName, dateString) => {
+
+})
+
 // ********** Asserts **********
 
 // Checkt was in der Selectbox ausgewählt ist
-Then('sollte die {string} Selectbox {string} beinhalten', (selectboxTitle, selectboxValue) => {
+Then('sollte in der {string} Selectbox der Wert {string} ausgewählt sein', (selectboxTitle, selectboxValue) => {
   //xpath sucht nach einem mat-select Element, welches ein Geschwister-Element mit einem bestimmten Text sucht
   return client.waitForElementVisible(
     'xpath',
