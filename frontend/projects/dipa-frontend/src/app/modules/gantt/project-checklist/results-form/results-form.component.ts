@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
 import { OptionEntry, Result } from 'dipa-api-client';
 import ResultTypeEnum = Result.ResultTypeEnum;
-import { MatSelectChange } from '@angular/material/select';
 
 interface SelectOption {
   value: string;
@@ -22,12 +21,11 @@ interface SelectOptionGroup {
 export class ResultsFormComponent implements OnInit {
   @Input() public formData: FormArray;
   @Input() public statusList: OptionEntry[];
-  @Input() public showFieldsForm: FormControl;
-  @Input() public entries: SelectOption[];
-  @Input() public formFieldGroups: SelectOptionGroup[];
   @Input() public selectedFields: string[];
   @Output() public showSelectionChanged = new EventEmitter();
   @Output() public dataChanged = new EventEmitter();
+
+  public formFieldGroups: SelectOptionGroup[] = [];
 
   public currentResultType: ResultTypeEnum;
 
@@ -35,49 +33,10 @@ export class ResultsFormComponent implements OnInit {
 
   public constructor(public formGroupDirective: FormGroupDirective, private fb: FormBuilder) {}
 
-  public static getResultTypeName(resultType: ResultTypeEnum): string {
-    let resultTypeName: string;
-
-    switch (resultType) {
-      case 'TYPE_STD':
-        resultTypeName = 'Standard';
-        break;
-      case 'TYPE_CONTACT_PERS':
-        resultTypeName = 'Kontaktperson';
-        break;
-      case 'TYPE_SUBTASK':
-        resultTypeName = 'Aufgabe';
-        break;
-      case 'TYPE_ELBE_SC':
-        resultTypeName = 'Einkaufswagen';
-        break;
-      case 'TYPE_RISK':
-        resultTypeName = 'Risiko';
-        break;
-      case 'TYPE_SINGLE_APPOINTMENT':
-        resultTypeName = 'Termin';
-        break;
-      case 'TYPE_APPT_SERIES':
-        resultTypeName = 'Terminserie';
-        break;
-      case 'TYPE_TEAM_PERS':
-        resultTypeName = 'Team';
-        break;
-      case 'TYPE_LINK':
-        resultTypeName = 'Link';
-        break;
-      default:
-        resultTypeName = '';
-    }
-    return resultTypeName;
-  }
-
   public ngOnInit(): void {
     this.formGroup = this.formGroupDirective.control;
 
-    this.setFormFieldGroups();
-    const currentShowFields = this.showFieldsForm.value as string[];
-    this.showFieldsForm.setValue([...currentShowFields, ...this.initSelectedFields()]);
+    this.initSelectedFields();
   }
 
   public isValidUrl(formField: FormControl): boolean {
@@ -101,7 +60,12 @@ export class ResultsFormComponent implements OnInit {
     return this.formGroup.get(['results']) as FormArray;
   }
 
+  public get entriesArray(): FormArray {
+    return this.formGroup.get('entries') as FormArray;
+  }
+
   public addResult(resultType: ResultTypeEnum): void {
+    this.initSelectedFields();
     this.resultsArray.push(this.getEmptyResult(resultType));
   }
 
@@ -158,23 +122,6 @@ export class ResultsFormComponent implements OnInit {
       .reduce((acc, val) => acc + val, 0);
   }
 
-  public changeShowSelection(event: MatSelectChange): void {
-    this.selectedFields = event.value as string[];
-
-    for (const result of this.resultsArray.controls) {
-      const formFieldsArray = result.get('formFields') as FormArray;
-
-      for (const ffEntry of formFieldsArray.controls) {
-        const currentKey = ffEntry.get('key').value as string;
-        const showItem = this.selectedFields.includes(`formFields.${currentKey}`);
-        ffEntry.get('show').setValue(showItem);
-      }
-    }
-
-    this.showSelectionChanged.emit(event);
-    this.dataChanged.emit();
-  }
-
   private getFilteredFormControls(filterOptions: { key: string; value: string }): FormGroup[] {
     const result: FormGroup[] = [];
     for (const resultControl of this.resultsArray.controls) {
@@ -195,6 +142,8 @@ export class ResultsFormComponent implements OnInit {
   }
 
   private initSelectedFields() {
+    this.selectedFields = [];
+
     const resultFormGroup = this.resultsArray.controls[0] as FormGroup;
 
     if (resultFormGroup !== undefined) {
@@ -209,34 +158,6 @@ export class ResultsFormComponent implements OnInit {
     }
 
     return this.selectedFields;
-  }
-
-  private setFormFieldGroups(): void {
-    const groupValues: { value: string; viewValue: string }[] = [];
-    const resultFormGroup = this.resultsArray.controls[0] as FormGroup;
-
-    if (resultFormGroup !== undefined) {
-      const formFieldsArray = this.getFormFieldsArray(resultFormGroup);
-      if (formFieldsArray?.length > 0) {
-        for (const formFieldEntry of formFieldsArray.controls) {
-          if (formFieldEntry.get('show').value !== null) {
-            groupValues.push({
-              value: `formFields.${formFieldEntry.get('key').value as string}`,
-              viewValue: formFieldEntry.get('label').value as string,
-            });
-          }
-        }
-      }
-
-      const resultTypeName = ResultsFormComponent.getResultTypeName(resultFormGroup.get('resultType').value);
-
-      if (!this.formFieldGroups.find((formField) => formField.name === resultTypeName)) {
-        this.formFieldGroups.push({
-          name: resultTypeName,
-          fields: groupValues,
-        });
-      }
-    }
   }
 
   private getEmptyResult(resultType: ResultTypeEnum): FormGroup {

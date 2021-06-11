@@ -1,14 +1,11 @@
 <form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup)">
+  <app-show-fields-menu (selectionChange)="changeShowSelection()"></app-show-fields-menu>
   <div class="entries" formArrayName="entries">
     <ng-container *ngFor="let entry of entriesArray.controls; let i = index">
       <ng-container [formGroupName]="i">
         <ng-container [ngSwitch]="entry.get('controlType')?.value">
           <ng-container *ngSwitchCase="'TEXTBOX'">
-            <mat-form-field
-              *ngIf="entry.get('show')?.value"
-              [hintLabel]="entry.get('hint')?.value"
-              [ngClass]="getFormFieldClass(entry)"
-            >
+            <mat-form-field *ngIf="entry.get('show')?.value" [hintLabel]="entry.get('hint')?.value">
               <mat-label>{{ entry.get('label')?.value }}</mat-label>
               <mat-icon matPrefix *ngIf="entry.get('type')?.value === 'URL'" class="matPrefixIcon"> link </mat-icon>
               <input
@@ -41,11 +38,7 @@
             </mat-form-field>
           </ng-container>
           <ng-container *ngSwitchCase="'TEXTAREA'">
-            <mat-form-field
-              [hintLabel]="entry.get('hint')?.value"
-              *ngIf="entry.get('show')?.value"
-              [ngClass]="getFormFieldClass(entry)"
-            >
+            <mat-form-field [hintLabel]="entry.get('hint')?.value" *ngIf="entry.get('show')?.value">
               <mat-label>{{ entry.get('label')?.value }}</mat-label>
               <textarea
                 matInput
@@ -61,11 +54,7 @@
             </mat-form-field>
           </ng-container>
           <ng-container *ngSwitchCase="'DROPDOWN'">
-            <mat-form-field
-              [hintLabel]="entry.get('hint')?.value"
-              *ngIf="entry.get('show')?.value"
-              [ngClass]="getFormFieldClass(entry)"
-            >
+            <mat-form-field [hintLabel]="entry.get('hint')?.value" *ngIf="entry.get('show')?.value">
               <mat-label>{{ entry.get('label')?.value }}</mat-label>
               <mat-select formControlName="value">
                 <mat-option *ngFor="let opt of entry.get('options')?.value" [value]="opt.key">
@@ -81,11 +70,7 @@
 
   <app-results-form
     [formData]="resultsArray"
-    [showFieldsForm]="showFieldsForm"
-    [entries]="entryOptions"
-    [formFieldGroups]="formFieldGroups"
     [selectedFields]="selectedFields"
-    (showSelectionChanged)="changeShowSelection($event)"
     (dataChanged)="onSubmit(formGroup)"
   ></app-results-form>
 

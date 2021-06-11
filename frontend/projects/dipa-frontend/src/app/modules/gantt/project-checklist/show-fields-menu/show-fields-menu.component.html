@@ -1,29 +1,62 @@
-<button mat-icon-button [matMenuTriggerFor]="menu" class="roundedButton" aria-label="Example icon-button with a menu">
+<button
+  mat-button
+  type="button"
+  [matMenuTriggerFor]="menu"
+  class="roundedButton"
+  style="float: right; margin-top: 20px"
+  aria-label="Felder auswählen"
+>
   <mat-icon>more_vert</mat-icon>
 </button>
 
 <mat-menu #menu="matMenu" style="padding: 10px">
-  <section mat-menu-item disabled (click)="$event.stopPropagation()">Felder auswählen:</section>
-  <section mat-menu-item>
-    <mat-select [formControl]="showFieldsForm" (selectionChange)="this.selectionChange.emit($event)" multiple>
-      <mat-option *ngFor="let entry of entries" [value]="entry.value">
-        {{ entry.viewValue }}
-      </mat-option>
-      <mat-optgroup *ngFor="let group of formFieldGroups" [label]="group.name">
-        <mat-option *ngFor="let formField of group.fields" [value]="formField.value">
-          {{ formField.viewValue }}
-        </mat-option>
-      </mat-optgroup>
-    </mat-select>
-  </section>
+  <mat-list style="padding-top: 0">
+    <mat-list-item
+      (click)="$event.stopPropagation()"
+      style="color: rgba(0, 0, 0, 0.54); font-size: inherit; font-weight: 500"
+      >Felder auswählen:</mat-list-item
+    >
+  </mat-list>
+  <mat-selection-list
+    (click)="$event.stopPropagation()"
+    [(ngModel)]="selectedEntries"
+    (ngModelChange)="this.changeShowSelectionEntries($event)"
+    color="primary"
+    style="padding-top: 0"
+  >
+    <mat-list-option
+      *ngFor="let entry of entries"
+      [value]="entry.value"
+      checkboxPosition="before"
+      style="font-size: inherit; height: 3em"
+    >
+      {{ entry.viewValue }}
+    </mat-list-option>
+  </mat-selection-list>
 
-  <!--          <section>-->
-  <!--          <mat-checkbox (click)="$event.stopPropagation()">Check Me</mat-checkbox>-->
-  <!--          </section>-->
-  <!--          <section>-->
-  <!--            <mat-checkbox (click)="$event.stopPropagation()">Check Me</mat-checkbox>-->
-  <!--          </section>-->
-  <!--          <section>-->
-  <!--              <mat-checkbox (click)="$event.stopPropagation()">Check Me</mat-checkbox>-->
-  <!--          </section>-->
+  <ng-container *ngFor="let group of formFieldGroups">
+    <mat-list style="padding-top: 0">
+      <mat-list-item
+        (click)="$event.stopPropagation()"
+        style="color: rgba(0, 0, 0, 0.54); font-size: inherit; font-weight: 500"
+        >{{ group.name }}</mat-list-item
+      >
+    </mat-list>
+    <mat-selection-list
+      (click)="$event.stopPropagation()"
+      [(ngModel)]="selectedFields"
+      (ngModelChange)="this.changeShowSelectionFields($event)"
+      color="primary"
+      style="padding-top: 0"
+    >
+      <mat-list-option
+        *ngFor="let formField of group.fields"
+        [value]="formField.value"
+        checkboxPosition="before"
+        style="font-size: inherit; height: 3em"
+      >
+        {{ formField.viewValue }}
+      </mat-list-option>
+    </mat-selection-list>
+  </ng-container>
 </mat-menu>
