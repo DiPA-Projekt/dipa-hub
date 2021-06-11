@@ -100,11 +100,11 @@ export class ResultsFormComponent implements OnInit {
     this.formGroup.get(path).setValue(valueInput.value);
   }
 
-  public getFormFieldClass(formField: FormGroup | AbstractControl): string {
-    return formField.get('controlType')?.value === 'TEXTAREA' || formField.get('type')?.value === 'URL'
-      ? 'full-width'
-      : 'full-width';
-  }
+  // public getFormFieldClass(formField: FormGroup | AbstractControl): string {
+  //   return formField.get('controlType')?.value === 'TEXTAREA' || formField.get('type')?.value === 'URL'
+  //     ? 'full-width'
+  //     : 'full-width';
+  // }
 
   public calculatePT(filterOptions: { key: string; value: string }): number {
     const filteredFormControls = this.getFilteredFormControls(filterOptions);
