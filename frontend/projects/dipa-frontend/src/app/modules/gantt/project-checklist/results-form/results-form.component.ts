@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
 import { OptionEntry, Result } from 'dipa-api-client';
 import ResultTypeEnum = Result.ResultTypeEnum;
 
