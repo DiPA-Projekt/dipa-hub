@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Project, ProjectService } from 'dipa-api-client';
+import { TimelineDataService } from '../../../shared/timelineDataService';
 
 interface ProjectSize {
   value: string;
@@ -43,6 +44,7 @@ export class ProjectDataComponent implements OnInit, OnDestroy, OnChanges {
 
   public constructor(
     private projectService: ProjectService,
+    private timelineDataService: TimelineDataService,
     public activatedRoute: ActivatedRoute,
     public fb: FormBuilder
   ) {
@@ -92,6 +94,7 @@ export class ProjectDataComponent implements OnInit, OnDestroy, OnChanges {
         form.reset(form.value);
         // in the future should be emitted only if projectSize field changes
         this.projectSizeChanged.emit();
+        this.timelineDataService.setTimelines();
       },
       error: null,
       complete: () => void 0,

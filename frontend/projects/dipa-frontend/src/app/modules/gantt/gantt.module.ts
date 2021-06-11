@@ -65,5 +65,6 @@ import { TasksComponent } from './timeline/tasks/tasks.component';
     SharedModule,
     FlexModule,
   ],
+  providers: [],
 })
 export class GanttModule {}

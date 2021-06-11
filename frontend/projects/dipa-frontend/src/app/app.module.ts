@@ -16,6 +16,7 @@ import { ProfileSettingsMenuComponent } from './menus/profile-settings-menu/prof
 import { ProjectDialogComponent } from './modules/gantt/project-dialog/project-dialog.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserUnauthorizedComponent } from './modules/user-unauthorized/user-unauthorized.component';
+import { TimelineDataService } from '../app/shared/timelineDataService';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,7 @@ import { UserUnauthorizedComponent } from './modules/user-unauthorized/user-unau
       },
     }),
   ],
-  providers: [NavService, { provide: LOCALE_ID, useValue: 'de-DE' }],
+  providers: [NavService, TimelineDataService, { provide: LOCALE_ID, useValue: 'de-DE' }],
   bootstrap: [AppComponent],
 })
 export class AppModule {

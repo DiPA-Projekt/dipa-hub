@@ -20,7 +20,6 @@ export class AuthGuard implements CanActivate, CanActivateChild {
   protected authorized: boolean;
 
   protected organisationRoles: string[];
-  protected hasProjectRoles: boolean;
   protected projects: number[];
   protected timelines: Timeline[];
   protected currentUser: User;
@@ -39,8 +38,11 @@ export class AuthGuard implements CanActivate, CanActivateChild {
         this.authenticated = this.authenticationService.isLoggedIn();
         this.authorized = this.authenticationService.isAuthorized();
         this.organisationRoles = this.authenticationService.getOrganisationRoles().map((r) => r.abbreviation);
-        this.hasProjectRoles = this.authenticationService.getProjectRoles().length > 0;
-        this.projects = this.authenticationService.getProjectRoles().map((r) => r.projectId);
+        await this.authenticationService.getProjectRoles().then((roles) => {
+          if (roles !== null) {
+            this.projects = roles.map((r) => r.projectId);
+          }
+        });
 
         this.authenticationService.getUserData().subscribe((data) => (this.currentUser = data));
         this.timelineServie.getTimelines().subscribe((data) => (this.timelines = data));

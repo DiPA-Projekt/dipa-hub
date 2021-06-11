@@ -237,11 +237,12 @@ public class TimelineService {
     public void updateTimeline(final Timeline timeline) {
 
         ProjectEntity project = getProject(timeline.getId());
+        project.setProjectType(timeline.getProjectType().toString());
+        projectRepository.save(project);
 
         if (!timeline.getProjectApproachId().equals(project.getProjectApproach().getId())) {
             
             project.setProjectApproach(projectApproachService.getProjectApproachFromRepo(timeline.getProjectApproachId()));
-            project.setProjectType(timeline.getProjectType().toString());
 
             PlanTemplateEntity planTemplate = projectApproachService.getDefaultPlanTemplateEntityFromRepo(timeline.getProjectApproachId()); 
             List<MilestoneTemplateEntity> repoMilestones = new ArrayList<>(planTemplate.getMilestones());

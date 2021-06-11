@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { AuthenticationService } from '../../../authentication.service';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import {
   OperationType,
   OperationTypesService,
@@ -12,9 +13,10 @@ import {
   UserService,
 } from 'dipa-api-client';
 import ProjectTypeEnum = Timeline.ProjectTypeEnum;
-import { Subscription } from 'rxjs';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { forkJoin, Subscription } from 'rxjs';
+import { TimelineDataService } from '../../../shared/timelineDataService';
 
 interface ProjectSize {
   value: string;
@@ -59,49 +61,49 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
     },
   ];
 
-  private operationTypesSubscription: Subscription;
-  private usersSubscription: Subscription;
-  private projectApproachesSubscription: Subscription;
+  private dataSubscription: Subscription;
   private createProjectSubscription: Subscription;
   private itzBundSmallProjectApproachId = 7;
   private itzBundSoftwareDevelopmentId = 2;
 
+  private horizontalPosition: MatSnackBarHorizontalPosition = 'center';
+  private verticalPosition: MatSnackBarVerticalPosition = 'top';
+
   public constructor(
     public dialogRef: MatDialogRef<ProjectDialogComponent>,
+    private snackBar: MatSnackBar,
     private authenticationService: AuthenticationService,
     private operationTypesService: OperationTypesService,
     private projectApproachesService: ProjectApproachesService,
     private projectService: ProjectService,
     private userService: UserService,
+    private timelineDataService: TimelineDataService,
     private fb: FormBuilder,
     private router: Router
   ) {}
 
   public ngOnInit(): void {
+    this.setReactiveForm();
+
     this.authenticationService.getUserData().subscribe((data) => {
       this.userData = data;
     });
 
-    this.usersSubscription = this.userService.getUsers().subscribe((data: User[]) => {
-      this.allUsers = data;
+    this.dataSubscription = forkJoin([
+      this.userService.getUsers(),
+      this.operationTypesService.getOperationTypes(),
+      this.projectApproachesService.getProjectApproaches(),
+    ]).subscribe(([allUsers, operationTypesList, projectApproachesList]) => {
+      this.allUsers = allUsers;
+      this.operationTypesList = operationTypesList;
+      this.projectApproachesList = projectApproachesList;
+      this.updateFormValues();
     });
 
-    this.operationTypesSubscription = this.operationTypesService.getOperationTypes().subscribe((data) => {
-      this.operationTypesList = data;
-    });
-
-    this.projectApproachesSubscription = this.projectApproachesService.getProjectApproaches().subscribe((data) => {
-      this.projectApproachesList = data;
-    });
-
-    this.setReactiveForm();
     this.inputNotation = false;
   }
-
   public ngOnDestroy(): void {
-    this.operationTypesSubscription?.unsubscribe();
-    this.usersSubscription?.unsubscribe();
-    this.projectApproachesSubscription?.unsubscribe();
+    this.dataSubscription?.unsubscribe();
     this.createProjectSubscription?.unsubscribe();
   }
 
@@ -112,11 +114,15 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
           project: formGroup.value,
           projectOwner: this.filterProjectOwner(formGroup.value.projectOwner),
         })
-        .subscribe((newTimeline: Timeline) => {
-          if (newTimeline) {
-            this.router.navigate([`/gantt/${newTimeline.id}/project-checklist`]).then(() => window.location.reload());
-          }
-          this.dialogRef.close();
+        .subscribe({
+          next: (newTimeline: Timeline) => {
+            this.timelineDataService.setTimelines();
+            this.openSnackBar(newTimeline);
+          },
+          error: null,
+          complete: () => {
+            this.dialogRef.close();
+          },
         });
     } else {
       this.inputNotation = true;
@@ -139,30 +145,57 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
     return this.allUsers.find((user) => user.id === projectOwnerId);
   }
 
+  private openSnackBar(newTimeline: Timeline): void {
+    const snackBarRef = this.snackBar.open(`Das Projekt ${newTimeline.name} wurde erstellt.`, 'Zu dem Projekt', {
+      horizontalPosition: this.horizontalPosition,
+      verticalPosition: this.verticalPosition,
+      duration: 4000,
+      panelClass: ['panel'],
+    });
+    snackBarRef.onAction().subscribe(() => {
+      this.router.navigate([`/gantt/${newTimeline.id}/project-checklist/quickstart`]);
+    });
+  }
+
   private setReactiveForm(): void {
-    this.operationTypeId = this.itzBundSoftwareDevelopmentId;
     this.formGroup = this.fb.group(
       {
-        id: -1,
-        name: new FormControl('', { validators: [Validators.required], updateOn: 'blur' }),
-        operationTypeId: new FormControl(this.itzBundSoftwareDevelopmentId, {
+        id: null,
+        name: new FormControl(null, { validators: [Validators.required], updateOn: 'blur' }),
+        operationTypeId: new FormControl(null, {
           validators: [Validators.required],
           updateOn: 'blur',
         }),
-        projectApproachId: new FormControl(this.itzBundSmallProjectApproachId, {
+        projectApproachId: new FormControl(null, {
           validators: [Validators.required],
           updateOn: 'blur',
         }),
-        projectType: new FormControl(ProjectTypeEnum.InternesProjekt, {
+        projectType: new FormControl(null, {
           validators: [Validators.required],
           updateOn: 'blur',
         }),
-        start: new FormControl(this.startDate, { validators: [Validators.required], updateOn: 'blur' }),
-        end: new FormControl(this.endDate, { validators: [Validators.required], updateOn: 'blur' }),
-        projectSize: new FormControl('SMALL', { validators: [Validators.required], updateOn: 'blur' }),
-        projectOwner: this.userData.id,
+        start: new FormControl(null, { validators: [Validators.required], updateOn: 'blur' }),
+        end: new FormControl(null, { validators: [Validators.required], updateOn: 'blur' }),
+        projectSize: new FormControl(null, { validators: [Validators.required], updateOn: 'blur' }),
+        projectOwner: null,
       },
       { updateOn: 'blur' }
     );
+  }
+
+  private updateFormValues(): void {
+    this.operationTypeId = this.itzBundSoftwareDevelopmentId;
+
+    this.formGroup.setValue({
+      id: -1,
+      name: '',
+      operationTypeId: this.itzBundSoftwareDevelopmentId,
+      projectApproachId: this.itzBundSmallProjectApproachId,
+      projectType: ProjectTypeEnum.InternesProjekt,
+      start: this.startDate,
+      end: this.endDate,
+      projectSize: 'SMALL',
+      projectOwner: this.userData.id,
+    });
   }
 }

@@ -2,9 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavItem } from '../../../nav-item';
 import { ExternalLinksService, Timeline, TimelinesService } from 'dipa-api-client';
 import { ActivatedRoute, Params } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { AuthenticationService } from '../../../authentication.service';
+import { TimelineDataService } from '../../../shared/timelineDataService';
 
 @Component({
   selector: 'app-sidenav',
@@ -19,7 +19,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
   public selectedTimelineId: number;
 
   public favoriteLinksSubscription: Subscription;
-  public timelinesSubscription: Subscription;
+  public rolesSubscription: Subscription;
+  public timelineDataSubscription: Subscription;
+  public paramsSubscription: Subscription;
 
   public navMenuItems: NavItem[] = [];
   public favoriteLinkItems: NavItem[] = [];
@@ -29,30 +31,34 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private authenticationService: AuthenticationService,
     private timelinesService: TimelinesService,
     private externalLinksService: ExternalLinksService,
-    public activatedRoute: ActivatedRoute
+    public activatedRoute: ActivatedRoute,
+    private timelineDataService: TimelineDataService
   ) {}
 
   public ngOnInit(): void {
-    this.timelinesSubscription = this.activatedRoute.params
-      .pipe(
-        switchMap(
-          (params: Params): Observable<Timeline[]> => {
-            this.selectedTimelineId = parseInt(params.id, 10);
-            return this.timelinesService.getTimelines();
-          }
-        )
-      )
-      .subscribe((data: Timeline[]) => {
-        this.timelineData = data;
-        this.timeline = this.timelineData.find((c) => c.id === Number(this.selectedTimelineId));
+    this.paramsSubscription = this.activatedRoute.params.subscribe((params: Params) => {
+      this.selectedTimelineId = parseInt(params.id, 10);
+      this.timelineDataService.setTimelines();
+      this.timelineDataService.setRoles(this.selectedTimelineId);
+    });
 
+    this.timelineDataSubscription = this.timelineDataService.getTimelines().subscribe((data) => {
+      if (data !== null) {
+        this.timeline = data.find((c) => c.id === Number(this.selectedTimelineId));
         this.setSideNavMenu();
-      });
+      }
+    });
+
+    this.rolesSubscription = this.timelineDataService.getRoles().subscribe((data) => {
+      this.roles = data;
+    });
   }
 
   public ngOnDestroy(): void {
     this.favoriteLinksSubscription?.unsubscribe();
-    this.timelinesSubscription?.unsubscribe();
+    this.paramsSubscription?.unsubscribe();
+    this.timelineDataSubscription?.unsubscribe();
+    this.rolesSubscription?.unsubscribe();
   }
 
   public setSideNavMenu(): void {
@@ -121,6 +127,5 @@ export class SidenavComponent implements OnInit, OnDestroy {
         },
       ];
     });
-    this.roles = this.authenticationService.getCurrentUserProjectRoles(this.timeline);
   }
 }

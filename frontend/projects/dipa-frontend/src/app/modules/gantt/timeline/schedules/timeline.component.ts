@@ -39,7 +39,6 @@ export class TimelineComponent implements OnInit, OnDestroy {
   public projectApproachesList: ProjectApproach[] = [];
   public projectTask: ProjectTask;
   public appoinmentsList: Result[];
-  public appointments: any[] = [];
   public vm$: Observable<any>;
 
   public apptFormfieldsKeys = ['goal', 'date', 'status'];
@@ -49,7 +48,6 @@ export class TimelineComponent implements OnInit, OnDestroy {
   private periodEndDateSubscription: Subscription;
 
   private timelinesSubscription: Subscription;
-  private activatedRouteSubscription: Subscription;
   private projectTasksSubscription: Subscription;
 
   public constructor(
@@ -63,20 +61,10 @@ export class TimelineComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
-    this.timelinesSubscription = this.activatedRoute.parent.parent.params
-      .pipe(
-        switchMap(
-          (params: Params): Observable<Timeline[]> => {
-            this.selectedTimelineId = parseInt(params.id, 10);
-            return this.timelinesService.getTimelines();
-          }
-        )
-      )
-      .subscribe((data: Timeline[]) => {
-        this.timelineData = data;
-
-        this.setData();
-      });
+    this.timelinesSubscription = this.activatedRoute.parent.parent.params.subscribe((params: Params) => {
+      this.selectedTimelineId = Number(params.id);
+      this.setData();
+    });
 
     this.periodStartDateSubscription = this.ganttControlsService.getPeriodStartDate().subscribe((data) => {
       if (this.periodStartDate !== data) {
@@ -92,7 +80,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
     this.projectTasksSubscription = this.projectService.getProjectTasks(this.selectedTimelineId).subscribe((data) => {
       this.projectTask = data[4];
-      this.projectTask.results.sort(
+      this.appoinmentsList = this.projectTask.results.sort(
         (b, a) =>
           new Date(b.formFields.find((field) => field.key === 'date').value).getTime() -
           new Date(a.formFields.find((field) => field.key === 'date').value).getTime()
@@ -103,7 +91,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
         keysOrder[id] = i + 1;
       });
 
-      this.projectTask.results.forEach((result) => {
+      this.appoinmentsList.forEach((result) => {
         result.formFields = result.formFields.filter((field) => this.apptFormfieldsKeys.includes(field.key));
         result.formFields.sort((a, b) => keysOrder[a.key] - keysOrder[b.key]);
       });
@@ -111,6 +99,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
+    this.timelinesSubscription?.unsubscribe();
     this.periodStartDateSubscription?.unsubscribe();
     this.periodEndDateSubscription?.unsubscribe();
     this.projectTasksSubscription?.unsubscribe();
@@ -118,13 +107,14 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
   public setData(): void {
     this.vm$ = forkJoin([
+      this.timelinesService.getTimelines(),
       this.tasksService.getTasksForTimeline(this.selectedTimelineId),
       this.milestonesService.getMilestonesForTimeline(this.selectedTimelineId),
       this.incrementsService.getIncrementsForTimeline(this.selectedTimelineId),
     ]).pipe(
-      map(([taskData, milestoneData, incrementsData]) => {
+      map(([timelineData, taskData, milestoneData, incrementsData]) => {
+        this.timelineData = timelineData;
         const selectedTimeline = this.timelineData.find((c) => c.id === Number(this.selectedTimelineId));
-
         const periodStartDate = new Date(selectedTimeline.start);
         const periodEndDate = new Date(selectedTimeline.end);
 
@@ -172,7 +162,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
     });
   }
 
-  public filterOpenAppointments(appointments): boolean {
-    return appointments.formFields.find((field) => field.key === 'status').value !== 'DONE';
+  public filterAllOpenAppointments(appointments: Result[]): Result[] {
+    return appointments.filter((appt) => appt.formFields.find((field) => field.key === 'status').value !== 'DONE');
   }
 }
