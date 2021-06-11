@@ -11,7 +11,6 @@ import { OAuthService } from 'angular-oauth2-oidc';
 import { Observable } from 'rxjs';
 import { AuthenticationService } from './authentication.service';
 import { Timeline, TimelinesService, User, UserService } from 'dipa-api-client';
-import { T } from '@angular/cdk/keycodes';
 
 @Injectable({
   providedIn: 'root',
@@ -37,26 +36,17 @@ export class AuthGuard implements CanActivate, CanActivateChild {
   public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean | UrlTree> {
     return new Promise(async (resolve, reject) => {
       try {
-        await this.authenticationService.login();
         this.authenticated = this.authenticationService.isLoggedIn();
         this.authorized = this.authenticationService.isAuthorized();
+        this.organisationRoles = this.authenticationService.getOrganisationRoles().map((r) => r.abbreviation);
+        this.hasProjectRoles = this.authenticationService.getProjectRoles().length > 0;
+        this.projects = this.authenticationService.getProjectRoles().map((r) => r.projectId);
 
-        if (this.authenticationService.isAuthorized() === false) {
-          this.router.navigate([`userUnauthorized`]);
-          resolve(false);
-        } else {
-          this.organisationRoles = this.authenticationService.getOrganisationRoles().map((r) => r.abbreviation);
-          this.hasProjectRoles = this.authenticationService.getProjectRoles().length > 0;
-          this.projects = this.authenticationService.getProjectRoles().map((r) => r.projectId);
+        this.authenticationService.getUserData().subscribe((data) => (this.currentUser = data));
+        this.timelineServie.getTimelines().subscribe((data) => (this.timelines = data));
 
-          this.authenticationService.getUserData().subscribe((data) => (this.currentUser = data));
-          this.timelineServie.getTimelines().subscribe((data) => (this.timelines = data));
-
-          const result = await this.isAccessAllowed(route);
-          resolve(result);
-        }
-
-        // console.log(result);
+        const result = await this.isAccessAllowed(route);
+        resolve(result);
       } catch (error) {
         reject(`An error happened during access validation. Details:${error}`);
       }
@@ -71,10 +61,13 @@ export class AuthGuard implements CanActivate, CanActivateChild {
   }
 
   public async isAccessAllowed(route: ActivatedRouteSnapshot): Promise<boolean> {
-    // if (!this.authenticated) {
-    //   await this.authenticationService.login();
-    // }
+    if (!this.authenticated) {
+      await this.authenticationService.login();
+    }
 
+    if (this.authenticationService.isAuthorized() === false) {
+      this.router.navigate([`userUnauthorized`]);
+    }
     let accessOrganisationRole: boolean;
     let accessProject: boolean;
 
@@ -92,6 +85,6 @@ export class AuthGuard implements CanActivate, CanActivateChild {
       accessProject = this.projects.includes(Number(requiredProjectId));
     }
 
-    return accessOrganisationRole || accessProject;
+    return this.authenticationService.isAuthorized() && (accessOrganisationRole || accessProject);
   }
 }

@@ -63,8 +63,7 @@ export class AuthenticationService {
   public async login(): Promise<boolean> {
     return this.oAuthService.loadDiscoveryDocumentAndLogin().then(async (loggedIn) => {
       await this.loadUserProfile();
-
-      // this.authenticated = true;
+      this.authenticated = true;
       return loggedIn;
     });
   }
@@ -73,6 +72,7 @@ export class AuthenticationService {
     this.oAuthService.logOut();
 
     this.authenticated = false;
+    this.authorized = false;
     this.userData.next(null);
   }
 
@@ -81,12 +81,13 @@ export class AuthenticationService {
       this.userService.getCurrentUser().subscribe({
         next: (data: User) => {
           this.userData.next(data);
-          console.log(data);
+          this.authorized = true;
           resolve(true);
         },
         error: (err) => {
-          if (err.code === 403) {
+          if (err.status === 401) {
             this.authorized = false;
+            this.userData.next(err.error);
           }
           resolve(false);
         },
