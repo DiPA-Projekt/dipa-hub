@@ -331,7 +331,11 @@ export class MilestonesArea implements IChartElement {
     let tooltip =
       `${data.name}<br>` + `Fällig: ${new Date(data.date).toLocaleDateString('de-DE', this.dateOptions)}<br>`;
     // alle Meilensteine der agilen Softwareentwicklung im ITZBund
-    if (data.id >= 22 && data.id <= 27) {
+    if (
+      this.timelineData.projectApproachId === 2 &&
+      data.name !== 'Projekteinrichtung' &&
+      data.name !== 'Projektabschluss'
+    ) {
       let projectType = '';
 
       if (this.timelineData.projectType === ProjectTypeEnum.InternesProjekt) {
