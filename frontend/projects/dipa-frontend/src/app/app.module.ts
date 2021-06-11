@@ -18,7 +18,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserUnauthorizedComponent } from './modules/user-unauthorized/user-unauthorized.component';
 
 @NgModule({
-  declarations: [AppComponent, GanttMenuComponent, RootComponent, ProfileSettingsMenuComponent, ProjectDialogComponent, UserUnauthorizedComponent],
+  declarations: [
+    AppComponent,
+    GanttMenuComponent,
+    RootComponent,
+    ProfileSettingsMenuComponent,
+    ProjectDialogComponent,
+    UserUnauthorizedComponent,
+  ],
   imports: [
     BrowserModule,
     HttpClientModule,
