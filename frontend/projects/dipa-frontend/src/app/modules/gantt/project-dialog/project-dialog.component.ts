@@ -153,7 +153,7 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
       panelClass: ['panel'],
     });
     snackBarRef.onAction().subscribe(() => {
-      void this.router.navigate([`/gantt/${newTimeline.id}/project-checklist/quickstart`]);
+      this.router.navigate([`/gantt/${newTimeline.id}/project-checklist/quickstart`]);
     });
   }
 
