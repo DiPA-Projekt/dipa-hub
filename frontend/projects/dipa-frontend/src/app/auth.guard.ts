@@ -68,7 +68,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     }
 
     if (this.authenticationService.isAuthorized() === false) {
-      void await this.router.navigate([`userUnauthorized`]);
+      void (await this.router.navigate([`userUnauthorized`]));
       return;
     }
     let accessOrganisationRole: boolean;
