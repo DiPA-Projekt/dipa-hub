@@ -15,7 +15,7 @@ export class UserUnauthorizedComponent implements OnInit {
       if (user !== null) {
         this.userName = user.name;
       } else {
-        this.authenticationService.login();
+        void this.authenticationService.login();
       }
     });
   }
