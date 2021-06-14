@@ -237,9 +237,11 @@ public class TimelineService {
     public void updateTimeline(final Timeline timeline) {
 
         ProjectEntity project = getProject(timeline.getId());
-        project.setProjectType(timeline.getProjectType().toString());
-        projectRepository.save(project);
-
+        if (timeline.getProjectType() != null) {
+            project.setProjectType(timeline.getProjectType().toString());
+            projectRepository.save(project);
+        }
+   
         if (!timeline.getProjectApproachId().equals(project.getProjectApproach().getId())) {
             
             project.setProjectApproach(projectApproachService.getProjectApproachFromRepo(timeline.getProjectApproachId()));

@@ -19,6 +19,11 @@ UPDATE project_task_form_field
 SET key = 'responsible_person'
 WHERE key = 'responsiblePerson'
 
+-- changeset id:delete_user_from_ba context:ba
+DELETE FROM app_user WHERE tenant_id = 'itzbund'
+
+-- changeset id:delete_user_from_itzbund context:itzbund
+DELETE FROM app_user WHERE tenant_id = 'ba'
 
 --changeset id:update-project-task-form-field-contactPerson context:itzbund
 UPDATE project_task_form_field
