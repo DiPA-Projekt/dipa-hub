@@ -259,6 +259,9 @@ public class ProjectService {
                             }
                         }
                         updateResults(oldProjectTask, projectTask);
+
+                        oldProjectTask.setCompleted(projectTask.getCompleted());
+                        projectTaskRepository.save(oldProjectTask);
                     });
                 }
 
