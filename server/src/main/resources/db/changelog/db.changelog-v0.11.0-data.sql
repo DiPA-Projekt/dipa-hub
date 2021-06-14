@@ -11,7 +11,7 @@ INSERT INTO plan_template (id, name) VALUES (15, 'VMXT ITZBund Kleinprojekte Tem
 INSERT INTO project_approach_plan_template_connection (project_approach_id, plan_template_id) VALUES (7, 15)
 
 --changeset id:milestones-template-swe-small-project-Projekteinrichtung context:itzbund dbms:h2
-INSERT INTO milestone_template (name, date_offset, date, plan_template_id) 
+INSERT INTO milestone_template (name, date_offset, date, plan_template_id)
 VALUES ('Projekteinrichtung', 14, Now() + 14, 15)
 
 --changeset id:milestones-template-swe-small-project-Projekteinrichtung context:itzbund dbms:postgresql
@@ -19,7 +19,7 @@ INSERT INTO milestone_template (name, date_offset, date, plan_template_id)
 VALUES ('Projekteinrichtung', 14,NOW() + 14 * INTERVAL '1 day', 15)
 
 --changeset id:milestones-template-swe-small-project-Projektabschluss context:itzbund dbms:h2
-INSERT INTO milestone_template (name, date_offset, date, plan_template_id) 
+INSERT INTO milestone_template (name, date_offset, date, plan_template_id)
 VALUES ('Projektabschluss', 180, Now() + 180, 15)
 
 --changeset id:milestones-template-swe-small-project-Projektabschluss context:itzbund dbms:postgresql

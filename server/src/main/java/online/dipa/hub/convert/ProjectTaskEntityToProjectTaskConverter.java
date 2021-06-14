@@ -30,6 +30,7 @@ public class ProjectTaskEntityToProjectTaskConverter implements Converter<Projec
         ProjectTask projectTask = new ProjectTask().id(template.getId())
                              .title(template.getTitle())
                              .optional(template.getOptional())
+                             .completed((template.getCompleted()))
                              .icon(template.getIcon())
                              .explanation(template.getExplanation())
                              .isPermanentTask(template.getIsPermanentTask())

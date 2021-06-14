@@ -1,29 +1,11 @@
 <form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup)">
-  <div>
-    <mat-form-field style="float: right">
-      <mat-label>Felder auswählen</mat-label>
-      <mat-select [formControl]="showFieldsForm" (selectionChange)="changeShowSelection($event)" multiple>
-        <mat-option *ngFor="let entry of entriesArray.controls" [value]="entry.get('key')?.value">{{
-          entry.get('label')?.value
-        }}</mat-option>
-        <mat-optgroup *ngFor="let group of formFieldGroups" [label]="group.name">
-          <mat-option *ngFor="let formField of group.fields" [value]="formField.value">
-            {{ formField.viewValue }}
-          </mat-option>
-        </mat-optgroup>
-      </mat-select>
-    </mat-form-field>
-  </div>
-  <ng-container formArrayName="entries">
+  <app-show-fields-menu (selectionChange)="changeShowSelection()"></app-show-fields-menu>
+  <div class="entries" formArrayName="entries">
     <ng-container *ngFor="let entry of entriesArray.controls; let i = index">
       <ng-container [formGroupName]="i">
         <ng-container [ngSwitch]="entry.get('controlType')?.value">
           <ng-container *ngSwitchCase="'TEXTBOX'">
-            <mat-form-field
-              *ngIf="entry.get('show')?.value"
-              [hintLabel]="entry.get('hint')?.value"
-              [ngClass]="getFormFieldClass(entry)"
-            >
+            <mat-form-field *ngIf="entry.get('show')?.value" [hintLabel]="entry.get('hint')?.value">
               <mat-label>{{ entry.get('label')?.value }}</mat-label>
               <mat-icon matPrefix *ngIf="entry.get('type')?.value === 'URL'" class="matPrefixIcon"> link </mat-icon>
               <input
@@ -56,11 +38,7 @@
             </mat-form-field>
           </ng-container>
           <ng-container *ngSwitchCase="'TEXTAREA'">
-            <mat-form-field
-              [hintLabel]="entry.get('hint')?.value"
-              *ngIf="entry.get('show')?.value"
-              [ngClass]="getFormFieldClass(entry)"
-            >
+            <mat-form-field [hintLabel]="entry.get('hint')?.value" *ngIf="entry.get('show')?.value">
               <mat-label>{{ entry.get('label')?.value }}</mat-label>
               <textarea
                 matInput
@@ -76,11 +54,7 @@
             </mat-form-field>
           </ng-container>
           <ng-container *ngSwitchCase="'DROPDOWN'">
-            <mat-form-field
-              [hintLabel]="entry.get('hint')?.value"
-              *ngIf="entry.get('show')?.value"
-              [ngClass]="getFormFieldClass(entry)"
-            >
+            <mat-form-field [hintLabel]="entry.get('hint')?.value" *ngIf="entry.get('show')?.value">
               <mat-label>{{ entry.get('label')?.value }}</mat-label>
               <mat-select formControlName="value">
                 <mat-option *ngFor="let opt of entry.get('options')?.value" [value]="opt.key">
@@ -92,12 +66,10 @@
         </ng-container>
       </ng-container>
     </ng-container>
-  </ng-container>
+  </div>
 
   <app-results-form
     [formData]="resultsArray"
-    [showFieldsForm]="showFieldsForm"
-    [formFieldGroups]="formFieldGroups"
     [selectedFields]="selectedFields"
     (dataChanged)="onSubmit(formGroup)"
   ></app-results-form>
