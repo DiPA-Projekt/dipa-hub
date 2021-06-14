@@ -6,7 +6,6 @@ import online.dipa.hub.services.UserInformationService;
 
 import java.util.List;
 
-import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
@@ -19,12 +18,7 @@ public class UserInformationController implements UserApi {
     @Override
     public ResponseEntity<User> getCurrentUser() {
         final User user = userInformationService.getUserData();
-        if (user.getId() != null) {
-            return ResponseEntity.ok(user);
-        }    
-        else {
-            return ResponseEntity.status(HttpStatus.SC_UNAUTHORIZED).body(user);
-        }
+        return ResponseEntity.ok(user);
     }
 
     @Override
