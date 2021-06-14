@@ -18,7 +18,7 @@ import { ProjectChecklistComponent } from './project-checklist/project-checklist
 import { ChartHeaderComponent } from './chart/chart-header/chart-header.component';
 import { ProjectTaskFormComponent } from './project-checklist/project-task-form/project-task-form.component';
 import { ResultsFormComponent } from './project-checklist/results-form/results-form.component';
-import { ListMatFormFieldComponent } from './project-checklist/results-form-field/list-mat-form-field.component';
+import { ListMatFormFieldComponent } from './project-checklist/list-mat-form-field/list-mat-form-field.component';
 import { MaterialModule } from '../../material/material.module';
 import { ProjectOrganizationComponent } from './project-organization/project-organization.component';
 import { ProjectQuickstartComponent } from './project-quickstart/project-quickstart.component';
@@ -28,6 +28,7 @@ import { FlexModule } from '@angular/flex-layout';
 import { ProjectRoleComponent } from './project-role/project-role.component';
 import { MilestoneDialogComponent } from './chart/milestone-dialog/milestone-dialog.component';
 import { TasksComponent } from './timeline/tasks/tasks.component';
+import { ShowFieldsMenuComponent } from './project-checklist/show-fields-menu/show-fields-menu.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { TasksComponent } from './timeline/tasks/tasks.component';
     ProjectRoleComponent,
     MilestoneDialogComponent,
     TasksComponent,
+    ShowFieldsMenuComponent,
   ],
   exports: [ChartComponent, FilesComponent, NavMenuListItemComponent],
   imports: [

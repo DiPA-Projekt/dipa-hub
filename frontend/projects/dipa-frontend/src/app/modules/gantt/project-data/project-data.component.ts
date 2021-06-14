@@ -20,7 +20,7 @@ export class ProjectDataComponent implements OnInit, OnDestroy, OnChanges {
   @Input() public timelineId: number;
   @Output() public projectSizeChanged = new EventEmitter();
 
-  public myForm: FormGroup;
+  public projectForm: FormGroup;
 
   public sizes: ProjectSize[] = [
     {
@@ -103,17 +103,17 @@ export class ProjectDataComponent implements OnInit, OnDestroy, OnChanges {
 
   public onFocus(event: FocusEvent, path: (string | number)[]): void {
     const valueInput = event.target as HTMLInputElement;
-    valueInput.setAttribute('data-value', this.myForm.get(path).value || '');
+    valueInput.setAttribute('data-value', this.projectForm.get(path).value || '');
   }
 
   public onEscape(event: KeyboardEvent, path: (string | number)[]): void {
     const valueInput = event.target as HTMLInputElement;
     valueInput.value = valueInput.getAttribute('data-value');
-    this.myForm.get(path).setValue(valueInput.value);
+    this.projectForm.get(path).setValue(valueInput.value);
   }
 
   private setReactiveForm(data: Project): void {
-    this.myForm = this.fb.group({
+    this.projectForm = this.fb.group({
       id: [data?.id],
       akz: [data?.akz],
       name: [data?.name],

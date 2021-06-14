@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
 import { OptionEntry, Result } from 'dipa-api-client';
 import ResultTypeEnum = Result.ResultTypeEnum;
 
@@ -21,10 +21,11 @@ interface SelectOptionGroup {
 export class ResultsFormComponent implements OnInit {
   @Input() public formData: FormArray;
   @Input() public statusList: OptionEntry[];
-  @Input() public showFieldsForm: FormControl;
-  @Input() public formFieldGroups: SelectOptionGroup[];
   @Input() public selectedFields: string[];
+  @Output() public showSelectionChanged = new EventEmitter();
   @Output() public dataChanged = new EventEmitter();
+
+  public formFieldGroups: SelectOptionGroup[] = [];
 
   public currentResultType: ResultTypeEnum;
 
@@ -32,49 +33,10 @@ export class ResultsFormComponent implements OnInit {
 
   public constructor(public formGroupDirective: FormGroupDirective, private fb: FormBuilder) {}
 
-  public static getResultTypeName(resultType: ResultTypeEnum): string {
-    let resultTypeName: string;
-
-    switch (resultType) {
-      case 'TYPE_STD':
-        resultTypeName = 'Standard';
-        break;
-      case 'TYPE_CONTACT_PERS':
-        resultTypeName = 'Kontaktperson';
-        break;
-      case 'TYPE_SUBTASK':
-        resultTypeName = 'Aufgabe';
-        break;
-      case 'TYPE_ELBE_SC':
-        resultTypeName = 'Einkaufswagen';
-        break;
-      case 'TYPE_RISK':
-        resultTypeName = 'Risiko';
-        break;
-      case 'TYPE_SINGLE_APPOINTMENT':
-        resultTypeName = 'Termin';
-        break;
-      case 'TYPE_APPT_SERIES':
-        resultTypeName = 'Terminserie';
-        break;
-      case 'TYPE_TEAM_PERS':
-        resultTypeName = 'Team';
-        break;
-      case 'TYPE_LINK':
-        resultTypeName = 'Link';
-        break;
-      default:
-        resultTypeName = '';
-    }
-    return resultTypeName;
-  }
-
   public ngOnInit(): void {
     this.formGroup = this.formGroupDirective.control;
 
-    this.setFormFieldGroups();
-    const currentShowFields = this.showFieldsForm.value as string[];
-    this.showFieldsForm.setValue([...currentShowFields, ...this.initSelectedFields()]);
+    this.initSelectedFields();
   }
 
   public isValidUrl(formField: FormControl): boolean {
@@ -98,7 +60,12 @@ export class ResultsFormComponent implements OnInit {
     return this.formGroup.get(['results']) as FormArray;
   }
 
+  public get entriesArray(): FormArray {
+    return this.formGroup.get('entries') as FormArray;
+  }
+
   public addResult(resultType: ResultTypeEnum): void {
+    this.initSelectedFields();
     this.resultsArray.push(this.getEmptyResult(resultType));
   }
 
@@ -133,11 +100,11 @@ export class ResultsFormComponent implements OnInit {
     this.formGroup.get(path).setValue(valueInput.value);
   }
 
-  public getFormFieldClass(formField: FormGroup | AbstractControl): string {
-    return formField.get('controlType')?.value === 'TEXTAREA' || formField.get('type')?.value === 'URL'
-      ? 'width2x'
-      : '';
-  }
+  // public getFormFieldClass(formField: FormGroup | AbstractControl): string {
+  //   return formField.get('controlType')?.value === 'TEXTAREA' || formField.get('type')?.value === 'URL'
+  //     ? 'full-width'
+  //     : 'full-width';
+  // }
 
   public calculatePT(filterOptions: { key: string; value: string }): number {
     const filteredFormControls = this.getFilteredFormControls(filterOptions);
@@ -175,6 +142,8 @@ export class ResultsFormComponent implements OnInit {
   }
 
   private initSelectedFields() {
+    this.selectedFields = [];
+
     const resultFormGroup = this.resultsArray.controls[0] as FormGroup;
 
     if (resultFormGroup !== undefined) {
@@ -189,34 +158,6 @@ export class ResultsFormComponent implements OnInit {
     }
 
     return this.selectedFields;
-  }
-
-  private setFormFieldGroups(): void {
-    const groupValues: { value: string; viewValue: string }[] = [];
-    const resultFormGroup = this.resultsArray.controls[0] as FormGroup;
-
-    if (resultFormGroup !== undefined) {
-      const formFieldsArray = this.getFormFieldsArray(resultFormGroup);
-      if (formFieldsArray?.length > 0) {
-        for (const formFieldEntry of formFieldsArray.controls) {
-          if (formFieldEntry.get('show').value !== null) {
-            groupValues.push({
-              value: `formFields.${formFieldEntry.get('key').value as string}`,
-              viewValue: formFieldEntry.get('label').value as string,
-            });
-          }
-        }
-      }
-
-      const resultTypeName = ResultsFormComponent.getResultTypeName(resultFormGroup.get('resultType').value);
-
-      if (!this.formFieldGroups.find((formField) => formField.name === resultTypeName)) {
-        this.formFieldGroups.push({
-          name: resultTypeName,
-          fields: groupValues,
-        });
-      }
-    }
   }
 
   private getEmptyResult(resultType: ResultTypeEnum): FormGroup {
@@ -280,7 +221,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'note',
         label: 'Notizen',
-        hint: '',
         required: false,
         sortOrder: 1,
         controlType: 'TEXTAREA',
@@ -292,7 +232,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'status',
         label: 'Status',
-        hint: '',
         required: false,
         sortOrder: 2,
         controlType: 'DROPDOWN',
@@ -319,8 +258,7 @@ export class ResultsFormComponent implements OnInit {
       this.fb.group({
         value: '',
         key: 'contactPerson',
-        label: 'Name',
-        hint: 'Ansprechpartner',
+        label: 'Ansprechpartner',
         required: false,
         sortOrder: 1,
         controlType: 'TEXTBOX',
@@ -333,7 +271,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'department',
         label: 'Referat',
-        hint: '',
         required: false,
         sortOrder: 2,
         controlType: 'TEXTBOX',
@@ -346,7 +283,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'taskArea',
         label: 'Aufgabenbereich',
-        hint: '',
         required: false,
         sortOrder: 3,
         controlType: 'TEXTBOX',
@@ -359,7 +295,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'note',
         label: 'Notizen',
-        hint: '',
         required: false,
         sortOrder: 4,
         controlType: 'TEXTAREA',
@@ -371,7 +306,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'status',
         label: 'Status',
-        hint: '',
         required: false,
         sortOrder: 5,
         controlType: 'DROPDOWN',
@@ -397,7 +331,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'subtask',
         label: 'Aufgabe',
-        hint: null,
         required: false,
         sortOrder: 1,
         controlType: 'TEXTBOX',
@@ -409,8 +342,7 @@ export class ResultsFormComponent implements OnInit {
       this.fb.group({
         value: '',
         key: 'contactPerson',
-        label: 'Name',
-        hint: 'Ansprechpartner',
+        label: 'Ansprechpartner',
         required: false,
         sortOrder: 2,
         controlType: 'TEXTBOX',
@@ -423,7 +355,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'department',
         label: 'Referat',
-        hint: '',
         required: false,
         sortOrder: 3,
         controlType: 'TEXTBOX',
@@ -436,7 +367,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'taskArea',
         label: 'Aufgabenbereich',
-        hint: '',
         required: false,
         sortOrder: 4,
         controlType: 'TEXTBOX',
@@ -449,7 +379,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'note',
         label: 'Notizen',
-        hint: '',
         required: false,
         sortOrder: 5,
         controlType: 'TEXTAREA',
@@ -461,7 +390,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'status',
         label: 'Status',
-        hint: '',
         required: false,
         sortOrder: 6,
         controlType: 'DROPDOWN',
@@ -487,7 +415,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'shoppingCartNumber',
         label: 'EKW - Nr',
-        hint: '',
         required: false,
         sortOrder: 1,
         controlType: 'TEXTBOX',
@@ -500,7 +427,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'shoppingCartContent',
         label: 'EKW - Inhalt',
-        hint: '',
         required: false,
         sortOrder: 2,
         controlType: 'TEXTBOX',
@@ -513,7 +439,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'note',
         label: 'Notizen',
-        hint: '',
         required: false,
         sortOrder: 3,
         controlType: 'TEXTAREA',
@@ -525,7 +450,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'status',
         label: 'Status',
-        hint: '',
         required: false,
         sortOrder: 4,
         controlType: 'DROPDOWN',
@@ -551,7 +475,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'description',
         label: 'Risikobezeichnung',
-        hint: '',
         required: false,
         sortOrder: 1,
         controlType: 'TEXTBOX',
@@ -564,7 +487,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'value',
         label: 'Risikowert',
-        hint: '',
         required: false,
         sortOrder: 2,
         controlType: 'TEXTBOX',
@@ -577,7 +499,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'solution',
         label: 'Abstellmaßnahme',
-        hint: '',
         required: false,
         sortOrder: 3,
         controlType: 'TEXTBOX',
@@ -590,7 +511,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'note',
         label: 'Notizen',
-        hint: '',
         required: false,
         sortOrder: 4,
         controlType: 'TEXTAREA',
@@ -602,7 +522,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'status',
         label: 'Status',
-        hint: '',
         required: false,
         sortOrder: 5,
         controlType: 'DROPDOWN',
@@ -629,7 +548,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'date',
         label: 'Datum',
-        hint: '',
         required: false,
         sortOrder: 1,
         controlType: 'TEXTBOX',
@@ -642,7 +560,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'goal',
         label: 'Zielzustand',
-        hint: '',
         required: false,
         sortOrder: 2,
         controlType: 'TEXTBOX',
@@ -655,7 +572,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'responsible_person',
         label: 'Verantwortung',
-        hint: '',
         required: false,
         sortOrder: 3,
         controlType: 'TEXTBOX',
@@ -668,7 +584,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'note',
         label: 'Notizen',
-        hint: '',
         required: false,
         sortOrder: 4,
         controlType: 'TEXTAREA',
@@ -680,7 +595,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'status',
         label: 'Status',
-        hint: 'Status',
         required: false,
         sortOrder: 5,
         controlType: 'DROPDOWN',
@@ -703,8 +617,7 @@ export class ResultsFormComponent implements OnInit {
       this.fb.group({
         value: '',
         key: 'serie',
-        label: 'Name',
-        hint: 'Name der Serie',
+        label: 'Name der Serie',
         required: false,
         sortOrder: 1,
         controlType: 'TEXTBOX',
@@ -717,7 +630,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'date',
         label: 'Termin',
-        hint: '',
         required: false,
         sortOrder: 2,
         controlType: 'TEXTBOX',
@@ -730,7 +642,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'participants',
         label: 'Teilnehmende',
-        hint: '',
         required: false,
         sortOrder: 3,
         controlType: 'LIST',
@@ -742,7 +653,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'link',
         label: 'Einwahllink',
-        hint: '',
         required: false,
         sortOrder: 4,
         controlType: 'TEXTBOX',
@@ -755,7 +665,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'note',
         label: 'Notizen',
-        hint: '',
         required: false,
         sortOrder: 5,
         controlType: 'TEXTAREA',
@@ -767,7 +676,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'status',
         label: 'Status',
-        hint: '',
         required: false,
         sortOrder: 6,
         controlType: 'DROPDOWN',
@@ -789,8 +697,7 @@ export class ResultsFormComponent implements OnInit {
       this.fb.group({
         value: '',
         key: 'colleage',
-        label: 'Name',
-        hint: 'Teamkollege',
+        label: 'Teamkollege',
         required: false,
         sortOrder: 1,
         controlType: 'TEXTBOX',
@@ -803,7 +710,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'department',
         label: 'Referat',
-        hint: '',
         required: false,
         sortOrder: 2,
         controlType: 'TEXTBOX',
@@ -816,7 +722,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'taskArea',
         label: 'Aufgabenbereich',
-        hint: '',
         required: false,
         sortOrder: 3,
         controlType: 'TEXTBOX',
@@ -828,8 +733,7 @@ export class ResultsFormComponent implements OnInit {
       this.fb.group({
         value: '',
         key: 'PT',
-        label: 'PT',
-        hint: 'Personentage',
+        label: 'Personentage (PT)',
         required: false,
         sortOrder: 4,
         controlType: 'TEXTBOX',
@@ -842,7 +746,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'note',
         label: 'Notizen',
-        hint: 'Notizen',
         required: false,
         sortOrder: 5,
         controlType: 'TEXTAREA',
@@ -854,7 +757,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'status',
         label: 'Status',
-        hint: 'Status',
         required: false,
         sortOrder: 6,
         controlType: 'DROPDOWN',
@@ -877,7 +779,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'name',
         label: 'Name',
-        hint: '',
         required: false,
         sortOrder: 1,
         controlType: 'TEXTBOX',
@@ -890,7 +791,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'documentationLink',
         label: 'Link',
-        hint: '',
         required: false,
         sortOrder: 2,
         controlType: 'TEXTBOX',
@@ -903,7 +803,6 @@ export class ResultsFormComponent implements OnInit {
         value: '',
         key: 'note',
         label: 'Notizen',
-        hint: '',
         required: false,
         sortOrder: 3,
         controlType: 'TEXTAREA',

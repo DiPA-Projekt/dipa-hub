@@ -1,78 +1,80 @@
 <div id="toolkit">
-  <form [formGroup]="myForm" (ngSubmit)="onSubmit(myForm)" novalidate>
-    <div class="row">
-      <div class="col-md-6 col-lg-4 col-xl-2">
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>AKZ</mat-label>
-          <label>
-            <input
-              matInput
-              maxlength="255"
-              formControlName="akz"
-              (change)="onSubmit(myForm)"
-              (focus)="onFocus($event, ['akz'])"
-              (keyup.esc)="onEscape($event, ['akz'])"
-            />
-          </label>
-        </mat-form-field>
+  <div class="content-container" style="padding-right: 15px">
+    <form [formGroup]="projectForm" (ngSubmit)="onSubmit(projectForm)" novalidate>
+      <div class="row">
+        <div class="col-md-6 col-lg-4 col-xl-2">
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>AKZ</mat-label>
+            <label>
+              <input
+                matInput
+                maxlength="255"
+                formControlName="akz"
+                (change)="onSubmit(projectForm)"
+                (focus)="onFocus($event, ['akz'])"
+                (keyup.esc)="onEscape($event, ['akz'])"
+              />
+            </label>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-4 col-xl-2">
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Projektname</mat-label>
+            <label>
+              <input
+                matInput
+                maxlength="255"
+                formControlName="name"
+                (change)="onSubmit(projectForm)"
+                (focus)="onFocus($event, ['name'])"
+                (keyup.esc)="onEscape($event, ['name'])"
+              />
+            </label>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-4 col-xl-2">
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Projektgröße</mat-label>
+            <mat-select #projectSizeSelect formControlName="projectSize" (selectionChange)="onSubmit(projectForm)">
+              <mat-select-trigger>{{ displayProjectSize(projectSizeSelect.value) }}</mat-select-trigger>
+              <mat-option *ngFor="let size of sizes" [value]="size.value" class="multi-line-option">
+                <h4 mat-line>{{ size.display }}</h4>
+                <p mat-line>{{ size.description }}</p>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-4 col-xl-2">
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Auftraggeber</mat-label>
+            <label>
+              <input
+                matInput
+                maxlength="255"
+                formControlName="client"
+                (change)="onSubmit(projectForm)"
+                (focus)="onFocus($event, ['client'])"
+                (keyup.esc)="onEscape($event, ['client'])"
+              />
+            </label>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6 col-lg-4 col-xl-2">
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Referat</mat-label>
+            <label>
+              <input
+                matInput
+                maxlength="255"
+                formControlName="department"
+                (change)="onSubmit(projectForm)"
+                (focus)="onFocus($event, ['department'])"
+                (keyup.esc)="onEscape($event, ['department'])"
+              />
+            </label>
+          </mat-form-field>
+        </div>
       </div>
-      <div class="col-md-6 col-lg-4 col-xl-2">
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Projektname</mat-label>
-          <label>
-            <input
-              matInput
-              maxlength="255"
-              formControlName="name"
-              (change)="onSubmit(myForm)"
-              (focus)="onFocus($event, ['name'])"
-              (keyup.esc)="onEscape($event, ['name'])"
-            />
-          </label>
-        </mat-form-field>
-      </div>
-      <div class="col-md-6 col-lg-4 col-xl-2">
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Projektgröße</mat-label>
-          <mat-select #projectSizeSelect formControlName="projectSize" (selectionChange)="onSubmit(myForm)">
-            <mat-select-trigger>{{ displayProjectSize(projectSizeSelect.value) }}</mat-select-trigger>
-            <mat-option *ngFor="let size of sizes" [value]="size.value" class="multi-line-option">
-              <h4 mat-line>{{ size.display }}</h4>
-              <p mat-line>{{ size.description }}</p>
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div class="col-md-6 col-lg-4 col-xl-2">
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Auftraggeber</mat-label>
-          <label>
-            <input
-              matInput
-              maxlength="255"
-              formControlName="client"
-              (change)="onSubmit(myForm)"
-              (focus)="onFocus($event, ['client'])"
-              (keyup.esc)="onEscape($event, ['client'])"
-            />
-          </label>
-        </mat-form-field>
-      </div>
-      <div class="col-md-6 col-lg-4 col-xl-2">
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Referat</mat-label>
-          <label>
-            <input
-              matInput
-              maxlength="255"
-              formControlName="department"
-              (change)="onSubmit(myForm)"
-              (focus)="onFocus($event, ['department'])"
-              (keyup.esc)="onEscape($event, ['department'])"
-            />
-          </label>
-        </mat-form-field>
-      </div>
-    </div>
-  </form>
+    </form>
+  </div>
 </div>
