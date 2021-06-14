@@ -90,29 +90,24 @@ export class ProjectTaskFormComponent implements OnInit {
   }
 
   public onSubmit(form: FormGroup): void {
-    console.log('submit');
     if (form.valid) {
       this.projectService.updateProjectTask(this.selectedTimelineId, form.value).subscribe({
         next: () => form.reset(form.value),
         error: null,
         complete: () => void 0,
       });
-    } else {
-      console.log('form not submitted');
     }
   }
 
   public onFocus(event: FocusEvent, path: (string | number)[]): void {
     const valueInput = event.target as HTMLInputElement;
     valueInput.setAttribute('data-value', this.formGroup.get(path).value || '');
-    console.log('onFocus');
   }
 
   public onEscape(event: KeyboardEvent, path: (string | number)[]): void {
     const valueInput = event.target as HTMLInputElement;
     valueInput.value = valueInput.getAttribute('data-value');
     this.formGroup.get(path).setValue(valueInput.value);
-    console.log('onEscape');
   }
 
   private setReactiveForm(data: ProjectTask): void {
