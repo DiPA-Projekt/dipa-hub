@@ -1,25 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {
-  AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { FormField, ProjectService, ProjectTask, Result } from 'dipa-api-client';
-import { MatSelectChange } from '@angular/material/select';
-
-interface SelectOption {
-  value: string;
-  viewValue: string;
-}
-
-interface SelectOptionGroup {
-  name: string;
-  fields: SelectOption[];
-}
 
 @Component({
   selector: 'app-project-task-form',
@@ -32,11 +13,7 @@ export class ProjectTaskFormComponent implements OnInit {
   @Input() public selectedTimelineId: number;
   @Output() public stepStatusChanged = new EventEmitter();
 
-  public formFieldGroups: SelectOptionGroup[] = [];
-
   public formGroup: FormGroup;
-
-  public showFieldsForm: FormControl;
 
   public selectedFields: string[];
 
@@ -78,7 +55,6 @@ export class ProjectTaskFormComponent implements OnInit {
 
   public ngOnInit(): void {
     this.setReactiveForm(this.taskData);
-    this.showFieldsForm = new FormControl(this.getSelectedFields());
   }
 
   public isValidUrl(entry: FormControl): boolean {
@@ -102,24 +78,7 @@ export class ProjectTaskFormComponent implements OnInit {
     return this.formGroup.get(['results']) as FormArray;
   }
 
-  public changeShowSelection(event: MatSelectChange): void {
-    this.selectedFields = event.value as string[];
-
-    for (const entry of this.entriesArray.controls) {
-      const showItem = this.selectedFields.includes(entry.get('key').value);
-      entry.get('show').setValue(showItem);
-    }
-
-    for (const result of this.resultsArray.controls) {
-      const formFieldsArray = result.get('formFields') as FormArray;
-
-      for (const ffEntry of formFieldsArray.controls) {
-        const currentKey = ffEntry.get('key').value as string;
-        const showItem = this.selectedFields.includes(`formFields.${currentKey}`);
-        ffEntry.get('show').setValue(showItem);
-      }
-    }
-
+  public changeShowSelection(): void {
     this.onSubmit(this.formGroup);
   }
 
@@ -137,8 +96,6 @@ export class ProjectTaskFormComponent implements OnInit {
         error: null,
         complete: () => void 0,
       });
-    } else {
-      console.log('form not submitted');
     }
   }
 
@@ -151,24 +108,6 @@ export class ProjectTaskFormComponent implements OnInit {
     const valueInput = event.target as HTMLInputElement;
     valueInput.value = valueInput.getAttribute('data-value');
     this.formGroup.get(path).setValue(valueInput.value);
-  }
-
-  public getFormFieldClass(formField: FormGroup | AbstractControl): string {
-    return formField.get('controlType')?.value === 'TEXTAREA' || formField.get('type')?.value === 'URL'
-      ? 'width2x'
-      : '';
-  }
-
-  private getSelectedFields(): string[] {
-    this.selectedFields = [];
-
-    for (const entry of this.entriesArray.controls) {
-      if (entry.get('show').value) {
-        this.selectedFields.push(entry.get('key').value);
-      }
-    }
-
-    return this.selectedFields;
   }
 
   private setReactiveForm(data: ProjectTask): void {

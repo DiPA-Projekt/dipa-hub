@@ -1,8 +1,8 @@
 <ng-container [formGroup]="controlContainer.control">
-  <mat-form-field [hintLabel]="formField.get('hint')?.value" class="width2x" *ngIf="formField.get('show')?.value">
+  <mat-form-field class="full-width" *ngIf="formField.get('show')?.value">
     <mat-label>{{ formField.get('label')?.value }}</mat-label>
     <mat-chip-list #chipList aria-label="Chip selection">
-      <span style="max-height: 100px; overflow: auto">
+      <span style="max-height: 100px; overflow: auto" #scrollChip [scrollTop]="scrollChip.scrollHeight">
         <mat-chip
           *ngFor="let chip of chips"
           class="smallChip"
