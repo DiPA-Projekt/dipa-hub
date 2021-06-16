@@ -1,0 +1,17 @@
+{
+  "name": "@dipa-project/dipa-openapi",
+  "version": "0.0.0",
+  "private": "true",
+  "scripts": {
+    "build": "rm -rf dist && npm run generate:openapi && npm run generate:typescript-rxjs",
+    "generate:openapi": "openapi-generator-cli generate -g openapi -i src/openapi.yml -o dist/openapi",
+    "generate:typescript-rxjs": "openapi-generator-cli generate -g typescript-rxjs -o dist/typescript-rxjs -i src/openapi.yml",
+    "reinstall": "rm -rf node_modules package-lock.json && npm install",
+    "update": "ncu -t minor -u && npm install"
+  },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "2.3.4",
+    "autochangelog": "3.0.3",
+    "npm-check-updates": "11.6.0"
+  }
+}
