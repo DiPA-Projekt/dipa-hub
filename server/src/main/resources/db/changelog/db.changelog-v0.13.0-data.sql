@@ -19,7 +19,6 @@ UPDATE project_task_form_field
 SET key = 'responsible_person'
 WHERE key = 'responsiblePerson'
 
-
 --changeset id:update-project-task-form-field-contactPerson context:itzbund
 UPDATE project_task_form_field
 SET label = 'Ansprechpartner', hint = null
