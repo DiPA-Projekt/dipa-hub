@@ -15,10 +15,18 @@ import { RootComponent } from './root/root.component';
 import { ProfileSettingsMenuComponent } from './menus/profile-settings-menu/profile-settings-menu.component';
 import { ProjectDialogComponent } from './modules/gantt/project-dialog/project-dialog.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UserUnauthorizedComponent } from './modules/user-unauthorized/user-unauthorized.component';
 import { TimelineDataService } from '../app/shared/timelineDataService';
 
 @NgModule({
-  declarations: [AppComponent, GanttMenuComponent, RootComponent, ProfileSettingsMenuComponent, ProjectDialogComponent],
+  declarations: [
+    AppComponent,
+    GanttMenuComponent,
+    RootComponent,
+    ProfileSettingsMenuComponent,
+    ProjectDialogComponent,
+    UserUnauthorizedComponent,
+  ],
   imports: [
     BrowserModule,
     HttpClientModule,
