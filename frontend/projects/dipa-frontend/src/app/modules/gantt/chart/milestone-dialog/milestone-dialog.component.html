@@ -22,8 +22,6 @@
       <mat-form-field appearance="fill">
         <mat-label>Datum</mat-label>
         <input
-          [min]="timeline.start || 'yyyy-MM-dd'"
-          [max]="timeline.end || 'yyyy-MM-dd'"
           matInput
           [matDatepicker]="datepicker"
           formControlName="date"
