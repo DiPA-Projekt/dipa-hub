@@ -4,10 +4,12 @@
 name: GitHub CI - OpenAPI as NPM-Package
 
 on:
+  push:
+    branches: [develop]
 
 env:
   NPM_SCOPE: dipa-projekt
-  PROJECT_NAME: projektassistent-openapi
+  PROJECT_NAME: dipa-openapi
 
 jobs:
   build:
@@ -20,49 +22,31 @@ jobs:
           node-version: 14.x
           registry-url: "https://npm.pkg.github.com"
           scope: "@${{ env.NPM_SCOPE }}"
-      - name: Restore cache
-        uses: actions/cache@v2.1.6
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-node-
-      - name: Install dependencies
-        run: npm ci
-        working-directory: open-api
-      - name: Convert yml2json
-        run: npx openapi-generator-cli generate -g openapi -i src/openapi.yml -o dist/openapi
-      - name: Read OpenAPI
-        id: openapi
-        run: |
-          content=`cat dist/openapi/openapi.json | tr -d "\n"`
-          echo "::set-output name=json::$content"
-        working-directory: open-api
-#       - name: Configure Spring
-#         run: node scripts/configure-spring.js ${{ env.PROJECT_NAME }} ${{fromJson(steps.openapi.outputs.json).info.version}}
-#       - name: Generate API for Spring
-#         run: npx openapi-generator-cli generate -g spring -i src/openapi.yml -c config/spring.json -o dist/spring
-      - name: Generate API for NPM
-        run: npx openapi-generator-cli generate -g typescript-rxjs -i src/openapi.yml -c config/typescript-rxjs.json -o dist/typescript-rxjs
-#       - name: Configure Maven Pom for Spring
-#         run: node scripts/config-maven-pom-spring.js ${{ env.NPM_SCOPE }} ${{ env.PROJECT_NAME }}
-      - name: Create package.json
-        run: node scripts/create-package-json.js @${{ env.NPM_SCOPE }}/${{ env.PROJECT_NAME }} ${{fromJson(steps.openapi.outputs.json).info.version}}
-#       - name: Set up JDK 1.8
-#         uses: actions/setup-java@v2
+#       - name: Restore cache
+#         uses: actions/cache@v2.1.6
 #         with:
-#           distribution: zulu
-#           java-version: 11
-#       - name: Validate, build and publish Maven-Package (Spring)
+#           path: ~/.npm
+#           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+#           restore-keys: ${{ runner.os }}-node-
+#       - name: Install dependencies
+#         run: npm ci
+#         working-directory: open-api
+#       - name: Convert yml2json
+#         run: npx openapi-generator-cli generate -g openapi -i src/openapi.yml -o dist/openapi
+#       - name: Read OpenAPI
+#         id: openapi
 #         run: |
-#           mvn clean compile
-#           mvn -B deploy
-#         working-directory: dist/spring
+#           content=`cat dist/openapi/openapi.json | tr -d "\n"`
+#           echo "::set-output name=json::$content"
+#         working-directory: open-api
+#       - name: Generate API for NPM
+#         run: npx openapi-generator-cli generate -g typescript-rxjs -i src/openapi.yml -c config/typescript-rxjs.json -o dist/typescript-rxjs
+#       - name: Create package.json
+#         run: node scripts/create-package-json.js @${{ env.NPM_SCOPE }}/${{ env.PROJECT_NAME }} ${{fromJson(steps.openapi.outputs.json).info.version}}
+#       - name: Validate, build and publish NPM-Package
+#         run: |
+#           npm install
+#           npm publish --access restricted
+#         working-directory: open-api/dist/typescript-rxjs
 #         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Validate, build and publish NPM-Package
-        run: |
-          npm install
-          npm publish --access restricted
-        working-directory: open-api/dist/typescript-rxjs
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
