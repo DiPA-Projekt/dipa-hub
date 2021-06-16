@@ -15,6 +15,7 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import static javax.persistence.CascadeType.ALL;
 
 @Entity
 @Table(name = "app_user")
@@ -33,12 +34,12 @@ public class UserEntity extends BaseEntity {
     private String tenantId;
     private String email;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = { ALL })
     @JoinTable(name = "user_project_role_connection", joinColumns = {
             @JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "project_role_id") })
     private Set<ProjectRoleEntity> projectRoles = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = { ALL })
     @JoinTable(name = "user_organisation_role_connection", joinColumns = {
             @JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "organisation_role_id") })
     private Set<OrganisationRoleEntity> organisationRoles = new HashSet<>();
