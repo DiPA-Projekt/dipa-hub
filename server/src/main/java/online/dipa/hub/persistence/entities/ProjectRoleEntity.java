@@ -12,7 +12,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import online.dipa.hub.api.model.ProjectRole;
-
+import static javax.persistence.CascadeType.ALL;
 
 @Entity
 @Table(name = "project_role")
@@ -47,7 +47,7 @@ public class ProjectRoleEntity extends BaseEntity {
     @NotFound(action = NotFoundAction.IGNORE)
     private ProjectRoleTemplateEntity projectRoleTemplate;
 
-    @ManyToMany(mappedBy = "projectRoles")
+    @ManyToMany(mappedBy = "projectRoles", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<UserEntity> users;
 
