@@ -2,7 +2,7 @@
 
 -- changeset id:delete_FKUserIdProjectRoleConnection
 ALTER TABLE user_project_role_connection
-DROP CONSTRAINT FKUserIdProjectRoleConnection
+DROP FOREIGN KEY FKUserIdProjectRoleConnection
 
 -- changeset id:update_FKUserIdProjectRoleConnection
 ALTER TABLE user_project_role_connection
@@ -13,7 +13,7 @@ ON DELETE CASCADE
 
 -- changeset id:delete_FKOrganisationRoleUserIdConnection
 ALTER TABLE user_organisation_role_connection
-DROP CONSTRAINT FKOrganisationRoleUserIdConnection
+DROP FOREIGN KEY FKOrganisationRoleUserIdConnection
 
 -- changeset id:update_FKOrganisationRoleUserIdConnection
 ALTER TABLE user_organisation_role_connection
