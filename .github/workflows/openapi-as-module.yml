@@ -33,6 +33,7 @@ jobs:
         working-directory: open-api
       - name: Convert yml2json
         run: npx openapi-generator-cli generate -g openapi -i src/main/resources/dipa-hub.yaml -o dist/openapi
+        working-directory: open-api
       - name: Read OpenAPI
         id: openapi
         run: |
