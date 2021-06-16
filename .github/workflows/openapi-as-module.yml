@@ -42,8 +42,10 @@ jobs:
         working-directory: open-api
       - name: Generate API for NPM
         run: npx openapi-generator-cli generate -g typescript-rxjs -i src/main/resources/dipa-hub.yaml -c config/typescript-rxjs.json -o dist/typescript-rxjs
+        working-directory: open-api
       - name: Create package.json
         run: node scripts/create-package-json.js @${{ env.NPM_SCOPE }}/${{ env.PROJECT_NAME }} ${{fromJson(steps.openapi.outputs.json).info.version}}
+        working-directory: open-api
 #       - name: Validate, build and publish NPM-Package
 #         run: |
 #           npm install
