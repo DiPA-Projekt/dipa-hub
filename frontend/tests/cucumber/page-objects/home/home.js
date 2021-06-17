@@ -12,6 +12,7 @@ const logout = function () {
   return client
     .click('xpath', ELEMENTS.icon_profil)
     .click('xpath', ELEMENTS.txt_logout)
+    .useCss()
     .assert.elementPresent('.card-pf');
 }
 
