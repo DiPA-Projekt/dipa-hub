@@ -10,6 +10,7 @@ on:
 env:
   NPM_SCOPE: dipa-projekt
   PROJECT_NAME: dipa-openapi
+  OPENAPI_YML: src/main/resources/dipa-hub.yaml
 
 jobs:
   build:
@@ -32,7 +33,7 @@ jobs:
         run: npm ci
         working-directory: open-api
       - name: Convert yml2json
-        run: npx openapi-generator-cli generate -g openapi -i src/main/resources/dipa-hub.yaml -o dist/openapi
+        run: npx openapi-generator-cli generate -g openapi -i ${{ env.OPENAPI_YML }} -o dist/openapi
         working-directory: open-api
       - name: Read OpenAPI
         id: openapi
@@ -41,17 +42,15 @@ jobs:
           echo "::set-output name=json::$content"
         working-directory: open-api
       - name: Generate API for NPM
-        run: npx openapi-generator-cli generate -g typescript-rxjs -i src/main/resources/dipa-hub.yaml -o dist/typescript-rxjs
+        run: npx openapi-generator-cli generate -g typescript-rxjs -i ${{ env.OPENAPI_YML }} -o dist/typescript-rxjs
         working-directory: open-api
       - name: Create package.json
-        run: node scripts/create-package-json.js @${{ env.NPM_SCOPE }}/${{ env.PROJECT_NAME }} ${{fromJson(steps.openapi.outputs.json).info.version}}
+        run: node scripts/create-package-json.js ${{ env.NPM_SCOPE }} ${{ env.PROJECT_NAME }} ${{fromJson(steps.openapi.outputs.json).info.version}} $GITHUB_REPOSITORY
         working-directory: open-api
       - name: Validate, build and publish NPM-Package
         run: |
-          ls -la
           npm install
-          npm pack
-          # npm publish --access restricted
+          npm publish --access restricted
         working-directory: open-api/dist/typescript-rxjs
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
