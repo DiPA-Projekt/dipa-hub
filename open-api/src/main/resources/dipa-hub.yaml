@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: DiPA-OpenAPI
-  version: 0.13.0
+  version: 0.13.1
 servers:
   - url: http://localhost:9080/api/v1
     description: Development
