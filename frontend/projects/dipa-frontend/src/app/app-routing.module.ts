@@ -2,8 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './auth.guard';
 import { RootComponent } from './root/root.component';
+import { UserUnauthorizedComponent } from '../app/modules/user-unauthorized/user-unauthorized.component';
 
 const routes: Routes = [
+  { path: 'userUnauthorized', component: UserUnauthorizedComponent },
   {
     path: '',
     component: RootComponent,

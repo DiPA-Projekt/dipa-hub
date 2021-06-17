@@ -26,3 +26,14 @@ SELECT 'OPEN', 'offen', id FROM project_task_form_field WHERE key = 'status' AND
 --changeset id:insert-project-task-TYPE_SINGLE_APPOINTMENT-option-entry-person-CLOSED-result context:itzbund
 INSERT INTO option_entry (key, value, form_field_id)
 SELECT 'CLOSED', 'geschlossen', id FROM project_task_form_field WHERE key = 'status' AND result_id IN (SELECT id FROM project_task_result WHERE result_type = 'TYPE_SINGLE_APPOINTMENT')
+
+-- changeset id:delete_user_from_ba context:ba
+DELETE FROM app_user WHERE tenant_id = 'itzbund'
+
+-- changeset id:delete_user_from_itzbund context:itzbund
+DELETE FROM app_user WHERE tenant_id = 'ba'
+
+--changeset id:update-project-task-form-fields-hint
+UPDATE project_task_form_field
+SET label = hint, hint = null
+WHERE hint is not null

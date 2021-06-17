@@ -13,7 +13,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 import online.dipa.hub.api.model.ProjectRole;
 
-
 @Entity
 @Table(name = "project_role")
 @Cacheable
