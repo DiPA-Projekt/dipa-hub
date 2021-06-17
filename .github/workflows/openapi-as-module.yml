@@ -49,7 +49,8 @@ jobs:
       - name: Validate, build and publish NPM-Package
         run: |
           npm install
-          npm publish --access restricted
+          npm pack
+          # npm publish --access restricted
         working-directory: open-api/dist/typescript-rxjs
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
