@@ -47,7 +47,7 @@ public class ProjectRoleEntity extends BaseEntity {
     @NotFound(action = NotFoundAction.IGNORE)
     private ProjectRoleTemplateEntity projectRoleTemplate;
 
-    @ManyToMany(mappedBy = "projectRoles", cascade = { ALL })
+    @ManyToMany(mappedBy = "projectRoles")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<UserEntity> users;
 
