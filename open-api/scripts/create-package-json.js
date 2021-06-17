@@ -11,10 +11,7 @@ fs.writeFileSync(
   "files": [
     "dist"
   ],
-  "main": "dist/index.js",
-  "scripts": {
-//     "prepack": "tsc"
-  }
+  "main": "dist/index.js"
 }`,
   {
     encoding: "utf8",
