@@ -17,20 +17,12 @@ WHERE value = 'DONE' AND result_id IN (SELECT id FROM project_task_result WHERE 
 
 --changeset id:delete-options-status-single-appointment context:itzbund
 DELETE FROM option_entry
-WHERE form_field_id IN (SELECT id FROM project_task_form_field WHERE result_id IN (SELECT id FROM project_task_result WHERE result_type = 'TYPE_SINGLE_APPOINTMENT'))
+WHERE form_field_id IN (SELECT id FROM project_task_form_field WHERE key = 'status' AND result_id IN (SELECT id FROM project_task_result WHERE result_type = 'TYPE_SINGLE_APPOINTMENT'))
 
---changeset id:insert-project-task-TYPE_SINGLE_APPOINTMENT-option-entry-person-OPEN-resultcontext:itzbund
+--changeset id:insert-project-task-TYPE_SINGLE_APPOINTMENT-option-entry-person-OPEN-result context:itzbund
 INSERT INTO option_entry (key, value, form_field_id)
-SELECT 'OPEN', 'offen', id FROM project_task_form_field WHERE result_id IN (SELECT id FROM project_task_result WHERE result_type = 'TYPE_SINGLE_APPOINTMENT')
+SELECT 'OPEN', 'offen', id FROM project_task_form_field WHERE key = 'status' AND result_id IN (SELECT id FROM project_task_result WHERE result_type = 'TYPE_SINGLE_APPOINTMENT')
 
---changeset id:insert-project-task-TYPE_SINGLE_APPOINTMENT-option-entry-person-CLOSED-resultcontext:itzbund
+--changeset id:insert-project-task-TYPE_SINGLE_APPOINTMENT-option-entry-person-CLOSED-result context:itzbund
 INSERT INTO option_entry (key, value, form_field_id)
-SELECT 'CLOSED', 'geschlossen', id FROM project_task_form_field WHERE result_id IN (SELECT id FROM project_task_result WHERE result_type = 'TYPE_SINGLE_APPOINTMENT')
-
---changeset id:insert-project-task-05-option-entry-person-OPEN-result-06 context:itzbund
-INSERT INTO option_entry (key, value, form_field_id)
-VALUES ('OPEN', 'offen', 45)
-
---changeset id:insert-project-task-05-option-entry-person-CLOSED-result-06 context:itzbund
-INSERT INTO option_entry (key, value, form_field_id)
-VALUES ('CLOSED', 'geschlossen', 45)
+SELECT 'CLOSED', 'geschlossen', id FROM project_task_form_field WHERE key = 'status' AND result_id IN (SELECT id FROM project_task_result WHERE result_type = 'TYPE_SINGLE_APPOINTMENT')

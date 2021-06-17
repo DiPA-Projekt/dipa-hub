@@ -163,6 +163,6 @@ export class TimelineComponent implements OnInit, OnDestroy {
   }
 
   public filterAllOpenAppointments(appointments: Result[]): Result[] {
-    return appointments.filter((appt) => appt.formFields.find((field) => field.key === 'status').value !== 'DONE');
+    return appointments.filter((appt) => appt.formFields.find((field) => field.key === 'status').value !== 'CLOSED');
   }
 }
