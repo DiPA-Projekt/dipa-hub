@@ -7,8 +7,9 @@ Feature: VMXT ITZBund Kleinprojekte
     When Ich melde mich als "MEYER" an
     And Ich klicke auf den Text "Meine Projekte"
     And Ich klicke auf den Text "Testprojekt"
-    And Ich navigiere zu "Unsere Termine"
     And Ich warte 2 Sekunden
+    And Ich navigiere zu "Unsere Termine"
+
   Scenario: Änderung der Vorgehensart zu inkrementell
     Then sollte in der "Vorhabensart" Selectbox der Wert "VMXT ITZBund agil" ausgewählt sein
 

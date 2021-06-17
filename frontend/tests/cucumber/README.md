@@ -67,3 +67,9 @@ Einträge für settings.json für den Editor:
   }
 }
 ```
+
+## Good to know
+
+### useXpath() und useCss()
+- Die Funktionen useXpath() und useCss() sollten mit Vorsicht genossen werden, da diese dann für die gesamte Laufzeit gesetzt sind.
+Wenn ein Step useXpath() nutzt und der nächste Step ein Element mit einem CSS Locator sucht, wird das nicht klappen bevor useCss() gesetzt wird.
