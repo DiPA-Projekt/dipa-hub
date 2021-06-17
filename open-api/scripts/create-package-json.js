@@ -13,7 +13,7 @@ fs.writeFileSync(
   ],
   "main": "dist/index.js",
   "scripts": {
-    "prepack": "tsc"
+//     "prepack": "tsc"
   }
 }`,
   {
