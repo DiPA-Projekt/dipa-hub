@@ -32,4 +32,6 @@ Feature: VMXT ITZBund agil
     And sollte ich den Text "QS-Handbuch" sehen
     When Ich schließe die Meilensteindetails
     Then sollte ich den Text "Fällig am 24.4.2021" nicht sehen
-    And Ich melde mich ab
+
+  Scenario: Abmeldung
+    When Ich melde mich ab
