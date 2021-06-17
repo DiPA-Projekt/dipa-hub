@@ -44,6 +44,9 @@ jobs:
       - name: Generate API for NPM
         run: npx openapi-generator-cli generate -g typescript-rxjs -i ${{ env.OPENAPI_YML }} -o dist/typescript-rxjs
         working-directory: open-api
+      - name: Add bearer token handling
+        run: node scripts/add-bearer-handling.js
+        working-directory: open-api
       - name: Create package.json
         run: node scripts/create-package-json.js ${{ env.NPM_SCOPE }} ${{ env.PROJECT_NAME }} ${{fromJson(steps.openapi.outputs.json).info.version}} $GITHUB_REPOSITORY
         working-directory: open-api
