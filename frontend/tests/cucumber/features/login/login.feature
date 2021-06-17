@@ -19,4 +19,3 @@ Feature: Login Tests
     When Ich melde mich als "MEYER" an
     Then sollte die Startseite zu sehen sein
     And Ich melde mich ab
-
