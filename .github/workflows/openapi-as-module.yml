@@ -48,6 +48,7 @@ jobs:
         working-directory: open-api
       - name: Validate, build and publish NPM-Package
         run: |
+          ls -la
           npm install
           npm pack
           # npm publish --access restricted
