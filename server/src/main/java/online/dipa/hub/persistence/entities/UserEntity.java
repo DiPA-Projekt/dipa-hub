@@ -15,7 +15,6 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import static javax.persistence.CascadeType.ALL;
 
 @Entity
 @Table(name = "app_user")

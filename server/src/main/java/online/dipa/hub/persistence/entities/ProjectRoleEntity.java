@@ -12,7 +12,6 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import online.dipa.hub.api.model.ProjectRole;
-import static javax.persistence.CascadeType.ALL;
 
 @Entity
 @Table(name = "project_role")
