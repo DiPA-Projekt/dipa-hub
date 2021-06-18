@@ -234,7 +234,7 @@
             <dependency>
                 <groupId>org.keycloak</groupId>
                 <artifactId>keycloak-spring-boot-starter</artifactId>
-                <version>13.0.1</version>
+                <version>14.0.0</version>
             </dependency>
 
             <dependency>
