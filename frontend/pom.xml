@@ -23,10 +23,21 @@
   <build>
     <defaultGoal>install</defaultGoal>
     <resources>
+    <!-- https://medium.com/@itzgeoff/including-react-in-your-spring-boot-maven-build-ae3b8f8826e -->
+      <resource>
+        <directory>redirect</directory>
+        <filtering>false</filtering>
+        <targetPath>static</targetPath>
+      </resource>
       <resource>
         <directory>dist/dipa-frontend</directory>
         <filtering>false</filtering>
-        <targetPath>META-INF/resources</targetPath>
+        <targetPath>static/current</targetPath>
+      </resource>
+      <resource>
+        <directory>node_modules/@dipa-projekt/dipa-client/dist</directory>
+        <filtering>false</filtering>
+        <targetPath>static/next</targetPath>
       </resource>
     </resources>
     <plugins>
