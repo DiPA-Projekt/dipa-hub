@@ -28,4 +28,11 @@ public class Application {
     public static void main(final String[] args) {
         SpringApplication.run(Application.class, args);
     }
+
+    @Bean
+    public WebServerFactoryCustomizer<ConfigurableTomcatWebServerFactory> containerCustomizer() {
+        return container -> {
+            container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/v1/index.html"));
+        };
+    }
 }

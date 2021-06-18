@@ -4,7 +4,7 @@ export const environment: IEnvironment = {
   production: true,
   keycloakConfig: {
     issuer: 'https://auth.dipa.online/auth/realms/DiPA',
-    redirectUri: `${window.location.origin}/`,
+    redirectUri: `${window.location.origin}/v1/`,
     clientId: 'dipa-app',
     scope: 'openid profile email offline_access',
     responseType: 'code',
