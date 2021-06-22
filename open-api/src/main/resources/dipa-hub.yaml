@@ -24,12 +24,16 @@ paths:
     $ref: "paths/projectUsers.yml"
   /timelines:
     $ref: "paths/timelines.yml"
+  /timelines/archived:
+    $ref: "paths/archivedTimelines.yml"
   /timelines/operationTypes:
     $ref: "paths/operationTypes.yml"
   /timelines/projectApproaches:
     $ref: "paths/projectApproaches.yml"
   /timelines/{timelineId}:
     $ref: "paths/updateTimeline.yml"
+  /timelines/{timelineId}/archiveProject:
+    $ref: "paths/archiveProject.yml"
   /timelines/{timelineId}/project:
     $ref: "paths/projectData.yml"
   /timelines/{timelineId}/projectTasks:

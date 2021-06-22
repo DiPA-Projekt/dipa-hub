@@ -1,6 +1,6 @@
 <p>
   <mat-toolbar>
-    <span *ngIf="isAdmin" class="timelineName">
+    <span *ngIf="showTitle" class="timelineName">
       {{ timelineData.name }}
     </span>
     <mat-form-field *ngIf="timelineData" floatLabel="always" id="projectType-{{ timelineData.id }}">
@@ -8,7 +8,7 @@
       <mat-select
         [(value)]="timelineData.projectType"
         (selectionChange)="changeProjectType($event)"
-        [disabled]="!isAdmin"
+        [disabled]="!active"
       >
         <mat-option *ngFor="let projectType of projectTypesList" [value]="projectType">
           {{ projectType }}
@@ -20,7 +20,7 @@
       <mat-select
         [(value)]="timelineData.operationTypeId"
         (selectionChange)="changeOperationType($event)"
-        [disabled]="!isAdmin"
+        [disabled]="!active"
       >
         <mat-option *ngFor="let operationType of operationTypesList" [value]="operationType.id">
           {{ operationType.name }}
@@ -29,7 +29,11 @@
     </mat-form-field>
     <mat-form-field *ngIf="timelineData" floatLabel="always" id="projectApproach-{{ timelineData.id }}">
       <mat-label>Vorgehensweise</mat-label>
-      <mat-select [(value)]="timelineData.projectApproachId" (selectionChange)="changeProjectApproach($event)">
+      <mat-select
+        [(value)]="timelineData.projectApproachId"
+        (selectionChange)="changeProjectApproach($event)"
+        [disabled]="!active && !projectApproachModifiable"
+      >
         <mat-option
           *ngFor="let projectApproach of filterProjectApproaches(timelineData.operationTypeId)"
           [value]="projectApproach.id"

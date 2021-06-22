@@ -55,6 +55,8 @@ public class ProjectEntity extends BaseEntity {
     private String department;
     private OffsetDateTime startDate;
     private OffsetDateTime endDate;
+    private boolean archived;
+
 
     public ProjectEntity() {
         super();
@@ -164,6 +166,14 @@ public class ProjectEntity extends BaseEntity {
 
     public void setEndDate(final OffsetDateTime endDate) {
         this.endDate = endDate;
+    }
+    
+    public void setArchived(final boolean archived) {
+        this.archived = archived;
+    }
+
+    public boolean isArchived() {
+        return archived;
     }
 
     public ProjectRoleTemplateEntity getProjectRoleTemplate() {

@@ -96,6 +96,18 @@ public class ProjectService {
         }
     }
 
+    public void archiveProject(final Long projectId, final Project project) {
+        List<Long> projectIds = userInformationService.getProjectIdList();
+        var projectEntity = timelineService.getProject(projectId);
+
+        if (projectIds.contains(projectId)) {
+            projectEntity.setArchived(project.getArchived());
+          
+            projectRepository.save(projectEntity);
+
+        }
+    }
+
     public Timeline createProject(final Project project, final User projectOwner) {
 
         var newProject = new ProjectEntity(project);

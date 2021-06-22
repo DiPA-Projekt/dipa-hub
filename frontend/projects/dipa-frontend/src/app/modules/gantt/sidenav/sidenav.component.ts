@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavItem } from '../../../nav-item';
-import { ExternalLinksService, Timeline, TimelinesService } from 'dipa-api-client';
+import { ExternalLinksService, Timeline, Project, TimelinesService, ProjectService } from 'dipa-api-client';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthenticationService } from '../../../authentication.service';
 import { TimelineDataService } from '../../../shared/timelineDataService';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sidenav',
@@ -31,8 +32,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private authenticationService: AuthenticationService,
     private timelinesService: TimelinesService,
     private externalLinksService: ExternalLinksService,
-    public activatedRoute: ActivatedRoute,
-    private timelineDataService: TimelineDataService
+    private activatedRoute: ActivatedRoute,
+    private timelineDataService: TimelineDataService,
+    private projectService: ProjectService,
+    private router: Router
   ) {}
 
   public ngOnInit(): void {
@@ -126,6 +129,19 @@ export class SidenavComponent implements OnInit, OnDestroy {
           })),
         },
       ];
+    });
+  }
+
+  public archiveProject(): void {
+    const project: Project = { id: this.timeline.id, name: this.timeline.name, archived: true };
+
+    this.projectService.archiveProject(this.selectedTimelineId, project).subscribe({
+      next: () => {
+        this.timelineDataService.setTimelines();
+        this.router.navigate([`overview/archivedProjects`]);
+      },
+      error: null,
+      complete: () => void 0,
     });
   }
 }
