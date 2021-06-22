@@ -32,8 +32,6 @@ paths:
     $ref: "paths/projectApproaches.yml"
   /timelines/{timelineId}:
     $ref: "paths/updateTimeline.yml"
-  /timelines/{timelineId}/archiveProject:
-    $ref: "paths/archiveProject.yml"
   /timelines/{timelineId}/project:
     $ref: "paths/projectData.yml"
   /timelines/{timelineId}/projectTasks:

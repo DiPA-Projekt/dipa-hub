@@ -26,7 +26,8 @@ public class ProjectEntityToProjectConverter implements Converter<ProjectEntity,
                              .operationTypeId(operationTypeId)
                              .projectApproachId(projectApproach.getId())
                              .start(template.getStartDate().toLocalDate())
-                             .end(template.getEndDate().toLocalDate());
+                             .end(template.getEndDate().toLocalDate())
+                             .archived(template.isArchived());
 
 
         if (template.getProjectSize() != null) {

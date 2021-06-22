@@ -19,14 +19,16 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   public selectedTimelineId: number;
 
-  public favoriteLinksSubscription: Subscription;
-  public rolesSubscription: Subscription;
-  public timelineDataSubscription: Subscription;
-  public paramsSubscription: Subscription;
-
   public navMenuItems: NavItem[] = [];
   public favoriteLinkItems: NavItem[] = [];
   public roles: string;
+
+  private favoriteLinksSubscription: Subscription;
+  private rolesSubscription: Subscription;
+  private timelineDataSubscription: Subscription;
+  private paramsSubscription: Subscription;
+  private projectSubscription: Subscription;
+  private project: Project;
 
   public constructor(
     private authenticationService: AuthenticationService,
@@ -55,6 +57,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.rolesSubscription = this.timelineDataService.getRoles().subscribe((data) => {
       this.roles = data;
     });
+
+    this.projectSubscription = this.projectService.getProjectData(this.selectedTimelineId).subscribe((data) => {
+      this.project = data;
+    });
   }
 
   public ngOnDestroy(): void {
@@ -62,6 +68,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.paramsSubscription?.unsubscribe();
     this.timelineDataSubscription?.unsubscribe();
     this.rolesSubscription?.unsubscribe();
+    this.projectSubscription?.unsubscribe();
   }
 
   public setSideNavMenu(): void {
@@ -133,9 +140,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   public archiveProject(): void {
-    const project: Project = { id: this.timeline.id, name: this.timeline.name, archived: true };
+    this.project.archived = true;
 
-    this.projectService.archiveProject(this.selectedTimelineId, project).subscribe({
+    this.projectService.updateProjectData(this.selectedTimelineId, this.project).subscribe({
       next: () => {
         this.timelineDataService.setTimelines();
         this.router.navigate([`overview/archivedProjects`]);

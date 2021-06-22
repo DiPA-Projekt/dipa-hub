@@ -68,6 +68,7 @@ public class ProjectEntity extends BaseEntity {
         this.projectType = project.getProjectType().toString();
         this.startDate = OffsetDateTime.of(project.getStart(),LocalTime.MIDNIGHT, ZoneOffset.UTC);
         this.endDate = OffsetDateTime.of(project.getEnd(), LocalTime.MIDNIGHT, ZoneOffset.UTC);
+        this.archived = false;
     }
 
     public String getName() {

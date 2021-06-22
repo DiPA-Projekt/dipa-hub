@@ -90,19 +90,8 @@ public class ProjectService {
             projectEntity.setProjectSize(project.getProjectSize().toString());
             projectEntity.setClient(project.getClient());
             projectEntity.setDepartment(project.getDepartment());
-          
-            projectRepository.save(projectEntity);
-
-        }
-    }
-
-    public void archiveProject(final Long projectId, final Project project) {
-        List<Long> projectIds = userInformationService.getProjectIdList();
-        var projectEntity = timelineService.getProject(projectId);
-
-        if (projectIds.contains(projectId)) {
             projectEntity.setArchived(project.getArchived());
-          
+
             projectRepository.save(projectEntity);
 
         }

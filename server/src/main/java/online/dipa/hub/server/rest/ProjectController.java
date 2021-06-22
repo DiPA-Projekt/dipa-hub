@@ -29,12 +29,6 @@ public class ProjectController implements ProjectApi {
     }
 
     @Override
-    public ResponseEntity<Void> archiveProject(final Long timelineId, Project project) {
-        projectService.archiveProject(timelineId, project);
-        return ResponseEntity.noContent().build();
-    }
-
-    @Override
     public ResponseEntity<List<ProjectTask>> getProjectTasks(final Long timelineId) {
         List<ProjectTask> projectTasks =  projectService.getProjectTasks(timelineId, false);
         return ResponseEntity.ok(projectTasks);
