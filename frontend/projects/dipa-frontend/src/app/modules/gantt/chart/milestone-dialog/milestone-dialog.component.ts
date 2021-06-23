@@ -1,7 +1,8 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Milestone, MilestonesService, Timeline } from 'dipa-api-client';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import StatusEnum = Milestone.StatusEnum;
 
 @Component({
@@ -25,10 +26,17 @@ export class MilestoneDialogComponent implements OnInit {
 
   public constructor(
     public dialogRef: MatDialogRef<MilestoneDialogComponent>,
+    private snackBar: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public timeline: Timeline,
     private fb: FormBuilder,
     private milestoneService: MilestonesService
   ) {}
+
+  private static isMilestoneOutOfProjectPeriod(timeline: Timeline, milestoneDate: Date): boolean {
+    const timelineStart = new Date(timeline.start);
+    const timelineEnd = new Date(timeline.end);
+    return milestoneDate < timelineStart || milestoneDate > timelineEnd;
+  }
 
   public ngOnInit(): void {
     this.setReactiveForm();
@@ -37,7 +45,18 @@ export class MilestoneDialogComponent implements OnInit {
   public onSubmit(formGroup: FormGroup): void {
     if (formGroup.valid) {
       this.milestoneService.createMilestone(this.timeline.id, formGroup.value).subscribe({
-        next: () => formGroup.reset(formGroup.value),
+        next: () => {
+          const milestoneDate: Date = formGroup.get('date').value as Date;
+          if (MilestoneDialogComponent.isMilestoneOutOfProjectPeriod(this.timeline, milestoneDate)) {
+            this.snackBar.open('Der Projektzeitraum wurde erweitert.', 'Schließen', {
+              horizontalPosition: 'center',
+              verticalPosition: 'top',
+              duration: 4000,
+              panelClass: 'lightColorPanel',
+            });
+          }
+          formGroup.reset(formGroup.value);
+        },
         error: null,
         complete: () => {
           this.dialogRef.close();
