@@ -82,7 +82,7 @@ public class TimelineService {
                                  .map(p -> conversionService.convert(p, Timeline.class))
                                  .filter(Objects::nonNull)
                                  .filter(t -> projectIds.contains(t.getId()))
-                                 .filter(t -> t.getArchived())
+                                 .filter(Timeline::getArchived)
                                  .collect(Collectors.toList());
     }
 
