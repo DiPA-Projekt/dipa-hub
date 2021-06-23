@@ -6,11 +6,11 @@
   - [Konfigurationen](#konfigurationen)
     - [Einträge in der settings.json für den Editor:](#einträge-in-der-settingsjson-für-den-editor)
   - [Ordnerstruktur](#ordnerstruktur)
+    - [Inhalte der einzelnen Ordner](#inhalte-der-einzelnen-ordner)
   - [Good to know](#good-to-know)
     - [useXpath() und useCss()](#usexpath-und-usecss)
     - [Unterschied visible und present](#unterschied-visible-und-present)
-  
-
+    - [Ausführung einer einzelnen Feature](#ausführung-einer-einzelnen-feature)
 ## Getting Started
 Ist die Einrichtung der Entwicklungsumgebung abgeschlossen muss anschließend im Root-Verzeichnis die Anwendung mit Maven istalliert werden:
 ```bash
@@ -117,11 +117,49 @@ cucumber
 |   |   clicks.js
 |   |   ...
 ```
+
+### Inhalte der einzelnen Ordner
+Im nachfolgenden wird erläutert, wie ein Best-Practice bei der Erstellung eines Tests aussieht.
+1. In dem Ordner **features** werden alle Feature-Dateien abgelegt. Dort beginnt die Erstellung eines Tests, denn als erstes muss ein Test Szenario mit der Gherkin Syntax erstellt werden.
+2. Vordefinierte Sätze befinden sich im Ordner step-definitions. Hier gibt es keine spezielle Ordnerstruktur bezüglich der Navigation in DiPA. Die Funktionalitäten hinter der Gherkin Syntax werden dort zur Verfügung gestellt:
+      ```feature 
+      When('Ich klicke auf den Button {string}', (buttonName) => {
+        return clickOnButton(buttonName);
+      });
+      ```
+3. In den page-objects werden dann die Funktionen geschrieben, die in den step-definitions aufgerufen werden.
+   ```js
+   const clickOnButton = function (buttonName) {
+     return client
+    .waitForElementVisible('xpath',
+      '//button/span[contains(text(), "' + buttonName + '")]', 5000)
+    .click('xpath', '//button/span[contains(text(), "' + buttonName + '")]');
+    };
+   ```
 ## Good to know
 
 ### useXpath() und useCss()
 - Die Funktionen useXpath() und useCss() sollten mit Vorsicht genossen werden, da diese dann für die gesamte Laufzeit gesetzt sind.
 Wenn ein Step useXpath() nutzt und der nächste Step ein Element mit einem CSS Locator sucht, wird das nicht klappen bevor useCss() gesetzt wird.
 
-<a name="visiblePresent"></a>
 ### Unterschied visible und present
+**present** = Das Element ist im DOM zu finden, muss aber nicht visible auf der UI sein.
+**visible** = überprüft, ob das Element auf der Oberfläche zu sehen ist --> present wird automatisch mit überprüft
+
+### Ausführung einer einzelnen Feature
+In der [package.json](../../package.json) befindet sich in Zeile 24 der Aufruf von Cucumber
+```json
+"cucumber": "cross-env NIGHTWATCH_ENV=chrome cucumber-js tests/cucumber/features/**/*.feature --require cucumber.conf.js --require tests/cucumber/step-definitions --format @cucumber/pretty-formatter --format json:.reports/cucumber/report.json"
+
+```
+
+An der Stelle "\*.feature" kann der Name der Feature Datei angegeben werden. Beispiel:
+```
+tests/cucumber/features/**/*.feature
+```
+ersetzen mit
+```
+tests/cucumber/features/**/Login.feature
+```
+Anschließend den Test mit npm run cucumber starten
+.
