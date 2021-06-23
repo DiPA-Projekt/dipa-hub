@@ -244,16 +244,19 @@ public class MilestoneService {
     public void createMilestone(final Long timelineId, final Milestone milestone) {
 
         ProjectEntity currentProject = timelineService.getProject(timelineId);
-        PlanTemplateEntity planTemplate = currentProject.getPlanTemplate();
+        var planTemplateEntity = currentProject.getPlanTemplate();
 
         var newMilestone = new MilestoneTemplateEntity(milestone);
 
-        newMilestone.setPlanTemplate(planTemplate);
+        newMilestone.setPlanTemplate(planTemplateEntity);
         milestoneTemplateRepository.save(newMilestone);
 
-        setNewProjectEndDate(planTemplate, currentProject);
+        if (milestone.getDate().isBefore(currentProject.getStartDate())) {
+            currentProject.setStartDate(milestone.getDate());
+        } else if (milestone.getDate().isAfter(currentProject.getEndDate())) {
+            currentProject.setEndDate(milestone.getDate());
+        }
     }
-
 
     public void setNewProjectEndDate(PlanTemplateEntity planTemplateEntity, ProjectEntity currentProject) {
         Optional<OffsetDateTime> newLastMilestoneOptionalDate = planTemplateEntity.getMilestones().stream()
