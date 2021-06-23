@@ -244,7 +244,7 @@ public class MilestoneService {
     public void createMilestone(final Long timelineId, final Milestone milestone) {
 
         ProjectEntity currentProject = timelineService.getProject(timelineId);
-        PlanTemplateEntity planTemplateEntity = currentProject.getPlanTemplate();
+        var planTemplateEntity = currentProject.getPlanTemplate();
 
         var newMilestone = new MilestoneTemplateEntity(milestone);
 
