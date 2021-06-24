@@ -54,5 +54,14 @@
       <mat-icon>event_note</mat-icon>
       Export
     </button>
+    <button *ngIf="!active && !projectApproachModifiable" mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="openDeleteProjectDialog()" [disabled]="!isProjectOwner">
+        <mat-icon>delete</mat-icon>
+        <span>Projekt löschen</span>
+      </button>
+    </mat-menu>
   </mat-toolbar>
 </p>
