@@ -55,7 +55,13 @@ const AXISCONTAINS = function (text) {
 //TODO: implement
 const DRAGANDDROPMILESTONETODATE = function (milestoneName, dateString) {
   client.moveToElement(
-    'xpath', '//*[local-name()="svg"]//*[local-name()="tspan" and text()="' + milestoneName + '"]/parent::*/parent::*/*[local-name()="path"]', 0, 0);
+    'xpath',
+    '//*[local-name()="svg"]//*[local-name()="tspan" and text()="' +
+      milestoneName +
+      '"]/parent::*/parent::*/*[local-name()="path"]',
+    0,
+    0
+  );
   // client.mouseButtonDown(0);
   // client.moveToElement('yourLocator', '#endingElement', 0, 0);
   // client.mouseButtonUp(0);
@@ -69,37 +75,53 @@ const CLICKONMILESTONE = function (milestoneName) {
       milestoneName +
       '"]/parent::*/parent::*/*[local-name()="path"]'
   );
-}
+};
 
 // ********** Asserts **********
 
 const SHOULDEXISTNUMBERMILESTONES = function (number) {
-  return client.elements('xpath', '//*[@class="milestoneEntry"]', function (result) {
-    if (result.value.length !== number) {
-      throw Error('Expected: ' + number + ' elements but got: ' + result.value.length);
-    }
-  });
-}
+  return client
+    .pause(1000)
+    .elements('xpath', '//*[@class="milestoneEntry"]', function (result) {
+      if (result.value.length !== number) {
+        throw Error('Expected: ' + number + ' elements but got: ' + result.value.length);
+      }
+    });
+};
 
 const MILESTONESHOULDEXIST = function (milestoneName) {
+  siblingXpath = ''
+  // Wenn ein Leerzeichen im String ist, dann soll nach einem Element mit mehreren tspans gesucht werden
+
+  // Trennt den String durch die Leerzeichen
+  splittedString = milestoneName.split(/\s+/);
+  splittedString.forEach(splittedStringElement => {
+    siblingXpath.concat('/following-sibling::*[text() = "' + splittedStringElement + '"]');
+  });
+
+  // $x('//*[local-name()="svg"]//*[local-name()="tspan" and text()="Entwicklung"]/following-sibling::*[text() = "Pre-Alpha"]/parent::*/parent::*/*[local-name()="path"]')
+
+  // Zusammensetzung der siblings und suche nach Meilenstein
   return client
     .useXpath()
     .assert.elementPresent(
       '//*[local-name()="svg"]//*[local-name()="tspan" and text()="' +
-      milestoneName +
-      '"]/parent::*/parent::*/*[local-name()="path"]'
+        milestoneName +
+        '"]'+ siblingXpath +'/parent::*/parent::*/*[local-name()="path"]'
+        // OLD
+        // '//*[local-name()="svg"]//*[local-name()="tspan" and text()="' + milestoneName + '"]/parent::*/parent::*/*[local-name()="path"]'
     );
-}
+};
 
 const MILESTONESHOULDNOTEXIST = function (milestoneName) {
   return client
     .useXpath()
     .assert.elementPresent(
       '//*[local-name()="svg"]//*[local-name()="tspan" and text()="' +
-      milestoneName +
-      '"]/parent::*/parent::*/*[local-name()="path"]'
+        milestoneName +
+        '"]/parent::*/parent::*/*[local-name()="path"]'
     );
-}
+};
 
 module.exports = {
   closeMilestoneDescription: CLOSEMILESTONEDESCRIPTION,
