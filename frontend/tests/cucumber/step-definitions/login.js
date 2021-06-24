@@ -7,7 +7,6 @@ When('Ich melde mich mit falschen Daten an', () => {
   return login(CREDENTIALS.invalid.user, CREDENTIALS.invalid.pass);
 });
 
-// TODO: Erkennungsmerkmale für Elemente auslagern in pageObjects
 When('Ich melde mich als {string} an', username => {
   return login(username, "12345");
 });
