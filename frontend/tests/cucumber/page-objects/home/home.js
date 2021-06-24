@@ -16,6 +16,7 @@ const logout = function () {
     .assert.elementPresent('.card-pf');
 }
 
+// TODO: Wait until ein Element auf der Fogleseite zu finden ist
 const navigate = function (menu) {
   switch (menu) {
     // immer sichtbare Menüs

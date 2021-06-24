@@ -8,20 +8,21 @@ Feature: VMXT ITZBund agil
     And Ich klicke auf den Text "Testprojekt"
     And Ich warte 2 Sekunden
     And Ich navigiere zu "Unsere Termine"
+    # hässlich
+    And Ich warte 5 Sekunden
 
-  Scenario: Überprüfung der Elemente
-    Then sollte in der "Projekttyp" Selectbox der Wert "internes Projekt" ausgewählt sein
-    And sollte in der "Vorhabensart" Selectbox der Wert "Softwareneuentwicklung" ausgewählt sein
-    And sollte in der "Vorgehensweise" Selectbox der Wert "VMXT ITZBund agil" ausgewählt sein
-    And sollten 8 Meilensteine existieren
+   Scenario: Überprüfung der Elemente
+     Then sollte in der "Projekttyp" Selectbox der Wert "internes Projekt" ausgewählt sein
+     And sollte in der "Vorhabensart" Selectbox der Wert "Softwareneuentwicklung" ausgewählt sein
+     And sollte in der "Vorgehensweise" Selectbox der Wert "VMXT ITZBund agil" ausgewählt sein
+     And sollten 8 Meilensteine existieren
     And sollte der Meilenstein "Projekteinrichtung" existieren
-    # Hier muss der xpath anders sein...
-    # And sollte der Meilenstein "Entwicklung Pre-Alpha" existieren
-    # And sollte der Meilenstein "Entwicklung Alpha" existieren
-    # And sollte der Meilenstein "Entwicklung Beta" existieren
-    # And sollte der Meilenstein "Entwicklung Release Candidate" existieren
-    # And sollte der Meilenstein "Entwicklung Release 1.0" existieren
-    # And sollte der Meilenstein "Release 1.0" existieren
+    And sollte der Meilenstein "Entwicklung Pre-Alpha" existieren
+    And sollte der Meilenstein "Entwicklung Alpha" existieren
+    And sollte der Meilenstein "Entwicklung Beta" existieren
+    And sollte der Meilenstein "Entwicklung Release Candidate" existieren
+    And sollte der Meilenstein "Entwicklung Release 1.0" existieren
+    And sollte der Meilenstein "Release 1.0" existieren
     And sollte der Meilenstein "Projektabschluss" existieren
 
     When Ich auf den Meilenstein "Projekteinrichtung" klicke

@@ -3,7 +3,7 @@ const { Given, When, Then } = require('@cucumber/cucumber');
 const { closeMilestoneDescription, createNewMilestone, fillMilestoneName, pickTodaysDate, axisContains, clickOnMilestone, shouldExistNumberMilestones, milestoneShouldExist, milestoneShouldNotExist} = require('../page-objects/meine-projekte/unser-zeitplan/unsere_termine');
 
 When('Ich auf den Meilenstein {string} klicke', (milestoneName) => {
-  return clickOnMilestone
+  return clickOnMilestone(milestoneName);
 });
 
 // TODO: Funktioniert so nicht
