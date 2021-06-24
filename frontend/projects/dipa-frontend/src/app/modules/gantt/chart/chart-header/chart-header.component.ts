@@ -114,7 +114,7 @@ export class ChartHeaderComponent implements OnInit, OnDestroy {
 
   public openDeleteProjectDialog(): void {
     const dialogRef = this.dialog.open(DeleteProjectDialogComponent, { data: this.timelineData });
-    const onDeleteSubscription = dialogRef.componentInstance.onDelete.subscribe((event) => {
+    dialogRef.componentInstance.onDelete.subscribe((event) => {
       this.projectDeleted.emit(event);
     });
   }
