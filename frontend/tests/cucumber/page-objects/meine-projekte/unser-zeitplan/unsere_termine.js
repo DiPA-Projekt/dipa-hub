@@ -52,13 +52,54 @@ const AXISCONTAINS = function (text) {
     .assert.elementPresent('//*[local-name()="svg"]//*[local-name()="text" and text()="' + text + '"]');
 };
 
+//TODO: implement
 const DRAGANDDROPMILESTONETODATE = function (milestoneName, dateString) {
-  browser.moveToElement(
+  client.moveToElement(
     'xpath', '//*[local-name()="svg"]//*[local-name()="tspan" and text()="' + milestoneName + '"]/parent::*/parent::*/*[local-name()="path"]', 0, 0);
-  // browser.mouseButtonDown(0);
-  // browser.moveToElement('yourLocator', '#endingElement', 0, 0);
-  // browser.mouseButtonUp(0);
+  // client.mouseButtonDown(0);
+  // client.moveToElement('yourLocator', '#endingElement', 0, 0);
+  // client.mouseButtonUp(0);
 };
+
+const CLICKONMILESTONE = function (milestoneName) {
+  // sucht und klickt auf das Meilenstein-Element mit einem bestimmten Titel
+  return client.click(
+    'xpath',
+    '//*[local-name()="svg"]//*[local-name()="tspan" and text()="' +
+      milestoneName +
+      '"]/parent::*/parent::*/*[local-name()="path"]'
+  );
+}
+
+// ********** Asserts **********
+
+const SHOULDEXISTNUMBERMILESTONES = function (number) {
+  return client.elements('xpath', '//*[@class="milestoneEntry"]', function (result) {
+    if (result.value.length !== number) {
+      throw Error('Expected: ' + number + ' elements but got: ' + result.value.length);
+    }
+  });
+}
+
+const MILESTONESHOULDEXIST = function (milestoneName) {
+  return client
+    .useXpath()
+    .assert.elementPresent(
+      '//*[local-name()="svg"]//*[local-name()="tspan" and text()="' +
+      milestoneName +
+      '"]/parent::*/parent::*/*[local-name()="path"]'
+    );
+}
+
+const MILESTONESHOULDNOTEXIST = function (milestoneName) {
+  return client
+    .useXpath()
+    .assert.elementPresent(
+      '//*[local-name()="svg"]//*[local-name()="tspan" and text()="' +
+      milestoneName +
+      '"]/parent::*/parent::*/*[local-name()="path"]'
+    );
+}
 
 module.exports = {
   closeMilestoneDescription: CLOSEMILESTONEDESCRIPTION,
@@ -67,4 +108,8 @@ module.exports = {
   pickTodaysDate: PICKTODAYSDATE,
   axisContains: AXISCONTAINS,
   dragAndDropMilestoneToDate: DRAGANDDROPMILESTONETODATE,
+  clickOnMilestone: CLICKONMILESTONE,
+  shouldExistNumberMilestones: SHOULDEXISTNUMBERMILESTONES,
+  milestoneShouldExist: MILESTONESHOULDEXIST,
+  milestoneShouldNotExist: MILESTONESHOULDNOTEXIST,
 };
