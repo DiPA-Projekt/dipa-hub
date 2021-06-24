@@ -91,9 +91,9 @@ Feature: Allgemeine Funktionalitäten des Zeitplans
   #   Then sollte ich den Text "Fällig am 24.4.2021" sehen
   #   And Ich melde mich ab
 
-#Kann nur lokal funktionieren. Sollte dann in der CI angepasst werden
-# Scenario: Export Kalender
-#   And Ich klicke auf den Text "Export"
-#   Then Ich warte 3 Sekunden
-#   And sollte die Datei "Meilensteine.ics" unter dem Pfad "C:/Users/Tansu/Downloads" existieren
-#And Ich lösche die Datei "Meilensteine.ics" unter dem Pfad "C:/Users/Tansu/Downloads"
+# Kann nur lokal funktionieren. Sollte dann in der CI angepasst werden
+ Scenario: Export Kalender
+   And Ich klicke auf den Text "Export"
+   Then Ich warte 3 Sekunden
+   And sollte die Datei "Meilensteine.ics" unter dem Pfad "C:/Users/Tansu/Downloads" existieren
+   And Ich lösche die Datei "Meilensteine.ics" unter dem Pfad "C:/Users/Tansu/Downloads"

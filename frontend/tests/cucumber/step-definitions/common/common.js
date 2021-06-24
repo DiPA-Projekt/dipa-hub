@@ -21,12 +21,11 @@ When('Ich melde mich ab', () => {
   return logout();
 })
 
-//TODO: zum laufen bringen
 Then('Ich lösche die Datei {string} unter dem Pfad {string}', (fileName, path) => {
   const pathToFile = path + '/' + fileName;
   if (!fs.existsSync(pathToFile)) {
     throw Error('Die Datei "' + pathToFile + '" existiert nicht');
   } else {
-    fs.unlink(pathToFile);
+    fs.unlinkSync(pathToFile);
   }
 });
