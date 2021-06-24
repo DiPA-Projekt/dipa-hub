@@ -1,15 +1,9 @@
 const { client } = require('nightwatch-api');
 const { Given, When, Then } = require('@cucumber/cucumber');
-const { closeMilestoneDescription, createNewMilestone, fillMilestoneName, pickTodaysDate, axisContains} = require('../page-objects/meine-projekte/unser-zeitplan/unsere_termine');
+const { closeMilestoneDescription, createNewMilestone, fillMilestoneName, pickTodaysDate, axisContains, clickOnMilestone, shouldExistNumberMilestones, milestoneShouldExist, milestoneShouldNotExist} = require('../page-objects/meine-projekte/unser-zeitplan/unsere_termine');
 
 When('Ich auf den Meilenstein {string} klicke', (milestoneName) => {
-  // sucht und klickt auf das Meilenstein-Element mit einem bestimmten Titel
-  return client.click(
-    'xpath',
-    '//*[local-name()="svg"]//*[local-name()="tspan" and text()="' +
-      milestoneName +
-      '"]/parent::*/parent::*/*[local-name()="path"]'
-  );
+  return clickOnMilestone
 });
 
 // TODO: Funktioniert so nicht
@@ -31,45 +25,16 @@ When('Ich verschiebe den Meilenstein {string} zum {string}', (milestoneName, dat
 
 // ********** Asserts **********
 
-// Checkt was in der Selectbox ausgewählt ist
-Then('sollte in der {string} Selectbox der Wert {string} ausgewählt sein', (selectboxTitle, selectboxValue) => {
-  //xpath sucht nach einem mat-select Element, welches ein Geschwister-Element mit einem bestimmten Text sucht
-  return client.waitForElementVisible(
-    'xpath',
-    '//*[contains(text(), ' +
-      selectboxTitle +
-      ')]/preceding-sibling::mat-select//*[contains(text(), "' +
-      selectboxValue +
-      '")]'
-  );
-});
-
 Then('sollten {int} Meilensteine existieren', (number) => {
-  return client.elements('xpath', '//*[@class="milestoneEntry"]', function (result) {
-    if (result.value.length !== number) {
-      throw Error('Expected: ' + number + ' elements but got: ' + result.value.length);
-    }
-  });
+  return shouldExistNumberMilestones(number)
 });
 
 Then('sollte der Meilenstein {string} existieren', (milestoneName) => {
-  return client
-    .useXpath()
-    .assert.elementPresent(
-      '//*[local-name()="svg"]//*[local-name()="tspan" and text()="' +
-      milestoneName +
-      '"]/parent::*/parent::*/*[local-name()="path"]'
-    );
+  return milestoneShouldExist(milestoneName);
 });
 
 Then('sollte der Meilenstein {string} nicht existieren', (milestoneName) => {
-  return client
-    .useXpath()
-    .assert.not.elementPresent(
-      '//*[local-name()="svg"]//*[local-name()="tspan" and text()="' +
-      milestoneName +
-      '"]/parent::*/parent::*/*[local-name()="path"]'
-    );
+  return milestoneShouldNotExist(milestoneName);
 });
 
 Then('Ich schließe die Meilensteindetails', () => {
