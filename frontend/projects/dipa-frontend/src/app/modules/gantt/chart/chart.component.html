@@ -51,13 +51,20 @@
   <mat-sidenav-content>
     <app-chart-header
       [timelineData]="timelineData"
-      [isAdmin]="isAdmin"
+      [showTitle]="showTitle"
+      [active]="active"
+      [projectApproachModifiable]="projectApproachModifiable"
       [showActions]="showActions"
       (projectTypeChanged)="projectTypeChanged.emit($event)"
       (operationTypeChanged)="operationTypeChanged.emit($event)"
       (projectApproachChanged)="projectApproachChanged.emit($event)"
     ></app-chart-header>
-    <button *ngIf="incrementsData.length === 0" mat-raised-button color="primary" (click)="openMilestoneDialog()">
+    <button
+      *ngIf="incrementsData.length === 0 && (active || projectApproachModifiable)"
+      mat-raised-button
+      color="primary"
+      (click)="openMilestoneDialog()"
+    >
       Meilenstein hinzufügen
     </button>
     <div class="chart">

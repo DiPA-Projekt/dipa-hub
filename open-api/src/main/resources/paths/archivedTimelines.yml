@@ -1,0 +1,15 @@
+get:
+  tags:
+    - timelines
+  summary: archived timelines list
+  description: Retrieves the list of archived timelines.
+  operationId: getArchivedTimelines
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../models/timeline.yml#/Timeline"

@@ -14,9 +14,9 @@
               [taskData]="vm.taskData"
               [incrementsData]="vm.incrementsData"
               id="overview{{ vm.timeline.id }}"
-              [active]="true"
+              [active]="false"
               [showTitle]="true"
-              [projectApproachModifiable]="true"
+              [projectApproachModifiable]="false"
               (projectApproachChanged)="loadTimelines()"
             ></app-chart>
           </div>

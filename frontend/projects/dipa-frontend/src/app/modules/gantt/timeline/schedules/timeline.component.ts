@@ -96,24 +96,28 @@ export class TimelineComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.projectTasksSubscription = this.projectService.getProjectTasks(this.selectedTimelineId).subscribe((data) => {
-      this.projectTask = data[4];
-      this.appoinmentsList = this.projectTask.results.sort(
-        (b, a) =>
-          new Date(b.formFields.find((field) => field.key === 'date').value).getTime() -
-          new Date(a.formFields.find((field) => field.key === 'date').value).getTime()
-      );
+    this.projectTasksSubscription = this.projectService.getProjectTasks(this.selectedTimelineId).subscribe({
+      next: (data: ProjectTask[]) => {
+        this.projectTask = data[4];
+        this.appoinmentsList = this.projectTask?.results.sort(
+          (b, a) =>
+            new Date(b.formFields.find((field) => field.key === 'date').value).getTime() -
+            new Date(a.formFields.find((field) => field.key === 'date').value).getTime()
+        );
       this.filterAllOpenAppointmentsInPeriod(this.appoinmentsList);
 
-      const keysOrder = {};
-      this.apptFormfieldsKeys.forEach((id, i) => {
-        keysOrder[id] = i + 1;
-      });
+        const keysOrder = {};
+        this.apptFormfieldsKeys.forEach((id, i) => {
+          keysOrder[id] = i + 1;
+        });
 
-      this.appoinmentsList.forEach((result) => {
-        result.formFields = result.formFields.filter((field) => this.apptFormfieldsKeys.includes(field.key));
-        result.formFields.sort((a, b) => keysOrder[a.key] - keysOrder[b.key]);
-      });
+        this.appoinmentsList?.forEach((result) => {
+          result.formFields = result.formFields.filter((field) => this.apptFormfieldsKeys.includes(field.key));
+          result.formFields.sort((a, b) => keysOrder[a.key] - keysOrder[b.key]);
+        });
+      },
+      error: null,
+      complete: () => void 0,
     });
   }
 
