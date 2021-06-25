@@ -32,7 +32,7 @@
       <mat-select
         [(value)]="timelineData.projectApproachId"
         (selectionChange)="changeProjectApproach($event)"
-        [disabled]="!active && !projectApproachModifiable"
+        [disabled]="!projectApproachModifiable"
       >
         <mat-option
           *ngFor="let projectApproach of filterProjectApproaches(timelineData.operationTypeId)"
