@@ -27,7 +27,7 @@ public class ProjectController implements ProjectApi {
         projectService.updateProjectData(timelineId, project);
         return ResponseEntity.noContent().build();
     }
-    
+
     @Override
     public ResponseEntity<List<ProjectTask>> getProjectTasks(final Long timelineId) {
         List<ProjectTask> projectTasks =  projectService.getProjectTasks(timelineId, false);

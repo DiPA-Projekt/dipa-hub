@@ -47,6 +47,10 @@ Timeline:
       description: Flag if this timeline is the default timeline.
       type: boolean
       example: true
+    archived:
+      description: Flag if this timeline is archived.
+      type: boolean
+      example: false
   required:
     - id
     - name

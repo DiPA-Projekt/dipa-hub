@@ -26,7 +26,8 @@ public class ProjectEntityToTimelineConverter implements Converter<ProjectEntity
                              .projectApproachId(projectApproach.getId())
                              .start(project.getStartDate().toLocalDate())
                              .end(project.getEndDate().toLocalDate())
-                             .defaultTimeline(operationType.isDefaultType());
+                             .defaultTimeline(operationType.isDefaultType())
+                             .archived(project.isArchived());
 
         if (project.getProjectType() != null) {
                 timeline.projectType(ProjectTypeEnum.fromValue(project.getProjectType()));

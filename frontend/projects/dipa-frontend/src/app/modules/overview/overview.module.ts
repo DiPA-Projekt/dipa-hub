@@ -20,9 +20,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { SharedModule } from '../../shared/shared.module';
 import { GanttModule } from '../gantt/gantt.module';
 import { ProjectsComponent } from './projects/projects.component';
+import { ArchivedProjectsComponent } from './archived-projects/archived-projects.component';
 
 @NgModule({
-  declarations: [OverviewComponent, ProjectsComponent],
+  declarations: [OverviewComponent, ProjectsComponent, ArchivedProjectsComponent],
   imports: [
     CommonModule,
     MaterialModule,
