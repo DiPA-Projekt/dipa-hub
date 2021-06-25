@@ -46,8 +46,8 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
   public apptFormfieldsKeys = ['goal', 'date', 'status'];
   public apptStartDate = new Date();
-  public apptEndDate = new Date(new Date().setMonth(new Date().getMonth() + 6));
-  public periodTemplate = 'CUSTOM';
+  public apptEndDate = new Date();
+  public periodTemplate = 'PROJECT';
 
   public schedulePeriods = [
     { key: 'CUSTOM', value: 'ausgewählter Zeitraum' },
@@ -104,7 +104,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
             new Date(b.formFields.find((field) => field.key === 'date').value).getTime() -
             new Date(a.formFields.find((field) => field.key === 'date').value).getTime()
         );
-      this.filterAllOpenAppointmentsInPeriod(this.appoinmentsList);
+        this.filterAllOpenAppointmentsInPeriod(this.appoinmentsList);
 
         const keysOrder = {};
         this.apptFormfieldsKeys.forEach((id, i) => {
@@ -140,6 +140,9 @@ export class TimelineComponent implements OnInit, OnDestroy {
         const selectedTimeline = this.timelineData.find((c) => c.id === Number(this.selectedTimelineId));
         const periodStartDate = new Date(selectedTimeline.start);
         const periodEndDate = new Date(selectedTimeline.end);
+
+        // set default appointments list end to project end
+        this.apptEndDate = periodEndDate;
 
         return {
           milestoneData,
