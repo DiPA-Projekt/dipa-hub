@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -22,6 +23,8 @@ import online.dipa.hub.persistence.repositories.MilestoneTemplateRepository;
 import online.dipa.hub.persistence.repositories.PlanTemplateRepository;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
+
+import java.time.LocalTime;
 
 @Service
 @Transactional
@@ -250,11 +253,12 @@ public class MilestoneService {
 
         newMilestone.setPlanTemplate(planTemplateEntity);
         milestoneTemplateRepository.save(newMilestone);
+        System.out.println(milestone);
 
-        if (milestone.getDate().isBefore(currentProject.getStartDate())) {
-            currentProject.setStartDate(milestone.getDate());
-        } else if (milestone.getDate().isAfter(currentProject.getEndDate())) {
-            currentProject.setEndDate(milestone.getDate());
+        if (milestone.getDate().isBefore(currentProject.getStartDate().toLocalDate())) {
+            currentProject.setStartDate(OffsetDateTime.of(milestone.getDate(), LocalTime.NOON, ZoneOffset.UTC));
+        } else if (milestone.getDate().isAfter(currentProject.getEndDate().toLocalDate())) {
+            currentProject.setEndDate(OffsetDateTime.of(milestone.getDate(), LocalTime.NOON, ZoneOffset.UTC));
         }
     }
 
