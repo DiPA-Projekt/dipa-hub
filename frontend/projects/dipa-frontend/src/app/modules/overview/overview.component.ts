@@ -16,13 +16,13 @@ export class OverviewComponent implements OnInit {
   setSideNavMenu(): void {
     this.navMenuItems = [
       {
-        name: 'aktive Projekte',
+        name: 'Aktive Projekte',
         icon: 'library_books',
         route: 'overview/projects',
       },
       {
-        name: 'archivierte Projekte',
-        icon: 'library_books',
+        name: 'Archivierte Projekte',
+        icon: 'inventory',
         route: 'overview/archivedProjects',
       },
     ];
