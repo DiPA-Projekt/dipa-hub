@@ -90,7 +90,8 @@ public class ProjectService {
             projectEntity.setProjectSize(project.getProjectSize().toString());
             projectEntity.setClient(project.getClient());
             projectEntity.setDepartment(project.getDepartment());
-          
+            projectEntity.setArchived(project.getArchived());
+
             projectRepository.save(projectEntity);
 
         }

@@ -24,6 +24,8 @@ paths:
     $ref: "paths/projectUsers.yml"
   /timelines:
     $ref: "paths/timelines.yml"
+  /timelines/archived:
+    $ref: "paths/archivedTimelines.yml"
   /timelines/operationTypes:
     $ref: "paths/operationTypes.yml"
   /timelines/projectApproaches:

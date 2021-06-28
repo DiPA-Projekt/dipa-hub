@@ -59,6 +59,10 @@ Project:
       description: responsible department for this project
       type: string
       example: "II A 1"
+    archived:
+      description: Flag if this project is archived.
+      type: boolean
+      example: false
   required:
     - id
     - name

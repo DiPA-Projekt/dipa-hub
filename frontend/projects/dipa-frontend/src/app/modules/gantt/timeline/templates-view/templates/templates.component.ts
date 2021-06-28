@@ -42,7 +42,8 @@ import { ZoomBehavior } from 'd3-zoom';
   encapsulation: ViewEncapsulation.None,
 })
 export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
-  @Input() isAdmin;
+  @Input() showTitle: boolean;
+  @Input() active: boolean;
   @Input() timelineData: Timeline;
   @Input() templateData: TimelineTemplate[] = [];
   @Input() allTemplates: TimelineTemplate[];
@@ -693,7 +694,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
   private createIncrementsArea(data: Increment[], index: number, incrementsArea: Increments[]) {
     if (data !== null) {
-      const incrementsViewItem = new Increments(this.svg, this.xScale, data, index);
+      const incrementsViewItem = new Increments(this.svg, this.xScale, data, index, this.active);
       incrementsViewItem.draw({ left: 0, top: 0 });
       incrementsArea.push(incrementsViewItem);
     }

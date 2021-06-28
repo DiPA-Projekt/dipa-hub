@@ -32,6 +32,12 @@ public class TimelineController implements TimelinesApi {
     }
 
     @Override
+    public ResponseEntity<List<Timeline>> getArchivedTimelines() {
+        final List<Timeline> timelines = timelineService.getArchivedTimelines();
+        return ResponseEntity.ok(timelines);
+    }
+
+    @Override
     public ResponseEntity<Void> applyOperation(Long timelineId, InlineObject inlineObject) {
 
         switch (inlineObject.getOperation()) {
