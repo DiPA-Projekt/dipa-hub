@@ -21,7 +21,6 @@ import online.dipa.hub.persistence.entities.MilestoneTemplateEntity;
 import online.dipa.hub.persistence.entities.PlanTemplateEntity;
 import online.dipa.hub.persistence.repositories.MilestoneTemplateRepository;
 import online.dipa.hub.persistence.repositories.PlanTemplateRepository;
-import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
 
 import java.time.LocalTime;
@@ -253,7 +252,6 @@ public class MilestoneService {
 
         newMilestone.setPlanTemplate(planTemplateEntity);
         milestoneTemplateRepository.save(newMilestone);
-        System.out.println(milestone);
 
         if (milestone.getDate().isBefore(currentProject.getStartDate().toLocalDate())) {
             currentProject.setStartDate(OffsetDateTime.of(milestone.getDate(), LocalTime.NOON, ZoneOffset.UTC));
