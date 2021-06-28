@@ -155,7 +155,7 @@
                 </replacement>
                 <replacement>
                   <token>'/'</token>
-                  <value>'/v1/'</value>
+                  <value>'/v2/'</value>
                 </replacement>
               </replacements>
             </configuration>
