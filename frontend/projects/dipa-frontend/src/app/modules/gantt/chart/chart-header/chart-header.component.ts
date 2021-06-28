@@ -19,7 +19,9 @@ import ProjectTypeEnum = Timeline.ProjectTypeEnum;
 })
 export class ChartHeaderComponent implements OnInit, OnDestroy {
   @Input() timelineData: Timeline;
-  @Input() isAdmin;
+  @Input() active;
+  @Input() showTitle;
+  @Input() projectApproachModifiable;
   @Input() showActions;
   @Output() projectTypeChanged = new EventEmitter();
   @Output() operationTypeChanged = new EventEmitter();

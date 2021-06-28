@@ -44,3 +44,7 @@ ADD CONSTRAINT "FKOrganisationRoleUserIdConnection"
 FOREIGN KEY (user_id)
 REFERENCES app_user(id)
 ON DELETE CASCADE
+
+-- changeset id:add_column_archived
+ALTER TABLE project
+ADD archived boolean DEFAULT false
