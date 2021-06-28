@@ -49,7 +49,10 @@ import { MatDialog } from '@angular/material/dialog';
   encapsulation: ViewEncapsulation.None,
 })
 export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
-  @Input() isAdmin: boolean;
+  @Input() showTitle: boolean;
+  @Input() active: boolean;
+  @Input() projectApproachModifiable: boolean;
+
   @Input() showActions: boolean;
   @Input() incrementsData: Increment[];
   @Input() milestoneData: Milestone[];
@@ -174,8 +177,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.showMilestoneMenu = false;
     this.showMenu = true;
 
-    // TODO: this is just temporary
-    this.modifiable = this.timelineData?.projectApproachId !== 3;
+    this.modifiable = this.active || this.projectApproachModifiable;
 
     this.periodStartDateSubscription = this.ganttControlsService.getPeriodStartDate().subscribe((data) => {
       if (this.periodStartDate !== data) {
@@ -408,7 +410,13 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.headerX.formatDate = (d: Date) => this.headerX.formatDateFull(d);
     this.headerX.draw();
 
-    this.projectDuration = new ProjectDuration(this.svg, this.chartElement, this.xScale, this.timelineData, true);
+    this.projectDuration = new ProjectDuration(
+      this.svg,
+      this.chartElement,
+      this.xScale,
+      this.timelineData,
+      this.modifiable
+    );
     this.projectDuration.draw();
 
     this.projectDuration.onDragEnd = (offsetDays: number) => {
@@ -455,7 +463,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       this.chartElement,
       this.xScale,
       this.milestoneData,
-      this.modifiable,
+      this.modifiable && this.timelineData?.projectApproachId !== 3,
       this.showMenu,
       this.timelineData.id,
       this.timelineData
@@ -486,7 +494,13 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
       }
     };
 
-    this.incrementsViewItem = new Increments(this.svg, this.xScale, this.incrementsData, this.timelineData.id);
+    this.incrementsViewItem = new Increments(
+      this.svg,
+      this.xScale,
+      this.incrementsData,
+      this.timelineData.id,
+      this.modifiable
+    );
     this.incrementsViewItem.draw({ left: 0, top: this.taskViewItem.getAreaHeight() });
 
     this.incrementsViewItem.onClickAddButton = () => {

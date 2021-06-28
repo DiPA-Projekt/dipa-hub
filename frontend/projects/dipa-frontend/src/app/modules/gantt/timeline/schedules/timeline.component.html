@@ -24,7 +24,9 @@
         [taskData]="vm.taskData"
         [incrementsData]="vm.incrementsData"
         id="gantt{{ vm.selectedTimeline.id }}"
-        [isAdmin]="false"
+        [active]="false"
+        [showTitle]="false"
+        [projectApproachModifiable]="true"
         [showActions]="true"
         (projectApproachChanged)="setData()"
       ></app-chart>
