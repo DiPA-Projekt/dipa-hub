@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { forkJoin, Observable, Subscription } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { GanttControlsService } from '../../gantt-controls.service';
 import {
   IncrementsService,
@@ -78,23 +78,27 @@ export class TimelineComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.projectTasksSubscription = this.projectService.getProjectTasks(this.selectedTimelineId).subscribe((data) => {
-      this.projectTask = data[4];
-      this.appoinmentsList = this.projectTask.results.sort(
-        (b, a) =>
-          new Date(b.formFields.find((field) => field.key === 'date').value).getTime() -
-          new Date(a.formFields.find((field) => field.key === 'date').value).getTime()
-      );
+    this.projectTasksSubscription = this.projectService.getProjectTasks(this.selectedTimelineId).subscribe({
+      next: (data: ProjectTask[]) => {
+        this.projectTask = data[4];
+        this.appoinmentsList = this.projectTask?.results.sort(
+          (b, a) =>
+            new Date(b.formFields.find((field) => field.key === 'date').value).getTime() -
+            new Date(a.formFields.find((field) => field.key === 'date').value).getTime()
+        );
 
-      const keysOrder = {};
-      this.apptFormfieldsKeys.forEach((id, i) => {
-        keysOrder[id] = i + 1;
-      });
+        const keysOrder = {};
+        this.apptFormfieldsKeys.forEach((id, i) => {
+          keysOrder[id] = i + 1;
+        });
 
-      this.appoinmentsList.forEach((result) => {
-        result.formFields = result.formFields.filter((field) => this.apptFormfieldsKeys.includes(field.key));
-        result.formFields.sort((a, b) => keysOrder[a.key] - keysOrder[b.key]);
-      });
+        this.appoinmentsList?.forEach((result) => {
+          result.formFields = result.formFields.filter((field) => this.apptFormfieldsKeys.includes(field.key));
+          result.formFields.sort((a, b) => keysOrder[a.key] - keysOrder[b.key]);
+        });
+      },
+      error: null,
+      complete: () => void 0,
     });
   }
 
@@ -163,6 +167,6 @@ export class TimelineComponent implements OnInit, OnDestroy {
   }
 
   public filterAllOpenAppointments(appointments: Result[]): Result[] {
-    return appointments.filter((appt) => appt.formFields.find((field) => field.key === 'status').value !== 'DONE');
+    return appointments.filter((appt) => appt.formFields.find((field) => field.key === 'status').value !== 'CLOSED');
   }
 }

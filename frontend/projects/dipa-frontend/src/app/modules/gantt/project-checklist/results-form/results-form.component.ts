@@ -600,9 +600,8 @@ export class ResultsFormComponent implements OnInit {
         controlType: 'DROPDOWN',
         show: selectedValues.includes('formFields.status'),
         options: this.getStatusOptions([
-          { key: 'PLANNED', value: 'geplant' },
-          { key: 'INVITED', value: 'eingeladen' },
-          { key: 'DONE', value: 'durchgeführt' },
+          { key: 'OPEN', value: 'offen' },
+          { key: 'CLOSED', value: 'geschlossen' },
         ]),
       })
     );

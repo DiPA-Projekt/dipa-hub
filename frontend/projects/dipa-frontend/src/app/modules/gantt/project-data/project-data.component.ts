@@ -55,6 +55,7 @@ export class ProjectDataComponent implements OnInit, OnDestroy, OnChanges {
       projectSize: null,
       client: '',
       department: '',
+      archived: false,
     });
   }
 
@@ -120,6 +121,7 @@ export class ProjectDataComponent implements OnInit, OnDestroy, OnChanges {
       projectSize: [data?.projectSize],
       client: [data?.client],
       department: [data?.department],
+      archived: [data?.archived],
     });
   }
 }
