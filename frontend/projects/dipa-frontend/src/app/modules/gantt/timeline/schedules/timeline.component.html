@@ -34,19 +34,64 @@
   </div>
 </div>
 <div *ngIf="appoinmentsList">
-  <ng-container *ngIf="filterAllOpenAppointments(appoinmentsList).length > 0">
-    <mat-card class="appointments-card">
-      <mat-card-content>
-        <div *ngFor="let appt of filterAllOpenAppointments(appoinmentsList)">
-          <ng-container *ngFor="let formField of appt.formFields">
+  <mat-card class="appointments-card">
+    <mat-card-content>
+      <div class="matCardContentHeader">
+        <div fxLayout="row wrap" fxLayoutGap="10px grid">
+          <div
+            fxFlex="33%"
+            fxFlex.xs="100%"
+            fxFlex.sm="100%"
+            fxFlex.md="100%"
+            fxFlex.lg="100%"
+            class="matCardContentHeaderTitle ellipsis"
+          >
+            Termine
+          </div>
+          <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
+            <mat-form-field class="floatLabelNever full-width" floatLabel="never">
+              <mat-label>Anzeigezeitraum</mat-label>
+              <mat-date-range-input [rangePicker]="durationPicker">
+                <input
+                  matStartDate
+                  placeholder="Start date"
+                  [value]="apptStartDate"
+                  (dateChange)="onChangeAppointmentPeriodStart($event)"
+                />
+                <input
+                  matEndDate
+                  placeholder="End date"
+                  [value]="apptEndDate"
+                  (dateChange)="onChangeAppointmentPeriodEnd($event)"
+                />
+              </mat-date-range-input>
+              <mat-datepicker-toggle matSuffix [for]="durationPicker"></mat-datepicker-toggle>
+              <mat-date-range-picker #durationPicker></mat-date-range-picker>
+            </mat-form-field>
+          </div>
+          <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
+            <mat-form-field class="floatLabelNever full-width" floatLabel="never">
+              <mat-label>Zeitraum</mat-label>
+              <mat-select [value]="periodTemplate" (selectionChange)="changePeriodTemplates($event.value)">
+                <mat-option *ngFor="let period of schedulePeriods" [value]="period.key">
+                  {{ period.value }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <ng-container *ngIf="appointmentsInPeriod.length > 0; else noAppointments">
+        <div *ngFor="let appt of appointmentsInPeriod" fxLayout="row wrap" fxLayoutGap="16px grid">
+          <div fxFlex="33%" *ngFor="let formField of appt.formFields">
             <ng-container *ngIf="formField.key !== 'status'">
-              <mat-form-field>
+              <mat-form-field class="full-width">
                 <mat-label>{{ formField.label }}</mat-label>
-                <input matInput [value]="formField.value" disabled />
+                <input [type]="formField.type.toLowerCase()" matInput [value]="formField.value" disabled />
               </mat-form-field>
             </ng-container>
             <ng-container *ngIf="formField.key === 'status'">
-              <mat-form-field>
+              <mat-form-field class="full-width">
                 <mat-label>{{ formField.label }}</mat-label>
                 <mat-select
                   [value]="formField.value"
@@ -58,9 +103,12 @@
                 </mat-select>
               </mat-form-field>
             </ng-container>
-          </ng-container>
+          </div>
         </div>
-      </mat-card-content>
-    </mat-card>
-  </ng-container>
+      </ng-container>
+      <ng-template #noAppointments>
+        <p>Keine Termine im gewählten Zeitraum offen.</p>
+      </ng-template>
+    </mat-card-content>
+  </mat-card>
 </div>

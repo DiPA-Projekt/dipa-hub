@@ -17,6 +17,8 @@ import {
 import { ActivatedRoute, Params } from '@angular/router';
 import { ChartComponent } from '../../chart/chart.component';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import Utils from '../../../../shared/utils';
 
 @Component({
   selector: 'app-timeline',
@@ -39,9 +41,25 @@ export class TimelineComponent implements OnInit, OnDestroy {
   public projectApproachesList: ProjectApproach[] = [];
   public projectTask: ProjectTask;
   public appoinmentsList: Result[];
+  public appointmentsInPeriod: Result[];
   public vm$: Observable<any>;
 
   public apptFormfieldsKeys = ['goal', 'date', 'status'];
+  public apptStartDate = new Date();
+  public apptEndDate = new Date();
+  public periodTemplate = 'PROJECT';
+
+  public schedulePeriods = [
+    { key: 'CUSTOM', value: 'ausgewählter Zeitraum' },
+    { key: '1_WEEK', value: '1 Woche' },
+    { key: '2_WEEKS', value: '2 Wochen' },
+    { key: '3_WEEKS', value: '3 Wochen' },
+    { key: '4_WEEKS', value: '4 Wochen' },
+    { key: '2_MONTHS', value: '2 Monate' },
+    { key: '3_MONTHS', value: '3 Monate' },
+    { key: '6_MONTHS', value: '6 Monate' },
+    { key: 'PROJECT', value: 'Projektende' },
+  ];
 
   public formGroup;
   private periodStartDateSubscription: Subscription;
@@ -86,6 +104,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
             new Date(b.formFields.find((field) => field.key === 'date').value).getTime() -
             new Date(a.formFields.find((field) => field.key === 'date').value).getTime()
         );
+        this.filterAllOpenAppointmentsInPeriod(this.appoinmentsList);
 
         const keysOrder = {};
         this.apptFormfieldsKeys.forEach((id, i) => {
@@ -121,6 +140,9 @@ export class TimelineComponent implements OnInit, OnDestroy {
         const selectedTimeline = this.timelineData.find((c) => c.id === Number(this.selectedTimelineId));
         const periodStartDate = new Date(selectedTimeline.start);
         const periodEndDate = new Date(selectedTimeline.end);
+
+        // set default appointments list end to project end
+        this.apptEndDate = periodEndDate;
 
         return {
           milestoneData,
@@ -166,7 +188,66 @@ export class TimelineComponent implements OnInit, OnDestroy {
     });
   }
 
-  public filterAllOpenAppointments(appointments: Result[]): Result[] {
-    return appointments.filter((appt) => appt.formFields.find((field) => field.key === 'status').value !== 'CLOSED');
+  public onChangeAppointmentPeriodStart(event: MatDatepickerInputEvent<never>): void {
+    this.apptStartDate = new Date(event.value);
+  }
+
+  public onChangeAppointmentPeriodEnd(event: MatDatepickerInputEvent<never>): void {
+    if (event.value !== null) {
+      this.apptEndDate = new Date(event.value);
+      this.periodTemplate = 'CUSTOM';
+      this.filterAllOpenAppointmentsInPeriod(this.appoinmentsList);
+    }
+  }
+
+  public filterAllOpenAppointmentsInPeriod(appointments: Result[]): void {
+    const appointmentsInPeriod = appointments.filter((appt) => {
+      const apptDate = Utils.createDateAtMidnight(appt.formFields.find((field) => field.key === 'date').value);
+      return (
+        apptDate >= Utils.createDateAtMidnight(this.apptStartDate) &&
+        apptDate <= Utils.createDateAtMidnight(this.apptEndDate)
+      );
+    });
+    this.appointmentsInPeriod = appointmentsInPeriod.filter(
+      (appt) => appt.formFields.find((field) => field.key === 'status').value !== 'CLOSED'
+    );
+  }
+
+  public changePeriodTemplates(value: string): void {
+    this.apptStartDate = new Date();
+
+    let now = new Date();
+    switch (value) {
+      case 'CUSTOM':
+        return;
+      case '1_WEEK':
+        now.setDate(now.getDate() + 7);
+        break;
+      case '2_WEEKS':
+        now.setDate(now.getDate() + 2 * 7);
+        break;
+      case '3_WEEKS':
+        now.setDate(now.getDate() + 3 * 7);
+        break;
+      case '4_WEEKS':
+        now.setDate(now.getDate() + 4 * 7);
+        break;
+      case '2_MONTHS':
+        now.setMonth(now.getMonth() + 2);
+        break;
+      case '3_MONTHS':
+        now.setMonth(now.getMonth() + 3);
+        break;
+      case '6_MONTHS':
+        now.setMonth(now.getMonth() + 6);
+        break;
+      case 'PROJECT':
+        const selectedTimeline = this.timelineData.find((c) => c.id === Number(this.selectedTimelineId));
+        now = new Date(selectedTimeline.end);
+        break;
+    }
+    this.apptEndDate = now;
+
+    this.filterAllOpenAppointmentsInPeriod(this.appoinmentsList);
   }
 }
