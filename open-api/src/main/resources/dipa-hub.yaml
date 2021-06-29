@@ -18,8 +18,6 @@ paths:
     $ref: "paths/status.yml"
   /projects:
     $ref: "paths/projects.yml"
-  /projects/{timelineId}/deleteProject:
-    $ref: "paths/deleteProject.yml"
   /projects/{timelineId}/projectRoles:
     $ref: "paths/projectRoles.yml"
   /projects/{timelineId}/projectUsers:

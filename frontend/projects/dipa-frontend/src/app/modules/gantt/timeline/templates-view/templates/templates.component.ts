@@ -6,7 +6,7 @@ import {
   TimelineTemplatesService,
   Timeline,
   TimelinesService,
-  InlineObject,
+  InlineObject1,
 } from 'dipa-api-client';
 import { forkJoin, Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -103,9 +103,9 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
 
   private oneDayTick = 1.2096e9;
 
-  private operationMoveTimeline: InlineObject.OperationEnum = 'MOVE_TIMELINE';
-  private operationMoveTimelineStart: InlineObject.OperationEnum = 'MOVE_TIMELINE_START';
-  private operationMoveTimelineEnd: InlineObject.OperationEnum = 'MOVE_TIMELINE_END';
+  private operationMoveTimeline: InlineObject1.OperationEnum = 'MOVE_TIMELINE';
+  private operationMoveTimelineStart: InlineObject1.OperationEnum = 'MOVE_TIMELINE_START';
+  private operationMoveTimelineEnd: InlineObject1.OperationEnum = 'MOVE_TIMELINE_END';
 
   constructor(
     public templatesViewControlsService: TemplatesViewControlsService,

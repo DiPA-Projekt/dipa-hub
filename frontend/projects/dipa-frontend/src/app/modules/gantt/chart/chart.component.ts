@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import {
   Increment,
   IncrementsService,
-  InlineObject,
+  InlineObject1,
   Milestone,
   MilestonesService,
   Task,
@@ -128,10 +128,10 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
   private oneDayTick = 1.2096e9;
 
-  private operationMoveTimeline: InlineObject.OperationEnum = 'MOVE_TIMELINE';
-  private operationMoveTimelineStart: InlineObject.OperationEnum = 'MOVE_TIMELINE_START';
-  private operationMoveTimelineEnd: InlineObject.OperationEnum = 'MOVE_TIMELINE_END';
-  private operationMoveMilestone: InlineObject.OperationEnum = 'MOVE_MILESTONE';
+  private operationMoveTimeline: InlineObject1.OperationEnum = 'MOVE_TIMELINE';
+  private operationMoveTimelineStart: InlineObject1.OperationEnum = 'MOVE_TIMELINE_START';
+  private operationMoveTimelineEnd: InlineObject1.OperationEnum = 'MOVE_TIMELINE_END';
+  private operationMoveMilestone: InlineObject1.OperationEnum = 'MOVE_MILESTONE';
 
   constructor(
     public ganttControlsService: GanttControlsService,

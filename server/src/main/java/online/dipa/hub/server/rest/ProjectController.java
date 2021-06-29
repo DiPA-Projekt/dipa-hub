@@ -53,8 +53,9 @@ public class ProjectController implements ProjectApi {
     }
     
     @Override
-    public ResponseEntity<Void> deleteProject(final Long timelineId) {
-        projectService.deleteProject(timelineId);
+    public ResponseEntity<Void> deleteProject(final InlineObject inlineObject) {
+        System.out.println(inlineObject);
+        projectService.deleteProject(inlineObject.getId());
         return ResponseEntity.noContent().build();
     }
     

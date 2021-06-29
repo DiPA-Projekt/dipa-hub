@@ -18,3 +18,25 @@ post:
         application/json:
           schema:
             $ref: "../models/timeline.yml#/Timeline"
+delete:
+  tags:
+    - project
+  summary: Delete a project
+  description: Delete a project
+  operationId: deleteProject
+  requestBody:
+    description: project's id as requestBody
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id:
+              description: Unique identifier of the project
+              type: integer
+              format: int64
+              example: 2
+  responses:
+    204:
+      description: The project was successfully deleted.
