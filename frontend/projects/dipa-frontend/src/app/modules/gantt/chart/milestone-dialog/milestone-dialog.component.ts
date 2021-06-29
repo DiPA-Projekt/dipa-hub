@@ -4,6 +4,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Milestone, MilestonesService, Timeline } from 'dipa-api-client';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import StatusEnum = Milestone.StatusEnum;
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-milestone-dialog',
@@ -29,7 +30,8 @@ export class MilestoneDialogComponent implements OnInit {
     private snackBar: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public timeline: Timeline,
     private fb: FormBuilder,
-    private milestoneService: MilestonesService
+    private milestoneService: MilestonesService,
+    private datePipe: DatePipe
   ) {}
 
   private static isMilestoneOutOfProjectPeriod(timeline: Timeline, milestoneDate: Date): boolean {
@@ -44,6 +46,8 @@ export class MilestoneDialogComponent implements OnInit {
 
   public onSubmit(formGroup: FormGroup): void {
     if (formGroup.valid) {
+      this.formGroup.get('date').setValue(this.datePipe.transform(this.formGroup.get('date').value, 'yyyy-MM-dd'));
+
       this.milestoneService.createMilestone(this.timeline.id, formGroup.value).subscribe({
         next: () => {
           const milestoneDate: Date = formGroup.get('date').value as Date;

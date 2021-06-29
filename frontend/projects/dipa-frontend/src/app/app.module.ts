@@ -17,7 +17,11 @@ import { ProjectDialogComponent } from './modules/gantt/project-dialog/project-d
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserUnauthorizedComponent } from './modules/user-unauthorized/user-unauthorized.component';
 import { TimelineDataService } from '../app/shared/timelineDataService';
+import { registerLocaleData, DatePipe } from '@angular/common';
+import localeDe from '@angular/common/locales/de';
+import localeDeExtra from '@angular/common/locales/extra/de';
 
+registerLocaleData(localeDe, 'de-DE', localeDeExtra);
 @NgModule({
   declarations: [
     AppComponent,
@@ -45,7 +49,7 @@ import { TimelineDataService } from '../app/shared/timelineDataService';
       },
     }),
   ],
-  providers: [NavService, TimelineDataService, { provide: LOCALE_ID, useValue: 'de-DE' }],
+  providers: [NavService, TimelineDataService, DatePipe, { provide: LOCALE_ID, useValue: 'de-DE' }],
   bootstrap: [AppComponent],
 })
 export class AppModule {

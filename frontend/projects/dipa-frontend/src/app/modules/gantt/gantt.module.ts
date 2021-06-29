@@ -67,5 +67,6 @@ import { ShowFieldsMenuComponent } from './project-checklist/show-fields-menu/sh
     SharedModule,
     FlexModule,
   ],
+  providers: [],
 })
 export class GanttModule {}
