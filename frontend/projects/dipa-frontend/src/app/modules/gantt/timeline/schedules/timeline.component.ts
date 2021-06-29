@@ -143,6 +143,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
         // set default appointments list end to project end
         this.apptEndDate = periodEndDate;
+        this.filterAllOpenAppointmentsInPeriod(this.appoinmentsList);
 
         return {
           milestoneData,
