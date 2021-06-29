@@ -49,7 +49,7 @@
             Termine
           </div>
           <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
-            <mat-form-field class="floatLabelNever full-width" floatLabel="never">
+            <mat-form-field class="floatLabelNever noHint full-width" floatLabel="never">
               <mat-label>Anzeigezeitraum</mat-label>
               <mat-date-range-input [rangePicker]="durationPicker">
                 <input
@@ -70,7 +70,7 @@
             </mat-form-field>
           </div>
           <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
-            <mat-form-field class="floatLabelNever full-width" floatLabel="never">
+            <mat-form-field class="floatLabelNever noHint full-width" floatLabel="never">
               <mat-label>Zeitraum</mat-label>
               <mat-select [value]="periodTemplate" (selectionChange)="changePeriodTemplates($event.value)">
                 <mat-option *ngFor="let period of schedulePeriods" [value]="period.key">
@@ -82,29 +82,48 @@
         </div>
       </div>
       <ng-container *ngIf="appointmentsInPeriod.length > 0; else noAppointments">
-        <div *ngFor="let appt of appointmentsInPeriod" fxLayout="row wrap" fxLayoutGap="16px grid">
-          <div fxFlex="33%" *ngFor="let formField of appt.formFields">
-            <ng-container *ngIf="formField.key !== 'status'">
-              <mat-form-field class="full-width">
-                <mat-label>{{ formField.label }}</mat-label>
-                <input [type]="formField.type.toLowerCase()" matInput [value]="formField.value" disabled />
-              </mat-form-field>
-            </ng-container>
-            <ng-container *ngIf="formField.key === 'status'">
-              <mat-form-field class="full-width">
-                <mat-label>{{ formField.label }}</mat-label>
-                <mat-select
-                  [value]="formField.value"
-                  (selectionChange)="changeStatus($event.value, appt.id, formField.id)"
-                >
-                  <mat-option *ngFor="let opt of formField.options" [value]="opt.key">
-                    {{ opt.value }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </ng-container>
+        <ng-container *ngFor="let appt of appointmentsInPeriod">
+          <ng-container [ngSwitch]="appt.resultType">
+            <div style="float: left; width: 32px; margin-top: 5px">
+              <ng-container *ngSwitchCase="'TYPE_SINGLE_APPOINTMENT'">
+                <span class="circle" title="Einzeltermin">E</span>
+              </ng-container>
+              <ng-container *ngSwitchCase="'TYPE_APPT_SERIES'">
+                <span class="circle" title="Terminserie">S</span>
+              </ng-container>
+            </div>
+          </ng-container>
+          <div fxLayout="row wrap" fxLayoutGap="12px grid" style="padding-bottom: 20px">
+            <div
+              fxFlex="33%"
+              fxFlex.xs="100%"
+              fxFlex.sm="100%"
+              fxFlex.md="100%"
+              fxFlex.lg="33%"
+              *ngFor="let formField of appt.formFields"
+            >
+              <ng-container *ngIf="formField.key !== 'status'">
+                <mat-form-field class="noHint full-width">
+                  <mat-label>{{ formField.label }}</mat-label>
+                  <input [type]="formField.type.toLowerCase()" matInput [value]="formField.value" disabled />
+                </mat-form-field>
+              </ng-container>
+              <ng-container *ngIf="formField.key === 'status'">
+                <mat-form-field class="noHint full-width">
+                  <mat-label>{{ formField.label }}</mat-label>
+                  <mat-select
+                    [value]="formField.value"
+                    (selectionChange)="changeStatus($event.value, appt.id, formField.id)"
+                  >
+                    <mat-option *ngFor="let opt of formField.options" [value]="opt.key">
+                      {{ opt.value }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </ng-container>
+            </div>
           </div>
-        </div>
+        </ng-container>
       </ng-container>
       <ng-template #noAppointments>
         <p>Keine Termine im gewählten Zeitraum offen.</p>
