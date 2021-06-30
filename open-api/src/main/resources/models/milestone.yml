@@ -13,8 +13,8 @@ Milestone:
     date:
       description: The date of the milestone
       type: string
-      format: date-time
-      example: "2017-07-21T17:32:28Z"
+      format: date
+      example: "2017-07-21"
     status:
       description: The status of the milestone
       type: string

@@ -237,7 +237,7 @@ public class TimelineService {
 
             List<Milestone> milestones = milestoneService.getMilestonesForTimeline(timelineId);
             for (Milestone milestone : milestones) {
-                LocalDate eventDate = milestone.getDate().toLocalDate();
+                LocalDate eventDate = milestone.getDate();
                 String eventTitle = milestone.getName() + " - " + projectApproach.getName();
                 String eventComment = "Test Comment";
 
