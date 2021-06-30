@@ -21,7 +21,6 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import Utils from '../../../../shared/utils';
 
 @Component({
-  selector: 'app-timeline',
   templateUrl: './timeline.component.html',
   styleUrls: ['./timeline.component.scss'],
 })
@@ -143,6 +142,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
         // set default appointments list end to project end
         this.apptEndDate = periodEndDate;
+        this.filterAllOpenAppointmentsInPeriod(this.appoinmentsList);
 
         return {
           milestoneData,
