@@ -16,12 +16,17 @@ import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper
 import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 
+import online.dipa.hub.persistence.repositories.UserRepository;
+import online.dipa.hub.security.DipaGrantedAuthorities;
 import online.dipa.hub.security.DipaKeycloakAuthenticationProvider;
 
 @Configuration
 @EnableWebSecurity
 @ComponentScan(basePackageClasses = KeycloakSecurityComponents.class)
 public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter {
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     public void configureGlobal(final AuthenticationManagerBuilder auth) throws Exception {
@@ -32,7 +37,7 @@ public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter 
 
     @Override
     protected KeycloakAuthenticationProvider keycloakAuthenticationProvider() {
-        return new DipaKeycloakAuthenticationProvider();
+        return new DipaKeycloakAuthenticationProvider(userRepository);
     }
 
     @Bean
@@ -50,8 +55,7 @@ public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter 
         super.configure(http);
         http.authorizeRequests()
             .antMatchers("/api/**")
-            .hasRole("Tenant_Member")
-            //            .authenticated()
+            .hasRole(DipaGrantedAuthorities.TENANT_MEMBER.name())
             .and()
             .cors()
             .and()

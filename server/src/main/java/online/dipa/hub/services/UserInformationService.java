@@ -1,27 +1,32 @@
 package online.dipa.hub.services;
 
-import online.dipa.hub.api.model.ProjectRole;
-import online.dipa.hub.api.model.User;
-import online.dipa.hub.persistence.entities.*;
-import online.dipa.hub.persistence.repositories.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
-import org.keycloak.adapters.OidcKeycloakAccount;
-import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.keycloak.representations.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.Set;
+import online.dipa.hub.api.model.ProjectRole;
+import online.dipa.hub.api.model.User;
+import online.dipa.hub.persistence.entities.BaseEntity;
+import online.dipa.hub.persistence.entities.ProjectEntity;
+import online.dipa.hub.persistence.entities.ProjectRoleEntity;
+import online.dipa.hub.persistence.entities.ProjectRoleTemplateEntity;
+import online.dipa.hub.persistence.entities.UserEntity;
+import online.dipa.hub.persistence.repositories.ProjectRepository;
+import online.dipa.hub.persistence.repositories.ProjectRoleRepository;
+import online.dipa.hub.persistence.repositories.ProjectRoleTemplateRepository;
+import online.dipa.hub.persistence.repositories.UserRepository;
+import online.dipa.hub.security.DipaKeycloakAuthenticationToken;
 
 @Service
 public class UserInformationService {
@@ -34,7 +39,7 @@ public class UserInformationService {
 
     @Autowired
     private ProjectRoleRepository projectRoleRepository;
-    
+
     @Autowired
     private ProjectRoleTemplateRepository projectRoleTemplateRepository;
 
@@ -45,44 +50,33 @@ public class UserInformationService {
     private CurrentTenantIdentifierResolver currentTenantIdentifierResolver;
 
     public User getUserData() {
+        final Authentication authentication = SecurityContextHolder.getContext()
+                                                                   .getAuthentication();
+        if (authentication instanceof DipaKeycloakAuthenticationToken) {
+            final DipaKeycloakAuthenticationToken authToken = (DipaKeycloakAuthenticationToken) authentication;
+            final UserEntity userEntity = userRepository.findById(authToken.getUserEntityId())
+                                                        .orElseThrow();
 
-        User currentUser = new User();
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication instanceof KeycloakAuthenticationToken) {
-
-            OidcKeycloakAccount account = ((KeycloakAuthenticationToken) authentication).getAccount();
-
-            String currentUserKeycloakId = account.getKeycloakSecurityContext().getToken().getSubject().intern();
-
-            currentUser = userRepository.findAll().stream()
-            .filter(user -> user.getKeycloakId().equals(currentUserKeycloakId))
-            .map(u -> conversionService.convert(u, User.class)).findFirst().orElse(null);
-
-            if (currentUser == null) {
-                AccessToken token = account.getKeycloakSecurityContext().getToken();
-                currentUser = new User();
-
-                currentUser.name(token.getName())
-                    .email(token.getEmail());
-            }
-
+            return conversionService.convert(userEntity, User.class);
         }
-        return currentUser;
+        throw new IllegalStateException("Not correctly authenticated user shall never reach this point.");
     }
 
     public List<User> getAllUsers() {
-        String currentTenantId = currentTenantIdentifierResolver.resolveCurrentTenantIdentifier();
+        final String currentTenantId = currentTenantIdentifierResolver.resolveCurrentTenantIdentifier();
 
-        return userRepository.findAll().stream().filter(u -> u.getTenantId().equals(currentTenantId))
-        .map(user -> conversionService.convert(user, User.class)).collect(Collectors.toList());
+        return userRepository.findAll()
+                             .stream()
+                             .filter(u -> u.getTenantId()
+                                           .equals(currentTenantId))
+                             .map(user -> conversionService.convert(user, User.class))
+                             .collect(Collectors.toList());
     }
 
-    public void createNewProjectRoles (ProjectEntity project, User projectOwner) {
-        ProjectRoleTemplateEntity pRoleTemplate = findProjectRoleTemplate(project);
+    public void createNewProjectRoles(final ProjectEntity project, final User projectOwner) {
+        final ProjectRoleTemplateEntity pRoleTemplate = findProjectRoleTemplate(project);
 
-        var newPRoleTemplate = new ProjectRoleTemplateEntity();
+        final var newPRoleTemplate = new ProjectRoleTemplateEntity();
         newPRoleTemplate.setName(project.getName() + "ProjectRoleTemplate");
         newPRoleTemplate.setProject(project);
 
@@ -90,11 +84,11 @@ public class UserInformationService {
         project.setProjectRoleTemplate(newPRoleTemplate);
         projectRepository.save(project);
 
-        Set<ProjectRoleEntity> pRoles = new HashSet<>();
-        for (ProjectRoleEntity pRole: new ArrayList<>(Objects.requireNonNull(pRoleTemplate)
-                                                             .getProjectRoles())) {
+        final Set<ProjectRoleEntity> pRoles = new HashSet<>();
+        for (final ProjectRoleEntity pRole : new ArrayList<>(Objects.requireNonNull(pRoleTemplate)
+                                                                    .getProjectRoles())) {
 
-            var newPRole = new ProjectRoleEntity(pRole);
+            final var newPRole = new ProjectRoleEntity(pRole);
             newPRole.setProjectRoleTemplate(newPRoleTemplate);
             projectRoleRepository.save(newPRole);
             pRoles.add(newPRole);
@@ -104,41 +98,61 @@ public class UserInformationService {
         projectRoleTemplateRepository.save(newPRoleTemplate);
 
         // insert projectOwner user into project role PE
-        ProjectRoleEntity projectRolePE = projectRoleRepository.findAll().stream()
-                                                      .filter(temp -> temp.getProjectRoleTemplate().getId().equals(newPRoleTemplate.getId()))
-                                                      .filter(a -> a.getAbbreviation().equals("PE")).findFirst().orElse(null);
+        final ProjectRoleEntity projectRolePE = projectRoleRepository.findAll()
+                                                                     .stream()
+                                                                     .filter(temp -> temp.getProjectRoleTemplate()
+                                                                                         .getId()
+                                                                                         .equals(newPRoleTemplate.getId()))
+                                                                     .filter(a -> a.getAbbreviation()
+                                                                                   .equals("PE"))
+                                                                     .findFirst()
+                                                                     .orElse(null);
 
-        var userEntity = userRepository.findAll().stream().filter(u -> u.getId().equals(projectOwner.getId()))
-                                       .findFirst().orElse(null);
+        final var userEntity = userRepository.findAll()
+                                             .stream()
+                                             .filter(u -> u.getId()
+                                                           .equals(projectOwner.getId()))
+                                             .findFirst()
+                                             .orElse(null);
 
-        userEntity.getProjectRoles().add(projectRolePE);
+        userEntity.getProjectRoles()
+                  .add(projectRolePE);
         userRepository.save(userEntity);
     }
 
-    public void updateNewProjectRolesForTemplate (ProjectEntity project) {
+    public void updateNewProjectRolesForTemplate(final ProjectEntity project) {
 
-        ProjectRoleTemplateEntity pRoleTemplate = findProjectRoleTemplate(project);
+        final ProjectRoleTemplateEntity pRoleTemplate = findProjectRoleTemplate(project);
 
-        Set<ProjectRoleEntity> newProjectRoles = new HashSet<>();
+        final Set<ProjectRoleEntity> newProjectRoles = new HashSet<>();
 
-        for (ProjectRoleEntity projectRole: new ArrayList<>(Objects.requireNonNull(pRoleTemplate)
-                                                                   .getProjectRoles())) {
-            var newPRole = new ProjectRoleEntity(projectRole);
+        for (final ProjectRoleEntity projectRole : new ArrayList<>(Objects.requireNonNull(pRoleTemplate)
+                                                                          .getProjectRoles())) {
+            final var newPRole = new ProjectRoleEntity(projectRole);
             projectRoleRepository.save(newPRole);
             newProjectRoles.add(newPRole);
         }
 
-        for (ProjectRoleEntity projectRole: project.getProjectRoleTemplate().getProjectRoles()) {
-            for (UserEntity user: new ArrayList<>(projectRole.getUsers())) {
-                user.getProjectRoles().remove(projectRole);
+        for (final ProjectRoleEntity projectRole : project.getProjectRoleTemplate()
+                                                          .getProjectRoles()) {
+            for (final UserEntity user : new ArrayList<>(projectRole.getUsers())) {
+                user.getProjectRoles()
+                    .remove(projectRole);
 
-                Optional<ProjectRoleEntity> userRoleOptional = newProjectRoles.stream().filter(r -> r.getAbbreviation().equals(projectRole.getAbbreviation())).findFirst();
+                final Optional<ProjectRoleEntity> userRoleOptional = newProjectRoles.stream()
+                                                                                    .filter(r -> r.getAbbreviation()
+                                                                                                  .equals(projectRole.getAbbreviation()))
+                                                                                    .findFirst();
                 if (userRoleOptional.isPresent()) {
-                    user.getProjectRoles().add(userRoleOptional.get());
+                    user.getProjectRoles()
+                        .add(userRoleOptional.get());
 
                 } else {
-                    newProjectRoles.stream().filter(ProjectRoleEntity::isDefaultRole).findFirst().ifPresent(member -> user.getProjectRoles()
-                                                                                                                          .add(member));
+                    newProjectRoles.stream()
+                                   .filter(ProjectRoleEntity::isDefaultRole)
+                                   .findFirst()
+                                   .ifPresent(member -> user.getProjectRoles()
+                                                            .add(member));
                 }
 
             }
@@ -146,52 +160,72 @@ public class UserInformationService {
         }
         newProjectRoles.forEach(role -> role.setProjectRoleTemplate(project.getProjectRoleTemplate()));
 
-        project.getProjectRoleTemplate().setProjectRoles(newProjectRoles);
+        project.getProjectRoleTemplate()
+               .setProjectRoles(newProjectRoles);
         projectRoleTemplateRepository.save(project.getProjectRoleTemplate());
     }
 
     public List<Long> getProjectIdList() {
         List<Long> projectIdsList = new ArrayList<>();
-    
+
         if (getUserData().getOrganisationRoles() != null && getUserData().getOrganisationRoles()
-                         .stream()
-                         .anyMatch(o -> o.getAbbreviation()
-                                         .equals("PMO"))){
+                                                                         .stream()
+                                                                         .anyMatch(o -> o.getAbbreviation()
+                                                                                         .equals("PMO"))) {
             projectIdsList = projectRepository.findAll()
-                                    .stream().map(BaseEntity::getId).collect(Collectors.toList());
-        }
-        else if(getUserData().getProjectRoles() !=null) {
-            projectIdsList = getUserData().getProjectRoles().stream().map(ProjectRole::getProjectId).collect(Collectors.toList());
+                                              .stream()
+                                              .map(BaseEntity::getId)
+                                              .collect(Collectors.toList());
+        } else if (getUserData().getProjectRoles() != null) {
+            projectIdsList = getUserData().getProjectRoles()
+                                          .stream()
+                                          .map(ProjectRole::getProjectId)
+                                          .collect(Collectors.toList());
         }
 
         return projectIdsList;
     }
 
-    public void updateUser (User user) {
+    public void updateUser(final User user) {
 
-        var userEntity = userRepository.findAll().stream().filter(u -> u.getId().equals(user.getId()))
-                                       .findFirst().orElse(null);
-        
-        List<ProjectRoleEntity> oldUserProjectRoles = new ArrayList<>(Objects.requireNonNull(userEntity)
-                                                                             .getProjectRoles());
-        userEntity.getProjectRoles().removeAll(oldUserProjectRoles);
+        final var userEntity = userRepository.findAll()
+                                             .stream()
+                                             .filter(u -> u.getId()
+                                                           .equals(user.getId()))
+                                             .findFirst()
+                                             .orElse(null);
 
-        for (ProjectRole projectRole: user.getProjectRoles()) {
+        final List<ProjectRoleEntity> oldUserProjectRoles = new ArrayList<>(Objects.requireNonNull(userEntity)
+                                                                                   .getProjectRoles());
+        userEntity.getProjectRoles()
+                  .removeAll(oldUserProjectRoles);
 
-            ProjectRoleEntity newPRoleEntity = projectRoleRepository.findAll().stream()
-            .filter(role -> role.getId().equals(projectRole.getId())).findFirst().orElse(null);
-            
-            userEntity.getProjectRoles().add(newPRoleEntity);
+        for (final ProjectRole projectRole : user.getProjectRoles()) {
+
+            final ProjectRoleEntity newPRoleEntity = projectRoleRepository.findAll()
+                                                                          .stream()
+                                                                          .filter(role -> role.getId()
+                                                                                              .equals(projectRole.getId()))
+                                                                          .findFirst()
+                                                                          .orElse(null);
+
+            userEntity.getProjectRoles()
+                      .add(newPRoleEntity);
         }
         userRepository.save(userEntity);
     }
 
-    private ProjectRoleTemplateEntity findProjectRoleTemplate (ProjectEntity project) {
+    private ProjectRoleTemplateEntity findProjectRoleTemplate(final ProjectEntity project) {
 
-        return projectRoleTemplateRepository.findAll().stream()
-                                                               .filter(temp -> temp.getProjectApproaches().stream()
-                                                                                   .anyMatch(a -> a.getId().equals(project.getProjectApproach().getId()))).findFirst()
-                                                               .orElse(null);
+        return projectRoleTemplateRepository.findAll()
+                                            .stream()
+                                            .filter(temp -> temp.getProjectApproaches()
+                                                                .stream()
+                                                                .anyMatch(a -> a.getId()
+                                                                                .equals(project.getProjectApproach()
+                                                                                               .getId())))
+                                            .findFirst()
+                                            .orElse(null);
 
     }
 }
