@@ -8,12 +8,15 @@ import {
   ProjectService,
   Timeline,
   TimelinesService,
+  Project,
 } from 'dipa-api-client';
 import { MatSelectChange } from '@angular/material/select';
 import ProjectTypeEnum = Timeline.ProjectTypeEnum;
 import { AuthenticationService } from '../../../../authentication.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteProjectDialogComponent } from './delete-project-dialog/delete-project-dialog.component';
+import { Router } from '@angular/router';
+import { TimelineDataService } from '../../../../shared/timelineDataService';
 
 @Component({
   selector: 'app-chart-header',
@@ -38,6 +41,8 @@ export class ChartHeaderComponent implements OnInit, OnDestroy {
   private timelinesSubscription: Subscription;
   private operationTypesSubscription: Subscription;
   private projectApproachesSubscription: Subscription;
+  private projectSubscription: Subscription;
+  private project: Project;
 
   public constructor(
     public dialog: MatDialog,
@@ -45,7 +50,9 @@ export class ChartHeaderComponent implements OnInit, OnDestroy {
     private projectService: ProjectService,
     private operationTypesService: OperationTypesService,
     private projectApproachesService: ProjectApproachesService,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private timelineDataService: TimelineDataService,
+    private router: Router
   ) {}
 
   public ngOnInit(): void {
@@ -61,12 +68,17 @@ export class ChartHeaderComponent implements OnInit, OnDestroy {
       this.isProjectOwner =
         data.filter((d) => d.projectId === this.timelineData.id && d.abbreviation === 'PE').length > 0 ? true : false;
     });
+
+    this.projectSubscription = this.projectService.getProjectData(this.timelineData.id).subscribe((data) => {
+      this.project = data;
+    });
   }
 
   public ngOnDestroy(): void {
     this.timelinesSubscription?.unsubscribe();
     this.projectApproachesSubscription?.unsubscribe();
     this.operationTypesSubscription?.unsubscribe();
+    this.projectSubscription?.unsubscribe();
   }
 
   public changeProjectApproach(event: MatSelectChange): void {
@@ -116,6 +128,19 @@ export class ChartHeaderComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(DeleteProjectDialogComponent, { data: this.timelineData });
     dialogRef.componentInstance.onDelete.subscribe((event) => {
       this.projectDeleted.emit(event);
+    });
+  }
+
+  public activateProject(): void {
+    this.project.archived = false;
+
+    this.projectService.updateProjectData(this.timelineData.id, this.project).subscribe({
+      next: () => {
+        this.timelineDataService.setTimelines();
+        this.router.navigate([`/gantt/${this.timelineData.id}/project-checklist/quickstart`]);
+      },
+      error: null,
+      complete: () => void 0,
     });
   }
 }

@@ -58,6 +58,10 @@
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="activateProject()">
+        <mat-icon>undo</mat-icon>
+        <span>Projekt aktivieren</span>
+      </button>
       <button mat-menu-item (click)="openDeleteProjectDialog()" [disabled]="!isProjectOwner">
         <mat-icon>delete</mat-icon>
         <span>Projekt löschen</span>
