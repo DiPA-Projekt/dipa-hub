@@ -89,11 +89,18 @@ mat-sidenav-content {
 }
 
 .matCardContentHeaderTitle {
-  font-size: 20px;
+  display: flex;
+  align-items: center;
+  font-size: 18px;
   font-weight: 400;
-  margin-top: 12px;
 }
 
 ::ng-deep .floatLabelNever .mat-form-field-infix {
   border-top: 0;
+}
+
+.appointmentTypeIcon {
+  float: left;
+  width: 32px;
+  margin-top: 5px;
 }

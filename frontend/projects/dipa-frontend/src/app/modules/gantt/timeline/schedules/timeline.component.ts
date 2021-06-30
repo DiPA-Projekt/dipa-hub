@@ -13,6 +13,7 @@ import {
   ProjectService,
   ProjectTask,
   Result,
+  FormField,
 } from 'dipa-api-client';
 import { ActivatedRoute, Params } from '@angular/router';
 import { ChartComponent } from '../../chart/chart.component';
@@ -42,6 +43,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
   public projectTask: ProjectTask;
   public appoinmentsList: Result[];
   public appointmentsInPeriod: Result[];
+  public overdueAppointments: Result[];
   public vm$: Observable<any>;
 
   public apptFormfieldsKeys = ['goal', 'date', 'status'];
@@ -104,6 +106,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
             new Date(b.formFields.find((field) => field.key === 'date').value).getTime() -
             new Date(a.formFields.find((field) => field.key === 'date').value).getTime()
         );
+        this.filterAllOverdueAppointments(this.appoinmentsList);
         this.filterAllOpenAppointmentsInPeriod(this.appoinmentsList);
 
         const keysOrder = {};
@@ -201,6 +204,18 @@ export class TimelineComponent implements OnInit, OnDestroy {
     }
   }
 
+  public filterAllOverdueAppointments(appointments: Result[]): void {
+    const today = Utils.createDateAtMidnight(new Date());
+
+    const appointmentsInPeriod = appointments.filter((appt) => {
+      const apptDate = Utils.createDateAtMidnight(appt.formFields.find((field) => field.key === 'date').value);
+      return apptDate <= today;
+    });
+    this.overdueAppointments = appointmentsInPeriod.filter(
+      (appt) => appt.formFields.find((field) => field.key === 'status').value !== 'CLOSED'
+    );
+  }
+
   public filterAllOpenAppointmentsInPeriod(appointments: Result[]): void {
     const appointmentsInPeriod = appointments.filter((appt) => {
       const apptDate = Utils.createDateAtMidnight(appt.formFields.find((field) => field.key === 'date').value);
@@ -250,5 +265,9 @@ export class TimelineComponent implements OnInit, OnDestroy {
     this.apptEndDate = now;
 
     this.filterAllOpenAppointmentsInPeriod(this.appoinmentsList);
+  }
+
+  public isOverdueAppointment(formField: FormField): boolean {
+    return formField.key === 'date' && new Date(formField.value) < new Date();
   }
 }
