@@ -48,7 +48,7 @@ jobs:
         run: node scripts/add-bearer-handling.js
         working-directory: open-api
       - name: Create package.json
-        run: node scripts/create-package-json.js ${{ env.NPM_SCOPE }} ${{ env.PROJECT_NAME }} ${{fromJson(steps.openapi.outputs.json).info.version}} $GITHUB_REPOSITORY
+        run: node scripts/create-package-json.js $GITHUB_SERVER_URL $GITHUB_REPOSITORY ${{fromJson(steps.openapi.outputs.json).info.version}}
         working-directory: open-api
       - name: Validate, build and publish NPM-Package
         continue-on-error: true
