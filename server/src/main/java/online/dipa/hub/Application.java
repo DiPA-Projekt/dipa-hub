@@ -32,8 +32,7 @@ public class Application {
     @Bean
     public WebServerFactoryCustomizer<ConfigurableTomcatWebServerFactory> containerCustomizer() {
         return container -> {
-            LOGGER.info("Adding Default 404-Page: /index.html");
-            container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/index.html"));
+            container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/v1/index.html"));
         };
     }
 }
