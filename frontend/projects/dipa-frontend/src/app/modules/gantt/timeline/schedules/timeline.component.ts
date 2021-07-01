@@ -21,6 +21,7 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import Utils from '../../../../shared/utils';
 
 @Component({
+  selector: 'app-timeline',
   templateUrl: './timeline.component.html',
   styleUrls: ['./timeline.component.scss'],
 })

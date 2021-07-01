@@ -43,7 +43,7 @@ export class ArchivedProjectsComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   public ngAfterViewInit(): void {
-    const joinStream = combineLatest(this.charts.changes, this.route.fragment);
+    const joinStream = combineLatest([this.charts.changes, this.route.fragment]);
     joinStream.subscribe(([comps, fragment]: [QueryList<ChartComponent>, string]) => {
       if (fragment !== null) {
         document.getElementById(fragment).scrollIntoView();
