@@ -41,9 +41,9 @@ export class TimelineComponent implements OnInit, OnDestroy {
   public operationTypesList: OperationType[] = [];
   public projectApproachesList: ProjectApproach[] = [];
   public projectTask: ProjectTask;
-  public appoinmentsList: Result[];
-  public appointmentsInPeriod: Result[];
-  public overdueAppointments: Result[];
+  public appoinmentsList: Result[] = [];
+  public appointmentsInPeriod: Result[] = [];
+  public overdueAppointments: Result[] = [];
   public vm$: Observable<any>;
 
   public apptFormfieldsKeys = ['goal', 'date', 'status'];
@@ -146,7 +146,6 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
         // set default appointments list end to project end
         this.apptEndDate = periodEndDate;
-        this.filterAllOpenAppointmentsInPeriod(this.appoinmentsList);
 
         return {
           milestoneData,
@@ -208,8 +207,13 @@ export class TimelineComponent implements OnInit, OnDestroy {
     const today = Utils.createDateAtMidnight(new Date());
 
     const appointmentsInPeriod = appointments.filter((appt) => {
-      const apptDate = Utils.createDateAtMidnight(appt.formFields.find((field) => field.key === 'date').value);
-      return apptDate <= today;
+      const dateValue = appt.formFields.find((field) => field.key === 'date').value;
+      if (dateValue == null) {
+        return false;
+      }
+
+      const apptDate = Utils.createDateAtMidnight(dateValue);
+      return apptDate && apptDate <= today;
     });
     this.overdueAppointments = appointmentsInPeriod.filter(
       (appt) => appt.formFields.find((field) => field.key === 'status').value !== 'CLOSED'
@@ -218,7 +222,12 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
   public filterAllOpenAppointmentsInPeriod(appointments: Result[]): void {
     const appointmentsInPeriod = appointments.filter((appt) => {
-      const apptDate = Utils.createDateAtMidnight(appt.formFields.find((field) => field.key === 'date').value);
+      const dateValue = appt.formFields.find((field) => field.key === 'date').value;
+      if (dateValue == null) {
+        return false;
+      }
+
+      const apptDate = Utils.createDateAtMidnight(dateValue);
       return (
         apptDate >= Utils.createDateAtMidnight(this.apptStartDate) &&
         apptDate <= Utils.createDateAtMidnight(this.apptEndDate)
