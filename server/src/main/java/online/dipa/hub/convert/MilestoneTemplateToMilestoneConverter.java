@@ -13,7 +13,7 @@ public class MilestoneTemplateToMilestoneConverter implements Converter<Mileston
 
         return new Milestone().id(templateEntity.getId())
                             .name(templateEntity.getName())
-                            .date(templateEntity.getDate())
+                            .date(templateEntity.getDate().toLocalDate())
                             .status(Milestone.StatusEnum.fromValue(templateEntity.getStatus()));
     }
 }

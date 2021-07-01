@@ -17,6 +17,7 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { forkJoin, Subscription } from 'rxjs';
 import { TimelineDataService } from '../../../shared/timelineDataService';
+import { DatePipe } from '@angular/common';
 
 interface ProjectSize {
   value: string;
@@ -79,7 +80,8 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private timelineDataService: TimelineDataService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private datePipe: DatePipe
   ) {}
 
   public ngOnInit(): void {
@@ -109,6 +111,9 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
 
   public onSubmit(formGroup: FormGroup): void {
     if (formGroup.valid) {
+      this.formGroup.get('start').setValue(this.datePipe.transform(this.formGroup.get('start').value, 'yyyy-MM-dd'));
+      this.formGroup.get('end').setValue(this.datePipe.transform(this.formGroup.get('end').value, 'yyyy-MM-dd'));
+
       this.createProjectSubscription = this.projectService
         .createProject({
           project: formGroup.value,

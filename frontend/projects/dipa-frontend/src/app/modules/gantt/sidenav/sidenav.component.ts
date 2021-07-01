@@ -144,7 +144,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.projectService.updateProjectData(this.selectedTimelineId, this.project).subscribe({
       next: () => {
         this.timelineDataService.setTimelines();
-        this.router.navigate([`overview/archivedProjects`]);
+        this.router.navigate([`overview/archivedProjects`], {
+          fragment: `gantt${this.selectedTimelineId}`,
+        });
       },
       error: null,
       complete: () => void 0,
