@@ -63,6 +63,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   @Output() projectTypeChanged = new EventEmitter();
   @Output() operationTypeChanged = new EventEmitter();
   @Output() projectApproachChanged = new EventEmitter();
+  @Output() projectDeleted = new EventEmitter();
 
   @ViewChild('chart')
   chartFigure: ElementRef;

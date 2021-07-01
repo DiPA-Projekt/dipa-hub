@@ -8,9 +8,15 @@ import {
   ProjectService,
   Timeline,
   TimelinesService,
+  Project,
 } from 'dipa-api-client';
 import { MatSelectChange } from '@angular/material/select';
 import ProjectTypeEnum = Timeline.ProjectTypeEnum;
+import { AuthenticationService } from '../../../../authentication.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DeleteProjectDialogComponent } from './delete-project-dialog/delete-project-dialog.component';
+import { Router } from '@angular/router';
+import { TimelineDataService } from '../../../../shared/timelineDataService';
 
 @Component({
   selector: 'app-chart-header',
@@ -26,23 +32,30 @@ export class ChartHeaderComponent implements OnInit, OnDestroy {
   @Output() projectTypeChanged = new EventEmitter();
   @Output() operationTypeChanged = new EventEmitter();
   @Output() projectApproachChanged = new EventEmitter();
+  @Output() projectDeleted = new EventEmitter();
 
-  timelinesSubscription: Subscription;
-  operationTypesSubscription: Subscription;
-  projectApproachesSubscription: Subscription;
+  public isProjectOwner: boolean;
+  public projectTypesList: Array<ProjectTypeEnum> = [ProjectTypeEnum.InternesProjekt, ProjectTypeEnum.AnProjekt];
+  public operationTypesList: Array<OperationType> = [];
+  public projectApproachesList: Array<ProjectApproach> = [];
+  private timelinesSubscription: Subscription;
+  private operationTypesSubscription: Subscription;
+  private projectApproachesSubscription: Subscription;
+  private projectSubscription: Subscription;
+  private project: Project;
 
-  projectTypesList: Array<ProjectTypeEnum> = [ProjectTypeEnum.InternesProjekt, ProjectTypeEnum.AnProjekt];
-  operationTypesList: Array<OperationType> = [];
-  projectApproachesList: Array<ProjectApproach> = [];
-
-  constructor(
+  public constructor(
+    public dialog: MatDialog,
     private timelinesService: TimelinesService,
     private projectService: ProjectService,
     private operationTypesService: OperationTypesService,
-    private projectApproachesService: ProjectApproachesService
+    private projectApproachesService: ProjectApproachesService,
+    private authenticationService: AuthenticationService,
+    private timelineDataService: TimelineDataService,
+    private router: Router
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.operationTypesSubscription = this.operationTypesService.getOperationTypes().subscribe((data) => {
       this.operationTypesList = data;
     });
@@ -50,15 +63,25 @@ export class ChartHeaderComponent implements OnInit, OnDestroy {
     this.projectApproachesSubscription = this.projectApproachesService.getProjectApproaches().subscribe((data) => {
       this.projectApproachesList = data;
     });
+
+    this.authenticationService.getProjectRoles().then((data) => {
+      this.isProjectOwner =
+        data.filter((d) => d.projectId === this.timelineData.id && d.abbreviation === 'PE').length > 0 ? true : false;
+    });
+
+    this.projectSubscription = this.projectService.getProjectData(this.timelineData.id).subscribe((data) => {
+      this.project = data;
+    });
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.timelinesSubscription?.unsubscribe();
     this.projectApproachesSubscription?.unsubscribe();
     this.operationTypesSubscription?.unsubscribe();
+    this.projectSubscription?.unsubscribe();
   }
 
-  changeProjectApproach(event: MatSelectChange): void {
+  public changeProjectApproach(event: MatSelectChange): void {
     this.timelineData.projectApproachId = parseInt(event.value, 10);
 
     this.timelinesService.updateTimeline(this.timelineData.id, this.timelineData).subscribe(() => {
@@ -66,12 +89,12 @@ export class ChartHeaderComponent implements OnInit, OnDestroy {
     });
   }
 
-  changeOperationType(event: MatSelectChange): void {
+  public changeOperationType(event: MatSelectChange): void {
     this.timelineData.operationTypeId = parseInt(event.value, 10);
     this.operationTypeChanged.emit(event.value);
   }
 
-  changeProjectType(event: MatSelectChange): void {
+  public changeProjectType(event: MatSelectChange): void {
     this.timelineData.projectType = event.value as ProjectTypeEnum;
 
     this.timelinesService.updateTimeline(this.timelineData.id, this.timelineData).subscribe(() => {
@@ -79,11 +102,11 @@ export class ChartHeaderComponent implements OnInit, OnDestroy {
     });
   }
 
-  filterProjectApproaches(operationTypeId: number): any[] {
+  public filterProjectApproaches(operationTypeId: number): any[] {
     return this.projectApproachesList.filter((projectApproach) => projectApproach.operationTypeId === operationTypeId);
   }
 
-  getIcsCalendarFile(): void {
+  public getIcsCalendarFile(): void {
     const filename = 'Meilensteine.ics';
 
     this.timelinesService.getTimelineCalendar(this.timelineData.id).subscribe((response: Blob) => {
@@ -98,6 +121,26 @@ export class ChartHeaderComponent implements OnInit, OnDestroy {
       document.body.appendChild(downloadLink);
       downloadLink.click();
       downloadLink.remove();
+    });
+  }
+
+  public openDeleteProjectDialog(): void {
+    const dialogRef = this.dialog.open(DeleteProjectDialogComponent, { data: this.timelineData });
+    dialogRef.componentInstance.onDelete.subscribe((event) => {
+      this.projectDeleted.emit(event);
+    });
+  }
+
+  public activateProject(): void {
+    this.project.archived = false;
+
+    this.projectService.updateProjectData(this.timelineData.id, this.project).subscribe({
+      next: () => {
+        this.timelineDataService.setTimelines();
+        this.router.navigate([`/gantt/${this.timelineData.id}/project-checklist/quickstart`]);
+      },
+      error: null,
+      complete: () => void 0,
     });
   }
 }
