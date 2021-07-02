@@ -18,7 +18,11 @@ allen Mitarbeitenden wird dessen Einhaltung erwartet. Bitte melden Sie inakzepta
 ## Entwicklung und Architektur
 
 Nähere Informationen zur Architektur, der Entwicklungsumgebung, den Projekt-Konventionen und zur Mitarbeit können 
-auf unsere, [Development Guide](DEVELOPMENT.md) nachgelesen werden.  
+auf unsere, [Development Guide](DEVELOPMENT.md) nachgelesen werden.
+
+### Einrichtung für GitHub-Packages
+
+DiPA besteht aus mehreren Modulen die über GitHub-Packages geteilt werden. Hierzu ist es erforderlich eine GitHub-Token einzurichten, weil GitHub keine reines public-Sharing erlaubt. Unter dem folgenden Link, wird beschieben, wie die Einrichtung erfolgt: https://github.com/DiPA-Projekt/contribution/blob/master/README.md#github-packages-einrichten
 
 ## Lizenz
 
