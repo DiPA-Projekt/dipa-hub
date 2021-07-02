@@ -29,6 +29,7 @@ import { ProjectRoleComponent } from './project-role/project-role.component';
 import { MilestoneDialogComponent } from './chart/milestone-dialog/milestone-dialog.component';
 import { TasksComponent } from './timeline/tasks/tasks.component';
 import { ShowFieldsMenuComponent } from './project-checklist/show-fields-menu/show-fields-menu.component';
+import { DeleteProjectDialogComponent } from './chart/chart-header/delete-project-dialog/delete-project-dialog.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { ShowFieldsMenuComponent } from './project-checklist/show-fields-menu/sh
     MilestoneDialogComponent,
     TasksComponent,
     ShowFieldsMenuComponent,
+    DeleteProjectDialogComponent,
   ],
   exports: [ChartComponent, FilesComponent, NavMenuListItemComponent],
   imports: [

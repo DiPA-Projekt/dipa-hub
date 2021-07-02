@@ -1,0 +1,11 @@
+delete:
+  tags:
+    - project
+  summary: Delete a project
+  description: Delete a project
+  operationId: deleteProject
+  parameters:
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
+  responses:
+    204:
+      description: The project was successfully deleted.

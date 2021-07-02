@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>online.dipa.hub</groupId>
@@ -23,10 +21,16 @@
   <build>
     <defaultGoal>install</defaultGoal>
     <resources>
+      <!-- https://medium.com/@itzgeoff/including-react-in-your-spring-boot-maven-build-ae3b8f8826e -->
       <resource>
         <directory>dist/dipa-frontend</directory>
         <filtering>false</filtering>
-        <targetPath>META-INF/resources</targetPath>
+        <targetPath>static/v1</targetPath>
+      </resource>
+      <resource>
+        <directory>node_modules/@dipa-projekt/dipa-client/dist</directory>
+        <filtering>false</filtering>
+        <targetPath>static/v2</targetPath>
       </resource>
     </resources>
     <plugins>
@@ -45,8 +49,7 @@
               <generatorName>typescript-angular</generatorName>
               <output>${project.basedir}/projects/dipa-api-client/src</output>
               <additionalProperties>removeEnumValuePrefix=false</additionalProperties>
-              <configOptions>
-              </configOptions>
+              <configOptions></configOptions>
             </configuration>
           </execution>
         </executions>
@@ -104,9 +107,63 @@
           <nodeVersion>v14.15.4</nodeVersion>
         </configuration>
       </plugin>
+      <!-- https://stackoverflow.com/questions/15157779/maven-replacer-plugin-and-multiple-files -->
+      <!-- https://gist.github.com/4n3w/3365657 -->
+      <plugin>
+        <groupId>com.google.code.maven-replacer-plugin</groupId>
+        <artifactId>replacer</artifactId>
+        <version>1.5.2</version>
+        <executions>
+          <execution>
+            <id>replace-for-v1</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>replace</goal>
+            </goals>
+            <configuration>
+              <basedir>${project.build.directory}/classes/static/v1/</basedir>
+              <includes>
+                <include>index.html</include>
+              </includes>
+              <replacements>
+                <replacement>
+                  <token>base href="/"</token>
+                  <value>base href="/v1/"</value>
+                </replacement>
+                <replacement>
+                  <token>'/'</token>
+                  <value>'/v1/'</value>
+                </replacement>
+              </replacements>
+            </configuration>
+          </execution>
+          <execution>
+            <id>replace-for-v2</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>replace</goal>
+            </goals>
+            <configuration>
+              <basedir>${project.build.directory}/classes/static/v2/</basedir>
+              <includes>
+                <include>index.html</include>
+              </includes>
+              <replacements>
+                <replacement>
+                  <token>base href="/"</token>
+                  <value>base href="/v2/"</value>
+                </replacement>
+                <replacement>
+                  <token>'/'</token>
+                  <value>'/v2/'</value>
+                </replacement>
+              </replacements>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
-
   <profiles>
     <profile>
       <id>github</id>

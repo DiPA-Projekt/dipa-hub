@@ -16,6 +16,7 @@
               id="overview{{ vm.timeline.id }}"
               [active]="false"
               [showTitle]="true"
+              (projectDeleted)="loadTimelines()"
               [projectApproachModifiable]="false"
               (projectApproachChanged)="loadTimelines()"
             ></app-chart>
