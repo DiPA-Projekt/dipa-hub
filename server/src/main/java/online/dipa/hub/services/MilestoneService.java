@@ -21,6 +21,8 @@ import online.dipa.hub.persistence.entities.MilestoneTemplateEntity;
 import online.dipa.hub.persistence.entities.PlanTemplateEntity;
 import online.dipa.hub.persistence.repositories.MilestoneTemplateRepository;
 import online.dipa.hub.persistence.repositories.PlanTemplateRepository;
+import online.dipa.hub.persistence.repositories.ProjectApproachRepository;
+
 import static java.time.temporal.ChronoUnit.HOURS;
 
 import java.time.LocalTime;
@@ -34,6 +36,9 @@ public class MilestoneService {
 
     @Autowired
     private MilestoneTemplateRepository milestoneTemplateRepository;
+
+    @Autowired
+    private ProjectApproachRepository projectApproachRepository;
     
     @Autowired
     private ConversionService conversionService;
@@ -178,17 +183,11 @@ public class MilestoneService {
 
     List<MilestoneTemplateEntity> getMilestonesFromRepository(final Long projectApproachId) {
 
-        final ProjectApproachEntity projectApproach = timelineService.findProjectApproach(projectApproachId);
-
+        final Optional<ProjectApproachEntity> projectApproach = projectApproachRepository.findById(projectApproachId);
         List<MilestoneTemplateEntity> milestones = new ArrayList<>();
 
-        if (projectApproach != null) {
-
-            Optional<PlanTemplateEntity> planTemplate = planTemplateRepository.findAll().stream()
-                    .filter(template -> template.getProjectApproaches() != null)
-                    .filter(template -> timelineService.filterProjectApproach(template, projectApproach.getId()))
-                    .filter(PlanTemplateEntity::getDefaultTemplate)
-                    .findFirst();
+        if (projectApproach.isPresent()) {
+            Optional<PlanTemplateEntity> planTemplate = planTemplateRepository.findByDefaultAndProjectApproach(projectApproach.get());
 
             planTemplate.ifPresent(template -> milestones.addAll(getMilestonesFromTemplate(template)));
 
@@ -214,14 +213,14 @@ public class MilestoneService {
 
     public void updateMilestoneStatus(final Long milestoneId, final Milestone.StatusEnum status) {
 
-        milestoneTemplateRepository.findAll().stream().filter(m -> m.getId().equals(milestoneId)).findFirst()
+        milestoneTemplateRepository.findById(milestoneId)
             .ifPresent(milestone -> milestone.setStatus(status.toString()));
         
     }
 
     public void updateMilestoneData(final Long milestoneId, final Milestone milestone) {
 
-        milestoneTemplateRepository.findAll().stream().filter(m -> m.getId().equals(milestoneId)).findFirst()
+        milestoneTemplateRepository.findById(milestoneId)
             .ifPresent(milestoneEntity -> {
                 milestoneEntity.setName(milestone.getName());
                 milestoneEntity.setStatus(milestone.getStatus().toString());});
@@ -232,7 +231,7 @@ public class MilestoneService {
         ProjectEntity currentProject = timelineService.getProject(timelineId);
         var planTemplate = currentProject.getPlanTemplate();
 
-        Optional<MilestoneTemplateEntity> toDeleteMilestone = milestoneTemplateRepository.findAll().stream().filter(m -> m.getId().equals(milestoneId)).findFirst();
+        Optional<MilestoneTemplateEntity> toDeleteMilestone = milestoneTemplateRepository.findById(milestoneId);
         
         if (toDeleteMilestone.isPresent()) {
             planTemplate.getMilestones().remove(toDeleteMilestone.get());

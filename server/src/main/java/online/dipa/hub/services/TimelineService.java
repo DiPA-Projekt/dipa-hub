@@ -37,6 +37,9 @@ public class TimelineService {
     private ProjectRepository projectRepository;
 
     @Autowired
+    private ProjectApproachRepository projectApproachRepository;
+
+    @Autowired
     private MilestoneTemplateRepository milestoneTemplateRepository;
 
     @Autowired
@@ -65,40 +68,37 @@ public class TimelineService {
     public List<Timeline> getTimelines() {
         List<Long> projectIds = userInformationService.getProjectIdList();
 
-        return projectRepository.findAll()
+        return projectRepository.findByArchived(false)
                                  .stream()
                                  .map(p -> conversionService.convert(p, Timeline.class))
                                  .filter(Objects::nonNull)
                                  .filter(t -> projectIds.contains(t.getId()))
-                                 .filter(t -> !t.getArchived())
                                  .collect(Collectors.toList());
     }
 
     public List<Timeline> getArchivedTimelines() {
         List<Long> projectIds = userInformationService.getProjectIdList();
 
-        return projectRepository.findAll()
+        return projectRepository.findByArchived(true)
                                  .stream()
                                  .map(p -> conversionService.convert(p, Timeline.class))
                                  .filter(Objects::nonNull)
                                  .filter(t -> projectIds.contains(t.getId()))
-                                 .filter(Timeline::getArchived)
                                  .collect(Collectors.toList());
     }
 
 
     public ProjectEntity getProject(final Long timelineId) {
              
-        return projectRepository.findAll().stream()
-                .filter(t -> t.getId().equals(timelineId)).findFirst().orElseThrow(() -> new EntityNotFoundException(
+        return projectRepository.findById(timelineId).orElseThrow(() -> new EntityNotFoundException(
                         String.format("Project with id: %1$s not found.", timelineId)));
 
     }
 
-    ProjectApproachEntity findProjectApproach(Long projectApproachId) {
-        return projectRepository.findAll().stream()
-        .filter(p -> p.getProjectApproach().getId().equals(projectApproachId)).findFirst().orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Project approach with id: %1$s not found.", projectApproachId))).getProjectApproach();
+    ProjectApproachEntity findProjectApproach(ProjectEntity project) {
+        return projectApproachRepository
+                .findByProject(project).orElseThrow(() -> new EntityNotFoundException(
+                        String.format("Project approach with id: %1$s not found.", project.getProjectApproach().getId())));
     }
 
     public void moveTimelineByDays(final Long timelineId, final Long days) {
@@ -228,7 +228,8 @@ public class TimelineService {
         IcsCalendar icsCalendar = new IcsCalendar();
         TimeZone timezone = icsCalendar.createTimezoneEurope();
 
-        final ProjectApproachEntity projectApproach = findProjectApproach(currentProject.getProjectApproach().getId());
+        //todo test
+        final ProjectApproachEntity projectApproach = findProjectApproach(currentProject);
 
         if (projectApproach != null) {
 
@@ -262,7 +263,7 @@ public class TimelineService {
 
             PlanTemplateEntity planTemplate = projectApproachService.getDefaultPlanTemplateEntityFromRepo(timeline.getProjectApproachId()); 
             List<MilestoneTemplateEntity> repoMilestones = new ArrayList<>(planTemplate.getMilestones());
-            
+
             PlanTemplateEntity projectPlanTemplate = project.getPlanTemplate();
 
             projectPlanTemplate.getMilestones()
@@ -341,18 +342,6 @@ public class TimelineService {
         downloadFileIds.addAll(vmxtProjectFiles);
 
         return downloadFileIds;
-    }
-
-    boolean filterProjectApproach(PlanTemplateEntity template, final Long projectApproachId) {
-        Optional<ProjectApproach> projectApproach = template.getProjectApproaches()
-                                                            .stream()
-                                                            .map(p -> conversionService.convert(p,
-                                                                    ProjectApproach.class))
-                                                            .filter(Objects::nonNull)
-                                                            .filter(o -> o.getId().equals(projectApproachId)).findFirst();
-
-        return projectApproach.isPresent();
-
     }
 
 }

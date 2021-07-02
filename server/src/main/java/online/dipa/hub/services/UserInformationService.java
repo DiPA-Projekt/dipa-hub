@@ -34,7 +34,10 @@ public class UserInformationService {
 
     @Autowired
     private ProjectRoleRepository projectRoleRepository;
-    
+
+    @Autowired
+    private ProjectApproachRepository projectApproachRepository;
+
     @Autowired
     private ProjectRoleTemplateRepository projectRoleTemplateRepository;
 
@@ -75,7 +78,7 @@ public class UserInformationService {
     public List<User> getAllUsers() {
         String currentTenantId = currentTenantIdentifierResolver.resolveCurrentTenantIdentifier();
 
-        return userRepository.findAll().stream().filter(u -> u.getTenantId().equals(currentTenantId))
+        return userRepository.findByTenantId(currentTenantId).stream()
         .map(user -> conversionService.convert(user, User.class)).collect(Collectors.toList());
     }
 
@@ -103,16 +106,15 @@ public class UserInformationService {
         newPRoleTemplate.setProjectRoles(pRoles);
         projectRoleTemplateRepository.save(newPRoleTemplate);
 
-        // insert projectOwner user into project role PE
-        ProjectRoleEntity projectRolePE = projectRoleRepository.findAll().stream()
-                                                      .filter(temp -> temp.getProjectRoleTemplate().getId().equals(newPRoleTemplate.getId()))
-                                                      .filter(a -> a.getAbbreviation().equals("PE")).findFirst().orElse(null);
+        Optional<ProjectRoleEntity> projectRolePE = projectRoleRepository.findByTemplateAndAbbreviation(newPRoleTemplate, "PE");
 
-        var userEntity = userRepository.findAll().stream().filter(u -> u.getId().equals(projectOwner.getId()))
-                                       .findFirst().orElse(null);
+        projectRolePE.ifPresent(projectRole -> userRepository.findById(projectOwner.getId())
+                                                                    .ifPresent(user -> {
+                                                                        user.getProjectRoles()
+                                                                            .add(projectRole);
+                                                                        userRepository.save(user);
+                                                                    }));
 
-        userEntity.getProjectRoles().add(projectRolePE);
-        userRepository.save(userEntity);
     }
 
     public void updateNewProjectRolesForTemplate (ProjectEntity project) {
@@ -188,10 +190,7 @@ public class UserInformationService {
 
     private ProjectRoleTemplateEntity findProjectRoleTemplate (ProjectEntity project) {
 
-        return projectRoleTemplateRepository.findAll().stream()
-                                                               .filter(temp -> temp.getProjectApproaches().stream()
-                                                                                   .anyMatch(a -> a.getId().equals(project.getProjectApproach().getId()))).findFirst()
-                                                               .orElse(null);
+        return projectRoleTemplateRepository.findByProjectApproach(project.getProjectApproach());
 
     }
 }
