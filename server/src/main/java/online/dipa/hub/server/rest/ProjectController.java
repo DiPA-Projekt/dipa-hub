@@ -53,6 +53,12 @@ public class ProjectController implements ProjectApi {
     }
     
     @Override
+    public ResponseEntity<Void> deleteProject(final Long timelineId) {
+        projectService.deleteProject(timelineId);
+        return ResponseEntity.noContent().build();
+    }
+    
+    @Override
     public ResponseEntity<List<ProjectRole>> getProjectRoles(final Long projectId) {
         return ResponseEntity.ok(projectService.getProjectRoles(projectId));
     }

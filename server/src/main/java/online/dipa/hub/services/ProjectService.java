@@ -132,6 +132,12 @@ public class ProjectService {
         return conversionService.convert(newProject, Timeline.class);
     }
 
+    public void deleteProject(final Long projectId) {
+        var projectEntity = timelineService.getProject(projectId);
+       
+        projectRepository.delete(projectEntity);      
+    }
+
     public List<ProjectTask> getProjectTasks (final Long projectId, final boolean isPermanentTask) {
         List<ProjectTask> projectTasks = new ArrayList<>();
         List<Long> projectIds = userInformationService.getProjectIdList();

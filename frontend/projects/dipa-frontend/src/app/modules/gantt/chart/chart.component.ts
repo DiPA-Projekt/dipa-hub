@@ -15,7 +15,6 @@ import { forkJoin, Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   Input,
@@ -41,6 +40,7 @@ import { ZoomBehavior } from 'd3-zoom';
 import StatusEnum = Milestone.StatusEnum;
 import { MilestoneDialogComponent } from './milestone-dialog/milestone-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { AuthenticationService } from '../../../authentication.service';
 
 @Component({
   selector: 'app-chart',
@@ -48,7 +48,7 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./chart.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
+export class ChartComponent implements OnInit, OnChanges, OnDestroy {
   @Input() showTitle: boolean;
   @Input() active: boolean;
   @Input() projectApproachModifiable: boolean;
@@ -63,6 +63,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   @Output() projectTypeChanged = new EventEmitter();
   @Output() operationTypeChanged = new EventEmitter();
   @Output() projectApproachChanged = new EventEmitter();
+  @Output() projectDeleted = new EventEmitter();
 
   @ViewChild('chart')
   chartFigure: ElementRef;
@@ -94,7 +95,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   timelineStartSubscription: Subscription;
   timelineEndSubscription: Subscription;
 
-  modifiable: boolean;
+  userHasProjectEditRights = false;
+  modifiable = false;
   showMenu: boolean;
 
   showMilestoneMenu: boolean;
@@ -132,7 +134,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   private operationMoveTimelineEnd: InlineObject.OperationEnum = 'MOVE_TIMELINE_END';
   private operationMoveMilestone: InlineObject.OperationEnum = 'MOVE_MILESTONE';
 
-  constructor(
+  public constructor(
+    public authenticationService: AuthenticationService,
     public ganttControlsService: GanttControlsService,
     private milestonesService: MilestonesService,
     private tasksService: TasksService,
@@ -173,111 +176,26 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     });
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.showMilestoneMenu = false;
     this.showMenu = true;
 
-    this.modifiable = this.active || this.projectApproachModifiable;
+    this.authenticationService.getProjectRoles().then((roles) => {
+      this.userHasProjectEditRights =
+        roles.filter(
+          (d) => d.projectId === this.timelineData.id && (d.abbreviation === 'PL' || d.abbreviation === 'PE')
+        ).length > 0;
 
-    this.periodStartDateSubscription = this.ganttControlsService.getPeriodStartDate().subscribe((data) => {
-      if (this.periodStartDate !== data) {
-        this.periodStartDate = data;
+      this.modifiable = (this.active || this.projectApproachModifiable) && this.userHasProjectEditRights;
 
-        if (this.xScale) {
-          this.refreshXScale();
-          this.redrawChart(200);
-        }
-      }
-    });
-
-    this.periodEndDateSubscription = this.ganttControlsService.getPeriodEndDate().subscribe((data) => {
-      if (this.periodEndDate !== data) {
-        this.periodEndDate = data;
-
-        if (this.xScale) {
-          this.refreshXScale();
-          this.redrawChart(200);
-        }
-      }
-    });
-
-    if (this.chartElement.id.includes('overview')) {
-      this.periodStartDate = new Date(this.timelineData.start);
-      this.periodEndDate = new Date(this.timelineData.end);
-      this.showMenu = false;
-    }
-
-    this.viewTypeSubscription = this.ganttControlsService.getViewType().subscribe((data) => {
-      if (this.viewType !== data) {
-        this.viewType = data;
-
-        if (this.xScale) {
-          switch (data) {
-            case 'DAYS': {
-              this.headerX.formatDate = (d: Date) => this.headerX.formatDateDay(d);
-
-              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
-                this.onZoom(event, this.oneDayTick / 5);
-              });
-              this.refreshXScale();
-              this.redrawChart(0);
-
-              break;
-            }
-            case 'WEEKS': {
-              this.headerX.formatDate = (d: Date) => this.headerX.formatDateWeek(d);
-
-              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
-                this.onZoom(event, (this.oneDayTick * 7) / 12);
-              });
-              this.refreshXScale();
-              this.redrawChart(0);
-
-              break;
-            }
-            case 'MONTHS': {
-              this.headerX.formatDate = (d: Date) => this.headerX.formatDateMonth(d);
-
-              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
-                this.onZoom(event, (this.oneDayTick * 30) / 12);
-              });
-              this.refreshXScale();
-              this.redrawChart(0);
-
-              break;
-            }
-            case 'YEARS': {
-              this.headerX.formatDate = (d: Date) => this.headerX.formatDateYear(d);
-
-              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
-                this.onZoom(event, (this.oneDayTick * 365) / 12);
-              });
-              this.refreshXScale();
-              this.redrawChart(0);
-              break;
-            }
-            case null: {
-              this.headerX.formatDate = (d: Date) => this.headerX.formatDateFull(d);
-              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
-                this.onZoom(event, this.oneDayTick);
-              });
-
-              this.refreshXScale();
-              this.redrawChart(0);
-
-              break;
-            }
-          }
-        }
-      }
+      this.setSubscriptions();
+      this.drawChart();
     });
 
     d3.select(this.chartElement).select('figure').append('div').attr('class', 'tooltip');
-
-    this.drawChart();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  public ngOnChanges(changes: SimpleChanges): void {
     if (
       (changes.taskData && !changes.taskData.isFirstChange()) ||
       (changes.milestoneData && !changes.milestoneData.isFirstChange())
@@ -286,7 +204,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     }
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.periodStartDateSubscription.unsubscribe();
     this.periodEndDateSubscription.unsubscribe();
 
@@ -297,11 +215,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
     this.timelineSubscription?.unsubscribe();
     this.timelineStartSubscription?.unsubscribe();
     this.timelineEndSubscription?.unsubscribe();
-  }
-
-  ngAfterViewInit(): void {
-    const newSize = (this.chartFigure.nativeElement as HTMLElement).offsetWidth;
-    this.resizeChart(newSize);
   }
 
   getDate(date: string): any {
@@ -352,7 +265,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
   onResized(event: ResizedEvent): void {
     // only resize if width was changed, height is not relevant here
-    if (event.newWidth !== this.viewBoxWidth) {
+    if (event.newWidth !== this.viewBoxWidth && this.svg != null) {
       this.resizeChart(event.newWidth);
     }
   }
@@ -745,11 +658,11 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
   }
 
   private resizeXScale(newSize): void {
-    this.xScale.range([0, newSize - this.padding.left]);
+    this.xScale?.range([0, newSize - this.padding.left]);
   }
 
   private resizeZoomElement(newSize): void {
-    this.zoomElement.attr('width', newSize - this.padding.left);
+    this.zoomElement?.attr('width', newSize - this.padding.left);
   }
 
   // redraw if data was changed but no additional data was added or removed
@@ -817,5 +730,100 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy, AfterViewIn
 
     this.incrementsData = incrementsData;
     this.incrementsViewItem.setData(incrementsData);
+  }
+
+  private setSubscriptions() {
+    this.periodStartDateSubscription = this.ganttControlsService.getPeriodStartDate().subscribe((data) => {
+      if (this.periodStartDate !== data) {
+        this.periodStartDate = data;
+
+        if (this.xScale) {
+          this.refreshXScale();
+          this.redrawChart(200);
+        }
+      }
+    });
+
+    this.periodEndDateSubscription = this.ganttControlsService.getPeriodEndDate().subscribe((data) => {
+      if (this.periodEndDate !== data) {
+        this.periodEndDate = data;
+
+        if (this.xScale) {
+          this.refreshXScale();
+          this.redrawChart(200);
+        }
+      }
+    });
+
+    if (this.chartElement.id.includes('overview')) {
+      this.periodStartDate = new Date(this.timelineData.start);
+      this.periodEndDate = new Date(this.timelineData.end);
+      this.showMenu = false;
+    }
+
+    this.viewTypeSubscription = this.ganttControlsService.getViewType().subscribe((data) => {
+      if (this.viewType !== data) {
+        this.viewType = data;
+
+        if (this.xScale) {
+          switch (data) {
+            case 'DAYS': {
+              this.headerX.formatDate = (d: Date) => this.headerX.formatDateDay(d);
+
+              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
+                this.onZoom(event, this.oneDayTick / 5);
+              });
+              this.refreshXScale();
+              this.redrawChart(0);
+
+              break;
+            }
+            case 'WEEKS': {
+              this.headerX.formatDate = (d: Date) => this.headerX.formatDateWeek(d);
+
+              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
+                this.onZoom(event, (this.oneDayTick * 7) / 12);
+              });
+              this.refreshXScale();
+              this.redrawChart(0);
+
+              break;
+            }
+            case 'MONTHS': {
+              this.headerX.formatDate = (d: Date) => this.headerX.formatDateMonth(d);
+
+              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
+                this.onZoom(event, (this.oneDayTick * 30) / 12);
+              });
+              this.refreshXScale();
+              this.redrawChart(0);
+
+              break;
+            }
+            case 'YEARS': {
+              this.headerX.formatDate = (d: Date) => this.headerX.formatDateYear(d);
+
+              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
+                this.onZoom(event, (this.oneDayTick * 365) / 12);
+              });
+              this.refreshXScale();
+              this.redrawChart(0);
+              break;
+            }
+            case null: {
+              this.headerX.formatDate = (d: Date) => this.headerX.formatDateFull(d);
+              this.zoom.on('zoom', (event: d3.D3ZoomEvent<any, any>) => {
+                this.onZoom(event, this.oneDayTick);
+              });
+
+              this.refreshXScale();
+              this.redrawChart(0);
+
+              break;
+            }
+          }
+        }
+      }
+    });
   }
 }

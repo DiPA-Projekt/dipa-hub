@@ -1,48 +1,57 @@
-import { Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
-
+import { Component, OnDestroy, OnInit, AfterViewInit, QueryList, ViewChildren } from '@angular/core';
 import { IncrementsService, MilestonesService, TasksService, Timeline, TimelinesService } from 'dipa-api-client';
 import { ChartComponent } from '../../gantt/chart/chart.component';
-import { forkJoin, Observable, Subscription } from 'rxjs';
+import { forkJoin, Observable, Subscription, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-archived-projects',
   templateUrl: './archived-projects.component.html',
   styleUrls: ['./archived-projects.component.scss'],
 })
-export class ArchivedProjectsComponent implements OnInit, OnDestroy {
+export class ArchivedProjectsComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChildren('charts') charts: QueryList<ChartComponent>;
 
-  timelinesSubscription: Subscription;
+  public timelineData: Timeline[];
 
-  timelineData: Timeline[];
+  public vmAll$: Observable<any>;
 
-  vmAll$: Observable<any>;
-  periodStartDateSubscription: Subscription;
+  public observablesList: Array<any> = [];
 
-  observablesList: Array<any> = [];
+  public loading: boolean;
 
-  loading: boolean;
+  public periodStartDate = new Date(2020, 0, 1);
+  public periodEndDate = new Date(2020, 11, 31);
+  private timelinesSubscription: Subscription;
+  private periodStartDateSubscription: Subscription;
 
-  periodStartDate = new Date(2020, 0, 1);
-  periodEndDate = new Date(2020, 11, 31);
-
-  constructor(
+  public constructor(
     private timelinesService: TimelinesService,
     private milestonesService: MilestonesService,
     private tasksService: TasksService,
-    private incrementsService: IncrementsService
+    private incrementsService: IncrementsService,
+    private route: ActivatedRoute
   ) {}
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.timelinesSubscription?.unsubscribe();
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.loadTimelines();
   }
 
-  setData(timelineId: number): Observable<any> {
+  public ngAfterViewInit(): void {
+    const joinStream = combineLatest(this.charts.changes, this.route.fragment);
+    joinStream.subscribe(([comps, fragment]: [QueryList<ChartComponent>, string]) => {
+      if (fragment) {
+        document.getElementById(fragment).scrollIntoView();
+      }
+    });
+  }
+
+  public setData(timelineId: number): Observable<any> {
     this.loading = true;
 
     return forkJoin([
@@ -65,7 +74,7 @@ export class ArchivedProjectsComponent implements OnInit, OnDestroy {
     );
   }
 
-  loadTimelines(): void {
+  public loadTimelines(): void {
     this.observablesList = [];
     this.timelinesSubscription = this.timelinesService.getArchivedTimelines().subscribe((data) => {
       this.timelineData = data;

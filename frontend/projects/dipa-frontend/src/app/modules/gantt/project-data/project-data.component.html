@@ -35,7 +35,12 @@
         <div class="col-md-6 col-lg-4 col-xl-2">
           <mat-form-field appearance="fill" class="full-width">
             <mat-label>Projektgröße</mat-label>
-            <mat-select #projectSizeSelect formControlName="projectSize" (selectionChange)="onSubmit(projectForm)">
+            <mat-select
+              #projectSizeSelect
+              formControlName="projectSize"
+              [disabled]="!userHasProjectEditRights"
+              (selectionChange)="onSubmit(projectForm)"
+            >
               <mat-select-trigger>{{ displayProjectSize(projectSizeSelect.value) }}</mat-select-trigger>
               <mat-option *ngFor="let size of sizes" [value]="size.value" class="multi-line-option">
                 <h4 mat-line>{{ size.display }}</h4>

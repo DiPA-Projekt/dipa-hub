@@ -1,0 +1,11 @@
+<div mat-dialog-content>
+  <span
+    >Wollen Sie das Projekt
+    <span style="font-weight: bold">{{ timelineData.name }}</span>
+    endgültig löschen?</span
+  >
+</div>
+<div mat-dialog-actions class="justify-content-end">
+  <button mat-raised-button color="primary" (click)="deleteProject()" cdkFocusInitial>Ja</button>
+  <button mat-button (click)="closeDialog()">Nein</button>
+</div>
