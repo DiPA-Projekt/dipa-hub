@@ -53,6 +53,7 @@
       [timelineData]="timelineData"
       [showTitle]="showTitle"
       [active]="active"
+      [userHasProjectEditRights]="userHasProjectEditRights"
       [projectApproachModifiable]="projectApproachModifiable"
       [showActions]="showActions"
       (projectTypeChanged)="projectTypeChanged.emit($event)"
@@ -61,7 +62,7 @@
       (projectDeleted)="projectDeleted.emit($event)"
     ></app-chart-header>
     <button
-      *ngIf="incrementsData.length === 0 && (active || projectApproachModifiable)"
+      *ngIf="incrementsData.length === 0 && (active || projectApproachModifiable) && userHasProjectEditRights"
       mat-raised-button
       color="primary"
       (click)="openMilestoneDialog()"

@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Project, ProjectService } from 'dipa-api-client';
 import { TimelineDataService } from '../../../shared/timelineDataService';
+import { AuthenticationService } from '../../../authentication.service';
 
 interface ProjectSize {
   value: string;
@@ -18,6 +19,8 @@ interface ProjectSize {
 })
 export class ProjectDataComponent implements OnInit, OnDestroy, OnChanges {
   @Input() public timelineId: number;
+  @Input() active: boolean;
+  @Input() userHasProjectEditRights: boolean;
   @Output() public projectSizeChanged = new EventEmitter();
 
   public projectForm: FormGroup;
@@ -43,6 +46,7 @@ export class ProjectDataComponent implements OnInit, OnDestroy, OnChanges {
   private projectDataSubscription: Subscription;
 
   public constructor(
+    private authenticationService: AuthenticationService,
     private projectService: ProjectService,
     private timelineDataService: TimelineDataService,
     public activatedRoute: ActivatedRoute,
@@ -114,13 +118,28 @@ export class ProjectDataComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private setReactiveForm(data: Project): void {
+    this.authenticationService.getProjectRoles().then((roles) => {
+      this.userHasProjectEditRights =
+        roles.filter((d) => d.projectId === this.timelineId && (d.abbreviation === 'PL' || d.abbreviation === 'PE'))
+          .length > 0;
+
+      this.projectForm = this.fb.group({
+        id: new FormControl({ value: data?.id, disabled: !this.userHasProjectEditRights }),
+        akz: new FormControl({ value: data?.akz, disabled: !this.userHasProjectEditRights }),
+        name: new FormControl({ value: data?.name, disabled: !this.userHasProjectEditRights }),
+        projectSize: new FormControl({ value: data?.projectSize, disabled: !this.userHasProjectEditRights }),
+        client: new FormControl({ value: data?.client, disabled: !this.userHasProjectEditRights }),
+        department: new FormControl({ value: data?.department, disabled: !this.userHasProjectEditRights }),
+        archived: [data?.archived],
+      });
+    });
     this.projectForm = this.fb.group({
-      id: [data?.id],
-      akz: [data?.akz],
-      name: [data?.name],
-      projectSize: [data?.projectSize],
-      client: [data?.client],
-      department: [data?.department],
+      id: new FormControl({ value: data?.id, disabled: true }),
+      akz: new FormControl({ value: data?.akz, disabled: true }),
+      name: new FormControl({ value: data?.name, disabled: true }),
+      projectSize: new FormControl({ value: data?.projectSize }),
+      client: new FormControl({ value: data?.client, disabled: true }),
+      department: new FormControl({ value: data?.department, disabled: true }),
       archived: [data?.archived],
     });
   }
