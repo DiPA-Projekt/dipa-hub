@@ -193,13 +193,17 @@ export class TimelineComponent implements OnInit, OnDestroy {
     });
   }
 
-  public onChangeAppointmentPeriodStart(event: any): void {
-    this.apptStartDate = event.target.value;
+  public onChangeAppointmentPeriodStart(event: Event): void {
+    if ((event.target as HTMLInputElement).value !== null) {
+      this.apptStartDate = (event.target as HTMLInputElement).value;
+      this.periodTemplate = 'CUSTOM';
+      this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
+    }
   }
 
-  public onChangeAppointmentPeriodEnd(event: any): void {
-    if (event.target.value !== null) {
-      this.apptEndDate = event.target.value;
+  public onChangeAppointmentPeriodEnd(event: Event): void {
+    if ((event.target as HTMLInputElement).value !== null) {
+      this.apptEndDate = (event.target as HTMLInputElement).value;
       this.periodTemplate = 'CUSTOM';
       this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
     }
