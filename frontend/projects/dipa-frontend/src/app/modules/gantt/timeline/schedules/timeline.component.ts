@@ -194,7 +194,11 @@ export class TimelineComponent implements OnInit, OnDestroy {
   }
 
   public onChangeAppointmentPeriodStart(event: any): void {
-    this.apptStartDate = event.target.value;
+    if (event.target.value !== null) {
+      this.apptStartDate = event.target.value;
+      this.periodTemplate = 'CUSTOM';
+      this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
+    }
   }
 
   public onChangeAppointmentPeriodEnd(event: any): void {
