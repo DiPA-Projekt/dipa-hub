@@ -25,10 +25,11 @@ import { TimelineDataService } from '../../../../shared/timelineDataService';
 })
 export class ChartHeaderComponent implements OnInit, OnDestroy {
   @Input() timelineData: Timeline;
-  @Input() active;
-  @Input() showTitle;
-  @Input() projectApproachModifiable;
-  @Input() showActions;
+  @Input() active: boolean;
+  @Input() userHasProjectEditRights: boolean;
+  @Input() showTitle: boolean;
+  @Input() projectApproachModifiable: boolean;
+  @Input() showActions: boolean;
   @Output() projectTypeChanged = new EventEmitter();
   @Output() operationTypeChanged = new EventEmitter();
   @Output() projectApproachChanged = new EventEmitter();
@@ -64,9 +65,9 @@ export class ChartHeaderComponent implements OnInit, OnDestroy {
       this.projectApproachesList = data;
     });
 
-    this.authenticationService.getProjectRoles().then((data) => {
+    void this.authenticationService.getProjectRoles().then((data) => {
       this.isProjectOwner =
-        data.filter((d) => d.projectId === this.timelineData.id && d.abbreviation === 'PE').length > 0 ? true : false;
+        data.filter((d) => d.projectId === this.timelineData.id && d.abbreviation === 'PE').length > 0;
     });
 
     this.projectSubscription = this.projectService.getProjectData(this.timelineData.id).subscribe((data) => {

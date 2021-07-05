@@ -12,7 +12,6 @@ import { forkJoin, Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
@@ -41,7 +40,7 @@ import { ZoomBehavior } from 'd3-zoom';
   styleUrls: ['./templates.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
+export class TemplatesComponent implements OnInit, OnChanges, OnDestroy {
   @Input() showTitle: boolean;
   @Input() active: boolean;
   @Input() timelineData: Timeline;
@@ -258,11 +257,6 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
     this.viewTypeSubscription?.unsubscribe();
     this.timelineStartSubscription?.unsubscribe();
     this.timelineEndSubscription?.unsubscribe();
-  }
-
-  ngAfterViewInit(): void {
-    const newSize = (this.templateChart.nativeElement as HTMLElement).offsetWidth;
-    this.resizeChart(newSize);
   }
 
   onResized(event: ResizedEvent): void {
@@ -622,11 +616,11 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy, AfterVi
   }
 
   private resizeXScale(newSize): void {
-    this.xScale.range([0, newSize - this.padding.left]);
+    this.xScale?.range([0, newSize - this.padding.left]);
   }
 
   private resizeZoomElement(newSize): void {
-    this.zoomElement.attr('width', newSize - this.padding.left);
+    this.zoomElement?.attr('width', newSize - this.padding.left);
   }
 
   private redraw(animationDuration): any {
