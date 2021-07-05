@@ -46,7 +46,7 @@ export class MilestoneDialogComponent implements OnInit {
     if (formGroup.valid) {
       this.milestoneService.createMilestone(this.timeline.id, formGroup.value).subscribe({
         next: () => {
-          const milestoneDate: Date = formGroup.get('date').value as Date;
+          const milestoneDate: Date = new Date(formGroup.get('date').value);
           if (MilestoneDialogComponent.isMilestoneOutOfProjectPeriod(this.timeline, milestoneDate)) {
             this.snackBar.open('Der Projektzeitraum wurde erweitert.', 'Schließen', {
               horizontalPosition: 'center',
