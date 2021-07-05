@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavItem } from '../../../nav-item';
-import { ExternalLinksService, Timeline, TimelinesService } from 'dipa-api-client';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ExternalLinksService, Timeline, Project, TimelinesService, ProjectService } from 'dipa-api-client';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthenticationService } from '../../../authentication.service';
 import { TimelineDataService } from '../../../shared/timelineDataService';
@@ -18,21 +18,25 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   public selectedTimelineId: number;
 
-  public favoriteLinksSubscription: Subscription;
-  public rolesSubscription: Subscription;
-  public timelineDataSubscription: Subscription;
-  public paramsSubscription: Subscription;
-
   public navMenuItems: NavItem[] = [];
   public favoriteLinkItems: NavItem[] = [];
   public roles: string;
+
+  private favoriteLinksSubscription: Subscription;
+  private rolesSubscription: Subscription;
+  private timelineDataSubscription: Subscription;
+  private paramsSubscription: Subscription;
+  private projectSubscription: Subscription;
+  private project: Project;
 
   public constructor(
     private authenticationService: AuthenticationService,
     private timelinesService: TimelinesService,
     private externalLinksService: ExternalLinksService,
-    public activatedRoute: ActivatedRoute,
-    private timelineDataService: TimelineDataService
+    private activatedRoute: ActivatedRoute,
+    private timelineDataService: TimelineDataService,
+    private projectService: ProjectService,
+    private router: Router
   ) {}
 
   public ngOnInit(): void {
@@ -52,6 +56,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.rolesSubscription = this.timelineDataService.getRoles().subscribe((data) => {
       this.roles = data;
     });
+
+    this.projectSubscription = this.projectService.getProjectData(this.selectedTimelineId).subscribe((data) => {
+      this.project = data;
+    });
   }
 
   public ngOnDestroy(): void {
@@ -59,6 +67,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.paramsSubscription?.unsubscribe();
     this.timelineDataSubscription?.unsubscribe();
     this.rolesSubscription?.unsubscribe();
+    this.projectSubscription?.unsubscribe();
   }
 
   public setSideNavMenu(): void {
@@ -126,6 +135,21 @@ export class SidenavComponent implements OnInit, OnDestroy {
           })),
         },
       ];
+    });
+  }
+
+  public archiveProject(): void {
+    this.project.archived = true;
+
+    this.projectService.updateProjectData(this.selectedTimelineId, this.project).subscribe({
+      next: () => {
+        this.timelineDataService.setTimelines();
+        this.router.navigate([`overview/archivedProjects`], {
+          fragment: `gantt${this.selectedTimelineId}`,
+        });
+      },
+      error: null,
+      complete: () => void 0,
     });
   }
 }

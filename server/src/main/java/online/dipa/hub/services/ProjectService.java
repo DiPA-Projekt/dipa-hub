@@ -90,7 +90,8 @@ public class ProjectService {
             projectEntity.setProjectSize(project.getProjectSize().toString());
             projectEntity.setClient(project.getClient());
             projectEntity.setDepartment(project.getDepartment());
-          
+            projectEntity.setArchived(project.getArchived());
+
             projectRepository.save(projectEntity);
 
         }
@@ -129,6 +130,12 @@ public class ProjectService {
 
         userInformationService.createNewProjectRoles(newProject, projectOwner);
         return conversionService.convert(newProject, Timeline.class);
+    }
+
+    public void deleteProject(final Long projectId) {
+        var projectEntity = timelineService.getProject(projectId);
+       
+        projectRepository.delete(projectEntity);      
     }
 
     public List<ProjectTask> getProjectTasks (final Long projectId, final boolean isPermanentTask) {

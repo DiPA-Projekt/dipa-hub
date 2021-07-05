@@ -14,16 +14,19 @@ export class Increments {
 
   height = 200;
   incrementsAreaId: number;
+  modifiable: boolean;
 
   constructor(
     svg: d3.Selection<any, any, any, any>,
     xScale: ScaleTime<any, any>,
     data: Increment[],
-    incrementsAreaId: number
+    incrementsAreaId: number,
+    modifiable: boolean
   ) {
     this.svg = svg;
     this.xScale = xScale;
     this.incrementsAreaId = incrementsAreaId;
+    this.modifiable = modifiable;
 
     this.setData(data);
   }
@@ -105,10 +108,6 @@ export class Increments {
       .attr('class', 'btn material-icons')
       .text('delete');
 
-    deleteIcon.on('click', () => {
-      this.onClickDeleteButton();
-    });
-
     // add increment icon
     const addIcon = incrementActionsButton
       .filter((d, i) => i === 0)
@@ -116,9 +115,14 @@ export class Increments {
       .attr('class', 'btn material-icons')
       .text('add_circle');
 
-    addIcon.on('click', () => {
-      this.onClickAddButton();
-    });
+    if (this.modifiable) {
+      addIcon.on('click', () => {
+        this.onClickAddButton();
+      });
+      deleteIcon.on('click', () => {
+        this.onClickDeleteButton();
+      });
+    }
   }
 
   redraw(offset: { [key: string]: number }): void {

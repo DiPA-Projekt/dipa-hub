@@ -1,44 +1,72 @@
-<p>
-  <mat-toolbar>
-    <span *ngIf="isAdmin" class="timelineName">
-      {{ timelineData.name }}
-    </span>
-    <mat-form-field *ngIf="timelineData" floatLabel="always" id="projectType-{{ timelineData.id }}">
-      <mat-label>Projekttyp</mat-label>
-      <mat-select
-        [(value)]="timelineData.projectType"
-        (selectionChange)="changeProjectType($event)"
-        [disabled]="!isAdmin"
+<div class="chartHeader">
+  <span *ngIf="showTitle" class="timelineName" style="margin-top: 10px">
+    {{ timelineData.name }}
+  </span>
+
+  <div fxLayout="row wrap" fxLayoutGap="12px grid" class="full-width">
+    <div fxFlex="25%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="33%" fxFlex.lg="25%">
+      <mat-form-field
+        *ngIf="timelineData"
+        class="noHint full-width"
+        floatLabel="always"
+        id="projectType-{{ timelineData.id }}"
       >
-        <mat-option *ngFor="let projectType of projectTypesList" [value]="projectType">
-          {{ projectType }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field *ngIf="timelineData" floatLabel="always" id="operationType-{{ timelineData.id }}">
-      <mat-label>Vorhabensart</mat-label>
-      <mat-select
-        [(value)]="timelineData.operationTypeId"
-        (selectionChange)="changeOperationType($event)"
-        [disabled]="!isAdmin"
-      >
-        <mat-option *ngFor="let operationType of operationTypesList" [value]="operationType.id">
-          {{ operationType.name }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field *ngIf="timelineData" floatLabel="always" id="projectApproach-{{ timelineData.id }}">
-      <mat-label>Vorgehensweise</mat-label>
-      <mat-select [(value)]="timelineData.projectApproachId" (selectionChange)="changeProjectApproach($event)">
-        <mat-option
-          *ngFor="let projectApproach of filterProjectApproaches(timelineData.operationTypeId)"
-          [value]="projectApproach.id"
+        <mat-label>Projekttyp</mat-label>
+        <mat-select
+          [(value)]="timelineData.projectType"
+          (selectionChange)="changeProjectType($event)"
+          [disabled]="!active || !userHasProjectEditRights"
         >
-          {{ projectApproach.name }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <span class="full-width-spacer"></span>
+          <mat-option *ngFor="let projectType of projectTypesList" [value]="projectType">
+            {{ projectType }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div fxFlex="25%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="33%" fxFlex.lg="25%">
+      <mat-form-field
+        *ngIf="timelineData"
+        class="noHint full-width"
+        floatLabel="always"
+        id="operationType-{{ timelineData.id }}"
+      >
+        <mat-label>Vorhabensart</mat-label>
+        <mat-select
+          [(value)]="timelineData.operationTypeId"
+          (selectionChange)="changeOperationType($event)"
+          [disabled]="!active || !userHasProjectEditRights"
+        >
+          <mat-option *ngFor="let operationType of operationTypesList" [value]="operationType.id">
+            {{ operationType.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div fxFlex="25%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="33%" fxFlex.lg="25%">
+      <mat-form-field
+        *ngIf="timelineData"
+        class="noHint full-width"
+        floatLabel="always"
+        id="projectApproach-{{ timelineData.id }}"
+      >
+        <mat-label>Vorgehensweise</mat-label>
+        <mat-select
+          [(value)]="timelineData.projectApproachId"
+          (selectionChange)="changeProjectApproach($event)"
+          [disabled]="!projectApproachModifiable || !userHasProjectEditRights"
+        >
+          <mat-option
+            *ngFor="let projectApproach of filterProjectApproaches(timelineData.operationTypeId)"
+            [value]="projectApproach.id"
+          >
+            {{ projectApproach.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: end">
     <button
       *ngIf="showActions"
       (click)="getIcsCalendarFile()"
@@ -50,5 +78,18 @@
       <mat-icon>event_note</mat-icon>
       Export
     </button>
-  </mat-toolbar>
-</p>
+    <button *ngIf="!active && !projectApproachModifiable" mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="activateProject()">
+        <mat-icon>undo</mat-icon>
+        <span>Projekt aktivieren</span>
+      </button>
+      <button mat-menu-item (click)="openDeleteProjectDialog()" [disabled]="!isProjectOwner">
+        <mat-icon>delete</mat-icon>
+        <span>Projekt löschen</span>
+      </button>
+    </mat-menu>
+  </div>
+</div>

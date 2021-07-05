@@ -1,0 +1,60 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: GitHub CI - OpenAPI as NPM-Package
+
+on:
+  push:
+    branches: [develop]
+
+env:
+  NPM_SCOPE: dipa-projekt
+  PROJECT_NAME: dipa-openapi
+  OPENAPI_YML: src/main/resources/dipa-hub.yaml
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - name: Set up Node.js
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: 14.x
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@${{ env.NPM_SCOPE }}"
+      - name: Restore cache
+        uses: actions/cache@v2.1.6
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: npm ci
+        working-directory: open-api
+      - name: Convert yml2json
+        run: npx openapi-generator-cli generate -g openapi -i ${{ env.OPENAPI_YML }} -o dist/openapi
+        working-directory: open-api
+      - name: Read OpenAPI
+        id: openapi
+        run: |
+          content=`cat dist/openapi/openapi.json | tr -d "\n"`
+          echo "::set-output name=json::$content"
+        working-directory: open-api
+      - name: Generate API for NPM
+        run: npx openapi-generator-cli generate -g typescript-rxjs -i ${{ env.OPENAPI_YML }} -o dist/typescript-rxjs
+        working-directory: open-api
+      - name: Add bearer token handling
+        run: node scripts/add-bearer-handling.js
+        working-directory: open-api
+      - name: Create package.json
+        run: node scripts/create-package-json.js $GITHUB_SERVER_URL $GITHUB_REPOSITORY ${{fromJson(steps.openapi.outputs.json).info.version}}
+        working-directory: open-api
+      - name: Validate, build and publish NPM-Package
+        continue-on-error: true
+        run: |
+          npm install
+          npm publish --access restricted
+        working-directory: open-api/dist/typescript-rxjs
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

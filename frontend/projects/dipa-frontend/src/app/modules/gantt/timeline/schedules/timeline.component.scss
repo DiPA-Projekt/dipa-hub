@@ -52,3 +52,55 @@ mat-sidenav-content {
   width: 50%;
   margin: 10px;
 }
+
+.circle {
+  line-height: 24px;
+  text-align: center;
+  border-radius: 50%;
+  height: 24px;
+  width: 24px;
+  background-color: #3f51b5;
+  color: #fff;
+  display: inline-block;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.floatLabelNever {
+  margin-bottom: -1.25em;
+  border-top: 0;
+  margin-top: 4px;
+}
+
+.noHint {
+  margin-bottom: -1.25em;
+}
+
+.matCardContentHeader {
+  padding: 0 8px;
+  margin-bottom: 20px;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  box-shadow: 0 2px 1px -1px rgb(0 0 0 / 20%), 0 1px 1px 0 rgb(0 0 0 / 14%), 0 1px 3px 0 rgb(0 0 0 / 12%);
+}
+
+.matCardContentHeaderTitle {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+::ng-deep .floatLabelNever .mat-form-field-infix {
+  border-top: 0;
+}
+
+.appointmentTypeIcon {
+  float: left;
+  width: 32px;
+  margin-top: 5px;
+}

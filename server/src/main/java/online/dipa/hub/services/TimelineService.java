@@ -70,8 +70,22 @@ public class TimelineService {
                                  .map(p -> conversionService.convert(p, Timeline.class))
                                  .filter(Objects::nonNull)
                                  .filter(t -> projectIds.contains(t.getId()))
+                                 .filter(t -> !t.getArchived())
                                  .collect(Collectors.toList());
     }
+
+    public List<Timeline> getArchivedTimelines() {
+        List<Long> projectIds = userInformationService.getProjectIdList();
+
+        return projectRepository.findAll()
+                                 .stream()
+                                 .map(p -> conversionService.convert(p, Timeline.class))
+                                 .filter(Objects::nonNull)
+                                 .filter(t -> projectIds.contains(t.getId()))
+                                 .filter(Timeline::getArchived)
+                                 .collect(Collectors.toList());
+    }
+
 
     public ProjectEntity getProject(final Long timelineId) {
              
@@ -223,7 +237,7 @@ public class TimelineService {
 
             List<Milestone> milestones = milestoneService.getMilestonesForTimeline(timelineId);
             for (Milestone milestone : milestones) {
-                LocalDate eventDate = milestone.getDate().toLocalDate();
+                LocalDate eventDate = milestone.getDate();
                 String eventTitle = milestone.getName() + " - " + projectApproach.getName();
                 String eventComment = "Test Comment";
 
@@ -237,9 +251,11 @@ public class TimelineService {
     public void updateTimeline(final Timeline timeline) {
 
         ProjectEntity project = getProject(timeline.getId());
-        project.setProjectType(timeline.getProjectType().toString());
-        projectRepository.save(project);
-
+        if (timeline.getProjectType() != null) {
+            project.setProjectType(timeline.getProjectType().toString());
+            projectRepository.save(project);
+        }
+   
         if (!timeline.getProjectApproachId().equals(project.getProjectApproach().getId())) {
             
             project.setProjectApproach(projectApproachService.getProjectApproachFromRepo(timeline.getProjectApproachId()));

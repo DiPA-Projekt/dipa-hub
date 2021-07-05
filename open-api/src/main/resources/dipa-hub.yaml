@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
-  title: @project.description@
-  version: @project.version@
+  title: DiPA-OpenAPI
+  version: 0.13.1
 servers:
   - url: http://localhost:9080/api/v1
     description: Development
@@ -18,12 +18,16 @@ paths:
     $ref: "paths/status.yml"
   /projects:
     $ref: "paths/projects.yml"
+  /projects/{timelineId}/deleteProject:
+    $ref: "paths/deleteProject.yml"
   /projects/{timelineId}/projectRoles:
     $ref: "paths/projectRoles.yml"
   /projects/{timelineId}/projectUsers:
     $ref: "paths/projectUsers.yml"
   /timelines:
     $ref: "paths/timelines.yml"
+  /timelines/archived:
+    $ref: "paths/archivedTimelines.yml"
   /timelines/operationTypes:
     $ref: "paths/operationTypes.yml"
   /timelines/projectApproaches:
@@ -46,7 +50,7 @@ paths:
     $ref: "paths/ical.yml"
   /timelines/{timelineId}/milestones:
     $ref: "paths/milestones.yml"
-  /timelines/{timelineId}/milestones/{milestoneId}:
+  /timelines/{timelineId}/milestones/{milestoneId}/deleteMilestone:
     $ref: "paths/deleteMilestone.yml"
   /timelines/{timelineId}/milestones/{milestoneId}/files:
     $ref: "paths/milestoneFiles.yml"

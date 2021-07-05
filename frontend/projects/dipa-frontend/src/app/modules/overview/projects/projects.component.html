@@ -1,4 +1,4 @@
-<div class="">
+<div>
   <div class="row justify-content-center">
     <mat-spinner *ngIf="loading"></mat-spinner>
   </div>
@@ -14,7 +14,9 @@
               [taskData]="vm.taskData"
               [incrementsData]="vm.incrementsData"
               id="overview{{ vm.timeline.id }}"
-              [isAdmin]="true"
+              [active]="true"
+              [showTitle]="true"
+              [projectApproachModifiable]="true"
               (projectApproachChanged)="loadTimelines()"
             ></app-chart>
           </div>

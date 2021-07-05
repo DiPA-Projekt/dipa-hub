@@ -1,0 +1,28 @@
+<div>
+  <div class="row justify-content-center">
+    <mat-spinner *ngIf="loading"></mat-spinner>
+  </div>
+  <ng-container *ngFor="let vm of vmAll$ | async">
+    <div class="content-container">
+      <div class="row">
+        <div class="col">
+          <div id="gantt{{ vm.timeline.id }}" class="gantt">
+            <app-chart
+              #charts
+              [timelineData]="vm.timeline"
+              [milestoneData]="vm.milestoneData"
+              [taskData]="vm.taskData"
+              [incrementsData]="vm.incrementsData"
+              id="overview{{ vm.timeline.id }}"
+              [active]="false"
+              [showTitle]="true"
+              (projectDeleted)="loadTimelines()"
+              [projectApproachModifiable]="false"
+              (projectApproachChanged)="loadTimelines()"
+            ></app-chart>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

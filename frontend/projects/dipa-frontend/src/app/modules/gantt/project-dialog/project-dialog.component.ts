@@ -17,6 +17,7 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { forkJoin, Subscription } from 'rxjs';
 import { TimelineDataService } from '../../../shared/timelineDataService';
+import { DatePipe } from '@angular/common';
 
 interface ProjectSize {
   value: string;
@@ -79,7 +80,8 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private timelineDataService: TimelineDataService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private datePipe: DatePipe
   ) {}
 
   public ngOnInit(): void {
@@ -192,8 +194,8 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
       operationTypeId: this.itzBundSoftwareDevelopmentId,
       projectApproachId: this.itzBundSmallProjectApproachId,
       projectType: ProjectTypeEnum.InternesProjekt,
-      start: this.startDate,
-      end: this.endDate,
+      start: this.datePipe.transform(this.startDate, 'yyyy-MM-dd'),
+      end: this.datePipe.transform(this.endDate, 'yyyy-MM-dd'),
       projectSize: 'SMALL',
       projectOwner: this.userData.id,
     });

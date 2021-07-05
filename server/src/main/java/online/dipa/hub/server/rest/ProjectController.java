@@ -27,7 +27,7 @@ public class ProjectController implements ProjectApi {
         projectService.updateProjectData(timelineId, project);
         return ResponseEntity.noContent().build();
     }
-    
+
     @Override
     public ResponseEntity<List<ProjectTask>> getProjectTasks(final Long timelineId) {
         List<ProjectTask> projectTasks =  projectService.getProjectTasks(timelineId, false);
@@ -50,6 +50,12 @@ public class ProjectController implements ProjectApi {
     @Override
     public ResponseEntity<Timeline> createProject(ProjectWithUser projectWithUser) {
         return ResponseEntity.ok(projectService.createProject(projectWithUser.getProject(), projectWithUser.getProjectOwner()));
+    }
+    
+    @Override
+    public ResponseEntity<Void> deleteProject(final Long timelineId) {
+        projectService.deleteProject(timelineId);
+        return ResponseEntity.noContent().build();
     }
     
     @Override
