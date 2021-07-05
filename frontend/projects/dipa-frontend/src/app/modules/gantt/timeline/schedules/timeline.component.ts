@@ -27,7 +27,7 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./timeline.component.scss'],
 })
 export class TimelineComponent implements OnInit, OnDestroy {
-  @ViewChild('ganttChart', { static: true }) chart: ChartComponent;
+  @ViewChild('ganttChart', { static: true }) public chart: ChartComponent;
 
   public periodStartDate = new Date(2020, 0, 1);
   public periodEndDate = new Date(2020, 11, 31);
@@ -41,7 +41,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
   public operationTypesList: OperationType[] = [];
   public projectApproachesList: ProjectApproach[] = [];
   public projectTask: ProjectTask;
-  public appoinmentsList: Result[] = [];
+  public appointmentsList: Result[] = [];
   public appointmentsInPeriod: Result[] = [];
   public overdueAppointments: Result[] = [];
   public vm$: Observable<any>;
@@ -102,20 +102,20 @@ export class TimelineComponent implements OnInit, OnDestroy {
     this.projectTasksSubscription = this.projectService.getProjectTasks(this.selectedTimelineId).subscribe({
       next: (data: ProjectTask[]) => {
         this.projectTask = data[4];
-        this.appoinmentsList = this.projectTask?.results.sort(
+        this.appointmentsList = this.projectTask?.results.sort(
           (b, a) =>
             new Date(b.formFields.find((field) => field.key === 'date').value).getTime() -
             new Date(a.formFields.find((field) => field.key === 'date').value).getTime()
         );
-        this.filterAllOverdueAppointments(this.appoinmentsList);
-        this.filterAllOpenAppointmentsInPeriod(this.appoinmentsList);
+        this.filterAllOverdueAppointments(this.appointmentsList);
+        this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
 
         const keysOrder = {};
         this.apptFormfieldsKeys.forEach((id, i) => {
           keysOrder[id] = i + 1;
         });
 
-        this.appoinmentsList?.forEach((result) => {
+        this.appointmentsList?.forEach((result) => {
           result.formFields = result.formFields.filter((field) => this.apptFormfieldsKeys.includes(field.key));
           result.formFields.sort((a, b) => keysOrder[a.key] - keysOrder[b.key]);
         });
@@ -147,6 +147,8 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
         // set default appointments list end to project end
         this.apptEndDate = this.datePipe.transform(periodEndDate, 'yyyy-MM-dd');
+        this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
+
         return {
           milestoneData,
           taskData,
@@ -199,7 +201,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
     if (event.target.value !== null) {
       this.apptEndDate = event.target.value;
       this.periodTemplate = 'CUSTOM';
-      this.filterAllOpenAppointmentsInPeriod(this.appoinmentsList);
+      this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
     }
   }
 
@@ -273,7 +275,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
     }
     this.apptEndDate = this.datePipe.transform(now, 'yyyy-MM-dd');
 
-    this.filterAllOpenAppointmentsInPeriod(this.appoinmentsList);
+    this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
   }
 
   public isOverdueAppointment(formField: FormField): boolean {

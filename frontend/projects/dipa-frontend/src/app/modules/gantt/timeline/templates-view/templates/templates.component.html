@@ -1,6 +1,7 @@
 <app-chart-header
   [timelineData]="timelineData"
   [active]="false"
+  [userHasProjectEditRights]="userHasProjectEditRights"
   [showTitle]="false"
   [projectApproachModifiable]="true"
   (projectTypeChanged)="projectTypeChanged.emit($event)"
