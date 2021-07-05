@@ -118,7 +118,7 @@ export class ProjectDataComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private setReactiveForm(data: Project): void {
-    void this.authenticationService.getProjectRoles().then((roles) => {
+    this.authenticationService.getProjectRoles().then((roles) => {
       this.userHasProjectEditRights =
         roles.filter((d) => d.projectId === this.timelineId && (d.abbreviation === 'PL' || d.abbreviation === 'PE'))
           .length > 0;

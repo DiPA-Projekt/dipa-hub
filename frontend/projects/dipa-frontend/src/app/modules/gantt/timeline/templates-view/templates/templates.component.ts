@@ -33,6 +33,7 @@ import { XAxis } from '../../../chart/chart-elements/XAxis';
 import { TemplatesViewControlsService } from '../templates-view-controls.service';
 import { ScaleTime } from 'd3-scale';
 import { ZoomBehavior } from 'd3-zoom';
+import { AuthenticationService } from '../../../../../authentication.service';
 
 @Component({
   selector: 'app-templates',
@@ -88,6 +89,8 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy {
 
   listAreasId = [1, 2, 3];
 
+  userHasProjectEditRights = false;
+
   // element for chart
   private svg: d3.Selection<any, any, any, any>;
   private zoomElement: d3.Selection<any, any, any, any>;
@@ -108,6 +111,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(
     public templatesViewControlsService: TemplatesViewControlsService,
+    private authenticationService: AuthenticationService,
     private timelinesService: TimelinesService,
     private timelineTemplatesService: TimelineTemplatesService,
     private elementRef: ElementRef
@@ -236,7 +240,14 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy {
       }
     });
 
-    this.drawChart();
+    this.authenticationService.getProjectRoles().then((roles) => {
+      this.userHasProjectEditRights =
+        roles.filter(
+          (d) => d.projectId === this.timelineData.id && (d.abbreviation === 'PL' || d.abbreviation === 'PE')
+        ).length > 0;
+
+      this.drawChart();
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -261,7 +272,7 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy {
 
   onResized(event: ResizedEvent): void {
     // only resize if width was changed, height is not relevant here
-    if (event.newWidth !== this.viewBoxWidth) {
+    if (event.newWidth !== this.viewBoxWidth && this.svg != null) {
       this.resizeChart(event.newWidth);
       this.rearrangeMilestoneLabels(0);
     }

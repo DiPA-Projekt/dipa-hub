@@ -65,7 +65,7 @@ export class ChartHeaderComponent implements OnInit, OnDestroy {
       this.projectApproachesList = data;
     });
 
-    void this.authenticationService.getProjectRoles().then((data) => {
+    this.authenticationService.getProjectRoles().then((data) => {
       this.isProjectOwner =
         data.filter((d) => d.projectId === this.timelineData.id && d.abbreviation === 'PE').length > 0;
     });

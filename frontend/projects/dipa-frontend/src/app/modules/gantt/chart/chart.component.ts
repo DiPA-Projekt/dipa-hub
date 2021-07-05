@@ -180,7 +180,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     this.showMilestoneMenu = false;
     this.showMenu = true;
 
-    void this.authenticationService.getProjectRoles().then((roles) => {
+    this.authenticationService.getProjectRoles().then((roles) => {
       this.userHasProjectEditRights =
         roles.filter(
           (d) => d.projectId === this.timelineData.id && (d.abbreviation === 'PL' || d.abbreviation === 'PE')
