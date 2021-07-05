@@ -65,12 +65,27 @@
     <div class="col-md-6 col-lg-4 col-xl-2">
       <mat-form-field appearance="fill">
         <mat-label>Start Datum</mat-label>
-        <mat-date-range-input [rangePicker]="durationPicker">
-          <input matStartDate placeholder="Start date" formControlName="start" [value]="startDate" />
-          <input matEndDate placeholder="End date" formControlName="end" [value]="endDate" />
-        </mat-date-range-input>
-        <mat-datepicker-toggle matSuffix [for]="durationPicker"></mat-datepicker-toggle>
-        <mat-date-range-picker #durationPicker></mat-date-range-picker>
+        <input
+          matInput
+          placeholder="Start date"
+          formControlName="start"
+          required
+          type="date"
+          [max]="formGroup.get('end').value"
+        />
+      </mat-form-field>
+    </div>
+    <div class="col-md-6 col-lg-4 col-xl-2">
+      <mat-form-field appearance="fill">
+        <mat-label>End Datum</mat-label>
+        <input
+          matInput
+          placeholder="End date"
+          formControlName="end"
+          required
+          type="date"
+          [min]="formGroup.get('start').value"
+        />
       </mat-form-field>
     </div>
   </form>
