@@ -124,6 +124,7 @@
                 matInput
                 placeholder="Start date"
                 [value]="apptStartDate"
+                [max]="apptEndDate"
                 (change)="onChangeAppointmentPeriodStart($event)"
                 type="date"
               />
@@ -134,6 +135,7 @@
                 matInput
                 placeholder="End date"
                 [value]="apptEndDate"
+                [min]="apptStartDate"
                 (change)="onChangeAppointmentPeriodEnd($event)"
                 type="date"
               />
