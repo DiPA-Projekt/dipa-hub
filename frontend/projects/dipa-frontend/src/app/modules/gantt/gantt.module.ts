@@ -69,6 +69,5 @@ import { DeleteProjectDialogComponent } from './chart/chart-header/delete-projec
     SharedModule,
     FlexModule,
   ],
-  providers: [],
 })
 export class GanttModule {}
