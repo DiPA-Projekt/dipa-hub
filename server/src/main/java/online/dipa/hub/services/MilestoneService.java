@@ -125,7 +125,7 @@ public class MilestoneService {
         //remove milestones from last increment
         if (addedIncrementCount < 0) {
             List<MilestoneTemplateEntity> toDeleteMilestones = incrementsMilestonesList.get(incrementsMilestonesList.size() - 1);
-            milestoneTemplateRepository.deleteInBatch(toDeleteMilestones);
+            milestoneTemplateRepository.deleteAll(toDeleteMilestones);
         }
 
         return IntStream.range(0, incrementsList.size())
@@ -231,13 +231,11 @@ public class MilestoneService {
         ProjectEntity currentProject = timelineService.getProject(timelineId);
         var planTemplate = currentProject.getPlanTemplate();
 
-        Optional<MilestoneTemplateEntity> toDeleteMilestone = milestoneTemplateRepository.findById(milestoneId);
-        
-        if (toDeleteMilestone.isPresent()) {
-            planTemplate.getMilestones().remove(toDeleteMilestone.get());
-            milestoneTemplateRepository.delete(toDeleteMilestone.get());
-        }
-        
+        milestoneTemplateRepository.findById(milestoneId).ifPresent(toDeleteMilestone -> {
+            planTemplate.getMilestones().remove(toDeleteMilestone);
+            milestoneTemplateRepository.delete(toDeleteMilestone);
+        });
+
         setNewProjectEndDate(planTemplate, currentProject);
 
     }

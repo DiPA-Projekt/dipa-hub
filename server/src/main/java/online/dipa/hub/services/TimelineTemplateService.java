@@ -148,8 +148,7 @@ public class TimelineTemplateService {
                            .forEach(m -> milestoneTemplateRepository.delete(m));
 
         List<MilestoneTemplateEntity> newMilestones = new ArrayList<>();
-
-        Optional<PlanTemplateEntity> selectedTemplateOptional = planTemplateRepository.findById(templateId);
+        Optional<PlanTemplateEntity> selectedTemplateOptional = planTemplateRepository.findByTemplateId(templateId);
 
         if (selectedTemplateOptional.isPresent()) {
             projectPlanTemplate.setStandard(selectedTemplateOptional.get().getStandard());

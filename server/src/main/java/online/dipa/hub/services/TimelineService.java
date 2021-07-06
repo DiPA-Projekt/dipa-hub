@@ -95,12 +95,6 @@ public class TimelineService {
 
     }
 
-    ProjectApproachEntity findProjectApproach(ProjectEntity project) {
-        return projectApproachRepository
-                .findByProject(project).orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Project approach with id: %1$s not found.", project.getProjectApproach().getId())));
-    }
-
     public void moveTimelineByDays(final Long timelineId, final Long days) {
 
         ProjectEntity currentProject = getProject(timelineId);
@@ -228,10 +222,10 @@ public class TimelineService {
         IcsCalendar icsCalendar = new IcsCalendar();
         TimeZone timezone = icsCalendar.createTimezoneEurope();
 
-        //todo test
-        final ProjectApproachEntity projectApproach = findProjectApproach(currentProject);
+        final Optional<ProjectApproachEntity> optionalProjectApproach = projectApproachRepository.findByProject(currentProject);
 
-        if (projectApproach != null) {
+        if (optionalProjectApproach.isPresent()) {
+            ProjectApproachEntity projectApproach =optionalProjectApproach.get();
 
             String projectEventTitle = "Projektstart" + " - " + projectApproach.getName();
             icsCalendar.addEvent(timezone, currentProject.getStartDate().toLocalDate(), projectEventTitle, "Test Comment");

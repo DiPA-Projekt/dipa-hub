@@ -36,9 +36,6 @@ public class UserInformationService {
     private ProjectRoleRepository projectRoleRepository;
 
     @Autowired
-    private ProjectApproachRepository projectApproachRepository;
-
-    @Autowired
     private ProjectRoleTemplateRepository projectRoleTemplateRepository;
 
     @Autowired
@@ -171,21 +168,25 @@ public class UserInformationService {
 
     public void updateUser (User user) {
 
-        var userEntity = userRepository.findAll().stream().filter(u -> u.getId().equals(user.getId()))
-                                       .findFirst().orElse(null);
-        
-        List<ProjectRoleEntity> oldUserProjectRoles = new ArrayList<>(Objects.requireNonNull(userEntity)
-                                                                             .getProjectRoles());
-        userEntity.getProjectRoles().removeAll(oldUserProjectRoles);
+        Optional<UserEntity> optionalUser = userRepository.findById(user.getId());
 
-        for (ProjectRole projectRole: user.getProjectRoles()) {
+        if (optionalUser.isPresent()) {
 
-            ProjectRoleEntity newPRoleEntity = projectRoleRepository.findAll().stream()
-            .filter(role -> role.getId().equals(projectRole.getId())).findFirst().orElse(null);
-            
-            userEntity.getProjectRoles().add(newPRoleEntity);
+            UserEntity userEntity = optionalUser.get();
+            List<ProjectRoleEntity> oldUserProjectRoles = new ArrayList<>(Objects.requireNonNull(userEntity)
+                                                                                 .getProjectRoles());
+            userEntity.getProjectRoles().removeAll(oldUserProjectRoles);
+
+            for (ProjectRole projectRole: user.getProjectRoles()) {
+
+                projectRoleRepository.findById(projectRole.getId())
+                                     .ifPresent(newPRoleEntity -> userEntity.getProjectRoles().add(newPRoleEntity));
+
+            }
+            userRepository.save(userEntity);
         }
-        userRepository.save(userEntity);
+        
+
     }
 
     private ProjectRoleTemplateEntity findProjectRoleTemplate (ProjectEntity project) {

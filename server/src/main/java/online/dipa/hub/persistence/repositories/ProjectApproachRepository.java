@@ -14,7 +14,7 @@ import online.dipa.hub.persistence.entities.ProjectEntity;
 public interface ProjectApproachRepository extends JpaRepository<ProjectApproachEntity, Long> {
 
     @QueryHints(value = { @QueryHint(name = HINT_CACHEABLE, value = "true") })
-    @Query("from ProjectApproachEntity as pApproach where pApproach.project = :project")
+    @Query("from ProjectApproachEntity as pApproach join pApproach.project as project where project = :project")
     Optional<ProjectApproachEntity> findByProject(ProjectEntity project);
 
 }
