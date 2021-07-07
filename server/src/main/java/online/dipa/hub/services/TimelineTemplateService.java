@@ -106,12 +106,10 @@ public class TimelineTemplateService {
     private List<TimelineTemplate> getTimelineTemplatesFromRepo(final Long timelineId, final ProjectApproachEntity projectApproach) {
 
         List<TimelineTemplate> timelineTemplatesFromRepo = new ArrayList<>();
+        Collection<PlanTemplateEntity> projectApproachPlanTemplates =  projectApproach.getPlanTemplate();
 
-        Optional<Collection<PlanTemplateEntity>> projectApproachPlanTemplates = planTemplateRepository
-                .findByProjectApproach(projectApproach);
-
-        if (projectApproachPlanTemplates.isPresent()) {
-            for (PlanTemplateEntity temp: projectApproachPlanTemplates.get()) {
+        if (!projectApproachPlanTemplates.isEmpty()) {
+            for (PlanTemplateEntity temp: projectApproachPlanTemplates) {
 
                 TimelineTemplate template = new TimelineTemplate()
                         .id(temp.getId())
@@ -148,7 +146,7 @@ public class TimelineTemplateService {
                            .forEach(m -> milestoneTemplateRepository.delete(m));
 
         List<MilestoneTemplateEntity> newMilestones = new ArrayList<>();
-        Optional<PlanTemplateEntity> selectedTemplateOptional = planTemplateRepository.findByTemplateId(templateId);
+        Optional<PlanTemplateEntity> selectedTemplateOptional = planTemplateRepository.findById(templateId);
 
         if (selectedTemplateOptional.isPresent()) {
             projectPlanTemplate.setStandard(selectedTemplateOptional.get().getStandard());

@@ -191,7 +191,7 @@ public class UserInformationService {
 
     private ProjectRoleTemplateEntity findProjectRoleTemplate (ProjectEntity project) {
 
-        return projectRoleTemplateRepository.findByProjectApproach(project.getProjectApproach());
+        return project.getProjectApproach().getProjectRoleTemplate();
 
     }
 }

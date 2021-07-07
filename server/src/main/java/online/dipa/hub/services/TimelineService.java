@@ -222,22 +222,18 @@ public class TimelineService {
         IcsCalendar icsCalendar = new IcsCalendar();
         TimeZone timezone = icsCalendar.createTimezoneEurope();
 
-        final Optional<ProjectApproachEntity> optionalProjectApproach = projectApproachRepository.findByProject(currentProject);
+        final ProjectApproachEntity projectApproach = currentProject.getProjectApproach();
 
-        if (optionalProjectApproach.isPresent()) {
-            ProjectApproachEntity projectApproach =optionalProjectApproach.get();
+        String projectEventTitle = "Projektstart" + " - " + projectApproach.getName();
+        icsCalendar.addEvent(timezone, currentProject.getStartDate().toLocalDate(), projectEventTitle, "Test Comment");
 
-            String projectEventTitle = "Projektstart" + " - " + projectApproach.getName();
-            icsCalendar.addEvent(timezone, currentProject.getStartDate().toLocalDate(), projectEventTitle, "Test Comment");
+        List<Milestone> milestones = milestoneService.getMilestonesForTimeline(timelineId);
+        for (Milestone milestone : milestones) {
+            LocalDate eventDate = milestone.getDate();
+            String eventTitle = milestone.getName() + " - " + projectApproach.getName();
+            String eventComment = "Test Comment";
 
-            List<Milestone> milestones = milestoneService.getMilestonesForTimeline(timelineId);
-            for (Milestone milestone : milestones) {
-                LocalDate eventDate = milestone.getDate();
-                String eventTitle = milestone.getName() + " - " + projectApproach.getName();
-                String eventComment = "Test Comment";
-
-                icsCalendar.addEvent(timezone, eventDate, eventTitle, eventComment);
-            }
+            icsCalendar.addEvent(timezone, eventDate, eventTitle, eventComment);
         }
 
         return icsCalendar.getCalendarFile("Meilensteine");

@@ -18,11 +18,6 @@ public interface PlanTemplateRepository extends JpaRepository<PlanTemplateEntity
 
     @QueryHints(value = { @QueryHint(name = HINT_CACHEABLE, value = "true") })
     @Query("from PlanTemplateEntity as template join template.projectApproaches as approach " +
-            "where approach = :projectApproach")
-    Optional<Collection<PlanTemplateEntity>> findByProjectApproach(ProjectApproachEntity projectApproach);
-
-    @QueryHints(value = { @QueryHint(name = HINT_CACHEABLE, value = "true") })
-    @Query("from PlanTemplateEntity as template join template.projectApproaches as approach " +
             "where template.standard = true and approach = :projectApproach")
     Optional<PlanTemplateEntity> findByStandardAndProjectApproach(ProjectApproachEntity projectApproach);
 
@@ -30,9 +25,5 @@ public interface PlanTemplateRepository extends JpaRepository<PlanTemplateEntity
     @Query("from PlanTemplateEntity as template join template.projectApproaches as approach " +
             "where template.defaultTemplate = true and approach = :projectApproach")
     Optional<PlanTemplateEntity> findByDefaultAndProjectApproach(ProjectApproachEntity projectApproach);
-
-    @QueryHints(value = { @QueryHint(name = HINT_CACHEABLE, value = "true") })
-    @Query("from PlanTemplateEntity as template where template.id = :templateId")
-    Optional<PlanTemplateEntity> findByTemplateId(Long templateId);
 
 }
