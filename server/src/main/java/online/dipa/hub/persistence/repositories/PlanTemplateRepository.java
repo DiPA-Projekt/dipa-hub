@@ -2,7 +2,6 @@ package online.dipa.hub.persistence.repositories;
 
 import static org.hibernate.jpa.QueryHints.HINT_CACHEABLE;
 
-import java.util.Collection;
 import java.util.Optional;
 
 import javax.persistence.QueryHint;

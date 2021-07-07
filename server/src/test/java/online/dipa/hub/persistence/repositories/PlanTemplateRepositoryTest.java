@@ -43,23 +43,53 @@
                                .returns(null, PlanTemplateEntity::getProject);
          }
 
+         @Test
+         void should_not_return_when_default_template_not_exists() {
+             // GIVEN
+             final ProjectApproachEntity projectApproach = new ProjectApproachEntity();
+             projectApproach.setName("testProjectApproach");
+             operationTypeRepository.findById(2L).ifPresent(projectApproach::setOperationType);
+             projectApproachRepository.save(projectApproach);
+
+             // WHEN
+             final Optional<PlanTemplateEntity> planTemplateEntity = planTemplateRepository.findByDefaultAndProjectApproach(projectApproach);
+
+             // THEN
+             then(planTemplateEntity).isEmpty();
+         }
+
      }
 
      @Nested
      class FindByStandardAndProjectApproach {
 
          @Test
-         void should_return_when_default_template_exists() {
+         void should_return_when_standard_template_exists() {
              // GIVEN
              final ProjectApproachEntity projectApproach = projectApproachRepository.findById(3L).get();
 
              // WHEN
-             final Optional<PlanTemplateEntity> planTemplateEntity = planTemplateRepository.findByDefaultAndProjectApproach(projectApproach);
+             final Optional<PlanTemplateEntity> planTemplateEntity = planTemplateRepository.findByStandardAndProjectApproach(projectApproach);
 
              // THEN
              then(planTemplateEntity).isNotEmpty().get()
                                      .returns(4L, PlanTemplateEntity::getId)
                                      .returns(null, PlanTemplateEntity::getProject);
+         }
+
+         @Test
+         void should_not_return_when_standard_template_not_exists() {
+             // GIVEN
+             final ProjectApproachEntity projectApproach = new ProjectApproachEntity();
+             projectApproach.setName("testProjectApproach");
+             operationTypeRepository.findById(2L).ifPresent(projectApproach::setOperationType);
+             projectApproachRepository.save(projectApproach);
+
+             // WHEN
+             final Optional<PlanTemplateEntity> planTemplateEntity = planTemplateRepository.findByStandardAndProjectApproach(projectApproach);
+
+             // THEN
+             then(planTemplateEntity).isEmpty();
          }
 
      }
