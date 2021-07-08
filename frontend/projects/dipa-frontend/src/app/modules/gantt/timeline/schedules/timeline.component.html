@@ -33,7 +33,7 @@
     </ng-container>
   </div>
 </div>
-<div *ngIf="appoinmentsList">
+<div *ngIf="appointmentsList">
   <mat-card
     *ngIf="overdueAppointments.length > 0"
     class="appointments-card"
@@ -118,28 +118,31 @@
             </div>
           </div>
           <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
-            <mat-form-field class="floatLabelNever noHint full-width" floatLabel="never">
-              <mat-label>Anzeigezeitraum</mat-label>
-              <mat-date-range-input [rangePicker]="durationPicker">
-                <input
-                  matStartDate
-                  placeholder="Start date"
-                  [value]="apptStartDate"
-                  (dateChange)="onChangeAppointmentPeriodStart($event)"
-                />
-                <input
-                  matEndDate
-                  placeholder="End date"
-                  [value]="apptEndDate"
-                  (dateChange)="onChangeAppointmentPeriodEnd($event)"
-                />
-              </mat-date-range-input>
-              <mat-datepicker-toggle matSuffix [for]="durationPicker"></mat-datepicker-toggle>
-              <mat-date-range-picker #durationPicker></mat-date-range-picker>
+            <mat-form-field class="noHint full-width" fxFlex="50%">
+              <mat-label>Start Datum</mat-label>
+              <input
+                matInput
+                placeholder="Start date"
+                [value]="apptStartDate"
+                [max]="apptEndDate"
+                (change)="onChangeAppointmentPeriodStart($event)"
+                type="date"
+              />
+            </mat-form-field>
+            <mat-form-field class="noHint full-width" fxFlex="50%">
+              <mat-label>End Datum</mat-label>
+              <input
+                matInput
+                placeholder="End date"
+                [value]="apptEndDate"
+                [min]="apptStartDate"
+                (change)="onChangeAppointmentPeriodEnd($event)"
+                type="date"
+              />
             </mat-form-field>
           </div>
           <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
-            <mat-form-field class="floatLabelNever noHint full-width" floatLabel="never">
+            <mat-form-field class="noHint full-width">
               <mat-label>Zeitraum</mat-label>
               <mat-select [value]="periodTemplate" (selectionChange)="changePeriodTemplates($event.value)">
                 <mat-option *ngFor="let period of schedulePeriods" [value]="period.key">

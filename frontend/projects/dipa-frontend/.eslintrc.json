@@ -2,9 +2,7 @@
   "extends": "../../.eslintrc.js",
   "overrides": [
     {
-      "files": [
-        "*.ts"
-      ],
+      "files": ["*.ts"],
       "parserOptions": {
         "project": [
           "projects/dipa-frontend/tsconfig.app.json",

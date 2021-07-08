@@ -18,7 +18,7 @@ public class CurrentTenantIdentifierResolverBean implements CurrentTenantIdentif
     public String resolveCurrentTenantIdentifier() {
         final String tenantId = CurrentTenantContextHolder.getTenantId();
         if (!tenantProvider.isValidTenantId(tenantId)) {
-            LOGGER.info("Unkown tenant id '{}', falling back to default tenant.", tenantId);
+            LOGGER.debug("Unkown tenant id '{}', falling back to default tenant.", tenantId);
             return tenantProvider.getDefaultTenantId();
         }
         return tenantId;

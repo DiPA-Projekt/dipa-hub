@@ -18,8 +18,8 @@ import {
 import { ActivatedRoute, Params } from '@angular/router';
 import { ChartComponent } from '../../chart/chart.component';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import Utils from '../../../../shared/utils';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-timeline',
@@ -27,7 +27,7 @@ import Utils from '../../../../shared/utils';
   styleUrls: ['./timeline.component.scss'],
 })
 export class TimelineComponent implements OnInit, OnDestroy {
-  @ViewChild('ganttChart', { static: true }) chart: ChartComponent;
+  @ViewChild('ganttChart', { static: true }) public chart: ChartComponent;
 
   public periodStartDate = new Date(2020, 0, 1);
   public periodEndDate = new Date(2020, 11, 31);
@@ -41,14 +41,14 @@ export class TimelineComponent implements OnInit, OnDestroy {
   public operationTypesList: OperationType[] = [];
   public projectApproachesList: ProjectApproach[] = [];
   public projectTask: ProjectTask;
-  public appoinmentsList: Result[] = [];
+  public appointmentsList: Result[] = [];
   public appointmentsInPeriod: Result[] = [];
   public overdueAppointments: Result[] = [];
   public vm$: Observable<any>;
 
   public apptFormfieldsKeys = ['goal', 'date', 'status'];
-  public apptStartDate = new Date();
-  public apptEndDate = new Date();
+  public apptStartDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+  public apptEndDate;
   public periodTemplate = 'PROJECT';
 
   public schedulePeriods = [
@@ -77,7 +77,8 @@ export class TimelineComponent implements OnInit, OnDestroy {
     private tasksService: TasksService,
     private incrementsService: IncrementsService,
     private projectService: ProjectService,
-    public activatedRoute: ActivatedRoute
+    public activatedRoute: ActivatedRoute,
+    private datePipe: DatePipe
   ) {}
 
   public ngOnInit(): void {
@@ -101,20 +102,20 @@ export class TimelineComponent implements OnInit, OnDestroy {
     this.projectTasksSubscription = this.projectService.getProjectTasks(this.selectedTimelineId).subscribe({
       next: (data: ProjectTask[]) => {
         this.projectTask = data[4];
-        this.appoinmentsList = this.projectTask?.results.sort(
+        this.appointmentsList = this.projectTask?.results.sort(
           (b, a) =>
             new Date(b.formFields.find((field) => field.key === 'date').value).getTime() -
             new Date(a.formFields.find((field) => field.key === 'date').value).getTime()
         );
-        this.filterAllOverdueAppointments(this.appoinmentsList);
-        this.filterAllOpenAppointmentsInPeriod(this.appoinmentsList);
+        this.filterAllOverdueAppointments(this.appointmentsList);
+        this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
 
         const keysOrder = {};
         this.apptFormfieldsKeys.forEach((id, i) => {
           keysOrder[id] = i + 1;
         });
 
-        this.appoinmentsList?.forEach((result) => {
+        this.appointmentsList?.forEach((result) => {
           result.formFields = result.formFields.filter((field) => this.apptFormfieldsKeys.includes(field.key));
           result.formFields.sort((a, b) => keysOrder[a.key] - keysOrder[b.key]);
         });
@@ -145,7 +146,8 @@ export class TimelineComponent implements OnInit, OnDestroy {
         const periodEndDate = new Date(selectedTimeline.end);
 
         // set default appointments list end to project end
-        this.apptEndDate = periodEndDate;
+        this.apptEndDate = this.datePipe.transform(periodEndDate, 'yyyy-MM-dd');
+        this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
 
         return {
           milestoneData,
@@ -191,15 +193,19 @@ export class TimelineComponent implements OnInit, OnDestroy {
     });
   }
 
-  public onChangeAppointmentPeriodStart(event: MatDatepickerInputEvent<never>): void {
-    this.apptStartDate = new Date(event.value);
+  public onChangeAppointmentPeriodStart(event: Event): void {
+    if ((event.target as HTMLInputElement).value !== null) {
+      this.apptStartDate = (event.target as HTMLInputElement).value;
+      this.periodTemplate = 'CUSTOM';
+      this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
+    }
   }
 
-  public onChangeAppointmentPeriodEnd(event: MatDatepickerInputEvent<never>): void {
-    if (event.value !== null) {
-      this.apptEndDate = new Date(event.value);
+  public onChangeAppointmentPeriodEnd(event: Event): void {
+    if ((event.target as HTMLInputElement).value !== null) {
+      this.apptEndDate = (event.target as HTMLInputElement).value;
       this.periodTemplate = 'CUSTOM';
-      this.filterAllOpenAppointmentsInPeriod(this.appoinmentsList);
+      this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
     }
   }
 
@@ -229,8 +235,8 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
       const apptDate = Utils.createDateAtMidnight(dateValue);
       return (
-        apptDate >= Utils.createDateAtMidnight(this.apptStartDate) &&
-        apptDate <= Utils.createDateAtMidnight(this.apptEndDate)
+        apptDate >= Utils.createDateAtMidnight(new Date(this.apptStartDate)) &&
+        apptDate <= Utils.createDateAtMidnight(new Date(this.apptEndDate))
       );
     });
     this.appointmentsInPeriod = appointmentsInPeriod.filter(
@@ -239,7 +245,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
   }
 
   public changePeriodTemplates(value: string): void {
-    this.apptStartDate = new Date();
+    this.apptStartDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
 
     let now = new Date();
     switch (value) {
@@ -271,9 +277,9 @@ export class TimelineComponent implements OnInit, OnDestroy {
         now = new Date(selectedTimeline.end);
         break;
     }
-    this.apptEndDate = now;
+    this.apptEndDate = this.datePipe.transform(now, 'yyyy-MM-dd');
 
-    this.filterAllOpenAppointmentsInPeriod(this.appoinmentsList);
+    this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
   }
 
   public isOverdueAppointment(formField: FormField): boolean {

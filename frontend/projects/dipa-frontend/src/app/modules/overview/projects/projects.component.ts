@@ -34,11 +34,11 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     private incrementsService: IncrementsService
   ) {}
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.timelinesSubscription?.unsubscribe();
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.loadTimelines();
   }
 

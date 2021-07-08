@@ -111,9 +111,6 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
 
   public onSubmit(formGroup: FormGroup): void {
     if (formGroup.valid) {
-      this.formGroup.get('start').setValue(this.datePipe.transform(this.formGroup.get('start').value, 'yyyy-MM-dd'));
-      this.formGroup.get('end').setValue(this.datePipe.transform(this.formGroup.get('end').value, 'yyyy-MM-dd'));
-
       this.createProjectSubscription = this.projectService
         .createProject({
           project: formGroup.value,
@@ -197,8 +194,8 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
       operationTypeId: this.itzBundSoftwareDevelopmentId,
       projectApproachId: this.itzBundSmallProjectApproachId,
       projectType: ProjectTypeEnum.InternesProjekt,
-      start: this.startDate,
-      end: this.endDate,
+      start: this.datePipe.transform(this.startDate, 'yyyy-MM-dd'),
+      end: this.datePipe.transform(this.endDate, 'yyyy-MM-dd'),
       projectSize: 'SMALL',
       projectOwner: this.userData.id,
     });
