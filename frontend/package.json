@@ -29,7 +29,7 @@
     "@angular/common": "12.1.1",
     "@angular/compiler": "12.1.1",
     "@angular/core": "12.1.1",
-    "@angular/flex-layout": "*",
+    "@angular/flex-layout": "12.0.0-beta.33",
     "@angular/forms": "12.1.1",
     "@angular/material": "11.2.2",
     "@angular/platform-browser": "12.1.1",
