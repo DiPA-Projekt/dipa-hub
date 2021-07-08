@@ -10,7 +10,7 @@ export class ProjectDuration {
   svgBbox: DOMRect;
   projectGroup: d3.Selection<any, any, any, any>;
 
-  dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
+  dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' } as const;
 
   elementColor: string;
 

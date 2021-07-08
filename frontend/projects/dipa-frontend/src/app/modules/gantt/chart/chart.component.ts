@@ -218,7 +218,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getDate(date: string): any {
-    const dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
+    const dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' } as const;
 
     return new Date(date).toLocaleDateString('de-DE', dateOptions);
   }

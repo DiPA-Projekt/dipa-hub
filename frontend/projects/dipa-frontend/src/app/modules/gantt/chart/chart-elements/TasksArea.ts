@@ -21,7 +21,7 @@ export class TasksArea implements IChartElement {
 
   animationDuration: number;
 
-  dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
+  dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' } as const;
 
   elementHeight = 20;
   elementMargin = 8;

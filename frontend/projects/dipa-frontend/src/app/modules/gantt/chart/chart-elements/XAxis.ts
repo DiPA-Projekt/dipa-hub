@@ -14,7 +14,7 @@ export class XAxis {
 
   tickSetting: d3.TimeInterval;
 
-  dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
+  dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' } as const;
 
   today = new Date();
 
