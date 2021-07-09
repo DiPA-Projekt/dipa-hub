@@ -90,8 +90,7 @@ public class TimelineService {
 
     public ProjectEntity getProject(final Long timelineId) {
              
-        return projectRepository.findById(timelineId).orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Project with id: %1$s not found.", timelineId)));
+        return projectRepository.getById(timelineId);
 
     }
 
