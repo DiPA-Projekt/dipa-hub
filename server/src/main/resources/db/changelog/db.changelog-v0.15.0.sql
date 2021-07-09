@@ -65,7 +65,6 @@ CREATE TABLE non_permanent_project_task(
     ON DELETE CASCADE
 )
 
-
 -- changeset id:insert-into-permanent_project_task_template
 INSERT INTO public.permanent_project_task_template (name, project_id, master)
 SELECT CONCAT('Permanent ', name), project_id, master
@@ -96,14 +95,16 @@ WHERE task1.title = task2.title
 
 -- changeset id:migrating-permanent_project_task-master
 INSERT INTO permanent_project_task (title, icon, is_additional_task, permanent_project_task_template_id, project_task_id)
-    SELECT title, icon,
-	CASE WHEN task_number = 13 OR task_number= 14 THEN true ELSE false END,
+    select title, icon,
+	CASE WHEN task_number = 13 OR task_number= 14 then true else false end,
 	(SELECT id
     FROM permanent_project_task_template
-    WHERE master = true), id
+    WHERE master = true),project_task.id
     FROM project_task as project_task
-    WHERE project_task_template_id = 1 AND (is_permanent_task = true OR task_number= 13 OR task_number= 14)
-	ORDER BY sort_order
+	JOIN project_task_template as task_template
+	ON project_task.project_task_template_id = task_template.id
+    WHERE task_template.project_id IS null AND (is_permanent_task = true OR task_number= 13 OR task_number= 14)
+	ORDER BY project_task_template_id
 
 -- changeset id:migrating-permanent_project_task
 INSERT INTO permanent_project_task (title, icon, is_additional_task, permanent_project_task_template_id, project_task_id)
