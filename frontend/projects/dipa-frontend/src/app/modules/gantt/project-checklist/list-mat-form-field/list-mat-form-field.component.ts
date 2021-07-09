@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { ControlContainer, FormGroup, FormGroupDirective } from '@angular/forms';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -8,9 +8,10 @@ import { MatChipInputEvent } from '@angular/material/chips';
   templateUrl: './list-mat-form-field.component.html',
   styleUrls: ['../project-task-form/project-task-form.component.scss'],
 })
-export class ListMatFormFieldComponent implements OnInit {
+export class ListMatFormFieldComponent implements OnInit, AfterViewChecked {
   @Input() public formField: FormGroup;
   @Output() public dataChanged = new EventEmitter();
+  @ViewChild('scrollChip') private myScrollChipContainer: ElementRef;
 
   public visible = true;
   public selectable = true;
@@ -27,6 +28,11 @@ export class ListMatFormFieldComponent implements OnInit {
   public ngOnInit(): void {
     const formFieldValue = this.formField.get('value').value as string;
     this.chips = formFieldValue?.length > 0 ? formFieldValue.split(',') : [];
+    this.scrollToBottom();
+  }
+
+  public ngAfterViewChecked(): void {
+    this.scrollToBottom();
   }
 
   public add(event: MatChipInputEvent, formField: FormGroup): void {
@@ -55,5 +61,11 @@ export class ListMatFormFieldComponent implements OnInit {
 
       this.dataChanged.emit();
     }
+  }
+
+  private scrollToBottom(): void {
+    try {
+      this.myScrollChipContainer.nativeElement.scrollTop = this.myScrollChipContainer.nativeElement.scrollHeight;
+    } catch (err) {}
   }
 }

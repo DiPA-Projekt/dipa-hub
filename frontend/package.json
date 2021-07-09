@@ -37,7 +37,7 @@
     "@angular/router": "11.2.3",
     "angular-oauth2-oidc": "^10.0.3",
     "angular-resize-event": "2.1.0",
-    "bootstrap": "4.6.0",
+    "bootstrap": "5.0.2",
     "d3": "6.5.0",
     "rxjs": "6.6.6",
     "tslib": "2.1.0",

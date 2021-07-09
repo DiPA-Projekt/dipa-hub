@@ -1,0 +1,17 @@
+get:
+  tags:
+    - project
+  summary: Project Property Question List for Timeline
+  description: Retrieves the list of Project Property Questions.
+  operationId: getProjectPropertyQuestions
+  parameters:
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../models/projectPropertyQuestion.yml#/PropertyQuestion"

@@ -5,6 +5,7 @@ import online.dipa.hub.api.model.Project;
 import online.dipa.hub.api.model.ProjectRole;
 import online.dipa.hub.api.model.ProjectTask;
 
+import online.dipa.hub.api.model.PropertyQuestion;
 import online.dipa.hub.api.model.Result;
 import online.dipa.hub.api.model.Timeline;
 import online.dipa.hub.api.model.User;
@@ -34,6 +35,9 @@ public class ProjectService {
 
     @Autowired
     private ProjectTaskRepository projectTaskRepository;
+
+    @Autowired
+    private ProjectPropertyQuestionRepository projectPropertyQuestionRepository;
 
     @Autowired
     private FormFieldRepository formFieldRepository;
@@ -136,6 +140,25 @@ public class ProjectService {
         var projectEntity = timelineService.getProject(projectId);
        
         projectRepository.delete(projectEntity);      
+    }
+
+    public List<PropertyQuestion> getProjectPropertyQuestions (final Long projectId) {
+        List<PropertyQuestion> propertyQuestions = new ArrayList<>();
+        List<Long> projectIds = userInformationService.getProjectIdList();
+
+        if (projectIds.contains(projectId)) {
+
+            ProjectEntity project = timelineService.getProject(projectId);
+            Set<ProjectPropertyQuestionEntity> projectPropertyQuestionEntity = project.getProjectPropertyQuestions();
+
+            propertyQuestions.addAll(projectPropertyQuestionRepository.findByProject(project)
+                                    .stream()
+                                    .map(p -> conversionService.convert(p, PropertyQuestion.class))
+                                    .collect(Collectors.toList())
+            );
+        }
+
+        return propertyQuestions;
     }
 
     public List<ProjectTask> getProjectTasks (final Long projectId, final boolean isPermanentTask) {
