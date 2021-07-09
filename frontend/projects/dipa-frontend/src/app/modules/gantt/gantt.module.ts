@@ -30,6 +30,7 @@ import { MilestoneDialogComponent } from './chart/milestone-dialog/milestone-dia
 import { TasksComponent } from './timeline/tasks/tasks.component';
 import { ShowFieldsMenuComponent } from './project-checklist/show-fields-menu/show-fields-menu.component';
 import { DeleteProjectDialogComponent } from './chart/chart-header/delete-project-dialog/delete-project-dialog.component';
+import { ProjectSettingsDialogComponent } from './project-settings-dialog/project-settings-dialog.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { DeleteProjectDialogComponent } from './chart/chart-header/delete-projec
     TasksComponent,
     ShowFieldsMenuComponent,
     DeleteProjectDialogComponent,
+    ProjectSettingsDialogComponent,
   ],
   exports: [ChartComponent, FilesComponent, NavMenuListItemComponent],
   imports: [

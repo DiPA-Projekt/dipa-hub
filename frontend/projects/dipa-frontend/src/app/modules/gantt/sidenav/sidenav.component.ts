@@ -5,6 +5,8 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthenticationService } from '../../../authentication.service';
 import { TimelineDataService } from '../../../shared/timelineDataService';
+import { ProjectSettingsDialogComponent } from '../project-settings-dialog/project-settings-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-sidenav',
@@ -18,6 +20,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   public selectedTimelineId: number;
 
+  public project: Project;
+
   public navMenuItems: NavItem[] = [];
   public favoriteLinkItems: NavItem[] = [];
   public roles: string;
@@ -27,9 +31,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private timelineDataSubscription: Subscription;
   private paramsSubscription: Subscription;
   private projectSubscription: Subscription;
-  private project: Project;
 
   public constructor(
+    public dialog: MatDialog,
     private authenticationService: AuthenticationService,
     private timelinesService: TimelinesService,
     private externalLinksService: ExternalLinksService,
@@ -138,18 +142,11 @@ export class SidenavComponent implements OnInit, OnDestroy {
     });
   }
 
-  public archiveProject(): void {
-    this.project.archived = true;
-
-    this.projectService.updateProjectData(this.selectedTimelineId, this.project).subscribe({
-      next: () => {
-        this.timelineDataService.setTimelines();
-        this.router.navigate([`overview/archivedProjects`], {
-          fragment: `gantt${this.selectedTimelineId}`,
-        });
-      },
-      error: null,
-      complete: () => void 0,
+  public openProjectSettingsDialog(): void {
+    this.dialog.open(ProjectSettingsDialogComponent, {
+      data: { project: this.project, timelineId: this.selectedTimelineId },
+      height: '80vh',
+      width: '80vw',
     });
   }
 }
