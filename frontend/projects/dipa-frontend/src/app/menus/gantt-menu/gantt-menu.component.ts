@@ -23,12 +23,10 @@ export class GanttMenuComponent implements OnInit, OnDestroy {
     this.timelinesSubscription = this.timelineDataService
       .getTimelines()
       .pipe(
-        switchMap(
-          (timelines: Timeline[]): Observable<User> => {
-            this.timelines = timelines;
-            return this.userService.getCurrentUser();
-          }
-        )
+        switchMap((timelines: Timeline[]): Observable<User> => {
+          this.timelines = timelines;
+          return this.userService.getCurrentUser();
+        })
       )
       .subscribe({
         next: (user: User) => {

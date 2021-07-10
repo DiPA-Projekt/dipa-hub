@@ -92,29 +92,33 @@ export class XAxis {
 
   // Define filter conditions
   formatDateFull(date: Date): string {
-    return (d3.timeSecond(date) < date
-      ? d3.timeFormat('.%L')
-      : d3.timeMinute(date) < date
-      ? d3.timeFormat(':%S')
-      : d3.timeHour(date) < date
-      ? d3.timeFormat('%H:%M')
-      : d3.timeDay(date) < date
-      ? d3.timeFormat('%H:%M')
-      : d3.timeMonth(date) < date
-      ? d3.timeWeek(date) < date
-        ? d3.timeFormat('%a, %d.')
-        : d3.timeFormat('%d. %b')
-      : d3.timeYear(date) < date
-      ? d3.timeFormat('%b')
-      : d3.timeFormat('%Y'))(date);
+    return (
+      d3.timeSecond(date) < date
+        ? d3.timeFormat('.%L')
+        : d3.timeMinute(date) < date
+        ? d3.timeFormat(':%S')
+        : d3.timeHour(date) < date
+        ? d3.timeFormat('%H:%M')
+        : d3.timeDay(date) < date
+        ? d3.timeFormat('%H:%M')
+        : d3.timeMonth(date) < date
+        ? d3.timeWeek(date) < date
+          ? d3.timeFormat('%a, %d.')
+          : d3.timeFormat('%d. %b')
+        : d3.timeYear(date) < date
+        ? d3.timeFormat('%b')
+        : d3.timeFormat('%Y')
+    )(date);
   }
 
   formatDateDay(date: Date): string {
-    return (d3.timeYear(date) < date
-      ? d3.timeMonth(date) < date
-        ? d3.timeFormat('%a, %d.')
-        : d3.timeFormat('%d. %b')
-      : d3.timeFormat('%d.%m.%y'))(date);
+    return (
+      d3.timeYear(date) < date
+        ? d3.timeMonth(date) < date
+          ? d3.timeFormat('%a, %d.')
+          : d3.timeFormat('%d. %b')
+        : d3.timeFormat('%d.%m.%y')
+    )(date);
   }
 
   formatDateWeek(date: Date): string {
