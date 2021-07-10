@@ -7,18 +7,9 @@ import { AuthenticationService } from '../../authentication.service';
   styleUrls: ['./user-unauthorized.component.scss'],
 })
 export class UserUnauthorizedComponent implements OnInit {
-  public userName: string;
   public constructor(private authenticationService: AuthenticationService) {}
 
-  public ngOnInit(): void {
-    this.authenticationService.getUserData().subscribe((user) => {
-      if (user !== null) {
-        this.userName = user.name;
-      } else {
-        this.authenticationService.login();
-      }
-    });
-  }
+  public ngOnInit(): void {}
 
   public logOut(): void {
     this.authenticationService.logout();

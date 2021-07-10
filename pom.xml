@@ -240,7 +240,7 @@
             <dependency>
                 <groupId>org.keycloak</groupId>
                 <artifactId>keycloak-admin-client</artifactId>
-                <version>12.0.4</version>
+                <version>14.0.0</version>
             </dependency>
 
             <dependency>
