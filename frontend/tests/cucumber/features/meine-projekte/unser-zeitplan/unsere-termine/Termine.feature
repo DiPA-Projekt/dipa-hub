@@ -9,6 +9,7 @@ Feature: Allgemeine Funktionalitäten des Zeitplans
     And Ich warte 2 Sekunden
     And Ich navigiere zu "Unsere Termine"
 
+# TODO: Datentabelle?
   Scenario: Überprüfung der Elemente
     # Standardansicht
     Then sollte die Zeitachse "Apr" beinhalten

@@ -21,7 +21,6 @@ const CLOSEMILESTONEDESCRIPTION = function () {
   return client.useCss().click(ELEMENTS.btn_close_milestone_detail);
 };
 
-// TODO: Ist es überhaupt möglich functions die etwas returnen wiederzuverwenden....?
 const CREATENEWMILESTONE = function (milestoneName, milestoneStatus) {
   clickOnText(ELEMENTS.btn_meilenstein_hinzufuegen);
   sollteTextSehen(ELEMENTS.txt_meilenstein_anlegen);
