@@ -18,22 +18,22 @@ export class ProjectControlComponent implements OnInit, OnDestroy {
   public constructor(public activatedRoute: ActivatedRoute, private projectService: ProjectService) {}
 
   public ngOnInit(): void {
-    this.timelineIdSubscription = this.activatedRoute.parent.parent.params
-      .pipe(
-        switchMap(
-          (params: Params): Observable<ProjectTask[]> => {
-            this.selectedTimelineId = parseInt(params.id, 10);
-            return this.projectService.getProjectPermanentTasks(this.selectedTimelineId);
-          }
-        )
-      )
-      .subscribe({
-        next: (data: Project[]) => {
-          this.projectTasks = data;
-        },
-        error: null,
-        complete: () => void 0,
-      });
+    // this.timelineIdSubscription = this.activatedRoute.parent.parent.params
+    //   .pipe(
+    //     switchMap(
+    //       (params: Params): Observable<ProjectTask[]> => {
+    //         this.selectedTimelineId = parseInt(params.id, 10);
+    //         return this.projectService.getProjectPermanentTasks(this.selectedTimelineId);
+    //       }
+    //     )
+    //   )
+    //   .subscribe({
+    //     next: (data: Project[]) => {
+    //       this.projectTasks = data;
+    //     },
+    //     error: null,
+    //     complete: () => void 0,
+    //   });
   }
 
   public ngOnDestroy(): void {
@@ -41,13 +41,13 @@ export class ProjectControlComponent implements OnInit, OnDestroy {
     this.projectTasksSubscription?.unsubscribe();
   }
 
-  public reloadProjectTasks(): void {
-    this.projectTasksSubscription = this.projectService.getProjectPermanentTasks(this.selectedTimelineId).subscribe({
-      next: (data: ProjectTask[]) => {
-        this.projectTasks = data;
-      },
-      error: null,
-      complete: () => void 0,
-    });
-  }
+  // public reloadProjectTasks(): void {
+  //   this.projectTasksSubscription = this.projectService.getProjectPermanentTasks(this.selectedTimelineId).subscribe({
+  //     next: (data: ProjectTask[]) => {
+  //       this.projectTasks = data;
+  //     },
+  //     error: null,
+  //     complete: () => void 0,
+  //   });
+  // }
 }

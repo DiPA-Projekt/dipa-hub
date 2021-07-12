@@ -1,6 +1,8 @@
 package online.dipa.hub.services;
 
 import online.dipa.hub.api.model.FormField;
+import online.dipa.hub.api.model.NonPermanentProjectTask;
+import online.dipa.hub.api.model.PermanentProjectTask;
 import online.dipa.hub.api.model.Project;
 import online.dipa.hub.api.model.ProjectRole;
 import online.dipa.hub.api.model.ProjectTask;
@@ -156,13 +158,67 @@ public class ProjectService {
                                             .stream()
                                             .map(p -> conversionService.convert(p, ProjectTask.class))
                                             .filter(Objects::nonNull)
-                                            .filter(task -> !isPermanentTask || task.getIsPermanentTask()
-                                                                                    .equals(true))
+//                                            .filter(task -> !isPermanentTask || task.getIsPermanentTask()
+//                                                                                    .equals(true))
                                             .sorted(Comparator.comparing(ProjectTask::getSortOrder))
                                             .collect(Collectors.toList()));
             }
         }
         return projectTasks;
+    }
+
+    public List<PermanentProjectTask> getPermanentProjectTasks (final Long projectId) {
+        List<PermanentProjectTask> permanentProjectTasks = new ArrayList<>();
+        List<Long> projectIds = userInformationService.getProjectIdList();
+
+        if (projectIds.contains(projectId)) {
+
+            ProjectEntity project = timelineService.getProject(projectId);
+
+//            initializeProjectTasks(projectId);
+
+            PermanentProjectTaskTemplateEntity template = project.getPermanentProjectTaskTemplate();
+            if (project.getProjectSize() != null && !project.getProjectSize()
+                                                            .equals(Project.ProjectSizeEnum.BIG.toString())) {
+
+                permanentProjectTasks.addAll(template.getPermanentProjectTasks()
+                                            .stream()
+                                            .map(p -> conversionService.convert(p, PermanentProjectTask.class))
+                                            .filter(Objects::nonNull)
+                                            //                                            .filter(task -> !isPermanentTask || task.getIsPermanentTask()
+                                            //                                                                                    .equals(true))
+                                            .sorted(Comparator.comparing(PermanentProjectTask::getSortOrder))
+                                            .collect(Collectors.toList()));
+            }
+        }
+        return permanentProjectTasks;
+    }
+
+    public List<NonPermanentProjectTask> getNonPermanentProjectTasks (final Long projectId) {
+        List<NonPermanentProjectTask> nonPermanentProjectTasks = new ArrayList<>();
+        List<Long> projectIds = userInformationService.getProjectIdList();
+
+        if (projectIds.contains(projectId)) {
+
+            ProjectEntity project = timelineService.getProject(projectId);
+
+            //            initializeProjectTasks(projectId);
+
+            NonPermanentProjectTaskTemplateEntity template = project.getNonPermanentProjectTaskTemplate();
+            if (project.getProjectSize() != null && !project.getProjectSize()
+                                                            .equals(Project.ProjectSizeEnum.BIG.toString())) {
+
+                nonPermanentProjectTasks.addAll(template.getNonPermanentProjectTasks()
+                                                     .stream()
+                                                     .map(p -> conversionService.convert(p, NonPermanentProjectTask.class))
+                                                     .filter(Objects::nonNull)
+                                                     //                                            .filter(task -> !isPermanentTask || task.getIsPermanentTask()
+                                                     //                                                                                    .equals(true))
+                                                     .sorted(Comparator.comparing(NonPermanentProjectTask::getSortOrder))
+                                                     .collect(Collectors.toList()));
+            }
+        }
+        return nonPermanentProjectTasks;
     }
 
     private void initializeProjectTasks(final Long projectId) {
