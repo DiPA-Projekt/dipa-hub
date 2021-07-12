@@ -20,12 +20,10 @@ export class ProjectQuickstartComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.timelineIdSubscription = this.activatedRoute.parent.parent.params
       .pipe(
-        switchMap(
-          (params: Params): Observable<ProjectTask[]> => {
-            this.selectedTimelineId = parseInt(params.id, 10);
-            return this.projectService.getProjectTasks(this.selectedTimelineId);
-          }
-        )
+        switchMap((params: Params): Observable<ProjectTask[]> => {
+          this.selectedTimelineId = parseInt(params.id, 10);
+          return this.projectService.getProjectTasks(this.selectedTimelineId);
+        })
       )
       .subscribe({
         next: (data: Project[]) => {
