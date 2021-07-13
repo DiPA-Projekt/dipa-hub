@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
--- changeset id:create-table-permanent-project-task-template context:itzbund
+-- changeset id:create-table-permanent-project-task-template
 CREATE TABLE permanent_project_task_template(
    id BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
    name VARCHAR(255),
@@ -13,7 +13,7 @@ CREATE TABLE permanent_project_task_template(
     ON DELETE CASCADE
 )
 
--- changeset id:create-table-non-permanent-project-task-template context:itzbund
+-- changeset id:create-table-non-permanent-project-task-template
 CREATE TABLE non_permanent_project_task_template(
    id BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
    name VARCHAR(255),
@@ -26,7 +26,7 @@ CREATE TABLE non_permanent_project_task_template(
     ON DELETE CASCADE
 )
 
--- changeset id:create-table-permanent-project-task context:itzbund
+-- changeset id:create-table-permanent-project-task
 CREATE TABLE permanent_project_task(
    id BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
    title VARCHAR(255),
@@ -46,14 +46,14 @@ CREATE TABLE permanent_project_task(
     ON DELETE CASCADE
 )
 
--- changeset id:create-table-non-permanent-project-task context:itzbund
+-- changeset id:create-table-non-permanent-project-task
 CREATE TABLE non_permanent_project_task(
    id BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
    title VARCHAR(255),
    icon VARCHAR(255),
    sort_order BIGINT,
    non_permanent_project_task_template_id BIGINT NOT NULL,
-   project_task_id BIGINT,
+   project_task_id BIGINT NOT NULL,
    CONSTRAINT "PKnonPermanentProjectTask" PRIMARY KEY (id),
    CONSTRAINT "FKnonPermanentProjectTaskTemplate"
     FOREIGN KEY (non_permanent_project_task_template_id)
@@ -66,12 +66,12 @@ CREATE TABLE non_permanent_project_task(
 )
 
 -- changeset id:insert-into-permanent_project_task_template context:itzbund
-INSERT INTO public.permanent_project_task_template (name, project_id, master)
+INSERT INTO permanent_project_task_template (name, project_id, master)
 SELECT CONCAT('Permanent ', name), project_id, master
 FROM public.project_task_template
 
 -- changeset id:insert-into-non-permanent_project_task_template context:itzbund
-INSERT INTO public.non_permanent_project_task_template (name, project_id, master)
+INSERT INTO non_permanent_project_task_template (name, project_id, master)
 SELECT CONCAT('Non Permanent ', name), project_id, master
 FROM public.project_task_template
 
@@ -91,6 +91,22 @@ FROM (SELECT *
 	  FROM project_task
 	  WHERE project_task_template_id = 1) as task2
 WHERE task1.title = task2.title
+
+-- changeset id:migration-column-title-project-task context:itzbund
+UPDATE project_task
+SET title_permanent_task =
+CASE WHEN task_number = 13 THEN 'Eskalationen durchführen'
+    WHEN task_number = 14 THEN 'Auftragsänderung (Change Request) erstellen'
+    ELSE title_permanent_task
+END
+
+-- changeset id:migration-column-explanation-project-task context:itzbund
+UPDATE project_task
+SET explanation =
+CASE WHEN task_number = 13 THEN 'Nicht selbst lösbare Probleme werden mit dem Projekteigner oder höheren Instanzen geklärt'
+    WHEN task_number = 14 THEN 'Änderungen an den Ressourcen, der Laufzeit oder dem Budget'
+    ELSE explanation
+END
 
 -- changeset id:migration-permanent-project-task-master context:itzbund
 INSERT INTO permanent_project_task (title, icon, sort_order, is_additional_task, permanent_project_task_template_id, project_task_id)

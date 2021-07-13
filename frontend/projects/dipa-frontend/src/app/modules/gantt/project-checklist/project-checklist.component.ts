@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { Subscription } from 'rxjs';
-import { ProjectTask } from 'dipa-api-client';
+import { NonPermanentProjectTask, PermanentProjectTask } from 'dipa-api-client';
 import { MatVerticalStepper } from '@angular/material/stepper';
 
 @Component({
@@ -19,7 +19,7 @@ import { MatVerticalStepper } from '@angular/material/stepper';
 export class ProjectChecklistComponent implements OnDestroy {
   @Input() public timelineId: number;
   @Input() public checklistType: string;
-  @Input() public projectTasks: ProjectTask[];
+  @Input() public projectTasks: NonPermanentProjectTask[] | PermanentProjectTask[];
 
   public formGroup: FormGroup;
 
@@ -69,10 +69,10 @@ export class ProjectChecklistComponent implements OnDestroy {
   //   return this.checklistType === 'permanentTasks' ? task.title : task.title;
   // }
 
-  // public getTaskIcon(task: ProjectTask): string {
-  //   if (this.checklistType === 'permanentTasks') {
-  //     return task.icon;
-  //   }
-  //   return task.completed ? 'done' : 'number';
-  // }
+  public getTaskIcon(task: NonPermanentProjectTask | PermanentProjectTask): string {
+    if (this.checklistType === 'permanentTasks') {
+      return task.icon;
+    }
+    return task.projectTask.completed ? 'done' : 'number';
+  }
 }

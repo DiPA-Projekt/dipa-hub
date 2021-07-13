@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-import { Project, ProjectService, ProjectTask } from 'dipa-api-client';
+import { Project, ProjectService, NonPermanentProjectTask } from 'dipa-api-client';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
@@ -9,7 +9,7 @@ import { switchMap } from 'rxjs/operators';
   templateUrl: './project-quickstart.component.html',
 })
 export class ProjectQuickstartComponent implements OnInit, OnDestroy {
-  public projectTasks: ProjectTask[];
+  public projectTasks: NonPermanentProjectTask[];
 
   public selectedTimelineId: number;
   public timelineIdSubscription: Subscription;
@@ -21,9 +21,9 @@ export class ProjectQuickstartComponent implements OnInit, OnDestroy {
     this.timelineIdSubscription = this.activatedRoute.parent.parent.params
       .pipe(
         switchMap(
-          (params: Params): Observable<ProjectTask[]> => {
+          (params: Params): Observable<NonPermanentProjectTask[]> => {
             this.selectedTimelineId = parseInt(params.id, 10);
-            return this.projectService.getProjectTasks(this.selectedTimelineId);
+            return this.projectService.getNonPermanentProjectTasks(this.selectedTimelineId);
           }
         )
       )
@@ -42,8 +42,8 @@ export class ProjectQuickstartComponent implements OnInit, OnDestroy {
   }
 
   public reloadProjectTasks(): void {
-    this.projectTasksSubscription = this.projectService.getProjectTasks(this.selectedTimelineId).subscribe({
-      next: (data: ProjectTask[]) => {
+    this.projectTasksSubscription = this.projectService.getNonPermanentProjectTasks(this.selectedTimelineId).subscribe({
+      next: (data: NonPermanentProjectTask[]) => {
         this.projectTasks = data;
       },
       error: null,

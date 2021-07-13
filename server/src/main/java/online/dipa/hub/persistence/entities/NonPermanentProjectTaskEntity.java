@@ -1,6 +1,5 @@
 package online.dipa.hub.persistence.entities;
 
-import javax.persistence.Basic;
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,7 +7,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -19,11 +17,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class NonPermanentProjectTaskEntity extends BaseEntity {
 
-    @Size(max = 255)
-    @NotNull
-    @Basic(optional = false)
     private String title;
-
     private String icon;
     private Long sortOrder;
 

@@ -19,11 +19,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class PermanentProjectTaskEntity extends BaseEntity {
 
-    @Size(max = 255)
-    @NotNull
-    @Basic(optional = false)
     private String title;
-
     private String icon;
     private Long sortOrder;
     private boolean isAdditionalTask;

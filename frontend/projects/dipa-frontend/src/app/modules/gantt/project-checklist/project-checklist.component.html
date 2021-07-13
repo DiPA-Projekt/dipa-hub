@@ -1,4 +1,4 @@
-<!-- <ng-container *ngIf="projectTasks?.length; else noProjectTask">
+<ng-container *ngIf="projectTasks?.length; else noProjectTask">
   <mat-vertical-stepper [linear]="false" #stepper>
     <mat-step
       *ngFor="let task of projectTasks"
@@ -8,19 +8,19 @@
       [state]="getTaskIcon(task)"
     >
       <ng-template matStepLabel>
-        <div class="ellipsis" title="{{ getTaskTitle(task) }}">{{ getTaskTitle(task) }}</div>
+        <div class="ellipsis" title="{{ task.title }}">{{ task.title }}</div>
         <div
           class="ellipsis"
           style="font-weight: 500; font-size: 12px; color: rgba(0, 0, 0, 0.54)"
-          title="{{ task.explanation }}"
+          title="{{ task.projectTask.explanation }}"
         >
-          {{ task.explanation }}
+          {{ task.projectTask.explanation }}
         </div>
       </ng-template>
       <app-project-task-form
         [completable]="checklistType !== 'permanentTasks'"
         [selectedTimelineId]="timelineId"
-        [taskData]="task"
+        [taskData]="task.projectTask"
         (stepStatusChanged)="stepStatusChanged(stepper, $event)"
       ></app-project-task-form>
     </mat-step>
@@ -32,4 +32,4 @@
 </ng-container>
 <ng-template #noProjectTask>
   <p>Es gibt derzeit noch keine Aufgabenliste für diese Projektgröße bzw. diese Vorhabensart</p>
-</ng-template> -->
+</ng-template>
