@@ -170,8 +170,7 @@ public class ProjectService {
 
         if (project.getProjectSize() != null && (project.getProjectSize().equals("SMALL") || project.getProjectSize().equals("MEDIUM"))
                 && project.getProjectTaskTemplate() == null) {
-            ProjectTaskTemplateEntity projectTaskTemplate = projectTaskTemplateRepository.findAll().stream().filter(
-                    ProjectTaskTemplateEntity::getMaster).findFirst().orElse(null);
+            ProjectTaskTemplateEntity projectTaskTemplate = projectTaskTemplateRepository.findByMaster().orElse(null);
 
             ProjectTaskTemplateEntity projectTaskProject = new ProjectTaskTemplateEntity("Project Task Template" + project.getName(), false, project);
             projectTaskTemplateRepository.save(projectTaskProject);
@@ -354,9 +353,8 @@ public class ProjectService {
         ProjectEntity project = timelineService.getProject(projectId);
         
 
-        return userRepository.findAll().stream().filter(u -> u.getProjectRoles().stream()
-                                                              .anyMatch(role ->role.getProjectRoleTemplate().getProject().equals(project)))
-        .map(user -> conversionService.convert(user, User.class)).collect(Collectors.toList());
+        return userRepository.findByProject(project)
+                             .stream().map(user -> conversionService.convert(user, User.class)).collect(Collectors.toList());
         
     }
     

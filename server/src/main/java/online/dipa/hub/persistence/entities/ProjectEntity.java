@@ -62,6 +62,15 @@ public class ProjectEntity extends BaseEntity {
         super();
     }
 
+    public ProjectEntity(String name, String projectSize, String projectType, OffsetDateTime startDate, OffsetDateTime endDate, boolean archived) {
+        this.name = name;
+        this.projectSize = projectSize;
+        this.projectType = projectType;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.archived = archived;
+    }
+
     public ProjectEntity(Project project) {
         this.name = project.getName();
         this.projectSize = project.getProjectSize().toString();

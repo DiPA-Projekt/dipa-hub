@@ -2,6 +2,7 @@ package online.dipa.hub.services;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -105,32 +106,31 @@ public class TimelineTemplateService {
     private List<TimelineTemplate> getTimelineTemplatesFromRepo(final Long timelineId, final ProjectApproachEntity projectApproach) {
 
         List<TimelineTemplate> timelineTemplatesFromRepo = new ArrayList<>();
+        Collection<PlanTemplateEntity> projectApproachPlanTemplates =  projectApproach.getPlanTemplate();
 
-        List<PlanTemplateEntity> projectApproachPlanTemplates = planTemplateRepository.findAll().stream()
-                                                                                      .filter(template -> template.getProjectApproaches() != null)
-                                                                                      .filter(template -> timelineService.filterProjectApproach(template, projectApproach.getId()))
-                                                                                      .collect(Collectors.toList());
+        if (!projectApproachPlanTemplates.isEmpty()) {
+            for (PlanTemplateEntity temp: projectApproachPlanTemplates) {
 
-        for (PlanTemplateEntity temp: projectApproachPlanTemplates) {
+                TimelineTemplate template = new TimelineTemplate()
+                        .id(temp.getId())
+                        .name(temp.getName())
+                        .standard(temp.getStandard());
 
-            TimelineTemplate template = new TimelineTemplate()
-                                .id(temp.getId())
-                                .name(temp.getName())
-                                .standard(temp.getStandard());
+                List<MilestoneTemplateEntity> milestones = new ArrayList<>(milestoneService.getMilestonesFromTemplate(temp));
 
-            List<MilestoneTemplateEntity> milestones = new ArrayList<>(milestoneService.getMilestonesFromTemplate(temp));
+                template.milestones(updateMilestonesTimelineTemplate(timelineId, milestones, temp)
+                        .stream().map(m -> conversionService.convert(m, Milestone.class)).collect(Collectors.toList()));
 
-            template.milestones(updateMilestonesTimelineTemplate(timelineId, milestones, temp)
-                .stream().map(m -> conversionService.convert(m, Milestone.class)).collect(Collectors.toList()));
+                if (projectApproach.isIterative() && temp.getStandard()) {
+                    Set<IncrementEntity> increments = incrementService.createIncrementsTimelineTemplate(1,
+                            updateMilestonesTimelineTemplate(timelineId, milestones, temp));
+                    template.increments(increments.stream().map(i -> conversionService.convert(i, Increment.class))
+                                                  .collect(Collectors.toList()));
+                }
 
-            if (projectApproach.isIterative() && temp.getStandard()) {
-                Set<IncrementEntity> increments = incrementService.createIncrementsTimelineTemplate(1,
-                                        updateMilestonesTimelineTemplate(timelineId, milestones, temp));
-                template.increments(increments.stream().map(i -> conversionService.convert(i, Increment.class)).collect(Collectors.toList()));
+                timelineTemplatesFromRepo.add(template);
+
             }
-
-            timelineTemplatesFromRepo.add(template);
-
         }
 
         return timelineTemplatesFromRepo;
@@ -146,9 +146,7 @@ public class TimelineTemplateService {
                            .forEach(m -> milestoneTemplateRepository.delete(m));
 
         List<MilestoneTemplateEntity> newMilestones = new ArrayList<>();
-
-        Optional<PlanTemplateEntity> selectedTemplateOptional = planTemplateRepository.findAll()
-                                                .stream().filter(template -> template.getId().equals(templateId)).findFirst();
+        Optional<PlanTemplateEntity> selectedTemplateOptional = planTemplateRepository.findById(templateId);
 
         if (selectedTemplateOptional.isPresent()) {
             projectPlanTemplate.setStandard(selectedTemplateOptional.get().getStandard());
@@ -181,17 +179,9 @@ public class TimelineTemplateService {
 
         if (currentProject.getProjectApproach().isIterative() && !template.getStandard()) {
 
-            standardTemplateMilestones = new ArrayList<>(Objects.requireNonNull(
-                planTemplateRepository.findAll()
-                                      .stream()
-                                      .filter(temp -> temp.getProjectApproaches() != null)
-                                      .filter(temp -> timelineService.filterProjectApproach(temp,
-                                              currentProject.getProjectApproach()
-                                                            .getId()))
-                                      .filter(PlanTemplateEntity::getStandard)
-                                      .findFirst()
-                                      .orElse(null))
-                                                                                  .getMilestones());
+            standardTemplateMilestones = new ArrayList<>(Objects.requireNonNull(planTemplateRepository
+                    .findByStandardAndProjectApproach(currentProject.getProjectApproach()).stream().findFirst()
+                    .orElse(null)).getMilestones());
 
             standardTemplateMilestones = milestoneService.sortMilestones(standardTemplateMilestones);
             standardTemplateMilestones.forEach(m -> m.setDate(currentProject.getStartDate().plusDays(m.getDateOffset())));
