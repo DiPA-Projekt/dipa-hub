@@ -126,7 +126,7 @@
                 <div fxLayout="row wrap" fxLayoutGap="16px grid">
                   <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
                     <mat-label>Projekttyp</mat-label>
-                    <mat-select formControlName="projectType" required>
+                    <mat-select formControlName="projectType" [disabled]="isNotEditable" required>
                       <mat-option *ngFor="let projectType of projectTypesList" [value]="projectType">
                         {{ projectType }}
                       </mat-option>
@@ -134,7 +134,12 @@
                   </mat-form-field>
                   <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
                     <mat-label>Vorhabensart</mat-label>
-                    <mat-select formControlName="operationTypeId" [(value)]="operationTypeId" required>
+                    <mat-select
+                      formControlName="operationTypeId"
+                      [(value)]="operationTypeId"
+                      [disabled]="isNotEditable"
+                      required
+                    >
                       <mat-option *ngFor="let operationType of operationTypesList" [value]="operationType.id">
                         {{ operationType.name }}
                       </mat-option>
@@ -142,7 +147,7 @@
                   </mat-form-field>
                   <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
                     <mat-label>Vorgehensweise</mat-label>
-                    <mat-select formControlName="projectApproachId" required>
+                    <mat-select formControlName="projectApproachId" [disabled]="isNotEditable" required>
                       <mat-option
                         *ngFor="let projectApproach of filterProjectApproaches(operationTypeId)"
                         [value]="projectApproach.id"

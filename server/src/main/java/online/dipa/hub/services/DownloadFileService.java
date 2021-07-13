@@ -26,10 +26,8 @@ public class DownloadFileService {
 
     public Resource getFile(final Long fileId) {
 
-        Optional<DownloadFile> downloadFile = fileRepository.findAll()
-                .stream()
-                .filter(file -> file.getId().equals(fileId))
-                .map(p -> conversionService.convert(p, DownloadFile.class)).findFirst();
+        Optional<DownloadFile> downloadFile = fileRepository.findById(fileId)
+                .map(p -> conversionService.convert(p, DownloadFile.class));
 
         if (downloadFile.isPresent()) {
 

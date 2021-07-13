@@ -31,7 +31,6 @@ public class ProjectRoleTemplateEntity extends BaseEntity {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<ProjectRoleEntity> projectRoles = new HashSet<>();
 
-    @NotNull
     @OneToOne(fetch = FetchType.EAGER)
     private ProjectEntity project;
 
