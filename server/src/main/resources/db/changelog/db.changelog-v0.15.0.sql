@@ -32,7 +32,6 @@ CREATE TABLE permanent_project_task(
    title VARCHAR(255),
    icon VARCHAR(255),
    sort_order BIGINT,
-   is_additional_task BOOLEAN,
    permanent_project_task_template_id BIGINT NOT NULL,
    project_task_id BIGINT,
    CONSTRAINT "PKpermanentProjectTask" PRIMARY KEY (id),
@@ -65,12 +64,12 @@ CREATE TABLE non_permanent_project_task(
     ON DELETE CASCADE
 )
 
--- changeset id:insert-into-permanent_project_task_template context:itzbund
+-- changeset id:migration-insert-into-permanent_project_task_template context:itzbund
 INSERT INTO permanent_project_task_template (name, project_id, master)
 SELECT CONCAT('Permanent ', name), project_id, master
 FROM public.project_task_template
 
--- changeset id:insert-into-non-permanent_project_task_template context:itzbund
+-- changeset id:migration-insert-into-non-permanent_project_task_template context:itzbund
 INSERT INTO non_permanent_project_task_template (name, project_id, master)
 SELECT CONCAT('Non Permanent ', name), project_id, master
 FROM public.project_task_template
@@ -109,9 +108,8 @@ CASE WHEN task_number = 13 THEN 'Nicht selbst lösbare Probleme werden mit dem P
 END
 
 -- changeset id:migration-permanent-project-task-master context:itzbund
-INSERT INTO permanent_project_task (title, icon, sort_order, is_additional_task, permanent_project_task_template_id, project_task_id)
+INSERT INTO permanent_project_task (title, icon, sort_order, permanent_project_task_template_id, project_task_id)
     select title_permanent_task, icon, sort_order,
-	CASE WHEN task_number = 13 OR task_number= 14 then true else false end,
 	(SELECT id
     FROM permanent_project_task_template
     WHERE master = true),project_task.id
@@ -122,9 +120,8 @@ INSERT INTO permanent_project_task (title, icon, sort_order, is_additional_task,
 	ORDER BY project_task_template_id
 
 -- changeset id:migration-permanent-project-task context:itzbund
-INSERT INTO permanent_project_task (title, icon, sort_order, is_additional_task, permanent_project_task_template_id, project_task_id)
+INSERT INTO permanent_project_task (title, icon, sort_order, permanent_project_task_template_id, project_task_id)
     select title_permanent_task, icon, sort_order,
-	CASE WHEN task_number = 13 OR task_number= 14 then true else false end,
 	(SELECT permanent_task_template.id
 	FROM project_task_template as task_template
 	JOIN permanent_project_task_template as permanent_task_template
@@ -181,3 +178,7 @@ UPDATE non_permanent_project_task
 SET sort_order = CASE
 				WHEN sort_order = 15 THEN 13
 				ELSE sort_order END
+
+-- changeset id:delete-columns-project-task
+ALTER project_task
+DROP COLUMN title, is_permanent_task, title_permanent_task, icon
