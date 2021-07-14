@@ -16,6 +16,10 @@ const ELEMENTS = {
     btn_sign_in: 'input[id=kc-login]',
     span_input_error: 'span[id="input-error"]'
 };
+const LOGINPAGE = {
+    elements: ELEMENTS,
+    credentials: CREDENTIALS
+}
 
 const login = function (username, password) {
     return client
@@ -27,8 +31,11 @@ const login = function (username, password) {
     .click(ELEMENTS.btn_sign_in);
 }
 
-module.exports = {
-    ELEMENTS: ELEMENTS,
-    CREDENTIALS: CREDENTIALS,
-    login: login
-}
+// module.exports = {
+//     ELEMENTS: ELEMENTS,
+//     CREDENTIALS: CREDENTIALS,
+//     login: login
+// }
+exports.loginpage = LOGINPAGE;
+exports.CREDENTIALS = CREDENTIALS;
+exports.login = login;
