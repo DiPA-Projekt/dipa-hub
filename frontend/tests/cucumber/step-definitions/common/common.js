@@ -9,6 +9,12 @@ Given('Ich starte die App', async () => {
   await client.maximizeWindow();
 });
 
+Given('Ich starte die BA-Instanz', async () => {
+  await client.url('https://ba.develop.dipa.online/');
+  await client.waitForElementVisible('body', 1000);
+  await client.maximizeWindow();
+});
+
 Then('Ich warte {int} Sekunden', (seconds) => {
   return client.pause(seconds * 1000);
 });
