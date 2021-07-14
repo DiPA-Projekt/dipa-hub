@@ -12,7 +12,18 @@ const clickOnButton = function (buttonName) {
     .click('xpath', '//button/span[contains(text(), "' + buttonName + '")]');
 };
 
-module.exports = {
-  clickOnText: clickOnText,
-  clickOnButton: clickOnButton,
-};
+const CLICKONELEMENT = function(xpath) {
+  return client
+    .waitForElementVisible('xpath', xpath, 5000)
+    .click('xpath', xpath);
+}
+
+// module.exports = {
+//   clickOnText: clickOnText,
+//   clickOnButton: clickOnButton,
+//   clickOnElement: CLICKONELEMENT
+// };
+
+exports.clickOnText = clickOnText;
+exports.clickOnButton = clickOnButton;
+exports.clickOnElement = CLICKONELEMENT;
