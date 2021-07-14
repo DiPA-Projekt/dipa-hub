@@ -1,10 +1,10 @@
 const { client } = require('nightwatch-api');
-const { Given, When, Then } = require('@cucumber/cucumber');
-const { ELEMENTS, CREDENTIALS, login } = require('../page-objects/login');
+const { When, Then } = require('@cucumber/cucumber');
+const { loginpage, login } = require('../page-objects/login');
 
 
 When('Ich melde mich mit falschen Daten an', () => {
-  return login(CREDENTIALS.invalid.user, CREDENTIALS.invalid.pass);
+  return login(loginpage.credentials.invalid.user, loginpage.credentials.invalid.pass);
 });
 
 When('Ich melde mich als {string} an', username => {
@@ -27,8 +27,8 @@ Then('sollte die Startseite zu sehen sein', () => {
 
 Then('Wird der Login wegen falscher Credentials abgewiesen', () => {
   return client
-    .waitForElementVisible(ELEMENTS.span_input_error)
-    .assert.containsText(ELEMENTS.span_input_error, 'Invalid username or password');
+    .waitForElementVisible(loginpage.elements.span_input_error)
+    .assert.containsText(loginpage.elements.span_input_error, 'Invalid username or password');
 });
 
 
