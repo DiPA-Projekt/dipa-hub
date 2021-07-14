@@ -22,6 +22,7 @@
     "nyc": "nyc mocha",
     "nyc:ci": "npm run nyc || exit 0",
     "cucumber": "cross-env NIGHTWATCH_ENV=chrome cucumber-js tests/cucumber/features/**/*.feature --require cucumber.conf.js --require tests/cucumber/step-definitions --format @cucumber/pretty-formatter --format json:.reports/cucumber/report.json",
+    "cucumber-test": "cross-env NIGHTWATCH_ENV=chrome cucumber-js tests/cucumber/features/**/Risikoabschaetzung_Servertausch.feature --require cucumber.conf.js --require tests/cucumber/step-definitions --format @cucumber/pretty-formatter --format json:.reports/cucumber/report.json",
     "nightwatch": "nightwatch"
   },
   "private": true,
