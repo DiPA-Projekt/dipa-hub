@@ -22,7 +22,6 @@ public class PermanentProjectTaskEntity extends BaseEntity {
     private String title;
     private String icon;
     private Long sortOrder;
-    private boolean isAdditionalTask;
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
@@ -36,10 +35,15 @@ public class PermanentProjectTaskEntity extends BaseEntity {
         super();
     }
 
+    public PermanentProjectTaskEntity(final String title, final String icon, final Long sortOrder) {
+        this.title = title;
+        this.icon = icon;
+        this.sortOrder = sortOrder;
+    }
+
     public PermanentProjectTaskEntity(PermanentProjectTaskEntity projectTaskEntity) {
         this.title = projectTaskEntity.getTitle();
         this.icon = projectTaskEntity.getIcon();
-        this.isAdditionalTask = projectTaskEntity.isAdditionalTask();
         this.sortOrder = projectTaskEntity.getSortOrder();
     }
     
@@ -65,14 +69,6 @@ public class PermanentProjectTaskEntity extends BaseEntity {
 
     public void setIcon(final String icon) {
         this.icon = icon;
-    }
-
-    public boolean isAdditionalTask() {
-        return isAdditionalTask;
-    }
-
-    public void setIsAdditionalTask(final boolean isAdditionalTask) {
-        this.isAdditionalTask = isAdditionalTask;
     }
 
     public ProjectTaskEntity getProjectTask() {

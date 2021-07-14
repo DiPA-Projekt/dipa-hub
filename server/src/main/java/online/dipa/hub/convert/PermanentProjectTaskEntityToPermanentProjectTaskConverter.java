@@ -19,7 +19,6 @@ public class PermanentProjectTaskEntityToPermanentProjectTaskConverter implement
         return new PermanentProjectTask().id(template.getId())
                                          .title(template.getTitle())
                                          .icon(template.getIcon())
-                                         .isAdditionalTask(template.isAdditionalTask())
                                          .sortOrder(template.getSortOrder())
                                          .projectTask(projectTaskConverter.convert(template.getProjectTask()));
     }

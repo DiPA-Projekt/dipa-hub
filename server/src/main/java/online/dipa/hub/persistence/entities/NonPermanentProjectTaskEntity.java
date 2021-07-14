@@ -33,6 +33,12 @@ public class NonPermanentProjectTaskEntity extends BaseEntity {
         super();
     }
 
+    public NonPermanentProjectTaskEntity(final String title, final String icon, final Long sortOrder) {
+        this.title = title;
+        this.icon = icon;
+        this.sortOrder = sortOrder;
+    }
+
     public NonPermanentProjectTaskEntity(NonPermanentProjectTaskEntity projectTaskEntity) {
         this.title = projectTaskEntity.getTitle();
         this.icon = projectTaskEntity.getIcon();

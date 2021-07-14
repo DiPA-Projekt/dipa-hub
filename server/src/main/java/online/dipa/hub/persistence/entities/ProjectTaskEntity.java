@@ -13,17 +13,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ProjectTaskEntity extends BaseEntity {
-//
-//    @Size(max = 255)
-//    @NotNull
-//    @Basic(optional = false)
-//    private String title;
-//
-//    private String icon;
+
     private boolean optional;
     private String explanation;
-//    private boolean isPermanentTask;
-//    private String titlePermanentTask;
     private boolean completed;
     private Long sortOrder;
 
@@ -49,6 +41,13 @@ public class ProjectTaskEntity extends BaseEntity {
 
     public ProjectTaskEntity() {
         super();
+    }
+
+    public ProjectTaskEntity(boolean optional, String explanation, boolean completed, Long sortOrder) {
+        this.optional = optional;
+        this.explanation = explanation;
+        this.completed = completed;
+        this.sortOrder = sortOrder;
     }
 
     public ProjectTaskEntity(ProjectTaskEntity projectTaskEntity) {

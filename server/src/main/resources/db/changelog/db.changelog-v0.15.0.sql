@@ -180,5 +180,8 @@ SET sort_order = CASE
 				ELSE sort_order END
 
 -- changeset id:delete-columns-project-task
-ALTER project_task
-DROP COLUMN title, is_permanent_task, title_permanent_task, icon
+ALTER TABLE project_task
+DROP COLUMN IF EXISTS title,
+DROP COLUMN IF EXISTS is_permanent_task,
+DROP COLUMN IF EXISTS title_permanent_task,
+DROP COLUMN IF EXISTS icon

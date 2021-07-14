@@ -96,7 +96,7 @@ public class ProjectService {
     
     public void updateProjectData(final Long projectId, final Project project) {
         List<Long> projectIds = userInformationService.getProjectIdList();
-        var projectEntity = timelineService.getProject(projectId);
+        var projectEntity = projectRepository.getById(projectId);
 
         if (projectIds.contains(projectId)) {
             projectEntity.setAkz(project.getAkz());
@@ -149,7 +149,7 @@ public class ProjectService {
     }
 
     public void deleteProject(final Long projectId) {
-        var projectEntity = timelineService.getProject(projectId);
+        var projectEntity = projectRepository.getById(projectId);
        
         projectRepository.delete(projectEntity);      
     }
@@ -160,7 +160,7 @@ public class ProjectService {
 
         if (projectIds.contains(projectId)) {
 
-            ProjectEntity project = timelineService.getProject(projectId);
+            ProjectEntity project = projectRepository.getById(projectId);
 
             initializeProjectTasks(projectId);
 
@@ -187,13 +187,16 @@ public class ProjectService {
 
         if (projectIds.contains(projectId)) {
 
-            ProjectEntity project = timelineService.getProject(projectId);
+            ProjectEntity project = projectRepository.getById(projectId);
 
 //            initializeProjectTasks(projectId);
 
             PermanentProjectTaskTemplateEntity template = project.getPermanentProjectTaskTemplate();
+            System.out.println(project.getPermanentProjectTaskTemplate());
+
             if (project.getProjectSize() != null && !project.getProjectSize()
                                                             .equals(Project.ProjectSizeEnum.BIG.toString())) {
+                System.out.println(template.getPermanentProjectTasks());
 
                 permanentProjectTasks.addAll(template.getPermanentProjectTasks()
                                             .stream()
@@ -212,7 +215,7 @@ public class ProjectService {
 
         if (projectIds.contains(projectId)) {
 
-            ProjectEntity project = timelineService.getProject(projectId);
+            ProjectEntity project = projectRepository.getById(projectId);
 
 //                        initializeProjectTasks(projectId);
 
@@ -232,7 +235,7 @@ public class ProjectService {
     }
 
     private void initializeProjectTasks(final Long projectId) {
-        ProjectEntity project = timelineService.getProject(projectId);
+        ProjectEntity project = projectRepository.getById(projectId);
 
         if (project.getProjectSize() != null && (project.getProjectSize().equals("SMALL") || project.getProjectSize().equals("MEDIUM"))
                 && project.getProjectTaskTemplate() == null) {
@@ -274,7 +277,7 @@ public class ProjectService {
         }
     }
 
-    private void createPermanentProjectTasks (ProjectTaskEntity projectTaskTemp, ProjectTaskEntity newProjectTask,
+    public void createPermanentProjectTasks (ProjectTaskEntity projectTaskTemp, ProjectTaskEntity newProjectTask,
             PermanentProjectTaskTemplateEntity permanentProjectTaskTemp, NonPermanentProjectTaskTemplateEntity nonPermanentProjectTaskTemp) {
 
         if (projectTaskTemp.getPermanentProjectTask() != null) {
@@ -327,7 +330,7 @@ public class ProjectService {
 
         if (projectIds.contains(projectId)) {
 
-            ProjectEntity project = timelineService.getProject(projectId);
+            ProjectEntity project = projectRepository.getById(projectId);
             ProjectTaskTemplateEntity template = project.getProjectTaskTemplate();
 
             template.getProjectTasks().stream()
@@ -440,7 +443,7 @@ public class ProjectService {
     }
 
     public List<ProjectRole> getProjectRoles (final Long projectId) {
-        ProjectEntity project = timelineService.getProject(projectId);
+        ProjectEntity project = projectRepository.getById(projectId);
 
         return project.getProjectRoleTemplate().getProjectRoles().stream().map(r -> conversionService.convert(r, ProjectRole.class))
         .collect(Collectors.toList());
@@ -448,7 +451,7 @@ public class ProjectService {
     }
     
     public List<User> getProjectUsers (final Long projectId) {
-        ProjectEntity project = timelineService.getProject(projectId);
+        ProjectEntity project = projectRepository.getById(projectId);
         
 
         return userRepository.findByProject(project)
