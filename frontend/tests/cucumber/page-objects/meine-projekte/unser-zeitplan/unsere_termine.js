@@ -122,15 +122,15 @@ const MILESTONESHOULDNOTEXIST = function (milestoneName) {
     );
 };
 
-module.exports = {
-  closeMilestoneDescription: CLOSEMILESTONEDESCRIPTION,
-  createNewMilestone: CREATENEWMILESTONE,
-  fillMilestoneName: FILLMILESTONENAME,
-  pickTodaysDate: PICKTODAYSDATE,
-  axisContains: AXISCONTAINS,
-  dragAndDropMilestoneToDate: DRAGANDDROPMILESTONETODATE,
-  clickOnMilestone: CLICKONMILESTONE,
-  shouldExistNumberMilestones: SHOULDEXISTNUMBERMILESTONES,
-  milestoneShouldExist: MILESTONESHOULDEXIST,
-  milestoneShouldNotExist: MILESTONESHOULDNOTEXIST,
-};
+// module.exports = {
+exports.closeMilestoneDescription = CLOSEMILESTONEDESCRIPTION;
+exports.createNewMilestone = CREATENEWMILESTONE;
+exports.fillMilestoneName = FILLMILESTONENAME;
+exports.pickTodaysDate = PICKTODAYSDATE;
+exports.axisContains = AXISCONTAINS;
+exports.dragAndDropMilestoneToDate = DRAGANDDROPMILESTONETODATE;
+exports.clickOnMilestone = CLICKONMILESTONE;
+exports.shouldExistNumberMilestones = SHOULDEXISTNUMBERMILESTONES;
+exports.milestoneShouldExist = MILESTONESHOULDEXIST;
+exports.milestoneShouldNotExist = MILESTONESHOULDNOTEXIST;
+// };
