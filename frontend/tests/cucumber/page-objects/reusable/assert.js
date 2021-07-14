@@ -20,8 +20,12 @@ const sollteTextNichtSehen = function (text) {
   .assert.not.elementPresent('//*[contains(text(), "' + text + '")]');
 };
 
-module.exports = {
-  sollteDateiUnterPfadExistieren: sollteDateiUnterPfadExistieren,
-  sollteTextSehen: sollteTextSehen,
-  sollteTextNichtSehen: sollteTextNichtSehen
-};
+// module.exports = {
+  // sollteDateiUnterPfadExistieren: sollteDateiUnterPfadExistieren,
+  // sollteTextSehen: sollteTextSehen;
+  // sollteTextNichtSehen: sollteTextNichtSehen;
+// };
+
+exports.sollteDateiUnterPfadExistieren = sollteDateiUnterPfadExistieren;
+exports.sollteTextSehen = sollteTextSehen;
+exports.sollteTextNichtSehen = sollteTextNichtSehen;

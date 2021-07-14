@@ -12,6 +12,8 @@ const selectboxValueIs = function (selectboxTitle, selectboxValue){
   );
 }
 
-module.exports = {
-  selectboxValueIs: selectboxValueIs,
-};
+// module.exports = {
+//   selectboxValueIs: selectboxValueIs,
+// };
+
+exports.selectboxValueIs = selectboxValueIs;
