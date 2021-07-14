@@ -1,11 +1,22 @@
 const { client } = require('nightwatch-api');
+const { elementContainsText } = require('../reusable/common_functions');
 
 const ELEMENTS = {
   txt_unsereReiseDurchsProjekt: '//*[contains(text(), "Unsere Reise durchs Projekt")]',
   txt_unserZeitplan: '//*[contains(text(), "Unser Zeitplan")]',
   txt_favoritenLinks: '//*[contains(text(), "Favoriten-Links")]',
   icon_profil: '//*[contains(text(), "account_circle")]',
-  txt_logout: '//*[contains(text(), "Ausloggen")]'
+  txt_logout: '//*[contains(text(), "Ausloggen")]',
+  menu_meineProjekte: '//span[@class="mat-button-wrapper" and contains(text(), "Meine Projekte")]'
+};
+
+const OPENPROJECT = function (projektname) {
+  return client
+  .waitForElementVisible('xpath', ELEMENTS.menu_meineProjekte)
+  .click('xpath', ELEMENTS.menu_meineProjekte)
+  .waitForElementVisible('xpath', '//button[contains(text(), "' + projektname +'")]')
+  .click('xpath', '//button[contains(text(), "' + projektname +'")]')
+  .waitForElementVisible('xpath', '//div[@class="mat-card-title" and contains(text(), "' + projektname +'")]');
 };
 
 const logout = function () {
@@ -60,7 +71,7 @@ const navigate = function (menu) {
     case 'Stöbern & Vergleichen':
       client.elements('xpath', elementContainsText(menu), function (result) {
         // Wenn die Menüs UNTER "Unser Zeitplan" nicht sichtbar sind, dann erst auf "Unser Zeitplan" klicken
-        if (result.status == 0) {
+        if (result.value.length == 0) {
           client.click('xpath', ELEMENTS.txt_unserZeitplan)
           .pause(1000);
         }
@@ -99,11 +110,12 @@ const navigate = function (menu) {
   }
 };
 
-const elementContainsText = function (text) {
-  return '//*[contains(text(), "' + text + '")]';
-};
+// module.exports = {
+//   navigate: navigate,
+//   logout: logout,
+//   openProject: OPENPROJECT
+// };
 
-module.exports = {
-  navigate: navigate,
-  logout: logout
-};
+exports.navigate = navigate;
+exports.logout = logout;
+exports.openProject = OPENPROJECT;
