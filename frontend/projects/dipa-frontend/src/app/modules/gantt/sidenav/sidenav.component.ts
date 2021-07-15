@@ -53,15 +53,13 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.timelineDataSubscription = this.timelineDataService
       .getTimelines()
       .pipe(
-        switchMap(
-          (data: Timeline[]): Observable<Project> => {
-            if (data !== null) {
-              this.timeline = data.find((c) => c.id === Number(this.selectedTimelineId));
-              this.setSideNavMenu();
-            }
-            return this.projectService.getProjectData(this.selectedTimelineId);
+        switchMap((data: Timeline[]): Observable<Project> => {
+          if (data !== null) {
+            this.timeline = data.find((c) => c.id === Number(this.selectedTimelineId));
+            this.setSideNavMenu();
           }
-        )
+          return this.projectService.getProjectData(this.selectedTimelineId);
+        })
       )
       .subscribe((data: Project) => {
         this.project = data;

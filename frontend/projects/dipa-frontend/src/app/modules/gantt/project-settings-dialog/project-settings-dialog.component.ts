@@ -18,7 +18,7 @@ import { TimelineDataService } from '../../../shared/timelineDataService';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import ProjectTypeEnum = Project.ProjectTypeEnum;
-import { PropertyQuestion } from 'dipa-api-client';
+import { PropertyQuestion, TimelinesService } from 'dipa-api-client';
 
 interface ProjectSize {
   value: string;
@@ -43,7 +43,8 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
   public endDate = new Date(new Date().setMonth(new Date().getMonth() + 6));
   public userData: User;
   public allUsers: User[];
-  public formGroup: FormGroup;
+  public formGroupProjectData: FormGroup;
+  public formGroupTimelineData: FormGroup;
   public inputNotation: boolean;
 
   public userHasProjectEditRights = false;
@@ -69,8 +70,6 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
 
   private dataSubscription: Subscription;
   private createProjectSubscription: Subscription;
-  private itzBundSmallProjectApproachId = 7;
-  private itzBundSoftwareDevelopmentId = 2;
 
   public constructor(
     @Inject(MAT_DIALOG_DATA) public data: { project: Project; timeline: Timeline },
@@ -78,6 +77,7 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
     private authenticationService: AuthenticationService,
     private operationTypesService: OperationTypesService,
     private projectApproachesService: ProjectApproachesService,
+    private timelinesService: TimelinesService,
     private projectService: ProjectService,
     private userService: UserService,
     private timelineDataService: TimelineDataService,
@@ -104,7 +104,6 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
       this.operationTypesList = operationTypesList;
       this.projectApproachesList = projectApproachesList;
       this.propertyQuestions = propertyQuestions;
-      // this.updateFormValues();
     });
 
     this.inputNotation = false;
@@ -114,7 +113,7 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
     this.createProjectSubscription?.unsubscribe();
   }
 
-  public onSubmit(form: FormGroup): void {
+  public onSubmitProjectData(form: FormGroup): void {
     this.projectService.updateProjectData(this.data.timeline.id, form.value).subscribe({
       next: () => {
         form.reset(form.value);
@@ -127,26 +126,20 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
     });
   }
 
-  // public onSubmit(formGroup: FormGroup): void {
-  //   if (formGroup.valid) {
-  //     this.createProjectSubscription = this.projectService
-  //       .createProject({
-  //         project: formGroup.value,
-  //         projectOwner: this.filterProjectOwner(formGroup.value.projectOwner),
-  //       })
-  //       .subscribe({
-  //         next: (newTimeline: Timeline) => {
-  //           this.timelineDataService.setTimelines();
-  //         },
-  //         error: null,
-  //         complete: () => {
-  //           this.dialogRef.close();
-  //         },
-  //       });
-  //   } else {
-  //     this.inputNotation = true;
-  //   }
-  // }
+  public onSubmitTimelineData(form: FormGroup): void {
+    // this.timelineData.projectType = event.value as ProjectTypeEnum;
+
+    this.timelinesService.updateTimeline(this.data.timeline.id, form.value).subscribe({
+      next: () => {
+        form.reset(form.value);
+        // in the future should be emitted only if projectSize field changes
+        // this.projectSizeChanged.emit();
+        this.timelineDataService.setTimelines();
+      },
+      error: null,
+      complete: () => void 0,
+    });
+  }
 
   public displayProjectSize(size: string): string {
     return this.sizes.find((x: ProjectSize) => x.value === size)?.display;
@@ -201,67 +194,63 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
           .length > 0;
       this.isNotEditable = project.archived || !this.userHasProjectEditRights;
 
-      this.formGroup = this.fb.group(
-        {
-          id: null,
-          name: new FormControl(null, { validators: [Validators.required], updateOn: 'blur' }),
-          operationTypeId: new FormControl(
-            { value: this.data.timeline.operationTypeId, disabled: this.isNotEditable },
-            {
-              validators: [Validators.required],
-              updateOn: 'blur',
-            }
-          ),
-          projectApproachId: new FormControl(
-            { value: timeline.projectApproachId, disabled: this.isNotEditable },
-            {
-              validators: [Validators.required],
-              updateOn: 'blur',
-            }
-          ),
-          projectType: new FormControl(
-            { value: timeline.projectType, disabled: this.isNotEditable },
-            {
-              validators: [Validators.required],
-              updateOn: 'blur',
-            }
-          ),
-          start: new FormControl(
-            { value: project?.start, disabled: this.isNotEditable },
-            { validators: [Validators.required], updateOn: 'blur' }
-          ),
-          end: new FormControl(
-            { value: project?.end, disabled: this.isNotEditable },
-            { validators: [Validators.required], updateOn: 'blur' }
-          ),
-          // projectSize: new FormControl(null, { validators: [Validators.required], updateOn: 'blur' }),
-          projectOwner: null,
-          akz: new FormControl({ value: project?.akz, disabled: this.isNotEditable }),
-          // name: new FormControl({ value: data?.name, disabled: this.isNotEditable }),
-          projectSize: new FormControl({
-            value: project?.projectSize,
-            disabled: this.isNotEditable,
-          }),
-          client: new FormControl({
-            value: project?.client,
-            disabled: this.isNotEditable,
-          }),
-          department: new FormControl({
-            value: project?.department,
-            disabled: this.isNotEditable,
-          }),
-          archived: [project?.archived],
-        },
-        { updateOn: 'blur' }
-      );
+      this.formGroupProjectData = this.fb.group({
+        id: new FormControl({ value: project?.id, disabled: !this.userHasProjectEditRights }),
+        name: new FormControl(
+          { value: project?.name, disabled: !this.userHasProjectEditRights },
+          { validators: [Validators.required], updateOn: 'blur' }
+        ),
+        projectOwner: null,
+        akz: new FormControl({ value: project?.akz, disabled: this.isNotEditable }),
+        projectSize: new FormControl({
+          value: project?.projectSize,
+          disabled: this.isNotEditable,
+        }),
+        client: new FormControl({
+          value: project?.client,
+          disabled: this.isNotEditable,
+        }),
+        department: new FormControl({
+          value: project?.department,
+          disabled: this.isNotEditable,
+        }),
+        archived: [project?.archived],
+      });
+      this.formGroupTimelineData = this.fb.group({
+        id: new FormControl({ value: timeline?.id, disabled: !this.userHasProjectEditRights }),
+        start: new FormControl({ value: timeline.start, disabled: !this.userHasProjectEditRights }),
+        end: new FormControl({ value: timeline.end, disabled: !this.userHasProjectEditRights }),
+        increment: new FormControl({ value: timeline.increment, disabled: true }),
+        defaultTimeline: new FormControl({ value: timeline.defaultTimeline, disabled: true }),
+        name: new FormControl(
+          { value: project?.name, disabled: !this.userHasProjectEditRights },
+          { validators: [Validators.required], updateOn: 'blur' }
+        ),
+        operationTypeId: new FormControl(
+          { value: this.data.timeline.operationTypeId, disabled: this.isNotEditable },
+          {
+            validators: [Validators.required],
+            updateOn: 'blur',
+          }
+        ),
+        projectApproachId: new FormControl(
+          { value: timeline.projectApproachId, disabled: this.isNotEditable },
+          {
+            validators: [Validators.required],
+            updateOn: 'blur',
+          }
+        ),
+        projectType: new FormControl(
+          { value: timeline.projectType, disabled: this.isNotEditable },
+          {
+            validators: [Validators.required],
+            updateOn: 'blur',
+          }
+        ),
+      });
     });
 
-    this.formGroup = this.fb.group({
-      operationTypeId: new FormControl({ value: timeline.operationTypeId, disabled: true }),
-      projectApproachId: new FormControl({ value: timeline.projectApproachId, disabled: true }),
-      projectType: new FormControl({ value: timeline.projectType, disabled: true }),
-      start: new FormControl({ value: project?.start, disabled: true }),
-      end: new FormControl({ value: project?.end, disabled: true }),
+    this.formGroupProjectData = this.fb.group({
       id: new FormControl({ value: project?.id, disabled: true }),
       akz: new FormControl({ value: project?.akz, disabled: true }),
       name: new FormControl({ value: project?.name, disabled: true }),
@@ -270,21 +259,15 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
       department: new FormControl({ value: project?.department, disabled: true }),
       archived: [project?.archived],
     });
-  }
 
-  // private updateFormValues(): void {
-  //   this.operationTypeId = this.itzBundSoftwareDevelopmentId;
-  //
-  //   this.formGroup.setValue({
-  //     id: -1,
-  //     name: '',
-  //     operationTypeId: this.itzBundSoftwareDevelopmentId,
-  //     projectApproachId: this.itzBundSmallProjectApproachId,
-  //     projectType: ProjectTypeEnum.InternesProjekt,
-  //     start: this.datePipe.transform(this.startDate, 'yyyy-MM-dd'),
-  //     end: this.datePipe.transform(this.endDate, 'yyyy-MM-dd'),
-  //     projectSize: 'SMALL',
-  //     projectOwner: this.userData.id,
-  //   });
-  // }
+    this.formGroupTimelineData = this.fb.group({
+      start: new FormControl({ value: timeline.start, disabled: true }),
+      end: new FormControl({ value: timeline.end, disabled: true }),
+      increment: new FormControl({ value: timeline.increment, disabled: true }),
+      defaultTimeline: new FormControl({ value: timeline.defaultTimeline, disabled: true }),
+      operationTypeId: new FormControl({ value: timeline.operationTypeId }),
+      projectApproachId: new FormControl({ value: timeline.projectApproachId }),
+      projectType: new FormControl({ value: timeline.projectType }),
+    });
+  }
 }
