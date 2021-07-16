@@ -19,6 +19,7 @@ import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import ProjectTypeEnum = Project.ProjectTypeEnum;
 import { PropertyQuestion } from 'dipa-api-client';
+import { MatListOption } from '@angular/material/list';
 
 interface ProjectSize {
   value: string;
@@ -188,6 +189,14 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
 
   public onCloseClick(): void {
     this.dialogRef.close();
+  }
+
+  public selectionChange(event: MatListOption): void {
+    event[0].value.selected = event[0].selected;
+    this.projectService.updateProjectPropertyQuestion(this.data.timeline.id, event[0].value).subscribe((d) => {
+      this.timelineDataService.setProjectTasks(this.data.timeline.id);
+      this.timelineDataService.setPermanentProjectTasks(this.data.timeline.id);
+    });
   }
 
   // private filterProjectOwner(projectOwnerId: number): User {

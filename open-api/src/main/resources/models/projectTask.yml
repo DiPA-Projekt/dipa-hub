@@ -14,10 +14,6 @@ ProjectTask:
       description: icon of the task
       type: string
       example: "shopping_cart"
-    optional:
-      description: if this task is optional
-      type: boolean
-      example: true
     explanation:
       description: what is this task about
       type: string

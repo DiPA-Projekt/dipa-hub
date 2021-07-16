@@ -1,13 +1,18 @@
 package online.dipa.hub.persistence.entities;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Basic;
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import static javax.persistence.CascadeType.ALL;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -27,9 +32,13 @@ public class ProjectPropertyQuestionEntity extends BaseEntity {
     private boolean selected;
     private int sortOrder;
 
+    @OneToMany(mappedBy = "projectPropertyQuestion", cascade = { ALL })
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<ProjectTaskEntity> projectTasks = new HashSet<>();
+
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
-    private ProjectEntity project;
+    private ProjectPropertyQuestionTemplateEntity projectPropertyQuestionTemplate;
 
     public ProjectPropertyQuestionEntity() {
         super();
@@ -74,11 +83,18 @@ public class ProjectPropertyQuestionEntity extends BaseEntity {
         this.sortOrder = sortOrder;
     }
 
-    public ProjectEntity getProject() {
-        return project;
+    public Set<ProjectTaskEntity> getProjectTasks() {
+        return projectTasks;
     }
 
-    public void setProject(final ProjectEntity project) {
-        this.project = project;
+    public void setProjectTasks(final Set<ProjectTaskEntity> projectTasks) {
+        this.projectTasks = projectTasks;
+    }
+
+    public ProjectPropertyQuestionTemplateEntity getProjectPropertyQuestionTemplate() {
+        return projectPropertyQuestionTemplate;
+    }
+    public void setProjectPropertyQuestionTemplate(final ProjectPropertyQuestionTemplateEntity projectPropertyQuestionTemplate) {
+        this.projectPropertyQuestionTemplate = projectPropertyQuestionTemplate;
     }
 }

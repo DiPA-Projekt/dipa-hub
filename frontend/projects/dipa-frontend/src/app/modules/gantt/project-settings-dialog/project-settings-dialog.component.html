@@ -38,11 +38,12 @@
     <div fxFlex="50%" style="overflow: hidden auto; padding: 0 16px">
       <h2 class="mat-card-title">{{ data.project.name }}</h2>
       <div>
-        <mat-selection-list color="primary">
+        <mat-selection-list color="primary" (selectionChange)="selectionChange($event.options)">
           <mat-list-option
             [disabled]="data.project.archived || !userHasProjectEditRights"
             *ngFor="let question of propertyQuestions"
             [selected]="question.selected"
+            [value]="question"
           >
             <div>
               <span>{{ question.question }}</span>

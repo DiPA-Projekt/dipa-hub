@@ -44,9 +44,9 @@ public class ProjectEntity extends BaseEntity {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<IncrementEntity> increments;
 
-    @OneToMany(mappedBy = "project")
+    @OneToOne(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<ProjectPropertyQuestionEntity> propertyQuestions;
+    private ProjectPropertyQuestionTemplateEntity projectPropertyQuestionTemplate;
 
     @OneToOne(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -142,12 +142,12 @@ public class ProjectEntity extends BaseEntity {
         this.increments = increments;
     }
 
-    public Set<ProjectPropertyQuestionEntity> getProjectPropertyQuestions() {
-        return propertyQuestions;
+    public ProjectPropertyQuestionTemplateEntity getProjectPropertyQuestionTemplate() {
+        return projectPropertyQuestionTemplate;
     }
 
-    public void setProjectPropertyQuestions(final Set<ProjectPropertyQuestionEntity> propertyQuestions) {
-        this.propertyQuestions = propertyQuestions;
+    public void setProjectPropertyQuestionTemplate(final ProjectPropertyQuestionTemplateEntity projectPropertyQuestionTemplate) {
+        this.projectPropertyQuestionTemplate = projectPropertyQuestionTemplate;
     }
 
     public String getProjectSize() {

@@ -40,6 +40,9 @@ public class ProjectService {
     private ProjectPropertyQuestionRepository projectPropertyQuestionRepository;
 
     @Autowired
+    private ProjectPropertyQuestionTemplateRepository projectPropertyQuestionTemplateRepository;
+
+    @Autowired
     private FormFieldRepository formFieldRepository;
 
     @Autowired
@@ -133,6 +136,7 @@ public class ProjectService {
         milestoneTemplateRepository.saveAll(newMilestones);
 
         userInformationService.createNewProjectRoles(newProject, projectOwner);
+        initializeProjectTasks(newProject.getId());
         return conversionService.convert(newProject, Timeline.class);
     }
 
@@ -149,9 +153,9 @@ public class ProjectService {
         if (projectIds.contains(projectId)) {
 
             ProjectEntity project = timelineService.getProject(projectId);
-            Set<ProjectPropertyQuestionEntity> projectPropertyQuestionEntity = project.getProjectPropertyQuestions();
+            ProjectPropertyQuestionTemplateEntity template = project.getProjectPropertyQuestionTemplate();
 
-            propertyQuestions.addAll(projectPropertyQuestionRepository.findByProject(project)
+            propertyQuestions.addAll(template.getProjectPropertyQuestions()
                                     .stream()
                                     .map(p -> conversionService.convert(p, PropertyQuestion.class))
                                     .collect(Collectors.toList())
@@ -159,6 +163,14 @@ public class ProjectService {
         }
 
         return propertyQuestions;
+    }
+
+    public void updateProjectPropertyQuestion(final PropertyQuestion propertyQuestion) {
+        projectPropertyQuestionRepository.findById(propertyQuestion.getId())
+                                         .ifPresent(pQuestion -> {
+                                             pQuestion.setSelected(propertyQuestion.getSelected());
+                                             projectPropertyQuestionRepository.save(pQuestion);
+                                         });
     }
 
     public List<ProjectTask> getProjectTasks (final Long projectId, final boolean isPermanentTask) {
@@ -181,6 +193,7 @@ public class ProjectService {
                                             .filter(Objects::nonNull)
                                             .filter(task -> !isPermanentTask || task.getIsPermanentTask()
                                                                                     .equals(true))
+                                            .filter(task-> task.getProjectPropertyQuestion() != null ? task.getProjectPropertyQuestion().getSelected() : true)
                                             .sorted(Comparator.comparing(ProjectTask::getSortOrder))
                                             .collect(Collectors.toList()));
             }
@@ -195,13 +208,21 @@ public class ProjectService {
                 && project.getProjectTaskTemplate() == null) {
             ProjectTaskTemplateEntity projectTaskTemplate = projectTaskTemplateRepository.findByMaster().orElse(null);
 
-            ProjectTaskTemplateEntity projectTaskProject = new ProjectTaskTemplateEntity("Project Task Template" + project.getName(), false, project);
+            ProjectTaskTemplateEntity projectTaskProject = new ProjectTaskTemplateEntity("Project Task Template " + project.getName(), false, project);
             projectTaskTemplateRepository.save(projectTaskProject);
+
+            ProjectPropertyQuestionTemplateEntity propertyQuestionTemplate = createNewPropertyQuestions(project);
 
             for (ProjectTaskEntity projectTask: Objects.requireNonNull(projectTaskTemplate)
                                                        .getProjectTasks()) {
                 ProjectTaskEntity newProjectTask = new ProjectTaskEntity(projectTask);
                 newProjectTask.setProjectTaskTemplate(projectTaskProject);
+
+                if (projectTask.getProjectPropertyQuestion() != null) {
+                    projectPropertyQuestionRepository
+                            .findByTemplateAndSortOrder(propertyQuestionTemplate, projectTask.getProjectPropertyQuestion().getSortOrder())
+                            .ifPresent(newProjectTask::setProjectPropertyQuestion);
+                }
                 projectTaskRepository.save(newProjectTask);
 
                 for (FormFieldEntity entry: projectTask.getEntries()) {
@@ -213,8 +234,28 @@ public class ProjectService {
 
                 createNewResults(projectTask, newProjectTask);
             }
-            project.setProjectTaskTemplate(projectTaskTemplate);
         }
+    }
+
+    public ProjectPropertyQuestionTemplateEntity createNewPropertyQuestions(ProjectEntity project) {
+
+        ProjectPropertyQuestionTemplateEntity propertyQuestionTemplate = new ProjectPropertyQuestionTemplateEntity
+                ("Property Question Template " + project.getName(), false, project);
+        projectPropertyQuestionTemplateRepository.save(propertyQuestionTemplate);
+
+        projectPropertyQuestionTemplateRepository.findByMaster().ifPresent(temp -> {
+            for (ProjectPropertyQuestionEntity projectPropertyQuestion: temp.getProjectPropertyQuestions()) {
+
+                ProjectPropertyQuestionEntity newPropertyQuestion = new ProjectPropertyQuestionEntity(projectPropertyQuestion);
+                newPropertyQuestion.setProjectPropertyQuestionTemplate(propertyQuestionTemplate);
+                projectPropertyQuestionRepository.save(newPropertyQuestion);
+
+            }
+        });
+
+        project.setProjectPropertyQuestionTemplate(propertyQuestionTemplate);
+
+        return projectPropertyQuestionTemplateRepository.getById(propertyQuestionTemplate.getId());
     }
 
     private void createNewResults(ProjectTaskEntity oldProjectTask, ProjectTaskEntity newProjectTask) {

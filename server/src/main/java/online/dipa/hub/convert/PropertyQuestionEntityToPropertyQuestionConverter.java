@@ -12,13 +12,11 @@ public class PropertyQuestionEntityToPropertyQuestionConverter implements Conver
     @Override
     public PropertyQuestion convert(final ProjectPropertyQuestionEntity entity) {
 
-        PropertyQuestion propertyQuestion = new PropertyQuestion()
+        return new PropertyQuestion()
                 .id(entity.getId())
                 .question(entity.getQuestion())
                 .description(entity.getDescription())
                 .selected(entity.getSelected())
                 .sortOrder(entity.getSortOrder());
-
-        return propertyQuestion;
     }
 }

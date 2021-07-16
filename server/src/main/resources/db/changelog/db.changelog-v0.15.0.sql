@@ -37,3 +37,7 @@ ADD CONSTRAINT "FKprojectTaskPropertyQuestion" FOREIGN KEY (project_property_que
 	REFERENCES project_property_question (id) MATCH SIMPLE
 	ON UPDATE NO ACTION
 	ON DELETE CASCADE
+
+-- changeset id:delete-optional-column-project-task
+ALTER TABLE project_task
+DROP COLUMN IF EXISTS optional

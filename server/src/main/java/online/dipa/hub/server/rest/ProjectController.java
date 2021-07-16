@@ -5,7 +5,6 @@ import online.dipa.hub.api.rest.ProjectApi;
 import online.dipa.hub.services.ProjectService;
 
 import java.util.List;
-import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -72,6 +71,12 @@ public class ProjectController implements ProjectApi {
     @Override
     public ResponseEntity<List<PropertyQuestion>> getProjectPropertyQuestions(final Long projectId) {
         return ResponseEntity.ok(projectService.getProjectPropertyQuestions(projectId));
+    }
+
+    @Override
+    public ResponseEntity<Void> updateProjectPropertyQuestion(final Long projectId, final PropertyQuestion propertyQuestion) {
+        projectService.updateProjectPropertyQuestion(propertyQuestion);
+        return ResponseEntity.noContent().build();
     }
 
 }

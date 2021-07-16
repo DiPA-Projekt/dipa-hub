@@ -3,7 +3,6 @@
     <mat-step
       *ngFor="let task of projectTasks"
       [stepControl]="formGroup"
-      [optional]="this.checklistType === 'permanentTasks' ? false : task.optional"
       [completed]="task.completed"
       [state]="getTaskIcon(task)"
     >
