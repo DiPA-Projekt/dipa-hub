@@ -9,6 +9,8 @@ import {
   Timeline,
   User,
   UserService,
+  PropertyQuestion,
+  TimelinesService,
 } from 'dipa-api-client';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { forkJoin, Subscription } from 'rxjs';
@@ -18,7 +20,6 @@ import { TimelineDataService } from '../../../shared/timelineDataService';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import ProjectTypeEnum = Project.ProjectTypeEnum;
-import { PropertyQuestion, TimelinesService } from 'dipa-api-client';
 import { MatListOption } from '@angular/material/list';
 
 interface ProjectSize {
@@ -121,6 +122,7 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
         // in the future should be emitted only if projectSize field changes
         // this.projectSizeChanged.emit();
         this.timelineDataService.setTimelines();
+        this.timelineDataService.setProjectData(this.data.timeline.id);
       },
       error: null,
       complete: () => void 0,
@@ -191,10 +193,6 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
       this.timelineDataService.setPermanentProjectTasks(this.data.timeline.id);
     });
   }
-
-  // private filterProjectOwner(projectOwnerId: number): User {
-  //   return this.allUsers.find((user) => user.id === projectOwnerId);
-  // }
 
   private setReactiveForm(project: Project, timeline: Timeline): void {
     this.authenticationService.getProjectRoles().then((roles) => {

@@ -6,7 +6,7 @@ import { Observable, Subscription } from 'rxjs';
 import { AuthenticationService } from '../../../authentication.service';
 import { TimelineDataService } from '../../../shared/timelineDataService';
 import { ProjectSettingsDialogComponent } from '../project-settings-dialog/project-settings-dialog.component';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
@@ -58,7 +58,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
             this.timeline = data.find((c) => c.id === Number(this.selectedTimelineId));
             this.setSideNavMenu();
           }
-          return this.projectService.getProjectData(this.selectedTimelineId);
+          this.timelineDataService.setProjectData(this.selectedTimelineId);
+          return this.timelineDataService.getProjectData();
         })
       )
       .subscribe((data: Project) => {
@@ -146,7 +147,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   public openProjectSettingsDialog(project: Project, timeline: Timeline): void {
-    const dialogRef: MatDialogRef<any> = this.dialog.open(ProjectSettingsDialogComponent, {
+    this.dialog.open(ProjectSettingsDialogComponent, {
       data: { project, timeline },
       height: '80vh',
       width: '80vw',
