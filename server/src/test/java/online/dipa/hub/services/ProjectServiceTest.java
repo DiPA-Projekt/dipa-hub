@@ -4,10 +4,9 @@
  import org.junit.jupiter.api.BeforeEach;
  import org.junit.jupiter.api.Nested;
  import org.junit.jupiter.api.Test;
- import org.junit.runner.RunWith;
+
  import org.springframework.beans.factory.annotation.Autowired;
  import org.springframework.boot.test.context.SpringBootTest;
- import org.springframework.boot.test.mock.mockito.MockBean;
  import org.springframework.core.convert.ConversionService;
 
  import online.dipa.hub.api.model.PropertyQuestion;
@@ -16,10 +15,7 @@
  import online.dipa.hub.persistence.entities.ProjectPropertyQuestionTemplateEntity;
  import online.dipa.hub.persistence.repositories.ProjectApproachRepository;
  import online.dipa.hub.persistence.repositories.ProjectPropertyQuestionRepository;
- import online.dipa.hub.persistence.repositories.ProjectPropertyQuestionTemplateRepository;
  import online.dipa.hub.persistence.repositories.ProjectRepository;
- import online.dipa.hub.persistence.repositories.ProjectTaskTemplateRepository;
- import online.dipa.hub.persistence.repositories.UserRepository;
 
  import static org.assertj.core.api.Assertions.*;
  import java.util.ArrayList;
@@ -35,13 +31,7 @@
      private ProjectRepository projectRepository;
 
      @Autowired
-     private ProjectTaskTemplateRepository projectTaskTemplateRepository;
-
-     @Autowired
      private ProjectPropertyQuestionRepository projectPropertyQuestionRepository;
-
-     @Autowired
-     private ProjectPropertyQuestionTemplateRepository projectPropertyQuestionTemplateRepository;
 
      @Autowired
      private ProjectService projectService;
@@ -49,8 +39,6 @@
      @Autowired
      private ConversionService conversionService;
 
-     @Autowired
-     private UserRepository userRepository;
 
      ProjectEntity testProject;
 
