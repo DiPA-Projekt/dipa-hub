@@ -234,6 +234,10 @@ public class ProjectService {
 
                 createNewResults(projectTask, newProjectTask);
             }
+
+            project.setProjectTaskTemplate(projectTaskTemplate);
+            project.setProjectPropertyQuestionTemplate(propertyQuestionTemplate);
+
         }
     }
 
@@ -253,9 +257,7 @@ public class ProjectService {
             }
         });
 
-        project.setProjectPropertyQuestionTemplate(propertyQuestionTemplate);
-
-        return projectPropertyQuestionTemplateRepository.getById(propertyQuestionTemplate.getId());
+        return propertyQuestionTemplate;
     }
 
     private void createNewResults(ProjectTaskEntity oldProjectTask, ProjectTaskEntity newProjectTask) {
