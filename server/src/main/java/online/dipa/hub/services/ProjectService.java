@@ -39,7 +39,6 @@ public class ProjectService {
     private ProjectTaskRepository projectTaskRepository;
 
     @Autowired
-<<<<<<< HEAD
     private PermanentProjectTaskRepository permanentProjectTaskRepository;
 
     @Autowired
@@ -50,12 +49,12 @@ public class ProjectService {
 
     @Autowired
     private NonPermanentProjectTaskTemplateRepository nonPermanentProjectTaskTempRep;
-=======
+
+    @Autowired
     private ProjectPropertyQuestionRepository projectPropertyQuestionRepository;
 
     @Autowired
     private ProjectPropertyQuestionTemplateRepository projectPropertyQuestionTemplateRepository;
->>>>>>> af0bc98c562095fcba32732f45067a894db13ed4
 
     @Autowired
     private FormFieldRepository formFieldRepository;
@@ -316,6 +315,7 @@ public class ProjectService {
             project.setProjectTaskTemplate(projectTaskTemplate);
             project.setPermanentProjectTaskTemplate(permanentProjectTaskTemp);
             project.setNonPermanentProjectTaskTemplate(nonPermanentProjectTaskTemp);
+            project.setProjectPropertyQuestionTemplate(propertyQuestionTemplate);
 
             projectRepository.save(project);
         }
@@ -355,9 +355,7 @@ public class ProjectService {
             }
         });
 
-        project.setProjectPropertyQuestionTemplate(propertyQuestionTemplate);
-
-        return projectPropertyQuestionTemplateRepository.getById(propertyQuestionTemplate.getId());
+        return propertyQuestionTemplate;
     }
 
     private void createNewResults(ProjectTaskEntity oldProjectTask, ProjectTaskEntity newProjectTask) {

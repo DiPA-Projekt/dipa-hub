@@ -36,7 +36,7 @@
              // THEN
              then(projectTaskTemplate)
                      .isNotEmpty().get()
-                     .returns(20L, ProjectRoleEntity::getId);
+                     .returns("Projekteigner", ProjectRoleEntity::getName);
          }
 
          @Test
