@@ -24,6 +24,9 @@ export class RootComponent {
   }
 
   public openProjectDialog(): void {
-    this.dialog.open(ProjectDialogComponent);
+    this.dialog.open(ProjectDialogComponent, {
+      height: '80vh',
+      width: '80vw',
+    });
   }
 }

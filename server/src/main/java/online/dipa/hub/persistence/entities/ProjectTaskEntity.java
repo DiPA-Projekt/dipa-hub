@@ -14,7 +14,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ProjectTaskEntity extends BaseEntity {
 
-    private boolean optional;
     private String explanation;
     private boolean completed;
     private Long sortOrder;
@@ -39,19 +38,20 @@ public class ProjectTaskEntity extends BaseEntity {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private NonPermanentProjectTaskEntity nonPermanentProjectTask;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    private ProjectPropertyQuestionEntity projectPropertyQuestion;
+
     public ProjectTaskEntity() {
         super();
     }
 
     public ProjectTaskEntity(boolean optional, String explanation, boolean completed, Long sortOrder) {
-        this.optional = optional;
         this.explanation = explanation;
         this.completed = completed;
         this.sortOrder = sortOrder;
     }
 
     public ProjectTaskEntity(ProjectTaskEntity projectTaskEntity) {
-        this.optional = projectTaskEntity.getOptional();
         this.explanation = projectTaskEntity.getExplanation();
         this.completed = projectTaskEntity.getCompleted();
         this.sortOrder = projectTaskEntity.getSortOrder();
@@ -65,30 +65,6 @@ public class ProjectTaskEntity extends BaseEntity {
         this.projectTaskTemplate = projectTaskTemplate;
     }
 
-//    public String getTitle() {
-//        return title;
-//    }
-//
-//    public void setTitle(final String title) {
-//        this.title = title;
-//    }
-//
-//    public String getIcon() {
-//        return icon;
-//    }
-//
-//    public void setIcon(final String icon) {
-//        this.icon = icon;
-//    }
-
-    public boolean getOptional() {
-        return optional;
-    }
-
-    public void setOptional(final boolean optional) {
-        this.optional = optional;
-    }
-
     public String getExplanation() {
         return explanation;
     }
@@ -96,22 +72,6 @@ public class ProjectTaskEntity extends BaseEntity {
     public void setExplanation(final String explanation) {
         this.explanation = explanation;
     }
-
-//    public boolean getIsPermanentTask() {
-//        return isPermanentTask;
-//    }
-//
-//    public void setIsPermanentTask(final boolean isPermanentTask) {
-//        this.isPermanentTask = isPermanentTask;
-//    }
-//
-//    public String getTitlePermanentTask() {
-//        return titlePermanentTask;
-//    }
-//
-//    public void setTitlePermanentTask(final String titlePermanentTask) {
-//        this.titlePermanentTask = titlePermanentTask;
-//    }
 
     public boolean getCompleted() {
         return completed;
@@ -159,6 +119,15 @@ public class ProjectTaskEntity extends BaseEntity {
 
     public void setNonPermanentProjectTask(NonPermanentProjectTaskEntity nonPermanentProjectTask) {
         this.nonPermanentProjectTask = nonPermanentProjectTask;
+
+    }
+    
+    public ProjectPropertyQuestionEntity getProjectPropertyQuestion() {
+        return projectPropertyQuestion;
+    }
+
+    public void setProjectPropertyQuestion(final ProjectPropertyQuestionEntity projectPropertyQuestion) {
+        this.projectPropertyQuestion = projectPropertyQuestion;
     }
 
 }

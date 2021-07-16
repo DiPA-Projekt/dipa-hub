@@ -1,96 +1,99 @@
-<h1 mat-dialog-title>Projekt anlegen</h1>
-<div mat-dialog-content>
-  <form [formGroup]="formGroup" (submit)="onSubmit(formGroup)">
-    <div class="col-md-6 col-lg-4 col-xl-2">
-      <mat-form-field>
-        <mat-label>Name</mat-label>
-        <input matInput formControlName="name" />
-      </mat-form-field>
+<div style="display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0px; max-height: 100%">
+  <div mat-dialog-title>
+    <div style="display: flex; justify-content: space-between">
+      <div>Projekt anlegen</div>
+      <div>
+        <button mat-button class="roundedButton" (click)="onCloseClick()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
     </div>
-    <div class="col-md-6 col-lg-4 col-xl-2">
-      <mat-form-field>
-        <mat-placeholder>Projekteigner</mat-placeholder>
-        <mat-select formControlName="projectOwner">
-          <mat-option *ngFor="let user of allUsers" [value]="user.id">
-            {{ user.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div class="col-md-6 col-lg-4 col-xl-2">
-      <mat-form-field>
-        <mat-label>Vorhabensart</mat-label>
-        <mat-select formControlName="operationTypeId" [(value)]="operationTypeId" required>
-          <mat-option *ngFor="let operationType of operationTypesList" [value]="operationType.id">
-            {{ operationType.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div class="col-md-6 col-lg-4 col-xl-2">
-      <mat-form-field>
-        <mat-label>Vorgehensweise</mat-label>
-        <mat-select formControlName="projectApproachId" required>
-          <mat-option
-            *ngFor="let projectApproach of filterProjectApproaches(operationTypeId)"
-            [value]="projectApproach.id"
-          >
-            {{ projectApproach.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div class="col-md-6 col-lg-4 col-xl-2">
-      <mat-form-field>
-        <mat-label>Projekttyp</mat-label>
-        <mat-select formControlName="projectType" required>
-          <mat-option *ngFor="let projectType of projectTypesList" [value]="projectType">
-            {{ projectType }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div class="col-md-6 col-lg-4 col-xl-2">
-      <mat-form-field>
-        <mat-label>Projektgröße</mat-label>
-        <mat-select #projectSizeSelect formControlName="projectSize" required>
-          <mat-select-trigger>{{ displayProjectSize(projectSizeSelect.value) }}</mat-select-trigger>
-          <mat-option *ngFor="let size of sizes" [value]="size.value" class="multi-line-option">
-            <h4 mat-line>{{ size.display }}</h4>
-            <p mat-line>{{ size.description }}</p>
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div class="col-md-6 col-lg-4 col-xl-2">
-      <mat-form-field appearance="fill">
-        <mat-label>Start Datum</mat-label>
-        <input
-          matInput
-          placeholder="Start date"
-          formControlName="start"
-          required
-          type="date"
-          [max]="formGroup.get('end').value"
-        />
-      </mat-form-field>
-    </div>
-    <div class="col-md-6 col-lg-4 col-xl-2">
-      <mat-form-field appearance="fill">
-        <mat-label>End Datum</mat-label>
-        <input
-          matInput
-          placeholder="End date"
-          formControlName="end"
-          required
-          type="date"
-          [min]="formGroup.get('start').value"
-        />
-      </mat-form-field>
-    </div>
-  </form>
-</div>
-<div mat-dialog-actions class="justify-content-end">
-  <button mat-raised-button color="primary" type="submit" (click)="onSubmit(formGroup)">Anlegen</button>
-  <button mat-button (click)="onCloseClick()">Abbrechen</button>
+  </div>
+  <div mat-dialog-content>
+    <form [formGroup]="formGroup" (submit)="onSubmit(formGroup)">
+      <div fxLayout="row wrap" fxLayoutGap="16px grid">
+        <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="33%">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" cdkFocusInitial />
+        </mat-form-field>
+        <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="50%" fxFlex.lg="33%">
+          <mat-label>Start Datum</mat-label>
+          <input
+            matInput
+            placeholder="Start date"
+            formControlName="start"
+            required
+            type="date"
+            [max]="formGroup.get('end').value"
+          />
+        </mat-form-field>
+
+        <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="50%" fxFlex.lg="33%">
+          <mat-label>End Datum</mat-label>
+          <input
+            matInput
+            placeholder="End date"
+            formControlName="end"
+            required
+            type="date"
+            [min]="formGroup.get('start').value"
+          />
+        </mat-form-field>
+      </div>
+      <div fxLayout="row wrap" fxLayoutGap="16px grid">
+        <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="33%" fxFlex.lg="33%">
+          <mat-label>Projekttyp</mat-label>
+          <mat-select formControlName="projectType" required>
+            <mat-option *ngFor="let projectType of projectTypesList" [value]="projectType">
+              {{ projectType }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="33%" fxFlex.lg="33%">
+          <mat-label>Vorhabensart</mat-label>
+          <mat-select formControlName="operationTypeId" [(value)]="operationTypeId" required>
+            <mat-option *ngFor="let operationType of operationTypesList" [value]="operationType.id">
+              {{ operationType.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="33%" fxFlex.lg="33%">
+          <mat-label>Vorgehensweise</mat-label>
+          <mat-select formControlName="projectApproachId" required>
+            <mat-option
+              *ngFor="let projectApproach of filterProjectApproaches(operationTypeId)"
+              [value]="projectApproach.id"
+            >
+              {{ projectApproach.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div fxLayout="row wrap" fxLayoutGap="16px grid">
+        <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="50%" fxFlex.lg="50%">
+          <mat-placeholder>Projekteigner</mat-placeholder>
+          <mat-select formControlName="projectOwner">
+            <mat-option *ngFor="let user of allUsers" [value]="user.id">
+              {{ user.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="50%" fxFlex.lg="50%">
+          <mat-label>Projektgröße</mat-label>
+          <mat-select #projectSizeSelect formControlName="projectSize" required>
+            <mat-select-trigger>{{ displayProjectSize(projectSizeSelect.value) }}</mat-select-trigger>
+            <mat-option *ngFor="let size of sizes" [value]="size.value" class="multi-line-option">
+              <h4 mat-line>{{ size.display }}</h4>
+              <p mat-line>{{ size.description }}</p>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+  <div mat-dialog-actions class="justify-content-end">
+    <button mat-raised-button color="primary" type="submit" (click)="onSubmit(formGroup)">Anlegen</button>
+    <button mat-button (click)="onCloseClick()">Abbrechen</button>
+  </div>
 </div>

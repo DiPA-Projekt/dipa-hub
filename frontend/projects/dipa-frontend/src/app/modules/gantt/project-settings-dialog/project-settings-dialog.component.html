@@ -1,0 +1,234 @@
+<div style="display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; max-height: 100%">
+  <div mat-dialog-title>
+    <div style="display: flex; justify-content: space-between">
+      <div>Projekteigenschaften</div>
+      <div>
+        <button mat-button class="roundedButton" [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button
+            *ngIf="!data.project.archived"
+            mat-menu-item
+            title="Projekt archivieren"
+            aria-label="Projekt archivieren"
+            (click)="archiveProject()"
+          >
+            <mat-icon>archive</mat-icon>
+            Projekt archivieren
+          </button>
+          <button
+            *ngIf="data.project.archived"
+            mat-menu-item
+            title="Projekt aktivieren"
+            aria-label="Projekt aktivieren"
+            (click)="activateProject()"
+          >
+            <mat-icon>undo</mat-icon>
+            Projekt aktivieren
+          </button>
+        </mat-menu>
+        <button mat-button class="roundedButton" (click)="onCloseClick()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div mat-dialog-content fxLayout="row nowrap">
+    <div fxFlex="50%" style="overflow: hidden auto; padding: 0 16px">
+      <h2 class="mat-card-title">{{ data.project.name }}</h2>
+      <div>
+        <mat-selection-list color="primary" (selectionChange)="selectionChange($event.options)">
+          <mat-list-option
+            [disabled]="isNotEditable"
+            *ngFor="let question of propertyQuestions"
+            [selected]="question.selected"
+            [value]="question"
+          >
+            <div>
+              <span>{{ question.question }}</span>
+            </div>
+          </mat-list-option>
+        </mat-selection-list>
+      </div>
+    </div>
+    <div fxFlex="50%" style="overflow: hidden auto; padding: 0 16px 16px 16px">
+      <div fxLayout="row wrap" fxLayoutGap="16px grid">
+        <div fxFlex="50%" style="padding: 0 16px 16px 16px">
+          <button
+            *ngIf="!data.project.archived"
+            mat-stroked-button
+            title="Projekt archivieren"
+            aria-label="Projekt archivieren"
+            (click)="archiveProject()"
+          >
+            <mat-icon>archive</mat-icon>
+            Projekt archivieren
+          </button>
+          <button
+            *ngIf="data.project.archived"
+            mat-stroked-button
+            title="Projekt aktivieren"
+            aria-label="Projekt aktivieren"
+            (click)="activateProject()"
+          >
+            <mat-icon>undo</mat-icon>
+            Projekt aktivieren
+          </button>
+        </div>
+      </div>
+      <div fxLayout="row wrap" fxLayoutGap="16px grid" style="padding-top: 16px">
+        <div>
+          <mat-accordion class="example-headers-align" multi>
+            <form [formGroup]="formGroupTimelineData">
+              <mat-expansion-panel expanded="true">
+                <mat-expansion-panel-header>
+                  <mat-panel-title> Laufzeit </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <div fxLayout="row wrap" fxLayoutGap="16px grid">
+                  <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="50%" fxFlex.lg="50%">
+                    <mat-label>Start Datum</mat-label>
+                    <input
+                      matInput
+                      placeholder="Start date"
+                      formControlName="start"
+                      required
+                      type="date"
+                      [max]="formGroupTimelineData.get('end').value"
+                      (change)="onSubmitTimelineData(formGroupTimelineData)"
+                    />
+                  </mat-form-field>
+                  <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="50%" fxFlex.lg="50%">
+                    <mat-label>End Datum</mat-label>
+                    <input
+                      matInput
+                      placeholder="End date"
+                      formControlName="end"
+                      required
+                      type="date"
+                      [min]="formGroupTimelineData.get('start').value"
+                      (change)="onSubmitTimelineData(formGroupTimelineData)"
+                    />
+                  </mat-form-field>
+                </div>
+              </mat-expansion-panel>
+              <mat-expansion-panel expanded="true">
+                <mat-expansion-panel-header>
+                  <mat-panel-title> Typ </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <div fxLayout="row wrap" fxLayoutGap="16px grid">
+                  <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
+                    <mat-label>Projekttyp</mat-label>
+                    <mat-select
+                      formControlName="projectType"
+                      [disabled]="isNotEditable"
+                      (selectionChange)="onSubmitTimelineData(formGroupTimelineData)"
+                      required
+                    >
+                      <mat-option *ngFor="let projectType of projectTypesList" [value]="projectType">
+                        {{ projectType }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
+                    <mat-label>Vorhabensart</mat-label>
+                    <mat-select
+                      formControlName="operationTypeId"
+                      [(value)]="operationTypeId"
+                      [disabled]="isNotEditable"
+                      (selectionChange)="onSubmitTimelineData(formGroupTimelineData)"
+                      required
+                    >
+                      <mat-option *ngFor="let operationType of operationTypesList" [value]="operationType.id">
+                        {{ operationType.name }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
+                    <mat-label>Vorgehensweise</mat-label>
+                    <mat-select
+                      formControlName="projectApproachId"
+                      [disabled]="isNotEditable"
+                      (selectionChange)="onSubmitTimelineData(formGroupTimelineData)"
+                      required
+                    >
+                      <mat-option
+                        *ngFor="let projectApproach of filterProjectApproaches(operationTypeId)"
+                        [value]="projectApproach.id"
+                      >
+                        {{ projectApproach.name }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </mat-expansion-panel>
+            </form>
+            <mat-expansion-panel expanded="true">
+              <mat-expansion-panel-header>
+                <mat-panel-title> Kopfdaten </mat-panel-title>
+              </mat-expansion-panel-header>
+              <form [formGroup]="formGroupProjectData">
+                <div fxLayout="row wrap" fxLayoutGap="16px grid">
+                  <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="50%" fxFlex.lg="33%">
+                    <mat-label>AKZ</mat-label>
+                    <label>
+                      <input
+                        matInput
+                        maxlength="255"
+                        formControlName="akz"
+                        (change)="onSubmitProjectData(formGroupProjectData)"
+                      />
+                    </label>
+                  </mat-form-field>
+
+                  <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="50%" fxFlex.lg="33%">
+                    <mat-label>Projektgröße</mat-label>
+                    <mat-select
+                      #projectSizeSelect
+                      formControlName="projectSize"
+                      [disabled]="isNotEditable"
+                      (selectionChange)="onSubmitProjectData(formGroupProjectData)"
+                      required
+                    >
+                      <mat-select-trigger>{{ displayProjectSize(projectSizeSelect.value) }}</mat-select-trigger>
+                      <mat-option *ngFor="let size of sizes" [value]="size.value" class="multi-line-option">
+                        <h4 mat-line>{{ size.display }}</h4>
+                        <p mat-line>{{ size.description }}</p>
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="50%" fxFlex.lg="33%">
+                    <mat-label>Auftraggeber</mat-label>
+                    <label>
+                      <input
+                        matInput
+                        maxlength="255"
+                        formControlName="client"
+                        (change)="onSubmitProjectData(formGroupProjectData)"
+                      />
+                    </label>
+                  </mat-form-field>
+
+                  <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="50%" fxFlex.lg="33%">
+                    <mat-label>Referat</mat-label>
+                    <label>
+                      <input
+                        matInput
+                        maxlength="255"
+                        formControlName="department"
+                        (change)="onSubmitProjectData(formGroupProjectData)"
+                      />
+                    </label>
+                  </mat-form-field>
+                </div>
+              </form>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

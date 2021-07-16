@@ -113,8 +113,7 @@ export class ProjectTaskFormComponent implements OnInit {
   private setReactiveForm(data: ProjectTask): void {
     this.formGroup = this.fb.group({
       id: [data?.id],
-      // title: [data?.title],
-      optional: [data?.optional],
+      title: [data?.title],
       explanation: [data?.explanation],
       completed: [data?.completed],
       entries: this.getFormFieldsArray(data?.entries),

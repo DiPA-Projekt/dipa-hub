@@ -14,7 +14,6 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -76,6 +75,18 @@ public class TimelineService {
                                  .collect(Collectors.toList());
     }
 
+    public List<Timeline> getActiveTimelines() {
+        List<Long> projectIds = userInformationService.getProjectIdList();
+
+        return projectRepository.findAll()
+                                .stream()
+                                .map(p -> conversionService.convert(p, Timeline.class))
+                                .filter(Objects::nonNull)
+                                .filter(t -> projectIds.contains(t.getId()))
+                                .filter(t -> !t.getArchived())
+                                .collect(Collectors.toList());
+    }
+
     public List<Timeline> getArchivedTimelines() {
         List<Long> projectIds = userInformationService.getProjectIdList();
 
@@ -89,7 +100,6 @@ public class TimelineService {
 
 
     public ProjectEntity getProject(final Long timelineId) {
-             
         return projectRepository.getById(timelineId);
 
     }

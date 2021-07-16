@@ -64,7 +64,8 @@ export class ProjectDataComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   public ngOnInit(): void {
-    this.projectDataSubscription = this.projectService.getProjectData(this.timelineId).subscribe({
+    this.timelineDataService.setProjectData(this.timelineId);
+    this.projectDataSubscription = this.timelineDataService.getProjectData().subscribe({
       next: (data: Project) => {
         this.setReactiveForm(data);
       },
@@ -75,7 +76,8 @@ export class ProjectDataComponent implements OnInit, OnDestroy, OnChanges {
 
   public ngOnChanges(changes: SimpleChanges): void {
     if ('timelineId' in changes) {
-      this.projectDataSubscription = this.projectService.getProjectData(this.timelineId).subscribe({
+      this.timelineDataService.setProjectData(this.timelineId);
+      this.projectDataSubscription = this.timelineDataService.getProjectData().subscribe({
         next: (data: Project) => {
           this.setReactiveForm(data);
         },
@@ -100,6 +102,7 @@ export class ProjectDataComponent implements OnInit, OnDestroy, OnChanges {
         // in the future should be emitted only if projectSize field changes
         this.projectSizeChanged.emit();
         this.timelineDataService.setTimelines();
+        this.timelineDataService.setProjectData(this.timelineId);
       },
       error: null,
       complete: () => void 0,

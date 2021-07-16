@@ -66,12 +66,10 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
 
     this.timelinesSubscription = this.activatedRoute.parent.parent.params
       .pipe(
-        switchMap(
-          (params: Params): Observable<Timeline[]> => {
-            this.selectedTimelineId = parseInt(params.id, 10);
-            return this.timelinesService.getTimelines();
-          }
-        )
+        switchMap((params: Params): Observable<Timeline[]> => {
+          this.selectedTimelineId = parseInt(params.id, 10);
+          return this.timelinesService.getTimelines();
+        })
       )
       .subscribe((data: Timeline[]) => {
         this.timelineData = data;
