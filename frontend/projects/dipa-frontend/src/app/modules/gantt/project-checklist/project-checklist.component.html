@@ -7,7 +7,27 @@
       [state]="getTaskIcon(task)"
     >
       <ng-template matStepLabel>
-        <div class="ellipsis" title="{{ getTaskTitle(task) }}">{{ getTaskTitle(task) }}</div>
+        <div style="display: flex">
+          <div class="ellipsis" title="{{ getTaskTitle(task) }}">{{ getTaskTitle(task) }}</div>
+          <div *ngIf="task.projectPropertyQuestion != null" (click)="$event.stopPropagation()">
+            <mat-icon color="primary" style="font-size: 20px; margin-left: 0.5em" [matMenuTriggerFor]="menu"
+              >info</mat-icon
+            >
+            <mat-menu #menu="matMenu">
+              <mat-list style="padding-top: 0">
+                <mat-list-item
+                  (click)="$event.stopPropagation()"
+                  style="font-weight: 500; font-size: 14px; background-color: rgba(0, 0, 0, 0.05)"
+                >
+                  Zugehöriges Projektmerkmal
+                </mat-list-item>
+                <mat-list-item (click)="$event.stopPropagation()" style="font-size: 14px"
+                  >{{ task.projectPropertyQuestion.question }}
+                </mat-list-item>
+              </mat-list>
+            </mat-menu>
+          </div>
+        </div>
         <div
           class="ellipsis"
           style="font-weight: 500; font-size: 12px; color: rgba(0, 0, 0, 0.54)"
