@@ -1,5 +1,6 @@
+import { ProjectTask } from './../../../../dipa-api-client/src/model/projectTask';
 import { Injectable } from '@angular/core';
-import { Timeline, TimelinesService, UserService, User } from 'dipa-api-client';
+import { Timeline, TimelinesService, UserService, User, ProjectService, Project } from 'dipa-api-client';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
@@ -7,9 +8,16 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class TimelineDataService {
   public timelines: BehaviorSubject<Timeline[]> = new BehaviorSubject<Timeline[]>(null);
+  public projectData: BehaviorSubject<Project> = new BehaviorSubject<Project>(null);
   public roles: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  public projectTasks: BehaviorSubject<ProjectTask[]> = new BehaviorSubject<ProjectTask[]>(null);
+  public permanentProjectTasks: BehaviorSubject<ProjectTask[]> = new BehaviorSubject<ProjectTask[]>(null);
 
-  public constructor(private timelinesService: TimelinesService, private userService: UserService) {
+  public constructor(
+    private timelinesService: TimelinesService,
+    private userService: UserService,
+    private projectService: ProjectService
+  ) {
     this.setTimelines();
   }
 
@@ -34,6 +42,36 @@ export class TimelineDataService {
   public setRoles(timelineId: number): void {
     this.userService.getCurrentUser().subscribe((data: User) => {
       this.roles.next(this.getCurrentUserProjectRoles(data, timelineId));
+    });
+  }
+
+  public getProjectData(): Observable<Project> {
+    return this.projectData;
+  }
+
+  public setProjectData(timelineId: number): void {
+    this.projectService.getProjectData(timelineId).subscribe((data: Project) => {
+      this.projectData.next(data);
+    });
+  }
+
+  public getProjectTasks(): Observable<ProjectTask[]> {
+    return this.projectTasks;
+  }
+
+  public setProjectTasks(timelineId: number): void {
+    this.projectService.getProjectTasks(timelineId).subscribe((data: ProjectTask[]) => {
+      this.projectTasks.next(data);
+    });
+  }
+
+  public getPermanentProjectTasks(): Observable<ProjectTask[]> {
+    return this.permanentProjectTasks;
+  }
+
+  public setPermanentProjectTasks(timelineId: number): void {
+    this.projectService.getProjectPermanentTasks(timelineId).subscribe((data: ProjectTask[]) => {
+      this.permanentProjectTasks.next(data);
     });
   }
 

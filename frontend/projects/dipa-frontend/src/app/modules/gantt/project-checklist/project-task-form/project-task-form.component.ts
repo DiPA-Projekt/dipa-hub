@@ -114,7 +114,6 @@ export class ProjectTaskFormComponent implements OnInit {
     this.formGroup = this.fb.group({
       id: [data?.id],
       title: [data?.title],
-      optional: [data?.optional],
       explanation: [data?.explanation],
       completed: [data?.completed],
       entries: this.getFormFieldsArray(data?.entries),

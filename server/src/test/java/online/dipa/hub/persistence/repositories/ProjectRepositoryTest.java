@@ -30,7 +30,7 @@
      private void saveProject(String name, boolean archived) {
          ProjectEntity project = new ProjectEntity(name,
                  "SMALL", "internes Projekt",OffsetDateTime.now(), OffsetDateTime.now().plusDays(30), archived);
-         projectApproachRepository.findById(2L).ifPresent(project::setProjectApproach);
+         projectApproachRepository.findAll().stream().findFirst().ifPresent(project::setProjectApproach);
          projectRepository.save(project);
          projectsId.add(project.getId());
      }

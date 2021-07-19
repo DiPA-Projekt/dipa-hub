@@ -20,6 +20,7 @@ import { TimelineDataService } from '../app/shared/timelineDataService';
 import { registerLocaleData, DatePipe } from '@angular/common';
 import localeDe from '@angular/common/locales/de';
 import localeDeExtra from '@angular/common/locales/extra/de';
+import { FlexModule } from '@angular/flex-layout';
 
 registerLocaleData(localeDe, 'de-DE', localeDeExtra);
 @NgModule({
@@ -48,6 +49,7 @@ registerLocaleData(localeDe, 'de-DE', localeDeExtra);
         sendAccessToken: true,
       },
     }),
+    FlexModule,
   ],
   providers: [NavService, TimelineDataService, DatePipe, { provide: LOCALE_ID, useValue: 'de-DE' }],
   bootstrap: [AppComponent],
