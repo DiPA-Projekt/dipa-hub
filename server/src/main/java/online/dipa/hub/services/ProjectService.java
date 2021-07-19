@@ -252,6 +252,7 @@ public class ProjectService {
 
                 ProjectPropertyQuestionEntity newPropertyQuestion = new ProjectPropertyQuestionEntity(projectPropertyQuestion);
                 newPropertyQuestion.setProjectPropertyQuestionTemplate(propertyQuestionTemplate);
+                propertyQuestionTemplate.getProjectPropertyQuestions().add(newPropertyQuestion);
                 projectPropertyQuestionRepository.save(newPropertyQuestion);
 
             }

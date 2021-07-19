@@ -62,7 +62,7 @@
              assertThat(template)
                      .returns("Property Question Template Test Project", ProjectPropertyQuestionTemplateEntity::getName)
                      .returns(testProject, ProjectPropertyQuestionTemplateEntity::getProject);
-             assertThat(projectPropertyQuestionRepository.findByTemplate(template))
+             assertThat(template.getProjectPropertyQuestions())
                      .hasSize(2);
 
          }
@@ -82,7 +82,7 @@
          void should_return_false_as_selected_value() {
              // GIVEN
              ProjectPropertyQuestionEntity propertyQuestionEntity = new ArrayList<>(
-                     projectPropertyQuestionRepository.findByTemplate(template)).get(0);
+                     template.getProjectPropertyQuestions()).get(0);
              PropertyQuestion propertyQuestionAPI = conversionService.convert(propertyQuestionEntity, PropertyQuestion.class);
              assert propertyQuestionAPI != null;
              propertyQuestionAPI.setSelected(false);
@@ -100,7 +100,7 @@
          void should_return_true_as_selected_value() {
              // GIVEN
              ProjectPropertyQuestionEntity propertyQuestionEntity = new ArrayList<>(
-                     projectPropertyQuestionRepository.findByTemplate(template)).get(0);
+                     template.getProjectPropertyQuestions()).get(0);
              PropertyQuestion propertyQuestionAPI = conversionService.convert(propertyQuestionEntity, PropertyQuestion.class);
              assert propertyQuestionAPI != null;
              propertyQuestionAPI.setSelected(false);
