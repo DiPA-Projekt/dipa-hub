@@ -41,13 +41,11 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
   public propertyQuestions: PropertyQuestion[] = [];
 
   public operationTypeId: number;
-  public startDate = new Date();
-  public endDate = new Date(new Date().setMonth(new Date().getMonth() + 6));
+
   public userData: User;
   public allUsers: User[];
   public formGroupProjectData: FormGroup;
   public formGroupTimelineData: FormGroup;
-  public inputNotation: boolean;
 
   public userHasProjectEditRights = false;
   public isNotEditable = true;
@@ -107,8 +105,6 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
       this.projectApproachesList = projectApproachesList;
       this.propertyQuestions = propertyQuestions;
     });
-
-    this.inputNotation = false;
   }
   public ngOnDestroy(): void {
     this.dataSubscription?.unsubscribe();
@@ -209,7 +205,7 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
         id: new FormControl({ value: project?.id, disabled: !this.userHasProjectEditRights }),
         name: new FormControl(
           { value: project?.name, disabled: !this.userHasProjectEditRights },
-          { validators: [Validators.required], updateOn: 'blur' }
+          { validators: [Validators.required] }
         ),
         projectOwner: null,
         akz: new FormControl({ value: project?.akz, disabled: this.isNotEditable }),
@@ -235,27 +231,24 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
         defaultTimeline: new FormControl({ value: timeline.defaultTimeline, disabled: true }),
         name: new FormControl(
           { value: project?.name, disabled: !this.userHasProjectEditRights },
-          { validators: [Validators.required], updateOn: 'blur' }
+          { validators: [Validators.required] }
         ),
         operationTypeId: new FormControl(
           { value: this.data.timeline.operationTypeId, disabled: this.isNotEditable },
           {
             validators: [Validators.required],
-            updateOn: 'blur',
           }
         ),
         projectApproachId: new FormControl(
           { value: timeline.projectApproachId, disabled: this.isNotEditable },
           {
             validators: [Validators.required],
-            updateOn: 'blur',
           }
         ),
         projectType: new FormControl(
           { value: timeline.projectType, disabled: this.isNotEditable },
           {
             validators: [Validators.required],
-            updateOn: 'blur',
           }
         ),
       });
