@@ -187,11 +187,15 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
   }
 
   public selectionChange(event: MatListOption): void {
-    event[0].value.selected = event[0].selected;
-    this.projectService.updateProjectPropertyQuestion(this.data.timeline.id, event[0].value).subscribe((d) => {
-      this.timelineDataService.setProjectTasks(this.data.timeline.id);
-      this.timelineDataService.setPermanentProjectTasks(this.data.timeline.id);
-    });
+    const matListOptionElement = event[0] as MatListOption;
+    const propertiesQuestionElement = matListOptionElement.value as PropertyQuestion;
+    propertiesQuestionElement.selected = matListOptionElement.selected;
+    this.projectService
+      .updateProjectPropertyQuestion(this.data.timeline.id, propertiesQuestionElement)
+      .subscribe((d) => {
+        this.timelineDataService.setProjectTasks(this.data.timeline.id);
+        this.timelineDataService.setPermanentProjectTasks(this.data.timeline.id);
+      });
   }
 
   private setReactiveForm(project: Project, timeline: Timeline): void {

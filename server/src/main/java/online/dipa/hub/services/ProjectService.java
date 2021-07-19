@@ -193,7 +193,7 @@ public class ProjectService {
                                             .filter(Objects::nonNull)
                                             .filter(task -> !isPermanentTask || task.getIsPermanentTask()
                                                                                     .equals(true))
-                                            .filter(task -> task.getProjectPropertyQuestion() != null ? task.getProjectPropertyQuestion().getSelected() : true)
+                                            .filter(task -> task.getProjectPropertyQuestion() == null || task.getProjectPropertyQuestion().getSelected())
                                             .sorted(Comparator.comparing(ProjectTask::getSortOrder))
                                             .collect(Collectors.toList()));
             }
