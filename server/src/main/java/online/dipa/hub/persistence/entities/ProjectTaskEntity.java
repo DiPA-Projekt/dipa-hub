@@ -121,7 +121,7 @@ public class ProjectTaskEntity extends BaseEntity {
         this.nonPermanentProjectTask = nonPermanentProjectTask;
 
     }
-    
+
     public ProjectPropertyQuestionEntity getProjectPropertyQuestion() {
         return projectPropertyQuestion;
     }

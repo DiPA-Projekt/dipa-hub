@@ -205,7 +205,9 @@ public class ProjectService {
                                             .stream()
                                             .map(p -> conversionService.convert(p, ProjectTask.class))
                                             .filter(Objects::nonNull)
-                                            .filter(task -> task.getProjectPropertyQuestion() != null ? task.getProjectPropertyQuestion().getSelected() : true)
+                                            .filter(task -> !isPermanentTask || task.getIsPermanentTask()
+                                                                                    .equals(true))
+                                            .filter(task -> task.getProjectPropertyQuestion() == null || task.getProjectPropertyQuestion().getSelected())
                                             .sorted(Comparator.comparing(ProjectTask::getSortOrder))
                                             .collect(Collectors.toList()));
             }
@@ -297,7 +299,6 @@ public class ProjectService {
                             .findByTemplateAndSortOrder(propertyQuestionTemplate, projectTask.getProjectPropertyQuestion().getSortOrder())
                             .ifPresent(newProjectTask::setProjectPropertyQuestion);
                 }
-
                 projectTaskRepository.save(newProjectTask);
 
                 projectTaskProject.getProjectTasks().add(newProjectTask);
@@ -358,6 +359,7 @@ public class ProjectService {
 
                 ProjectPropertyQuestionEntity newPropertyQuestion = new ProjectPropertyQuestionEntity(projectPropertyQuestion);
                 newPropertyQuestion.setProjectPropertyQuestionTemplate(propertyQuestionTemplate);
+                propertyQuestionTemplate.getProjectPropertyQuestions().add(newPropertyQuestion);
                 projectPropertyQuestionRepository.save(newPropertyQuestion);
 
             }

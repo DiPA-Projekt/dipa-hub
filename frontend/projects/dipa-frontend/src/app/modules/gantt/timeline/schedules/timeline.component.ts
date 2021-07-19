@@ -21,6 +21,7 @@ import { ChartComponent } from '../../chart/chart.component';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import Utils from '../../../../shared/utils';
 import { DatePipe } from '@angular/common';
+import { TimelineDataService } from '../../../../shared/timelineDataService';
 
 @Component({
   selector: 'app-timeline',
@@ -68,11 +69,13 @@ export class TimelineComponent implements OnInit, OnDestroy {
   private periodStartDateSubscription: Subscription;
   private periodEndDateSubscription: Subscription;
 
+  private timelineDataSubscription: Subscription;
   private timelinesSubscription: Subscription;
   private projectTasksSubscription: Subscription;
 
   public constructor(
     public ganttControlsService: GanttControlsService,
+    private timelineDataService: TimelineDataService,
     private timelinesService: TimelinesService,
     private milestonesService: MilestonesService,
     private tasksService: TasksService,
@@ -85,6 +88,10 @@ export class TimelineComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.timelinesSubscription = this.activatedRoute.parent.parent.params.subscribe((params: Params) => {
       this.selectedTimelineId = Number(params.id);
+      this.setData();
+    });
+
+    this.timelineDataSubscription = this.timelineDataService.getTimelines().subscribe(() => {
       this.setData();
     });
 
@@ -127,6 +134,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
+    this.timelineDataSubscription?.unsubscribe();
     this.timelinesSubscription?.unsubscribe();
     this.periodStartDateSubscription?.unsubscribe();
     this.periodEndDateSubscription?.unsubscribe();
