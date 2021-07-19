@@ -46,6 +46,10 @@ public class ProjectEntity extends BaseEntity {
 
     @OneToOne(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private ProjectPropertyQuestionTemplateEntity projectPropertyQuestionTemplate;
+
+    @OneToOne(mappedBy = "project")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private ProjectRoleTemplateEntity projectRoleTemplate;
 
     private String projectType;
@@ -136,6 +140,14 @@ public class ProjectEntity extends BaseEntity {
 
     public void setIncrements(final Set<IncrementEntity> increments) {
         this.increments = increments;
+    }
+
+    public ProjectPropertyQuestionTemplateEntity getProjectPropertyQuestionTemplate() {
+        return projectPropertyQuestionTemplate;
+    }
+
+    public void setProjectPropertyQuestionTemplate(final ProjectPropertyQuestionTemplateEntity projectPropertyQuestionTemplate) {
+        this.projectPropertyQuestionTemplate = projectPropertyQuestionTemplate;
     }
 
     public String getProjectSize() {

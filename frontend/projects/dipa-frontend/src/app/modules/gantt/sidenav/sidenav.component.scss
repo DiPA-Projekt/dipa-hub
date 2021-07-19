@@ -20,3 +20,9 @@
 .project-info {
   display: inline-block;
 }
+
+.roundedButton {
+  border-radius: 50%;
+  min-width: 36px;
+  padding: 0;
+}

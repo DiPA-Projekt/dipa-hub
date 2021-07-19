@@ -21,7 +21,6 @@ public class ProjectTaskEntity extends BaseEntity {
     private String title;
 
     private String icon;
-    private boolean optional;
     private String explanation;
     private boolean isPermanentTask;
     private String titlePermanentTask;
@@ -40,13 +39,15 @@ public class ProjectTaskEntity extends BaseEntity {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<ResultEntity> results = new HashSet<>();
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    private ProjectPropertyQuestionEntity projectPropertyQuestion;
+
     public ProjectTaskEntity() {
         super();
     }
 
     public ProjectTaskEntity(ProjectTaskEntity projectTaskEntity) {
         this.title = projectTaskEntity.getTitle();
-        this.optional = projectTaskEntity.getOptional();
         this.icon = projectTaskEntity.getIcon();
         this.explanation = projectTaskEntity.getExplanation();
         this.isPermanentTask = projectTaskEntity.getIsPermanentTask();
@@ -77,14 +78,6 @@ public class ProjectTaskEntity extends BaseEntity {
 
     public void setIcon(final String icon) {
         this.icon = icon;
-    }
-
-    public boolean getOptional() {
-        return optional;
-    }
-
-    public void setOptional(final boolean optional) {
-        this.optional = optional;
     }
 
     public String getExplanation() {
@@ -141,6 +134,14 @@ public class ProjectTaskEntity extends BaseEntity {
 
     public void setSortOrder(Long sortOrder) {
         this.sortOrder = sortOrder;
+    }
+
+    public ProjectPropertyQuestionEntity getProjectPropertyQuestion() {
+        return projectPropertyQuestion;
+    }
+
+    public void setProjectPropertyQuestion(final ProjectPropertyQuestionEntity projectPropertyQuestion) {
+        this.projectPropertyQuestion = projectPropertyQuestion;
     }
 
 }

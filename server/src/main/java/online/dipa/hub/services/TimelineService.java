@@ -75,6 +75,18 @@ public class TimelineService {
                                  .collect(Collectors.toList());
     }
 
+    public List<Timeline> getActiveTimelines() {
+        List<Long> projectIds = userInformationService.getProjectIdList();
+
+        return projectRepository.findAll()
+                                .stream()
+                                .map(p -> conversionService.convert(p, Timeline.class))
+                                .filter(Objects::nonNull)
+                                .filter(t -> projectIds.contains(t.getId()))
+                                .filter(t -> !t.getArchived())
+                                .collect(Collectors.toList());
+    }
+
     public List<Timeline> getArchivedTimelines() {
         List<Long> projectIds = userInformationService.getProjectIdList();
 

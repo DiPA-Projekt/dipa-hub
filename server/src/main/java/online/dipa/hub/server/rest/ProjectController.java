@@ -68,4 +68,15 @@ public class ProjectController implements ProjectApi {
         return ResponseEntity.ok(projectService.getProjectUsers(projectId));
     }
 
+    @Override
+    public ResponseEntity<List<PropertyQuestion>> getProjectPropertyQuestions(final Long projectId) {
+        return ResponseEntity.ok(projectService.getProjectPropertyQuestions(projectId));
+    }
+
+    @Override
+    public ResponseEntity<Void> updateProjectPropertyQuestion(final Long projectId, final PropertyQuestion propertyQuestion) {
+        projectService.updateProjectPropertyQuestion(propertyQuestion);
+        return ResponseEntity.noContent().build();
+    }
+
 }
