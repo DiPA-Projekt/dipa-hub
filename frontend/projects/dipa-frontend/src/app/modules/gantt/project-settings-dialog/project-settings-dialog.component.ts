@@ -224,11 +224,12 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
         archived: [project?.archived],
       });
       this.formGroupTimelineData = this.fb.group({
+        archived: new FormControl({ value: timeline.archived, disabled: !this.userHasProjectEditRights }),
         id: new FormControl({ value: timeline?.id, disabled: !this.userHasProjectEditRights }),
         start: new FormControl({ value: timeline.start, disabled: !this.userHasProjectEditRights }),
         end: new FormControl({ value: timeline.end, disabled: !this.userHasProjectEditRights }),
-        increment: new FormControl({ value: timeline.increment, disabled: true }),
-        defaultTimeline: new FormControl({ value: timeline.defaultTimeline, disabled: true }),
+        increment: new FormControl({ value: timeline.increment, disabled: !this.userHasProjectEditRights }),
+        defaultTimeline: new FormControl({ value: timeline.defaultTimeline, disabled: !this.userHasProjectEditRights }),
         name: new FormControl(
           { value: project?.name, disabled: !this.userHasProjectEditRights },
           { validators: [Validators.required] }
@@ -265,6 +266,7 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
     });
 
     this.formGroupTimelineData = this.fb.group({
+      archived: new FormControl({ value: timeline.archived, disabled: true }),
       start: new FormControl({ value: timeline.start, disabled: true }),
       end: new FormControl({ value: timeline.end, disabled: true }),
       increment: new FormControl({ value: timeline.increment, disabled: true }),
