@@ -65,12 +65,8 @@ export class ProjectChecklistComponent implements OnDestroy {
     stepper.selectedIndex = currentSelectedIndex;
   }
 
-  // public getTaskTitle(task: ProjectTask): string {
-  //   return this.checklistType === 'permanentTasks' ? task.title : task.title;
-  // }
-
   public getTaskIcon(task: NonPermanentProjectTask | PermanentProjectTask): string {
-    if (this.checklistType === 'permanentTasks') {
+    if (task.icon !== null) {
       return task.icon;
     }
     return task.projectTask.completed ? 'done' : 'number';

@@ -189,7 +189,7 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
   public selectionChange(event: MatListOption): void {
     event[0].value.selected = event[0].selected;
     this.projectService.updateProjectPropertyQuestion(this.data.timeline.id, event[0].value).subscribe((d) => {
-      this.timelineDataService.setProjectTasks(this.data.timeline.id);
+      this.timelineDataService.setNonPermanentProjectTasks(this.data.timeline.id);
       this.timelineDataService.setPermanentProjectTasks(this.data.timeline.id);
     });
   }

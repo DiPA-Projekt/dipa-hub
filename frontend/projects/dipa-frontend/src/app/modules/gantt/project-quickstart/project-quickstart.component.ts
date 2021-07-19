@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-import { Project, ProjectService, NonPermanentProjectTask } from 'dipa-api-client';
+import { ProjectService, NonPermanentProjectTask } from 'dipa-api-client';
 import { switchMap } from 'rxjs/operators';
 import { TimelineDataService } from '../../../shared/timelineDataService';
 
@@ -27,12 +27,12 @@ export class ProjectQuickstartComponent implements OnInit, OnDestroy {
       .pipe(
         switchMap((params: Params): Observable<NonPermanentProjectTask[]> => {
           this.selectedTimelineId = parseInt(params.id, 10);
-          this.timelineDataService.setProjectTasks(this.selectedTimelineId);
-          return this.timelineDataService.getProjectTasks();
+          this.timelineDataService.setNonPermanentProjectTasks(this.selectedTimelineId);
+          return this.timelineDataService.getNonPermanentProjectTasks();
         })
       )
       .subscribe({
-        next: (data: Project[]) => {
+        next: (data: NonPermanentProjectTask[]) => {
           this.projectTasks = data;
         },
         error: null,
@@ -46,7 +46,8 @@ export class ProjectQuickstartComponent implements OnInit, OnDestroy {
   }
 
   public reloadProjectTasks(): void {
-    this.projectTasksSubscription = this.projectService.getNonPermanentProjectTasks(this.selectedTimelineId).subscribe({
+    this.timelineDataService.setNonPermanentProjectTasks(this.selectedTimelineId);
+    this.projectTasksSubscription = this.timelineDataService.getNonPermanentProjectTasks().subscribe({
       next: (data: NonPermanentProjectTask[]) => {
         this.projectTasks = data;
       },

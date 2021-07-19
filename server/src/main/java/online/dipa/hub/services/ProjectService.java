@@ -205,8 +205,6 @@ public class ProjectService {
                                             .stream()
                                             .map(p -> conversionService.convert(p, ProjectTask.class))
                                             .filter(Objects::nonNull)
-                                            .filter(task -> !isPermanentTask || task.getIsPermanentTask()
-                                                                                    .equals(true))
                                             .filter(task -> task.getProjectPropertyQuestion() != null ? task.getProjectPropertyQuestion().getSelected() : true)
                                             .sorted(Comparator.comparing(ProjectTask::getSortOrder))
                                             .collect(Collectors.toList()));
@@ -223,20 +221,19 @@ public class ProjectService {
 
             ProjectEntity project = projectRepository.getById(projectId);
 
-//            initializeProjectTasks(projectId);
+            initializeProjectTasks(projectId);
 
             PermanentProjectTaskTemplateEntity template = project.getPermanentProjectTaskTemplate();
-            System.out.println(project.getPermanentProjectTaskTemplate());
 
             if (project.getProjectSize() != null && !project.getProjectSize()
                                                             .equals(Project.ProjectSizeEnum.BIG.toString())) {
-                System.out.println(template.getPermanentProjectTasks());
 
                 permanentProjectTasks.addAll(template.getPermanentProjectTasks()
                                             .stream()
                                             .map(p -> conversionService.convert(p, PermanentProjectTask.class))
                                             .filter(Objects::nonNull)
-                                            // .filter(task -> task.getProjectPropertyQuestion() != null ? task.getProjectPropertyQuestion().getSelected() : true)
+                                             .filter(task -> task.getProjectTask().getProjectPropertyQuestion() != null
+                                                     ? task.getProjectTask().getProjectPropertyQuestion().getSelected() : true)
                                             .sorted(Comparator.comparing(PermanentProjectTask::getSortOrder))
                                             .collect(Collectors.toList()));
             }
@@ -252,7 +249,7 @@ public class ProjectService {
 
             ProjectEntity project = projectRepository.getById(projectId);
 
-//                        initializeProjectTasks(projectId);
+            initializeProjectTasks(projectId);
 
             NonPermanentProjectTaskTemplateEntity template = project.getNonPermanentProjectTaskTemplate();
             if (project.getProjectSize() != null && !project.getProjectSize()
@@ -262,6 +259,8 @@ public class ProjectService {
                                                      .stream()
                                                      .map(p -> conversionService.convert(p, NonPermanentProjectTask.class))
                                                      .filter(Objects::nonNull)
+                                                     .filter(task -> task.getProjectTask().getProjectPropertyQuestion() != null
+                                                             ? task.getProjectTask().getProjectPropertyQuestion().getSelected() : true)
                                                      .sorted(Comparator.comparing(NonPermanentProjectTask::getSortOrder))
                                                      .collect(Collectors.toList()));
             }
@@ -282,11 +281,9 @@ public class ProjectService {
 
             PermanentProjectTaskTemplateEntity permanentProjectTaskTemp = new
                     PermanentProjectTaskTemplateEntity("Permanent Project Task Template " + project.getName(), false, project);
-            permanentProjectTaskTempRep.save(permanentProjectTaskTemp);
 
             NonPermanentProjectTaskTemplateEntity nonPermanentProjectTaskTemp = new
                     NonPermanentProjectTaskTemplateEntity("Non Permanent Project Task Template " + project.getName(), false, project);
-            nonPermanentProjectTaskTempRep.save(nonPermanentProjectTaskTemp);
 
             ProjectPropertyQuestionTemplateEntity propertyQuestionTemplate = createNewPropertyQuestions(project);
 
@@ -300,16 +297,25 @@ public class ProjectService {
                             .findByTemplateAndSortOrder(propertyQuestionTemplate, projectTask.getProjectPropertyQuestion().getSortOrder())
                             .ifPresent(newProjectTask::setProjectPropertyQuestion);
                 }
+
                 projectTaskRepository.save(newProjectTask);
+
+                projectTaskProject.getProjectTasks().add(newProjectTask);
 
                 for (FormFieldEntity entry: projectTask.getEntries()) {
                     FormFieldEntity newFormField = new FormFieldEntity(entry);
                     newFormField.setProjectTask(newProjectTask);
-
+                    newProjectTask.getEntries().add(newFormField);
                     formFieldRepository.save(newFormField);
                 }
+
                 createPermanentProjectTasks(projectTask, newProjectTask, permanentProjectTaskTemp, nonPermanentProjectTaskTemp);
+                permanentProjectTaskTempRep.save(permanentProjectTaskTemp);
+                nonPermanentProjectTaskTempRep.save(nonPermanentProjectTaskTemp);
+
                 createNewResults(projectTask, newProjectTask);
+                projectTaskRepository.save(newProjectTask);
+
             }
 
             project.setProjectTaskTemplate(projectTaskTemplate);
@@ -328,14 +334,16 @@ public class ProjectService {
             PermanentProjectTaskEntity newPermanentProjectTask = new PermanentProjectTaskEntity(projectTaskTemp.getPermanentProjectTask());
             newPermanentProjectTask.setPermanentProjectTaskTemplate(permanentProjectTaskTemp);
             newPermanentProjectTask.setProjectTask(newProjectTask);
-            permanentProjectTaskRepository.save(newPermanentProjectTask);
+            permanentProjectTaskTemp.getPermanentProjectTasks().add(newPermanentProjectTask);
+
         }
 
         if (projectTaskTemp.getNonPermanentProjectTask() != null) {
             NonPermanentProjectTaskEntity newNonPermanentProjectTask = new NonPermanentProjectTaskEntity(projectTaskTemp.getNonPermanentProjectTask());
             newNonPermanentProjectTask.setNonPermanentProjectTaskTemplate(nonPermanentProjectTaskTemp);
             newNonPermanentProjectTask.setProjectTask(newProjectTask);
-            nonPermanentProjectTaskRepository.save(newNonPermanentProjectTask);
+            nonPermanentProjectTaskTemp.getNonPermanentProjectTasks().add(newNonPermanentProjectTask);
+
         }
     }
 
@@ -364,11 +372,13 @@ public class ProjectService {
             ResultEntity newResultEntity = new ResultEntity();
             newResultEntity.setResultType(result.getResultType());
             newResultEntity.setProjectTask(newProjectTask);
+            newProjectTask.getResults().add(newResultEntity);
             resultRepository.save(newResultEntity);
 
             for (FormFieldEntity formFieldResult: result.getFormFields()) {
                 FormFieldEntity newFormFieldResult = new FormFieldEntity(formFieldResult);
                 newFormFieldResult.setResultEntity(newResultEntity);
+                newResultEntity.getFormFields().add(newFormFieldResult);
                 formFieldRepository.save(newFormFieldResult);
 
                 if (formFieldResult.getOptions() != null) {
@@ -380,6 +390,7 @@ public class ProjectService {
                     options.forEach(opt -> {
                         OptionEntryEntity newOptionEntry = new OptionEntryEntity(opt);
                         newOptionEntry.setFormField(newFormFieldResult);
+                        newFormFieldResult.getOptions().add(newOptionEntry);
                         optionEntryRepository.save(newOptionEntry);
                     });
                 }

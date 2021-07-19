@@ -46,7 +46,8 @@ export class ProjectControlComponent implements OnInit, OnDestroy {
   }
 
   public reloadProjectTasks(): void {
-    this.projectTasksSubscription = this.projectService.getPermanentProjectTasks(this.selectedTimelineId).subscribe({
+    this.timelineDataService.setPermanentProjectTasks(this.selectedTimelineId);
+    this.projectTasksSubscription = this.timelineDataService.getPermanentProjectTasks().subscribe({
       next: (data: PermanentProjectTask[]) => {
         this.projectTasks = data;
       },
