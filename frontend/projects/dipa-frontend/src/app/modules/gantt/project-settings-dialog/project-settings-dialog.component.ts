@@ -189,7 +189,7 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
     this.projectService
       .updateProjectPropertyQuestion(this.data.timeline.id, propertiesQuestionElement)
       .subscribe((d) => {
-        this.timelineDataService.setProjectTasks(this.data.timeline.id);
+        this.timelineDataService.setNonPermanentProjectTasks(this.data.timeline.id);
         this.timelineDataService.setPermanentProjectTasks(this.data.timeline.id);
       });
   }

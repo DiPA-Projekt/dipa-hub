@@ -205,8 +205,6 @@ public class ProjectService {
                                             .stream()
                                             .map(p -> conversionService.convert(p, ProjectTask.class))
                                             .filter(Objects::nonNull)
-                                            .filter(task -> !isPermanentTask || task.getIsPermanentTask()
-                                                                                    .equals(true))
                                             .filter(task -> task.getProjectPropertyQuestion() == null || task.getProjectPropertyQuestion().getSelected())
                                             .sorted(Comparator.comparing(ProjectTask::getSortOrder))
                                             .collect(Collectors.toList()));
@@ -234,7 +232,7 @@ public class ProjectService {
                                             .stream()
                                             .map(p -> conversionService.convert(p, PermanentProjectTask.class))
                                             .filter(Objects::nonNull)
-                                             .filter(task -> task.getProjectTask().getProjectPropertyQuestion() != null
+                                            .filter(task -> task.getProjectTask().getProjectPropertyQuestion() != null
                                                      ? task.getProjectTask().getProjectPropertyQuestion().getSelected() : true)
                                             .sorted(Comparator.comparing(PermanentProjectTask::getSortOrder))
                                             .collect(Collectors.toList()));

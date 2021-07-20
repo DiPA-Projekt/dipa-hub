@@ -30,7 +30,7 @@
                             matInput
                             [type]="formField.get('type').value.toLowerCase()"
                             formControlName="value"
-                            [id]="formField.get('key')?.value"
+                            [id]="formField.get('key')?.value + '_' + i + '_' + j"
                             [value]="formField.get('value')?.value"
                             (change)="dataChanged.emit()"
                             (focus)="onFocus($event, ['results', i, 'formFields', j, 'value'])"
@@ -78,7 +78,7 @@
                             matAutosizeMinRows="1"
                             matAutosizeMaxRows="5"
                             formControlName="value"
-                            [id]="formField.get('key')?.value"
+                            [id]="formField.get('key')?.value + '_' + i + '_' + j"
                             [value]="formField.get('value')?.value"
                             (change)="dataChanged.emit()"
                             (focus)="onFocus($event, ['results', i, 'formFields', j, 'value'])"

@@ -10,15 +10,27 @@
  import org.springframework.boot.test.mock.mockito.MockBean;
  import org.springframework.core.convert.ConversionService;
 
+ import online.dipa.hub.api.model.NonPermanentProjectTask;
+ import online.dipa.hub.api.model.PermanentProjectTask;
  import online.dipa.hub.api.model.PropertyQuestion;
+ import online.dipa.hub.persistence.entities.NonPermanentProjectTaskTemplateEntity;
+ import online.dipa.hub.persistence.entities.PermanentProjectTaskTemplateEntity;
  import online.dipa.hub.persistence.entities.ProjectEntity;
  import online.dipa.hub.persistence.entities.ProjectPropertyQuestionEntity;
  import online.dipa.hub.persistence.entities.ProjectPropertyQuestionTemplateEntity;
+ import online.dipa.hub.persistence.entities.ProjectTaskEntity;
+ import online.dipa.hub.persistence.entities.ProjectTaskTemplateEntity;
+ import online.dipa.hub.persistence.repositories.NonPermanentProjectTaskTemplateRepository;
+ import online.dipa.hub.persistence.repositories.PermanentProjectTaskTemplateRepository;
  import online.dipa.hub.persistence.repositories.ProjectApproachRepository;
  import online.dipa.hub.persistence.repositories.ProjectPropertyQuestionRepository;
  import online.dipa.hub.persistence.repositories.ProjectRepository;
+ import online.dipa.hub.persistence.repositories.ProjectTaskRepository;
+ import online.dipa.hub.persistence.repositories.ProjectTaskTemplateRepository;
 
  import static org.assertj.core.api.Assertions.*;
+ import static org.mockito.Mockito.when;
+
  import java.util.ArrayList;
  import java.util.Collections;
  import java.util.List;
@@ -43,6 +55,20 @@
      @Autowired
      private ConversionService conversionService;
 
+     @Autowired
+     private ProjectTaskTemplateRepository projectTaskTemplateRepository;
+
+     @Autowired
+     private ProjectTaskRepository projectTaskRepository;
+
+     @Autowired
+     private NonPermanentProjectTaskTemplateRepository nonPermanentProjectTaskTempRep;
+
+     @Autowired
+     private PermanentProjectTaskTemplateRepository permanentProjectTaskTempRep;
+
+     @MockBean
+     private UserInformationService userInformationService;
 
      ProjectEntity testProject;
 
@@ -145,7 +171,7 @@
         void should_create_non_permanent_project_task() {
             // GIVEN
             ProjectTaskEntity projectTaskTemp = new ArrayList<>(Objects.requireNonNull(projectTaskTemplateRepository.findByMaster().orElse(null))
-                                                                        .getProjectTasks()).stream().filter(p -> p.getNonPermanentProjectTask()!= null).findFirst().get();
+                                                                       .getProjectTasks()).stream().filter(p -> p.getNonPermanentProjectTask()!= null).findFirst().get();
             ProjectTaskEntity newProjectTask = new ProjectTaskEntity(projectTaskTemp);
             newProjectTask.setProjectTaskTemplate(projectTaskProject);
 
@@ -183,6 +209,9 @@
             assertThat(permanentProjectTaskTemp.getPermanentProjectTasks()).hasSize(1);
             assertThat(new ArrayList<>(permanentProjectTaskTemp.getPermanentProjectTasks()).get(0).getTitle())
                     .isEqualTo(projectTaskTemp.getPermanentProjectTask().getTitle());
+        }
+
+    }
 
     @Nested
     class GetProjectTasks {
@@ -190,15 +219,16 @@
         @Test
         void should_return_permanent_project_tasks() {
             // GIVEN
-            when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(
-                    Collections.singleton(testProject.getId())));
+            when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(Collections.singleton(testProject.getId())));
 
             //WHEN
             List<PermanentProjectTask> permanentProjectTasks = projectService.getPermanentProjectTasks(testProject.getId());
 
             // THEN
             System.out.println(permanentProjectTasks);
-            assertThat(permanentProjectTasks).isNotEmpty().hasSize(11);
+            assertThat(permanentProjectTasks).isNotEmpty()
+                                             .hasSize(11);
+        }
 
         @Test
         void should_return_non_permanent_project_task() {
