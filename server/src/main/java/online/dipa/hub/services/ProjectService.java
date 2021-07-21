@@ -292,7 +292,7 @@ public class ProjectService {
         if (project.getProjectSize() != null && (project.getProjectSize().equals("SMALL") || project.getProjectSize().equals("MEDIUM"))
                 && project.getProjectTaskTemplate() == null) {
             ProjectTaskTemplateEntity projectTaskTemplate = projectTaskTemplateRepository.findByMaster().orElse(null);
-
+System.out.println("init");
             ProjectTaskTemplateEntity projectTaskProject = new
                     ProjectTaskTemplateEntity("Project Task Template " + project.getName(), false, project);
             projectTaskTemplateRepository.save(projectTaskProject);

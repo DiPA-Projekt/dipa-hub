@@ -45,7 +45,6 @@
 
  @SpringBootTest
  @Transactional
- @TestInstance(TestInstance.Lifecycle.PER_CLASS)
  class ProjectServiceTest {
 
     @Autowired
@@ -86,7 +85,7 @@
 
      ProjectEntity testProject;
 
-    @BeforeAll
+    @BeforeEach
     void setUp() {
         testProject = new ProjectEntity();
         testProject.setName("Test Project");
@@ -228,27 +227,15 @@
     }
 
     @Nested
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class GetProjectTasks {
-        ProjectEntity testProject2;
-
-        @BeforeAll
-        void setUp() {
-            testProject2 = new ProjectEntity();
-            testProject2.setName("Test Project");
-            testProject2.setProjectApproach(projectApproachRepository.getById(2L));
-            testProject2.setProjectSize("SMALL");
-            projectRepository.save(testProject2);
-            projectService.initializeProjectTasks(testProject2.getId());
-        }
 
         @Test
         void should_return_permanent_project_tasks() {
             // GIVEN
-            when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(Collections.singleton(testProject2.getId())));
+            when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(Collections.singleton(testProject.getId())));
 
             //WHEN
-            List<PermanentProjectTask> permanentProjectTasks = projectService.getPermanentProjectTasks(testProject2.getId());
+            List<PermanentProjectTask> permanentProjectTasks = projectService.getPermanentProjectTasks(testProject.getId());
 
             // THEN
             assertThat(permanentProjectTasks).isNotEmpty()
@@ -259,10 +246,10 @@
         void should_return_non_permanent_project_task() {
             // GIVEN
             when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(
-                    Collections.singleton(testProject2.getId())));
+                    Collections.singleton(testProject.getId())));
 
             //WHEN
-            List<NonPermanentProjectTask> nonPermanentProjectTasks = projectService.getNonPermanentProjectTasks(testProject2.getId());
+            List<NonPermanentProjectTask> nonPermanentProjectTasks = projectService.getNonPermanentProjectTasks(testProject.getId());
 
             // THEN
             assertThat(nonPermanentProjectTasks).isNotEmpty().hasSize(13);
@@ -272,9 +259,9 @@
         @Test
         void should_return_new_sort_order_permanent_project_tasks() {
             // GIVEN
-            when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(Collections.singleton(testProject2.getId())));
+            when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(Collections.singleton(testProject.getId())));
 
-            List<PermanentProjectTask> projectTasks = projectService.getPermanentProjectTasks(testProject2.getId());
+            List<PermanentProjectTask> projectTasks = projectService.getPermanentProjectTasks(testProject.getId());
             projectTasks.get(0).setSortOrder(2L);
             projectTasks.get(1).setSortOrder(1L);
 
@@ -290,9 +277,9 @@
         @Test
         void should_return_new_sort_order_non_permanent_project_tasks() {
             // GIVEN
-            when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(Collections.singleton(testProject2.getId())));
+            when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(Collections.singleton(testProject.getId())));
 
-            List<NonPermanentProjectTask> projectTasks = projectService.getNonPermanentProjectTasks(testProject2.getId());
+            List<NonPermanentProjectTask> projectTasks = projectService.getNonPermanentProjectTasks(testProject.getId());
             projectTasks.get(0).setSortOrder(2L);
             projectTasks.get(1).setSortOrder(1L);
 
