@@ -1,10 +1,12 @@
  package online.dipa.hub.services;
  import javax.transaction.Transactional;
 
+ import org.junit.jupiter.api.BeforeAll;
  import org.junit.jupiter.api.BeforeEach;
  import org.junit.jupiter.api.Nested;
  import org.junit.jupiter.api.Test;
 
+ import org.junit.jupiter.api.TestInstance;
  import org.springframework.beans.factory.annotation.Autowired;
  import org.springframework.boot.test.context.SpringBootTest;
  import org.springframework.boot.test.mock.mockito.MockBean;
@@ -13,14 +15,18 @@
  import online.dipa.hub.api.model.NonPermanentProjectTask;
  import online.dipa.hub.api.model.PermanentProjectTask;
  import online.dipa.hub.api.model.PropertyQuestion;
+ import online.dipa.hub.persistence.entities.NonPermanentProjectTaskEntity;
  import online.dipa.hub.persistence.entities.NonPermanentProjectTaskTemplateEntity;
+ import online.dipa.hub.persistence.entities.PermanentProjectTaskEntity;
  import online.dipa.hub.persistence.entities.PermanentProjectTaskTemplateEntity;
  import online.dipa.hub.persistence.entities.ProjectEntity;
  import online.dipa.hub.persistence.entities.ProjectPropertyQuestionEntity;
  import online.dipa.hub.persistence.entities.ProjectPropertyQuestionTemplateEntity;
  import online.dipa.hub.persistence.entities.ProjectTaskEntity;
  import online.dipa.hub.persistence.entities.ProjectTaskTemplateEntity;
+ import online.dipa.hub.persistence.repositories.NonPermanentProjectTaskRepository;
  import online.dipa.hub.persistence.repositories.NonPermanentProjectTaskTemplateRepository;
+ import online.dipa.hub.persistence.repositories.PermanentProjectTaskRepository;
  import online.dipa.hub.persistence.repositories.PermanentProjectTaskTemplateRepository;
  import online.dipa.hub.persistence.repositories.ProjectApproachRepository;
  import online.dipa.hub.persistence.repositories.ProjectPropertyQuestionRepository;
@@ -30,6 +36,7 @@
 
  import static org.assertj.core.api.Assertions.*;
  import static org.mockito.Mockito.when;
+ import static org.assertj.core.api.BDDAssertions.then;
 
  import java.util.ArrayList;
  import java.util.Collections;
@@ -38,6 +45,7 @@
 
  @SpringBootTest
  @Transactional
+ @TestInstance(TestInstance.Lifecycle.PER_CLASS)
  class ProjectServiceTest {
 
     @Autowired
@@ -67,12 +75,18 @@
      @Autowired
      private PermanentProjectTaskTemplateRepository permanentProjectTaskTempRep;
 
+     @Autowired
+     private NonPermanentProjectTaskRepository nonPermanentProjectTaskRepository;
+
+     @Autowired
+     private PermanentProjectTaskRepository permanentProjectTaskRepository;
+
      @MockBean
      private UserInformationService userInformationService;
 
      ProjectEntity testProject;
 
-    @BeforeEach
+    @BeforeAll
     void setUp() {
         testProject = new ProjectEntity();
         testProject.setName("Test Project");
@@ -214,18 +228,29 @@
     }
 
     @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     class GetProjectTasks {
+        ProjectEntity testProject2;
+
+        @BeforeAll
+        void setUp() {
+            testProject2 = new ProjectEntity();
+            testProject2.setName("Test Project");
+            testProject2.setProjectApproach(projectApproachRepository.getById(2L));
+            testProject2.setProjectSize("SMALL");
+            projectRepository.save(testProject2);
+            projectService.initializeProjectTasks(testProject2.getId());
+        }
 
         @Test
         void should_return_permanent_project_tasks() {
             // GIVEN
-            when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(Collections.singleton(testProject.getId())));
+            when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(Collections.singleton(testProject2.getId())));
 
             //WHEN
-            List<PermanentProjectTask> permanentProjectTasks = projectService.getPermanentProjectTasks(testProject.getId());
+            List<PermanentProjectTask> permanentProjectTasks = projectService.getPermanentProjectTasks(testProject2.getId());
 
             // THEN
-            System.out.println(permanentProjectTasks);
             assertThat(permanentProjectTasks).isNotEmpty()
                                              .hasSize(11);
         }
@@ -234,15 +259,52 @@
         void should_return_non_permanent_project_task() {
             // GIVEN
             when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(
-                    Collections.singleton(testProject.getId())));
+                    Collections.singleton(testProject2.getId())));
 
             //WHEN
-            List<NonPermanentProjectTask> nonPermanentProjectTasks = projectService.getNonPermanentProjectTasks(testProject.getId());
+            List<NonPermanentProjectTask> nonPermanentProjectTasks = projectService.getNonPermanentProjectTasks(testProject2.getId());
 
             // THEN
             assertThat(nonPermanentProjectTasks).isNotEmpty().hasSize(13);
 
         }
+
+        @Test
+        void should_return_new_sort_order_permanent_project_tasks() {
+            // GIVEN
+            when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(Collections.singleton(testProject2.getId())));
+
+            List<PermanentProjectTask> projectTasks = projectService.getPermanentProjectTasks(testProject2.getId());
+            projectTasks.get(0).setSortOrder(2L);
+            projectTasks.get(1).setSortOrder(1L);
+
+            //WHEN
+            projectService.updatePermanentProjectTasks(projectTasks);
+
+            // THEN
+            then(permanentProjectTaskRepository.getById(projectTasks.get(0).getId())).returns(2L, PermanentProjectTaskEntity::getSortOrder);
+            then(permanentProjectTaskRepository.getById(projectTasks.get(1).getId())).returns(1L, PermanentProjectTaskEntity::getSortOrder);
+        }
+
+
+        @Test
+        void should_return_new_sort_order_non_permanent_project_tasks() {
+            // GIVEN
+            when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(Collections.singleton(testProject2.getId())));
+
+            List<NonPermanentProjectTask> projectTasks = projectService.getNonPermanentProjectTasks(testProject2.getId());
+            projectTasks.get(0).setSortOrder(2L);
+            projectTasks.get(1).setSortOrder(1L);
+
+            //WHEN
+            projectService.updateNonPermanentProjectTasks(projectTasks);
+
+            // THEN
+            then(nonPermanentProjectTaskRepository.getById(projectTasks.get(0).getId())).returns(2L, NonPermanentProjectTaskEntity::getSortOrder);
+            then(nonPermanentProjectTaskRepository.getById(projectTasks.get(1).getId())).returns(1L, NonPermanentProjectTaskEntity::getSortOrder);
+
+        }
     }
+
 
  }

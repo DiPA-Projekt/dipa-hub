@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { Subscription } from 'rxjs';
-import { NonPermanentProjectTask, PermanentProjectTask } from 'dipa-api-client';
+import { NonPermanentProjectTask, PermanentProjectTask, ProjectService } from 'dipa-api-client';
 import { MatVerticalStepper } from '@angular/material/stepper';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
@@ -55,6 +55,8 @@ export class ProjectChecklistComponent implements OnDestroy {
 
   private projectChecklistSubscription: Subscription;
 
+  public constructor(private projectService: ProjectService) {}
+
   public ngOnDestroy(): void {
     this.projectChecklistSubscription?.unsubscribe();
   }
@@ -85,6 +87,22 @@ export class ProjectChecklistComponent implements OnDestroy {
 
   public drop(event: CdkDragDrop<string[]>): void {
     moveItemInArray(this.projectTasks, event.previousIndex, event.currentIndex);
+    this.projectTasks.forEach(
+      (task: NonPermanentProjectTask | PermanentProjectTask, index: number) => (task.sortOrder = index + 1)
+    );
+    if ('isAdditionalTask' in this.projectTasks[0]) {
+      this.projectService.updatePermanentProjectTasks(this.timelineId, this.projectTasks).subscribe({
+        next: null,
+        error: null,
+        complete: () => void 0,
+      });
+    } else {
+      this.projectService.updateNonPermanentProjectTasks(this.timelineId, this.projectTasks).subscribe({
+        next: null,
+        error: null,
+        complete: () => void 0,
+      });
+    }
   }
 
   public setTaskVisibility(task: PermanentProjectTask, checked: boolean): void {

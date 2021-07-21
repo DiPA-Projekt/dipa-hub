@@ -286,7 +286,7 @@ public class ProjectService {
         }
     }
 
-    private void initializeProjectTasks(final Long projectId) {
+    public void initializeProjectTasks(final Long projectId) {
         ProjectEntity project = projectRepository.getById(projectId);
 
         if (project.getProjectSize() != null && (project.getProjectSize().equals("SMALL") || project.getProjectSize().equals("MEDIUM"))
