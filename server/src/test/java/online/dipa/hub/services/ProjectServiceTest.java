@@ -228,7 +228,6 @@
              List<PermanentProjectTask> permanentProjectTasks = projectService.getPermanentProjectTasks(testProject.getId());
 
              // THEN
-             System.out.println(permanentProjectTasks);
              assertThat(permanentProjectTasks).isNotEmpty().hasSize(11);
 
          }

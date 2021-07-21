@@ -268,6 +268,24 @@ public class ProjectService {
         return nonPermanentProjectTasks;
     }
 
+    public void updatePermanentProjectTasks(List<PermanentProjectTask> permanentProjectTasks) {
+
+        for (PermanentProjectTask permanentProjectTask: permanentProjectTasks) {
+            PermanentProjectTaskEntity permanentProjectTaskEntity = permanentProjectTaskRepository
+                    .getById(permanentProjectTask.getId());
+            permanentProjectTaskEntity.setSortOrder(permanentProjectTask.getSortOrder());
+        }
+    }
+
+    public void updateNonPermanentProjectTasks(List<NonPermanentProjectTask> nonPermanentProjectTasks) {
+
+        for (NonPermanentProjectTask nonPermanentProjectTask: nonPermanentProjectTasks) {
+            NonPermanentProjectTaskEntity nonPermanentProjectTaskEntity = nonPermanentProjectTaskRepository
+                    .getById(nonPermanentProjectTask.getId());
+            nonPermanentProjectTaskEntity.setSortOrder(nonPermanentProjectTask.getSortOrder());
+        }
+    }
+
     private void initializeProjectTasks(final Long projectId) {
         ProjectEntity project = projectRepository.getById(projectId);
 
