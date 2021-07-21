@@ -1,3 +1,4 @@
+import { ProjectTask } from './../../../../dipa-api-client/src/model/projectTask';
 import { Injectable } from '@angular/core';
 import {
   Timeline,

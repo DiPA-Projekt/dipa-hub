@@ -42,7 +42,6 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
   public userData: User;
   public allUsers: User[];
   public formGroup: FormGroup;
-  public inputNotation: boolean;
 
   public sizes: ProjectSize[] = [
     {
@@ -101,8 +100,6 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
       this.projectApproachesList = projectApproachesList;
       this.updateFormValues();
     });
-
-    this.inputNotation = false;
   }
   public ngOnDestroy(): void {
     this.dataSubscription?.unsubscribe();
@@ -126,8 +123,6 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
             this.dialogRef.close();
           },
         });
-    } else {
-      this.inputNotation = true;
     }
   }
 

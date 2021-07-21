@@ -21,6 +21,7 @@ public class PermanentProjectTaskEntity extends BaseEntity {
 
     private String title;
     private String icon;
+    private boolean isAdditionalTask;
     private Long sortOrder;
 
     @NotNull
@@ -44,6 +45,7 @@ public class PermanentProjectTaskEntity extends BaseEntity {
     public PermanentProjectTaskEntity(PermanentProjectTaskEntity projectTaskEntity) {
         this.title = projectTaskEntity.getTitle();
         this.icon = projectTaskEntity.getIcon();
+        this.isAdditionalTask = projectTaskEntity.isAdditionalTask();
         this.sortOrder = projectTaskEntity.getSortOrder();
     }
     
@@ -69,6 +71,14 @@ public class PermanentProjectTaskEntity extends BaseEntity {
 
     public void setIcon(final String icon) {
         this.icon = icon;
+    }
+
+    public boolean isAdditionalTask() {
+        return isAdditionalTask;
+    }
+
+    public void setAdditionalTask(boolean additionalTask) {
+        isAdditionalTask = additionalTask;
     }
 
     public ProjectTaskEntity getProjectTask() {

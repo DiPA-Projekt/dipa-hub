@@ -41,13 +41,11 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
   public propertyQuestions: PropertyQuestion[] = [];
 
   public operationTypeId: number;
-  public startDate = new Date();
-  public endDate = new Date(new Date().setMonth(new Date().getMonth() + 6));
+
   public userData: User;
   public allUsers: User[];
   public formGroupProjectData: FormGroup;
   public formGroupTimelineData: FormGroup;
-  public inputNotation: boolean;
 
   public userHasProjectEditRights = false;
   public isNotEditable = true;
@@ -107,8 +105,6 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
       this.projectApproachesList = projectApproachesList;
       this.propertyQuestions = propertyQuestions;
     });
-
-    this.inputNotation = false;
   }
   public ngOnDestroy(): void {
     this.dataSubscription?.unsubscribe();
@@ -187,11 +183,15 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
   }
 
   public selectionChange(event: MatListOption): void {
-    event[0].value.selected = event[0].selected;
-    this.projectService.updateProjectPropertyQuestion(this.data.timeline.id, event[0].value).subscribe((d) => {
-      this.timelineDataService.setNonPermanentProjectTasks(this.data.timeline.id);
-      this.timelineDataService.setPermanentProjectTasks(this.data.timeline.id);
-    });
+    const matListOptionElement = event[0] as MatListOption;
+    const propertiesQuestionElement = matListOptionElement.value as PropertyQuestion;
+    propertiesQuestionElement.selected = matListOptionElement.selected;
+    this.projectService
+      .updateProjectPropertyQuestion(this.data.timeline.id, propertiesQuestionElement)
+      .subscribe((d) => {
+        this.timelineDataService.setNonPermanentProjectTasks(this.data.timeline.id);
+        this.timelineDataService.setPermanentProjectTasks(this.data.timeline.id);
+      });
   }
 
   private setReactiveForm(project: Project, timeline: Timeline): void {
@@ -205,7 +205,7 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
         id: new FormControl({ value: project?.id, disabled: !this.userHasProjectEditRights }),
         name: new FormControl(
           { value: project?.name, disabled: !this.userHasProjectEditRights },
-          { validators: [Validators.required], updateOn: 'blur' }
+          { validators: [Validators.required] }
         ),
         projectOwner: null,
         akz: new FormControl({ value: project?.akz, disabled: this.isNotEditable }),
@@ -224,34 +224,32 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
         archived: [project?.archived],
       });
       this.formGroupTimelineData = this.fb.group({
+        archived: new FormControl({ value: timeline.archived, disabled: !this.userHasProjectEditRights }),
         id: new FormControl({ value: timeline?.id, disabled: !this.userHasProjectEditRights }),
         start: new FormControl({ value: timeline.start, disabled: !this.userHasProjectEditRights }),
         end: new FormControl({ value: timeline.end, disabled: !this.userHasProjectEditRights }),
-        increment: new FormControl({ value: timeline.increment, disabled: true }),
-        defaultTimeline: new FormControl({ value: timeline.defaultTimeline, disabled: true }),
+        increment: new FormControl({ value: timeline.increment, disabled: !this.userHasProjectEditRights }),
+        defaultTimeline: new FormControl({ value: timeline.defaultTimeline, disabled: !this.userHasProjectEditRights }),
         name: new FormControl(
           { value: project?.name, disabled: !this.userHasProjectEditRights },
-          { validators: [Validators.required], updateOn: 'blur' }
+          { validators: [Validators.required] }
         ),
         operationTypeId: new FormControl(
           { value: this.data.timeline.operationTypeId, disabled: this.isNotEditable },
           {
             validators: [Validators.required],
-            updateOn: 'blur',
           }
         ),
         projectApproachId: new FormControl(
           { value: timeline.projectApproachId, disabled: this.isNotEditable },
           {
             validators: [Validators.required],
-            updateOn: 'blur',
           }
         ),
         projectType: new FormControl(
           { value: timeline.projectType, disabled: this.isNotEditable },
           {
             validators: [Validators.required],
-            updateOn: 'blur',
           }
         ),
       });
@@ -268,6 +266,7 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
     });
 
     this.formGroupTimelineData = this.fb.group({
+      archived: new FormControl({ value: timeline.archived, disabled: true }),
       start: new FormControl({ value: timeline.start, disabled: true }),
       end: new FormControl({ value: timeline.end, disabled: true }),
       increment: new FormControl({ value: timeline.increment, disabled: true }),

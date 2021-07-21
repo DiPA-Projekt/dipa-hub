@@ -183,3 +183,13 @@ DROP COLUMN IF EXISTS title,
 DROP COLUMN IF EXISTS is_permanent_task,
 DROP COLUMN IF EXISTS title_permanent_task,
 DROP COLUMN IF EXISTS icon
+
+-- changeset id:set-icon-for-escalation-permanent-project-task context:itzbund
+UPDATE permanent_project_task
+SET icon = 'campaign'
+WHERE title='Eskalationen durchführen'
+
+-- changeset id:set-icon-for-change-request-permanent-project-task context:itzbund
+UPDATE permanent_project_task
+SET icon = 'repeat'
+WHERE title='Auftragsänderung (Change Request) erstellen'

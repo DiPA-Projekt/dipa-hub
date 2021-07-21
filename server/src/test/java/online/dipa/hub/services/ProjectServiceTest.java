@@ -39,38 +39,38 @@
  @SpringBootTest
  @Transactional
  class ProjectServiceTest {
-         
+
     @Autowired
     private ProjectApproachRepository projectApproachRepository;
 
-    @Autowired
-    private ProjectRepository projectRepository;
+     @Autowired
+     private ProjectRepository projectRepository;
 
-    @Autowired
-    private ProjectPropertyQuestionRepository projectPropertyQuestionRepository;
+     @Autowired
+     private ProjectPropertyQuestionRepository projectPropertyQuestionRepository;
 
-    @Autowired
-    private ProjectService projectService;
+     @Autowired
+     private ProjectService projectService;
 
-    @Autowired
-    private ConversionService conversionService;
+     @Autowired
+     private ConversionService conversionService;
 
-    @Autowired
-    private ProjectTaskTemplateRepository projectTaskTemplateRepository;
+     @Autowired
+     private ProjectTaskTemplateRepository projectTaskTemplateRepository;
 
-    @Autowired
-    private ProjectTaskRepository projectTaskRepository;
+     @Autowired
+     private ProjectTaskRepository projectTaskRepository;
 
-    @Autowired
-    private NonPermanentProjectTaskTemplateRepository nonPermanentProjectTaskTempRep;
+     @Autowired
+     private NonPermanentProjectTaskTemplateRepository nonPermanentProjectTaskTempRep;
 
-    @Autowired
-    private PermanentProjectTaskTemplateRepository permanentProjectTaskTempRep;
+     @Autowired
+     private PermanentProjectTaskTemplateRepository permanentProjectTaskTempRep;
 
-    @MockBean
-    private UserInformationService userInformationService;
+     @MockBean
+     private UserInformationService userInformationService;
 
-    ProjectEntity testProject;
+     ProjectEntity testProject;
 
     @BeforeEach
     void setUp() {
@@ -81,7 +81,7 @@
         projectRepository.save(testProject);
     }
 
-     @Nested
+    @Nested
     class CreateNewPropertyQuestions {
 
         @Test
@@ -93,7 +93,7 @@
             assertThat(template)
                     .returns("Property Question Template Test Project", ProjectPropertyQuestionTemplateEntity::getName)
                     .returns(testProject, ProjectPropertyQuestionTemplateEntity::getProject);
-            assertThat(projectPropertyQuestionRepository.findByTemplate(template))
+            assertThat(template.getProjectPropertyQuestions())
                     .hasSize(2);
 
         }
@@ -102,19 +102,18 @@
 
     @Nested
     class UpdatePropertyQuestions {
-
         ProjectPropertyQuestionTemplateEntity template;
 
         @BeforeEach
         void setUp() {
-        template = projectService.createNewPropertyQuestions(testProject);
+            template = projectService.createNewPropertyQuestions(testProject);
         }
 
         @Test
         void should_return_false_as_selected_value() {
             // GIVEN
             ProjectPropertyQuestionEntity propertyQuestionEntity = new ArrayList<>(
-                projectPropertyQuestionRepository.findByTemplate(template)).get(0);
+                    template.getProjectPropertyQuestions()).get(0);
             PropertyQuestion propertyQuestionAPI = conversionService.convert(propertyQuestionEntity, PropertyQuestion.class);
             assert propertyQuestionAPI != null;
             propertyQuestionAPI.setSelected(false);
@@ -124,7 +123,7 @@
 
             // THEN
             assertThat(propertyQuestionEntity)
-                .returns(false, ProjectPropertyQuestionEntity::getSelected);
+                    .returns(false, ProjectPropertyQuestionEntity::getSelected);
 
         }
 
@@ -132,7 +131,7 @@
         void should_return_true_as_selected_value() {
             // GIVEN
             ProjectPropertyQuestionEntity propertyQuestionEntity = new ArrayList<>(
-                projectPropertyQuestionRepository.findByTemplate(template)).get(0);
+                    template.getProjectPropertyQuestions()).get(0);
             PropertyQuestion propertyQuestionAPI = conversionService.convert(propertyQuestionEntity, PropertyQuestion.class);
             assert propertyQuestionAPI != null;
             propertyQuestionAPI.setSelected(false);
@@ -142,110 +141,108 @@
 
             // THEN
             assertThat(propertyQuestionEntity)
-                .returns(false, ProjectPropertyQuestionEntity::getSelected);
+                    .returns(false, ProjectPropertyQuestionEntity::getSelected);
 
         }
 
     }
 
-     @Nested
-     class CreatePermanentProjectTasks {
-         ProjectTaskTemplateEntity projectTaskProject;
-         PermanentProjectTaskTemplateEntity permanentProjectTaskTemp;
-         NonPermanentProjectTaskTemplateEntity nonPermanentProjectTaskTemp;
+    @Nested
+    class CreatePermanentProjectTasks {
+        ProjectTaskTemplateEntity projectTaskProject;
+        PermanentProjectTaskTemplateEntity permanentProjectTaskTemp;
+        NonPermanentProjectTaskTemplateEntity nonPermanentProjectTaskTemp;
 
-         @BeforeEach
-         void setUp() {
-             projectTaskProject = new
-                     ProjectTaskTemplateEntity("Project Task Template " + testProject.getName(), false, testProject);
-             projectTaskTemplateRepository.save(projectTaskProject);
+        @BeforeEach
+        void setUp() {
+            projectTaskProject = new
+                    ProjectTaskTemplateEntity("Project Task Template " + testProject.getName(), false, testProject);
+            projectTaskTemplateRepository.save(projectTaskProject);
 
-             permanentProjectTaskTemp = new
-                     PermanentProjectTaskTemplateEntity("Permanent Project Task Template " + testProject.getName(), false, testProject);
+            permanentProjectTaskTemp = new
+                    PermanentProjectTaskTemplateEntity("Permanent Project Task Template " + testProject.getName(), false, testProject);
 
-             nonPermanentProjectTaskTemp = new
-                     NonPermanentProjectTaskTemplateEntity("Non Permanent Project Task Template " + testProject.getName(), false, testProject);
+            nonPermanentProjectTaskTemp = new
+                    NonPermanentProjectTaskTemplateEntity("Non Permanent Project Task Template " + testProject.getName(), false, testProject);
 
-         }
+        }
 
-         @Test
-         void should_create_non_permanent_project_task() {
-             // GIVEN
-             ProjectTaskEntity projectTaskTemp = new ArrayList<>(Objects.requireNonNull(projectTaskTemplateRepository.findByMaster().orElse(null))
-                                                                        .getProjectTasks()).stream().filter(p -> p.getNonPermanentProjectTask()!= null).findFirst().get();
-             ProjectTaskEntity newProjectTask = new ProjectTaskEntity(projectTaskTemp);
-             newProjectTask.setProjectTaskTemplate(projectTaskProject);
+        @Test
+        void should_create_non_permanent_project_task() {
+            // GIVEN
+            ProjectTaskEntity projectTaskTemp = new ArrayList<>(Objects.requireNonNull(projectTaskTemplateRepository.findByMaster().orElse(null))
+                                                                       .getProjectTasks()).stream().filter(p -> p.getNonPermanentProjectTask()!= null).findFirst().get();
+            ProjectTaskEntity newProjectTask = new ProjectTaskEntity(projectTaskTemp);
+            newProjectTask.setProjectTaskTemplate(projectTaskProject);
 
-             projectTaskRepository.save(newProjectTask);
+            projectTaskRepository.save(newProjectTask);
 
-             //WHEN
-             projectService.createPermanentProjectTasks(projectTaskTemp, newProjectTask, permanentProjectTaskTemp, nonPermanentProjectTaskTemp);
+            //WHEN
+            projectService.createPermanentProjectTasks(projectTaskTemp, newProjectTask, permanentProjectTaskTemp, nonPermanentProjectTaskTemp);
 
-             // THEN
-             assertThat(nonPermanentProjectTaskTemp.getNonPermanentProjectTasks()).hasSize(1);
-             assertThat(new ArrayList<>(nonPermanentProjectTaskTemp.getNonPermanentProjectTasks()).get(0).getTitle())
-                     .isEqualTo(projectTaskTemp.getNonPermanentProjectTask().getTitle());
+            // THEN
+            assertThat(nonPermanentProjectTaskTemp.getNonPermanentProjectTasks()).hasSize(1);
+            assertThat(new ArrayList<>(nonPermanentProjectTaskTemp.getNonPermanentProjectTasks()).get(0).getTitle())
+                    .isEqualTo(projectTaskTemp.getNonPermanentProjectTask().getTitle());
 
-         }
-
-
-         @Test
-         void should_create_permanent_project_task() {
-             // GIVEN
-             ProjectTaskTemplateEntity projectTaskProject = new
-                     ProjectTaskTemplateEntity("Project Task Template " + testProject.getName(), false, testProject);
-             projectTaskTemplateRepository.save(projectTaskProject);
-
-             ProjectTaskEntity projectTaskTemp = new ArrayList<>(Objects.requireNonNull(projectTaskTemplateRepository.findByMaster().orElse(null))
-                                                                        .getProjectTasks()).stream().filter(p -> p.getPermanentProjectTask()!= null).findFirst().get();
-             ProjectTaskEntity newProjectTask = new ProjectTaskEntity(projectTaskTemp);
-             newProjectTask.setProjectTaskTemplate(projectTaskProject);
-
-             projectTaskRepository.save(newProjectTask);
-
-             //WHEN
-             projectService.createPermanentProjectTasks(projectTaskTemp, newProjectTask, permanentProjectTaskTemp, nonPermanentProjectTaskTemp);
-
-             // THEN
-             assertThat(permanentProjectTaskTemp.getPermanentProjectTasks()).hasSize(1);
-             assertThat(new ArrayList<>(permanentProjectTaskTemp.getPermanentProjectTasks()).get(0).getTitle())
-                     .isEqualTo(projectTaskTemp.getPermanentProjectTask().getTitle());
-
-         }
-
-     }
-
-     @Nested
-     class GetProjectTasks {
-
-         @Test
-         void should_return_permanent_project_tasks() {
-             // GIVEN
-             when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(
-                     Collections.singleton(testProject.getId())));
-
-             //WHEN
-             List<PermanentProjectTask> permanentProjectTasks = projectService.getPermanentProjectTasks(testProject.getId());
-
-             // THEN
-             assertThat(permanentProjectTasks).isNotEmpty().hasSize(11);
-
-         }
+        }
 
 
-         @Test
-         void should_return_non_permanent_project_task() {
-             // GIVEN
-             when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(
-                     Collections.singleton(testProject.getId())));
+        @Test
+        void should_create_permanent_project_task() {
+            // GIVEN
+            ProjectTaskTemplateEntity projectTaskProject = new
+                    ProjectTaskTemplateEntity("Project Task Template " + testProject.getName(), false, testProject);
+            projectTaskTemplateRepository.save(projectTaskProject);
 
-             //WHEN
-             List<NonPermanentProjectTask> nonPermanentProjectTasks = projectService.getNonPermanentProjectTasks(testProject.getId());
+            ProjectTaskEntity projectTaskTemp = new ArrayList<>(Objects.requireNonNull(projectTaskTemplateRepository.findByMaster().orElse(null))
+                                                                       .getProjectTasks()).stream().filter(p -> p.getPermanentProjectTask()!= null).findFirst().get();
+            ProjectTaskEntity newProjectTask = new ProjectTaskEntity(projectTaskTemp);
+            newProjectTask.setProjectTaskTemplate(projectTaskProject);
 
-             // THEN
-             assertThat(nonPermanentProjectTasks).isNotEmpty().hasSize(13);
+            projectTaskRepository.save(newProjectTask);
 
-         }
+            //WHEN
+            projectService.createPermanentProjectTasks(projectTaskTemp, newProjectTask, permanentProjectTaskTemp, nonPermanentProjectTaskTemp);
+
+            // THEN
+            assertThat(permanentProjectTaskTemp.getPermanentProjectTasks()).hasSize(1);
+            assertThat(new ArrayList<>(permanentProjectTaskTemp.getPermanentProjectTasks()).get(0).getTitle())
+                    .isEqualTo(projectTaskTemp.getPermanentProjectTask().getTitle());
+        }
+
+    }
+
+    @Nested
+    class GetProjectTasks {
+
+        @Test
+        void should_return_permanent_project_tasks() {
+            // GIVEN
+            when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(Collections.singleton(testProject.getId())));
+
+            //WHEN
+            List<PermanentProjectTask> permanentProjectTasks = projectService.getPermanentProjectTasks(testProject.getId());
+
+            // THEN
+            System.out.println(permanentProjectTasks);
+            assertThat(permanentProjectTasks).isNotEmpty()
+                                             .hasSize(11);
+        }
+
+        @Test
+        void should_return_non_permanent_project_task() {
+            // GIVEN
+            when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(
+                    Collections.singleton(testProject.getId())));
+
+            //WHEN
+            List<NonPermanentProjectTask> nonPermanentProjectTasks = projectService.getNonPermanentProjectTasks(testProject.getId());
+
+            // THEN
+            assertThat(nonPermanentProjectTasks).isNotEmpty().hasSize(13);
+
+        }
     }
 
  }

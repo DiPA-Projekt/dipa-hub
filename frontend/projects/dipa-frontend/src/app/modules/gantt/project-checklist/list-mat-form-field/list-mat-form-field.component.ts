@@ -65,7 +65,8 @@ export class ListMatFormFieldComponent implements OnInit, AfterViewChecked {
 
   private scrollToBottom(): void {
     try {
-      this.myScrollChipContainer.nativeElement.scrollTop = this.myScrollChipContainer.nativeElement.scrollHeight;
+      const scrollChipContainer = this.myScrollChipContainer.nativeElement as HTMLElement;
+      scrollChipContainer.scrollTop = scrollChipContainer.scrollHeight;
     } catch (err) {}
   }
 }

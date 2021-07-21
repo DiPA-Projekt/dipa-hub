@@ -4,6 +4,7 @@ import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { Subscription } from 'rxjs';
 import { NonPermanentProjectTask, PermanentProjectTask } from 'dipa-api-client';
 import { MatVerticalStepper } from '@angular/material/stepper';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-project-checklist',
@@ -22,6 +23,8 @@ export class ProjectChecklistComponent implements OnDestroy {
   @Input() public projectTasks: NonPermanentProjectTask[] | PermanentProjectTask[];
 
   public formGroup: FormGroup;
+
+  public showTasks: FormGroup;
 
   public statusList = [
     {
@@ -56,6 +59,14 @@ export class ProjectChecklistComponent implements OnDestroy {
     this.projectChecklistSubscription?.unsubscribe();
   }
 
+  public get visibleProjectTasks(): PermanentProjectTask[] | NonPermanentProjectTask[] {
+    return this.projectTasks.filter((task) => task.sortOrder !== -1);
+  }
+
+  public get invisibleProjectTasks(): PermanentProjectTask[] | NonPermanentProjectTask[] {
+    return this.projectTasks.filter((task) => task.sortOrder === -1);
+  }
+
   public stepStatusChanged(stepper: MatVerticalStepper, completed: boolean): void {
     stepper.selected.completed = completed;
     stepper.selected.state = completed ? 'done' : 'number';
@@ -70,5 +81,21 @@ export class ProjectChecklistComponent implements OnDestroy {
       return task.icon;
     }
     return task.projectTask.completed ? 'done' : 'number';
+  }
+
+  public drop(event: CdkDragDrop<string[]>): void {
+    moveItemInArray(this.projectTasks, event.previousIndex, event.currentIndex);
+  }
+
+  public setTaskVisibility(task: PermanentProjectTask, checked: boolean): void {
+    if (checked) {
+      task.sortOrder = this.maxTaskSortOrder() + 1;
+    } else {
+      task.sortOrder = -1;
+    }
+  }
+
+  private maxTaskSortOrder(): number {
+    return this.projectTasks.reduce((prev, current) => (prev.sortOrder > current.sortOrder ? prev : current)).sortOrder;
   }
 }
