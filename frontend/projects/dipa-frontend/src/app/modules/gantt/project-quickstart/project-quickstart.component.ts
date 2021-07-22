@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-import { Project, ProjectService, ProjectTask } from 'dipa-api-client';
+import { ProjectService, ProjectTask } from 'dipa-api-client';
 import { switchMap } from 'rxjs/operators';
 import { TimelineDataService } from '../../../shared/timelineDataService';
 
