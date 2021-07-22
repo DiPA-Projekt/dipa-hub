@@ -78,6 +78,7 @@
               [templateData]="vm.selectedTemplates"
               [allTemplates]="vm.templatesData"
               id="template{{ vm.selectedTimeline.id }}"
+              [projectApproachModifiable]="true"
               (projectApproachChanged)="setData()"
             ></app-templates>
           </ng-container>

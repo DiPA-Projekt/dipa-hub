@@ -70,6 +70,8 @@ export class ChartHeaderComponent implements OnInit, OnDestroy {
         data.filter((d) => d.projectId === this.timelineData.id && d.abbreviation === 'PE').length > 0;
     });
 
+    this.timelineDataService.setProjectData(this.timelineData.id);
+
     this.projectSubscription = this.timelineDataService.getProjectData().subscribe((data) => {
       this.project = data;
     });

@@ -24,7 +24,7 @@ export class GanttMenuComponent implements OnInit, OnDestroy {
       .getTimelines()
       .pipe(
         switchMap((timelines: Timeline[]): Observable<User> => {
-          this.timelines = timelines;
+          this.timelines = timelines?.filter((timeline) => !timeline.archived);
           return this.userService.getCurrentUser();
         })
       )
