@@ -3,6 +3,7 @@
     <div>
       <div class="mat-card-title">
         {{ timeline.name }}
+        <span *ngIf="timeline.archived" style="font-size: 14px; color: rgba(0, 0, 0, 0.54)"> (archiviert) </span>
       </div>
       <div class="project-info">
         <div class="mat-card-subtitle">

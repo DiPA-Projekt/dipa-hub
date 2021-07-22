@@ -8,7 +8,12 @@
       fxFlex.lg="33%"
       *ngFor="let role of projectRoles; let i = index"
     >
-      <app-project-role [timelineId]="selectedTimelineId" [allUsers]="allUsers" [role]="role"></app-project-role>
+      <app-project-role
+        [isEditable]="!timelineData.archived"
+        [timelineId]="selectedTimelineId"
+        [allUsers]="allUsers"
+        [role]="role"
+      ></app-project-role>
     </div>
   </div>
 </div>

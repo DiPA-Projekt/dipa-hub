@@ -15,13 +15,14 @@
               matInput
               [(ngModel)]="selectedMilestoneDataMenu.name"
               (change)="changeMilestoneName()"
+              [disabled]="!modifiable"
             />
           </mat-form-field>
           <p style="font-weight: 200; font-size: small; text-align: center; color: grey">
             Fällig am {{ getDate(selectedMilestoneDataMenu.date) }}
           </p>
           <button
-            *ngIf="incrementsData.length === 0 && milestoneData.length > 1"
+            *ngIf="modifiable && incrementsData.length === 0 && milestoneData.length > 1"
             mat-raised-button
             color="primary"
             (click)="deleteMilestone()"
@@ -37,7 +38,7 @@
           color="primary"
         >
           <div class="row">
-            <mat-radio-button [value]="status.value" (change)="changeStatus($event)">
+            <mat-radio-button [value]="status.value" (change)="changeStatus($event)" [disabled]="!modifiable">
               {{ status.name }}
             </mat-radio-button>
           </div>
@@ -62,7 +63,9 @@
       (projectDeleted)="projectDeleted.emit($event)"
     ></app-chart-header>
     <button
-      *ngIf="incrementsData.length === 0 && (active || projectApproachModifiable) && userHasProjectEditRights"
+      *ngIf="
+        modifiable && incrementsData.length === 0 && (active || projectApproachModifiable) && userHasProjectEditRights
+      "
       mat-raised-button
       color="primary"
       (click)="openMilestoneDialog()"
