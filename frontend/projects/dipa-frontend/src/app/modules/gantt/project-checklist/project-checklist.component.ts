@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { Subscription } from 'rxjs';
@@ -17,7 +17,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
     },
   ],
 })
-export class ProjectChecklistComponent implements OnDestroy {
+export class ProjectChecklistComponent implements OnChanges, OnDestroy {
   @Input() public timelineId: number;
   @Input() public checklistType: string;
   @Input() public projectTasks: NonPermanentProjectTask[] | PermanentProjectTask[];
@@ -25,6 +25,9 @@ export class ProjectChecklistComponent implements OnDestroy {
   public formGroup: FormGroup;
 
   public showTasks: FormGroup;
+
+  public visibleProjectTasks: NonPermanentProjectTask[] | PermanentProjectTask[] = [];
+  public invisibleProjectTasks: NonPermanentProjectTask[] | PermanentProjectTask[] = [];
 
   public statusList = [
     {
@@ -57,16 +60,29 @@ export class ProjectChecklistComponent implements OnDestroy {
 
   public constructor(private projectService: ProjectService) {}
 
+  private static moveTaskToArray(
+    task: NonPermanentProjectTask | PermanentProjectTask,
+    source: NonPermanentProjectTask[] | PermanentProjectTask[],
+    target: NonPermanentProjectTask[] | PermanentProjectTask[]
+  ): void {
+    const index = source.indexOf(task);
+    if (index !== -1) {
+      const element = source[index];
+      source.splice(index, 1);
+      target.push(element);
+    }
+  }
+
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (changes.projectTasks && !changes.projectTasks.isFirstChange()) {
+      this.visibleProjectTasks = this.projectTasks.filter((task) => task.sortOrder !== -1);
+      this.invisibleProjectTasks = this.projectTasks.filter((task) => task.sortOrder === -1);
+      this.projectTasks = [...this.visibleProjectTasks, ...this.invisibleProjectTasks];
+    }
+  }
+
   public ngOnDestroy(): void {
     this.projectChecklistSubscription?.unsubscribe();
-  }
-
-  public get visibleProjectTasks(): PermanentProjectTask[] | NonPermanentProjectTask[] {
-    return this.projectTasks.filter((task) => task.sortOrder !== -1);
-  }
-
-  public get invisibleProjectTasks(): PermanentProjectTask[] | NonPermanentProjectTask[] {
-    return this.projectTasks.filter((task) => task.sortOrder === -1);
   }
 
   public stepStatusChanged(stepper: MatVerticalStepper, completed: boolean): void {
@@ -86,34 +102,43 @@ export class ProjectChecklistComponent implements OnDestroy {
   }
 
   public drop(event: CdkDragDrop<string[]>): void {
-    moveItemInArray(this.projectTasks, event.previousIndex, event.currentIndex);
-    this.projectTasks.forEach(
+    moveItemInArray(this.visibleProjectTasks, event.previousIndex, event.currentIndex);
+    this.visibleProjectTasks.forEach(
       (task: NonPermanentProjectTask | PermanentProjectTask, index: number) => (task.sortOrder = index + 1)
     );
-    if ('isAdditionalTask' in this.projectTasks[0]) {
-      this.projectService.updatePermanentProjectTasks(this.timelineId, this.projectTasks).subscribe({
-        next: null,
-        error: null,
-        complete: () => void 0,
-      });
-    } else {
-      this.projectService.updateNonPermanentProjectTasks(this.timelineId, this.projectTasks).subscribe({
-        next: null,
-        error: null,
-        complete: () => void 0,
-      });
-    }
+    this.projectTasks = [...this.visibleProjectTasks, ...this.invisibleProjectTasks];
+    this.saveProjectTasks(this.visibleProjectTasks);
   }
 
   public setTaskVisibility(task: PermanentProjectTask, checked: boolean): void {
     if (checked) {
       task.sortOrder = this.maxTaskSortOrder() + 1;
+      ProjectChecklistComponent.moveTaskToArray(task, this.invisibleProjectTasks, this.visibleProjectTasks);
     } else {
       task.sortOrder = -1;
+      ProjectChecklistComponent.moveTaskToArray(task, this.visibleProjectTasks, this.invisibleProjectTasks);
     }
+    this.projectTasks = [...this.visibleProjectTasks, ...this.invisibleProjectTasks];
+    this.saveProjectTasks(this.projectTasks);
   }
 
   private maxTaskSortOrder(): number {
     return this.projectTasks.reduce((prev, current) => (prev.sortOrder > current.sortOrder ? prev : current)).sortOrder;
+  }
+
+  private saveProjectTasks(projectTasks: PermanentProjectTask[] | NonPermanentProjectTask[]): void {
+    if (this.checklistType === 'permanentTasks') {
+      this.projectService.updatePermanentProjectTasks(this.timelineId, projectTasks).subscribe({
+        next: null,
+        error: null,
+        complete: () => void 0,
+      });
+    } else {
+      this.projectService.updateNonPermanentProjectTasks(this.timelineId, this.visibleProjectTasks).subscribe({
+        next: null,
+        error: null,
+        complete: () => void 0,
+      });
+    }
   }
 }

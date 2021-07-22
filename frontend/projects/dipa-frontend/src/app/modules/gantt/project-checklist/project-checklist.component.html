@@ -89,7 +89,7 @@
             "
           >
             <mat-icon *ngIf="task.icon != null" style="margin-right: 3px">{{ task.icon }}</mat-icon>
-            <div class="full-width" style="margin-right: 16px; overflow: hidden; text-overflow: ellipsis">
+            <div class="full-width ellipsis" style="margin-right: 16px">
               {{ task.title }}
             </div>
             <div>
@@ -104,26 +104,13 @@
             </div>
           </div>
           <ng-template cdkDragPreview [matchSize]="true">
-            <div
-              class="movie-preview"
-              style="
-                font-size: 14px;
-                display: flex;
-                align-items: center;
-                overflow: hidden;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-              "
-            >
+            <div class="drag-preview ellipsis" style="font-size: 14px; display: flex; align-items: center">
               <div class="example-handle">
                 <mat-icon>drag_handle</mat-icon>
               </div>
-              <div
-                class="full-width"
-                style="display: flex; align-items: center; overflow: hidden; text-overflow: ellipsis"
-              >
+              <div class="full-width ellipsis" style="display: flex; align-items: center">
                 <mat-icon *ngIf="task.icon != null" style="margin-right: 3px">{{ task.icon }}</mat-icon>
-                <div style="overflow: hidden; text-overflow: ellipsis">{{ task.title }}</div>
+                <div class="ellipsis">{{ task.title }}</div>
               </div>
             </div>
           </ng-template>
@@ -140,20 +127,18 @@
       <mat-action-list class="invisibleTasks" (click)="$event.stopPropagation()">
         <mat-list-item *ngFor="let task of invisibleProjectTasks" class="ellipsis" style="font-size: 14px">
           <div
-            class="full-width"
+            class="full-width ellipsis"
             style="
               display: flex;
               flex-direction: row;
               box-sizing: border-box;
               justify-content: space-between;
               align-items: center;
-              overflow: hidden;
-              text-overflow: ellipsis;
               height: inherit;
             "
           >
             <mat-icon *ngIf="task.icon != null" style="margin-right: 3px">{{ task.icon }}</mat-icon>
-            <div class="full-width" style="margin-right: 16px; overflow: hidden; text-overflow: ellipsis">
+            <div class="full-width ellipsis" style="margin-right: 16px">
               {{ task.title }}
             </div>
             <div style="">
@@ -166,30 +151,6 @@
               ></mat-checkbox>
             </div>
           </div>
-          <ng-template cdkDragPreview [matchSize]="true">
-            <div
-              class="drag-preview"
-              style="
-                font-size: 14px;
-                display: flex;
-                align-items: center;
-                overflow: hidden;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-              "
-            >
-              <div class="example-handle">
-                <mat-icon>drag_handle</mat-icon>
-              </div>
-              <div
-                class="full-width"
-                style="display: flex; align-items: center; overflow: hidden; text-overflow: ellipsis"
-              >
-                <mat-icon *ngIf="task.icon != null" style="margin-right: 3px">{{ task.icon }}</mat-icon>
-                <div style="overflow: hidden; text-overflow: ellipsis">{{ task.title }}</div>
-              </div>
-            </div>
-          </ng-template>
         </mat-list-item>
       </mat-action-list>
     </mat-menu>

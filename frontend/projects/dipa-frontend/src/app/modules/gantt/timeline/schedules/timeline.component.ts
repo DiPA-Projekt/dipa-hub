@@ -222,7 +222,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
     const today = Utils.createDateAtMidnight(new Date());
 
     const appointmentsInPeriod = appointments.filter((appt) => {
-      const dateValue = appt.formFields.find((field) => field.key === 'date').value;
+      const dateValue = appt.formFields.find((field) => field.key === 'date')?.value;
       if (dateValue == null) {
         return false;
       }
@@ -237,7 +237,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
   public filterAllOpenAppointmentsInPeriod(appointments: Result[]): void {
     const appointmentsInPeriod = appointments.filter((appt) => {
-      const dateValue = appt.formFields.find((field) => field.key === 'date').value;
+      const dateValue = appt.formFields.find((field) => field.key === 'date')?.value;
       if (dateValue == null) {
         return false;
       }
