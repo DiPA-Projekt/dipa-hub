@@ -32,7 +32,7 @@ export class ProjectQuickstartComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe({
-        next: (data: Project[]) => {
+        next: (data: ProjectTask[]) => {
           this.projectTasks = data;
         },
         error: null,

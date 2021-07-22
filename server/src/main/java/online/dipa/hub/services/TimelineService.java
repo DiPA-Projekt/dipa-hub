@@ -67,7 +67,7 @@ public class TimelineService {
     public List<Timeline> getTimelines() {
         List<Long> projectIds = userInformationService.getProjectIdList();
 
-        return projectRepository.findByArchived(false)
+        return projectRepository.findAll()
                                  .stream()
                                  .map(p -> conversionService.convert(p, Timeline.class))
                                  .filter(Objects::nonNull)
@@ -78,7 +78,7 @@ public class TimelineService {
     public List<Timeline> getActiveTimelines() {
         List<Long> projectIds = userInformationService.getProjectIdList();
 
-        return projectRepository.findAll()
+        return projectRepository.findByArchived(false)
                                 .stream()
                                 .map(p -> conversionService.convert(p, Timeline.class))
                                 .filter(Objects::nonNull)

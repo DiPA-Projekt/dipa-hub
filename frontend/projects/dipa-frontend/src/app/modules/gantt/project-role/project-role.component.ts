@@ -9,6 +9,7 @@ import { TimelineDataService } from '../../../shared/timelineDataService';
   styleUrls: ['./project-role.component.scss'],
 })
 export class ProjectRoleComponent implements OnInit {
+  @Input() public isEditable: boolean;
   @Input() public role: ProjectRole;
   @Input() public allUsers: User[];
   @Input() public timelineId: number;
@@ -59,8 +60,14 @@ export class ProjectRoleComponent implements OnInit {
 
   private setReactiveForm(): void {
     this.formGroup = this.fb.group({
-      user: new FormControl(null, { validators: [Validators.required], updateOn: 'change' }),
-      role: new FormControl('', { validators: [Validators.required], updateOn: 'change' }),
+      user: new FormControl(
+        { value: null, disabled: !this.isEditable },
+        { validators: [Validators.required], updateOn: 'change' }
+      ),
+      role: new FormControl(
+        { value: '', disabled: !this.isEditable },
+        { validators: [Validators.required], updateOn: 'change' }
+      ),
     });
   }
 }
