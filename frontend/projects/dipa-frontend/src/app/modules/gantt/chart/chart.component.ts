@@ -186,7 +186,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
           (d) => d.projectId === this.timelineData.id && (d.abbreviation === 'PL' || d.abbreviation === 'PE')
         ).length > 0;
 
-      this.modifiable = (this.active || this.projectApproachModifiable) && this.userHasProjectEditRights;
+      this.modifiable =
+        !this.timelineData.archived && (this.active || this.projectApproachModifiable) && this.userHasProjectEditRights;
 
       this.setSubscriptions();
       this.drawChart();

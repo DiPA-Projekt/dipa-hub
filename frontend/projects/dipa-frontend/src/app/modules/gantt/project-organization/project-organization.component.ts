@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { ActivatedRoute, Params } from '@angular/router';
-import { ProjectService, ProjectRole, User, UserService } from 'dipa-api-client';
+import { ProjectService, ProjectRole, User, UserService, Timeline, TimelinesService } from 'dipa-api-client';
 import { forkJoin, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
@@ -13,6 +13,7 @@ import { switchMap } from 'rxjs/operators';
 export class ProjectOrganizationComponent implements OnInit, OnDestroy {
   public projectRoles: ProjectRole[];
   public allUsers: User[];
+  public timelineData: Timeline;
 
   public selectedTimelineId;
   private projectSubscription: Subscription;
@@ -21,6 +22,7 @@ export class ProjectOrganizationComponent implements OnInit, OnDestroy {
   public constructor(
     private activatedRoute: ActivatedRoute,
     private projectService: ProjectService,
+    private timelinesService: TimelinesService,
     private userService: UserService
   ) {}
 
@@ -31,10 +33,15 @@ export class ProjectOrganizationComponent implements OnInit, OnDestroy {
     this.projectSubscription = this.activatedRoute.parent.params
       .pipe(
         switchMap((params: Params) =>
-          forkJoin(this.userService.getUsers(), this.projectService.getProjectRoles(parseInt(params.id, 10)))
+          forkJoin(
+            this.timelinesService.getTimelines(),
+            this.userService.getUsers(),
+            this.projectService.getProjectRoles(parseInt(params.id, 10))
+          )
         )
       )
-      .subscribe(([allUsers, projectRoles]: [User[], ProjectRole[]]) => {
+      .subscribe(([timelinesData, allUsers, projectRoles]: [Timeline[], User[], ProjectRole[]]) => {
+        this.timelineData = timelinesData.find((c) => c.id === this.selectedTimelineId);
         this.projectRoles = projectRoles;
         this.allUsers = allUsers;
       });

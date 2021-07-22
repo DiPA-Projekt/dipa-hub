@@ -1,6 +1,8 @@
 <div class="chartHeader">
-  <span *ngIf="showTitle" class="timelineName" style="margin-top: 10px">
-    {{ timelineData.name }}
+  <span *ngIf="showTitle" class="timelineTitle">
+    <button mat-menu-item class="timelineTitleButton" [routerLink]="['/gantt/', timelineData.id, 'project-checklist']">
+      {{ timelineData.name }}
+    </button>
   </span>
 
   <div fxLayout="row wrap" fxLayoutGap="12px grid" class="full-width">
@@ -15,7 +17,7 @@
         <mat-select
           [(value)]="timelineData.projectType"
           (selectionChange)="changeProjectType($event)"
-          [disabled]="!active || !userHasProjectEditRights"
+          [disabled]="timelineData.archived || !active || !userHasProjectEditRights"
         >
           <mat-option *ngFor="let projectType of projectTypesList" [value]="projectType">
             {{ projectType }}
@@ -34,7 +36,7 @@
         <mat-select
           [(value)]="timelineData.operationTypeId"
           (selectionChange)="changeOperationType($event)"
-          [disabled]="!active || !userHasProjectEditRights"
+          [disabled]="timelineData.archived || !active || !userHasProjectEditRights"
         >
           <mat-option *ngFor="let operationType of operationTypesList" [value]="operationType.id">
             {{ operationType.name }}
@@ -53,7 +55,7 @@
         <mat-select
           [(value)]="timelineData.projectApproachId"
           (selectionChange)="changeProjectApproach($event)"
-          [disabled]="!projectApproachModifiable || !userHasProjectEditRights"
+          [disabled]="timelineData.archived || !projectApproachModifiable || !userHasProjectEditRights"
         >
           <mat-option
             *ngFor="let projectApproach of filterProjectApproaches(timelineData.operationTypeId)"
@@ -78,7 +80,11 @@
       <mat-icon>event_note</mat-icon>
       Export
     </button>
-    <button *ngIf="!active && !projectApproachModifiable" mat-icon-button [matMenuTriggerFor]="menu">
+    <button
+      *ngIf="timelineData.archived && !active && !projectApproachModifiable"
+      mat-icon-button
+      [matMenuTriggerFor]="menu"
+    >
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
