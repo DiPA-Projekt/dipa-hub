@@ -10,9 +10,11 @@ import { TimelineDataService } from '../../../shared/timelineDataService';
   templateUrl: './project-control.component.html',
 })
 export class ProjectControlComponent implements OnInit, OnDestroy {
+  public project: Project;
   public projectTasks: PermanentProjectTask[];
 
   public selectedTimelineId: number;
+  public projectDataSubscription: Subscription;
   public timelineIdSubscription: Subscription;
   public projectTasksSubscription: Subscription;
 
@@ -32,15 +34,24 @@ export class ProjectControlComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe({
-        next: (data: Project[]) => {
+        next: (data: PermanentProjectTask[]) => {
           this.projectTasks = data;
         },
         error: null,
         complete: () => void 0,
       });
+
+    this.projectDataSubscription = this.timelineDataService.getProjectData().subscribe({
+      next: (data: Project) => {
+        this.project = data;
+      },
+      error: null,
+      complete: () => void 0,
+    });
   }
 
   public ngOnDestroy(): void {
+    this.projectDataSubscription?.unsubscribe();
     this.timelineIdSubscription?.unsubscribe();
     this.projectTasksSubscription?.unsubscribe();
   }

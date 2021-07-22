@@ -24,7 +24,7 @@ export class GanttMenuComponent implements OnInit, OnDestroy {
       .getTimelines()
       .pipe(
         switchMap((timelines: Timeline[]): Observable<User> => {
-          this.timelines = timelines;
+          this.timelines = timelines?.filter((timeline) => !timeline.archived);
           return this.userService.getCurrentUser();
         })
       )
@@ -35,8 +35,8 @@ export class GanttMenuComponent implements OnInit, OnDestroy {
             .filter((role) => role.abbreviation !== 'PMO')
             .forEach((role) => userProjectIds.push(role.projectId));
           if (this.timelines !== null) {
-            this.timelineData = this.timelines.filter((t) => userProjectIds.includes(t.id));
-            this.timelineData.sort((a, b) => a.name.localeCompare(b.name));
+            this.timelineData = this.timelines?.filter((t) => userProjectIds.includes(t.id));
+            this.timelineData?.sort((a, b) => a.name.localeCompare(b.name));
           }
         },
         error: null,

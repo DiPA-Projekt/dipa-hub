@@ -1,13 +1,15 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { FormField, ProjectService, ProjectTask, Result } from 'dipa-api-client';
+import { FormField, ProjectService, ProjectTask, Project, Result } from 'dipa-api-client';
+import { TimelineDataService } from '../../../../shared/timelineDataService';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-project-task-form',
   templateUrl: './project-task-form.component.html',
   styleUrls: ['./project-task-form.component.scss'],
 })
-export class ProjectTaskFormComponent implements OnInit {
+export class ProjectTaskFormComponent implements OnInit, OnDestroy {
   @Input() public completable: boolean;
   @Input() public taskData: ProjectTask;
   @Input() public selectedTimelineId: number;
@@ -15,9 +17,17 @@ export class ProjectTaskFormComponent implements OnInit {
 
   public formGroup: FormGroup;
 
+  public isArchivedProject: boolean;
+
   public selectedFields: string[];
 
-  public constructor(private projectService: ProjectService, private fb: FormBuilder) {}
+  private projectDataSubscription: Subscription;
+
+  public constructor(
+    private projectService: ProjectService,
+    private timelineDataService: TimelineDataService,
+    private fb: FormBuilder
+  ) {}
 
   public static getValidators(entry: FormField): ValidatorFn[] {
     const validators: ValidatorFn[] = [];
@@ -54,7 +64,20 @@ export class ProjectTaskFormComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.setReactiveForm(this.taskData);
+    this.projectDataSubscription = this.timelineDataService.getProjectData().subscribe({
+      next: (data: Project) => {
+        if (this.isArchivedProject !== data.archived) {
+          this.isArchivedProject = data.archived;
+          this.setReactiveForm(this.taskData);
+        }
+      },
+      error: null,
+      complete: () => void 0,
+    });
+  }
+
+  public ngOnDestroy(): void {
+    this.projectDataSubscription?.unsubscribe();
   }
 
   public isValidUrl(entry: FormControl): boolean {
@@ -137,17 +160,17 @@ export class ProjectTaskFormComponent implements OnInit {
       }
 
       const formGroup = this.fb.group({
-        id: entry?.id,
-        value: entry?.value,
-        key: entry?.key,
-        label: entry?.label,
-        hint: entry?.hint,
-        required: entry?.required,
-        sortOrder: entry?.sortOrder,
-        controlType: entry?.controlType,
-        type: entry?.type,
-        options: optionsArray,
-        show: entry?.show,
+        id: new FormControl({ value: entry?.id, disabled: this.isArchivedProject }),
+        value: new FormControl({ value: entry?.value, disabled: this.isArchivedProject }),
+        key: new FormControl({ value: entry?.key, disabled: this.isArchivedProject }),
+        label: new FormControl({ value: entry?.label, disabled: this.isArchivedProject }),
+        hint: new FormControl({ value: entry?.hint, disabled: this.isArchivedProject }),
+        required: new FormControl({ value: entry?.required, disabled: this.isArchivedProject }),
+        sortOrder: new FormControl({ value: entry?.sortOrder, disabled: this.isArchivedProject }),
+        controlType: new FormControl({ value: entry?.controlType, disabled: this.isArchivedProject }),
+        type: new FormControl({ value: entry?.type, disabled: this.isArchivedProject }),
+        options: new FormControl({ value: entry?.options, disabled: this.isArchivedProject }),
+        show: new FormControl({ value: entry?.show, disabled: this.isArchivedProject }),
       });
 
       const validators = ProjectTaskFormComponent.getValidators(entry);

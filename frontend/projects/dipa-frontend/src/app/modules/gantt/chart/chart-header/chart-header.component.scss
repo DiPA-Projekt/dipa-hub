@@ -15,9 +15,14 @@
   }
 }
 
-.timelineName {
-  font-size: 20px;
+.timelineTitle {
   margin-right: 15px;
+}
+
+.timelineTitleButton {
+  font-size: 20px;
+  height: 40px;
+  line-height: 40px;
 }
 
 .mat-toolbar {

@@ -25,7 +25,16 @@
             <h2 class="text-template">Standard</h2>
             <img class="logo" *ngIf="selectedOperationTypeId === 2" src="assets/img/VMXT-logo.png" alt="VMXT" />
             <img class="logo" *ngIf="selectedOperationTypeId === 3" src="assets/img/UfAB-logo.png" alt="UfAB" />
-            <button mat-stroked-button color="primary" (click)="updateTemplateStandard()">Übernehmen</button>
+            <ng-container *ngIf="vm$ | async as vm">
+              <button
+                *ngIf="!vm.selectedTimeline.archived"
+                mat-stroked-button
+                color="primary"
+                (click)="updateTemplateStandard()"
+              >
+                Übernehmen
+              </button>
+            </ng-container>
             <div class="row justify-content-center">
               <div class="button-template">
                 <button mat-icon-button (click)="onPrevStandard()">
@@ -39,7 +48,16 @@
           </div>
           <div class="template-controller" style="top: 660px" *ngIf="nonStandardTemplatesList.length > 0">
             <h2 class="text-template">Zeitpläne anderer Projekte</h2>
-            <button mat-stroked-button color="primary" (click)="updateTemplateNonStandard()">Übernehmen</button>
+            <ng-container *ngIf="vm$ | async as vm">
+              <button
+                *ngIf="!vm.selectedTimeline.archived"
+                mat-stroked-button
+                color="primary"
+                (click)="updateTemplateNonStandard()"
+              >
+                Übernehmen
+              </button>
+            </ng-container>
             <div class="row justify-content-center">
               <div class="button-template">
                 <button mat-icon-button (click)="onPrevNonStandard()">
@@ -60,6 +78,7 @@
               [templateData]="vm.selectedTemplates"
               [allTemplates]="vm.templatesData"
               id="template{{ vm.selectedTimeline.id }}"
+              [projectApproachModifiable]="true"
               (projectApproachChanged)="setData()"
             ></app-templates>
           </ng-container>

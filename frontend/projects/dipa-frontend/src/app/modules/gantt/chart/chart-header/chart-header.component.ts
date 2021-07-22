@@ -84,23 +84,26 @@ export class ChartHeaderComponent implements OnInit, OnDestroy {
     this.projectSubscription?.unsubscribe();
   }
 
+  public changeOperationType(event: MatSelectChange): void {
+    this.timelineData.operationTypeId = parseInt(event.value, 10);
+
+    this.operationTypeChanged.emit(event.value);
+  }
+
   public changeProjectApproach(event: MatSelectChange): void {
     this.timelineData.projectApproachId = parseInt(event.value, 10);
 
     this.timelinesService.updateTimeline(this.timelineData.id, this.timelineData).subscribe(() => {
+      this.timelineDataService.setTimelines();
       this.projectApproachChanged.emit(event.value);
     });
-  }
-
-  public changeOperationType(event: MatSelectChange): void {
-    this.timelineData.operationTypeId = parseInt(event.value, 10);
-    this.operationTypeChanged.emit(event.value);
   }
 
   public changeProjectType(event: MatSelectChange): void {
     this.timelineData.projectType = event.value as ProjectTypeEnum;
 
     this.timelinesService.updateTimeline(this.timelineData.id, this.timelineData).subscribe(() => {
+      this.timelineDataService.setTimelines();
       this.projectTypeChanged.emit(event.value);
     });
   }

@@ -171,7 +171,6 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
       next: () => {
         this.dialogRef.close();
         this.timelineDataService.setTimelines();
-        this.router.navigate([`/gantt/${this.data.timeline.id}/project-checklist/quickstart`]);
       },
       error: null,
       complete: () => void 0,
@@ -197,6 +196,7 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
   private setReactiveForm(project: Project, timeline: Timeline): void {
     this.authenticationService.getProjectRoles().then((roles) => {
       this.userHasProjectEditRights =
+        !project?.archived &&
         roles.filter((d) => d.projectId === timeline.id && (d.abbreviation === 'PL' || d.abbreviation === 'PE'))
           .length > 0;
       this.isNotEditable = project.archived || !this.userHasProjectEditRights;

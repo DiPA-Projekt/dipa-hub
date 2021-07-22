@@ -19,6 +19,7 @@ interface SelectOptionGroup {
   styleUrls: ['./results-form.component.scss', '../project-task-form/project-task-form.component.scss'],
 })
 export class ResultsFormComponent implements OnInit {
+  @Input() public isEditable: boolean;
   @Input() public formData: FormArray;
   @Input() public statusList: OptionEntry[];
   @Input() public selectedFields: string[];
