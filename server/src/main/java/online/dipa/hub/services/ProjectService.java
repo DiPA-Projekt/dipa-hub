@@ -187,7 +187,7 @@ public class ProjectService {
                                          });
     }
 
-    public List<ProjectTask> getProjectTasks (final Long projectId, final boolean isPermanentTask) {
+    public List<ProjectTask> getProjectTasks (final Long projectId) {
         List<ProjectTask> projectTasks = new ArrayList<>();
         List<Long> projectIds = userInformationService.getProjectIdList();
 
@@ -232,8 +232,8 @@ public class ProjectService {
                                             .stream()
                                             .map(p -> conversionService.convert(p, PermanentProjectTask.class))
                                             .filter(Objects::nonNull)
-                                            .filter(task -> task.getProjectTask().getProjectPropertyQuestion() != null
-                                                     ? task.getProjectTask().getProjectPropertyQuestion().getSelected() : true)
+                                            .filter(task -> task.getProjectTask().getProjectPropertyQuestion() == null ||
+                                                    task.getProjectTask().getProjectPropertyQuestion().getSelected())
                                             .sorted(Comparator.comparing(PermanentProjectTask::getSortOrder))
                                             .collect(Collectors.toList()));
             }
@@ -259,8 +259,8 @@ public class ProjectService {
                                                      .stream()
                                                      .map(p -> conversionService.convert(p, NonPermanentProjectTask.class))
                                                      .filter(Objects::nonNull)
-                                                     .filter(task -> task.getProjectTask().getProjectPropertyQuestion() != null
-                                                             ? task.getProjectTask().getProjectPropertyQuestion().getSelected() : true)
+                                                     .filter(task -> task.getProjectTask().getProjectPropertyQuestion() == null ||
+                                                             task.getProjectTask().getProjectPropertyQuestion().getSelected())
                                                      .sorted(Comparator.comparing(NonPermanentProjectTask::getSortOrder))
                                                      .collect(Collectors.toList()));
             }
@@ -292,7 +292,7 @@ public class ProjectService {
         if (project.getProjectSize() != null && (project.getProjectSize().equals("SMALL") || project.getProjectSize().equals("MEDIUM"))
                 && project.getProjectTaskTemplate() == null) {
             ProjectTaskTemplateEntity projectTaskTemplate = projectTaskTemplateRepository.findByMaster().orElse(null);
-System.out.println("init");
+
             ProjectTaskTemplateEntity projectTaskProject = new
                     ProjectTaskTemplateEntity("Project Task Template " + project.getName(), false, project);
             projectTaskTemplateRepository.save(projectTaskProject);

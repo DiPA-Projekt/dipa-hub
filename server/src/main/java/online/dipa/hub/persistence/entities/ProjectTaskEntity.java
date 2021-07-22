@@ -45,7 +45,7 @@ public class ProjectTaskEntity extends BaseEntity {
         super();
     }
 
-    public ProjectTaskEntity(boolean optional, String explanation, boolean completed, Long sortOrder) {
+    public ProjectTaskEntity(String explanation, boolean completed, Long sortOrder) {
         this.explanation = explanation;
         this.completed = completed;
         this.sortOrder = sortOrder;
