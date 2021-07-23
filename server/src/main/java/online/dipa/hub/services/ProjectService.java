@@ -90,9 +90,9 @@ public class ProjectService {
     @Autowired
     private UserRepository userRepository;
 
-    private static final String itzBundTenant = "itzbund";
-    private static final String projectSizeSmall = "SMALL";
-    private static final String projectSizeMedium = "MEDIUM";
+    private static final String ITZBUND_TENANT = "itzbund";
+    private static final String PROJECT_SIZE_SMALL = "SMALL";
+    private static final String PROJECT_SIZE_MEDIUM = "MEDIUM";
 
 
     public Project getProjectData(final Long projectId) {
@@ -299,8 +299,8 @@ public class ProjectService {
         ProjectEntity project = projectRepository.getById(projectId);
         final String tenantId = CurrentTenantContextHolder.getTenantId();
 
-        if (tenantId.equals(itzBundTenant) && project.getProjectSize() != null &&
-                (project.getProjectSize().equals(projectSizeSmall) || project.getProjectSize().equals(projectSizeMedium))
+        if (tenantId.equals(ITZBUND_TENANT) && project.getProjectSize() != null &&
+                (project.getProjectSize().equals(PROJECT_SIZE_SMALL) || project.getProjectSize().equals(PROJECT_SIZE_MEDIUM))
                 && project.getProjectTaskTemplate() == null) {
             ProjectTaskTemplateEntity projectTaskTemplate = projectTaskTemplateRepository.findByMaster().orElse(null);
 
