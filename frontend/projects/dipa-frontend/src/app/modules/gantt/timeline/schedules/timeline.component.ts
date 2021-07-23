@@ -42,7 +42,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
   public operationTypesList: OperationType[] = [];
   public projectApproachesList: ProjectApproach[] = [];
-  public projectTask: ProjectTask;
+  public appointmentsListProjectTasks: ProjectTask[] = [];
   public appointmentsList: Result[] = [];
   public appointmentsInPeriod: Result[] = [];
   public overdueAppointments: Result[] = [];
@@ -109,8 +109,16 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
     this.projectTasksSubscription = this.projectService.getPermanentProjectTasks(this.selectedTimelineId).subscribe({
       next: (data: PermanentProjectTask[]) => {
-        this.projectTask = data[4]?.projectTask;
-        this.appointmentsList = this.projectTask?.results.sort(
+        let singleAppointmentResults: Result[] = [];
+
+        data.forEach((task: PermanentProjectTask) => {
+          this.appointmentsListProjectTasks.push(task);
+          singleAppointmentResults = singleAppointmentResults.concat(
+            task.projectTask.results.filter((result: Result) => result.resultType === 'TYPE_SINGLE_APPOINTMENT')
+          );
+        });
+
+        this.appointmentsList = singleAppointmentResults.sort(
           (b, a) =>
             new Date(b.formFields.find((field) => field.key === 'date').value).getTime() -
             new Date(a.formFields.find((field) => field.key === 'date').value).getTime()
@@ -191,14 +199,19 @@ export class TimelineComponent implements OnInit, OnDestroy {
     }
   }
 
-  public changeStatus(value: string, appointmentId: number, formfieldId: number): void {
-    this.projectTask.results
-      .find((result) => result.id === appointmentId)
-      .formFields.find((field) => field.id === formfieldId).value = value;
-    this.projectService.updateProjectTask(this.selectedTimelineId, this.projectTask).subscribe({
-      next: null,
-      error: null,
-      complete: () => void 0,
+  public changeStatus(value: string, appointmentId: number, formFieldId: number): void {
+    this.appointmentsListProjectTasks.forEach((task: PermanentProjectTask) => {
+      const foundAppointment = task.projectTask.results.find((result) => result.id === appointmentId);
+
+      if (foundAppointment) {
+        foundAppointment.formFields.find((field) => field.id === formFieldId).value = value;
+        this.projectService.updateProjectTask(this.selectedTimelineId, task.projectTask).subscribe({
+          next: null,
+          error: null,
+          complete: () => void 0,
+        });
+        return;
+      }
     });
   }
 
@@ -219,6 +232,10 @@ export class TimelineComponent implements OnInit, OnDestroy {
   }
 
   public filterAllOverdueAppointments(appointments: Result[]): void {
+    if (appointments == null) {
+      return;
+    }
+
     const today = Utils.createDateAtMidnight(new Date());
 
     const appointmentsInPeriod = appointments.filter((appt) => {
@@ -230,13 +247,17 @@ export class TimelineComponent implements OnInit, OnDestroy {
       const apptDate = Utils.createDateAtMidnight(dateValue);
       return apptDate && apptDate <= today;
     });
-    this.overdueAppointments = appointmentsInPeriod.filter(
+    this.overdueAppointments = appointmentsInPeriod?.filter(
       (appt) => appt.formFields.find((field) => field.key === 'status').value !== 'CLOSED'
     );
   }
 
   public filterAllOpenAppointmentsInPeriod(appointments: Result[]): void {
-    const appointmentsInPeriod = appointments.filter((appt) => {
+    if (appointments == null) {
+      return;
+    }
+
+    const appointmentsInPeriod = appointments?.filter((appt) => {
       const dateValue = appt.formFields.find((field) => field.key === 'date')?.value;
       if (dateValue == null) {
         return false;
@@ -248,7 +269,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
         apptDate <= Utils.createDateAtMidnight(new Date(this.apptEndDate))
       );
     });
-    this.appointmentsInPeriod = appointmentsInPeriod.filter(
+    this.appointmentsInPeriod = appointmentsInPeriod?.filter(
       (appt) => appt.formFields.find((field) => field.key === 'status').value !== 'CLOSED'
     );
   }
