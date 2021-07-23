@@ -13,6 +13,7 @@ import online.dipa.hub.api.model.Timeline;
 import online.dipa.hub.api.model.User;
 import online.dipa.hub.persistence.entities.*;
 import online.dipa.hub.persistence.repositories.*;
+import online.dipa.hub.tenancy.CurrentTenantContextHolder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
@@ -163,8 +164,9 @@ public class ProjectService {
     public List<PropertyQuestion> getProjectPropertyQuestions (final Long projectId) {
         List<PropertyQuestion> propertyQuestions = new ArrayList<>();
         List<Long> projectIds = userInformationService.getProjectIdList();
+        final String tenantId = CurrentTenantContextHolder.getTenantId();
 
-        if (projectIds.contains(projectId)) {
+        if (projectIds.contains(projectId) && tenantId.equals("itzbund")) {
 
             ProjectEntity project = timelineService.getProject(projectId);
             ProjectPropertyQuestionTemplateEntity template = project.getProjectPropertyQuestionTemplate();
@@ -190,8 +192,9 @@ public class ProjectService {
     public List<ProjectTask> getProjectTasks (final Long projectId) {
         List<ProjectTask> projectTasks = new ArrayList<>();
         List<Long> projectIds = userInformationService.getProjectIdList();
+        final String tenantId = CurrentTenantContextHolder.getTenantId();
 
-        if (projectIds.contains(projectId)) {
+        if (projectIds.contains(projectId) && tenantId.equals("itzbund")) {
 
             ProjectEntity project = projectRepository.getById(projectId);
 
@@ -216,8 +219,9 @@ public class ProjectService {
     public List<PermanentProjectTask> getPermanentProjectTasks (final Long projectId) {
         List<PermanentProjectTask> permanentProjectTasks = new ArrayList<>();
         List<Long> projectIds = userInformationService.getProjectIdList();
+        final String tenantId = CurrentTenantContextHolder.getTenantId();
 
-        if (projectIds.contains(projectId)) {
+        if (projectIds.contains(projectId) && tenantId.equals("itzbund")) {
 
             ProjectEntity project = projectRepository.getById(projectId);
 
@@ -244,8 +248,9 @@ public class ProjectService {
     public List<NonPermanentProjectTask> getNonPermanentProjectTasks (final Long projectId) {
         List<NonPermanentProjectTask> nonPermanentProjectTasks = new ArrayList<>();
         List<Long> projectIds = userInformationService.getProjectIdList();
+        final String tenantId = CurrentTenantContextHolder.getTenantId();
 
-        if (projectIds.contains(projectId)) {
+        if (projectIds.contains(projectId) && tenantId.equals("itzbund")) {
 
             ProjectEntity project = projectRepository.getById(projectId);
 
@@ -288,8 +293,9 @@ public class ProjectService {
 
     public void initializeProjectTasks(final Long projectId) {
         ProjectEntity project = projectRepository.getById(projectId);
+        final String tenantId = CurrentTenantContextHolder.getTenantId();
 
-        if (project.getProjectSize() != null && (project.getProjectSize().equals("SMALL") || project.getProjectSize().equals("MEDIUM"))
+        if (tenantId.equals("itzbund") && project.getProjectSize() != null && (project.getProjectSize().equals("SMALL") || project.getProjectSize().equals("MEDIUM"))
                 && project.getProjectTaskTemplate() == null) {
             ProjectTaskTemplateEntity projectTaskTemplate = projectTaskTemplateRepository.findByMaster().orElse(null);
 
@@ -419,8 +425,9 @@ public class ProjectService {
     public void updateProjectTask (final Long projectId, final ProjectTask projectTask) {
 
         List<Long> projectIds = userInformationService.getProjectIdList();
+        final String tenantId = CurrentTenantContextHolder.getTenantId();
 
-        if (projectIds.contains(projectId)) {
+        if (projectIds.contains(projectId) && tenantId.equals("itzbund")) {
 
             ProjectEntity project = projectRepository.getById(projectId);
             ProjectTaskTemplateEntity template = project.getProjectTaskTemplate();
