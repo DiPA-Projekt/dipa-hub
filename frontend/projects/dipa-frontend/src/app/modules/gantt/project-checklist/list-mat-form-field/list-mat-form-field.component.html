@@ -2,7 +2,7 @@
   <mat-form-field class="full-width" *ngIf="formField.get('show')?.value">
     <mat-label>{{ formField.get('label')?.value }}</mat-label>
     <mat-chip-list #chipList aria-label="Chip selection">
-      <span style="max-height: 100px; overflow: auto" #scrollChip [scrollTop]="scrollChip.scrollHeight">
+      <span style="max-height: 100px; overflow: auto" #scrollChip>
         <mat-chip
           *ngFor="let chip of chips"
           class="smallChip"

@@ -5,6 +5,7 @@ import online.dipa.hub.api.model.Project;
 import online.dipa.hub.api.model.ProjectRole;
 import online.dipa.hub.api.model.ProjectTask;
 
+import online.dipa.hub.api.model.PropertyQuestion;
 import online.dipa.hub.api.model.Result;
 import online.dipa.hub.api.model.Timeline;
 import online.dipa.hub.api.model.User;
@@ -34,6 +35,12 @@ public class ProjectService {
 
     @Autowired
     private ProjectTaskRepository projectTaskRepository;
+
+    @Autowired
+    private ProjectPropertyQuestionRepository projectPropertyQuestionRepository;
+
+    @Autowired
+    private ProjectPropertyQuestionTemplateRepository projectPropertyQuestionTemplateRepository;
 
     @Autowired
     private FormFieldRepository formFieldRepository;
@@ -129,6 +136,7 @@ public class ProjectService {
         milestoneTemplateRepository.saveAll(newMilestones);
 
         userInformationService.createNewProjectRoles(newProject, projectOwner);
+        initializeProjectTasks(newProject.getId());
         return conversionService.convert(newProject, Timeline.class);
     }
 
@@ -136,6 +144,33 @@ public class ProjectService {
         var projectEntity = timelineService.getProject(projectId);
        
         projectRepository.delete(projectEntity);      
+    }
+
+    public List<PropertyQuestion> getProjectPropertyQuestions (final Long projectId) {
+        List<PropertyQuestion> propertyQuestions = new ArrayList<>();
+        List<Long> projectIds = userInformationService.getProjectIdList();
+
+        if (projectIds.contains(projectId)) {
+
+            ProjectEntity project = timelineService.getProject(projectId);
+            ProjectPropertyQuestionTemplateEntity template = project.getProjectPropertyQuestionTemplate();
+
+            propertyQuestions.addAll(template.getProjectPropertyQuestions()
+                                    .stream()
+                                    .map(p -> conversionService.convert(p, PropertyQuestion.class))
+                                    .collect(Collectors.toList())
+            );
+        }
+
+        return propertyQuestions;
+    }
+
+    public void updateProjectPropertyQuestion(final PropertyQuestion propertyQuestion) {
+        projectPropertyQuestionRepository.findById(propertyQuestion.getId())
+                                         .ifPresent(pQuestion -> {
+                                             pQuestion.setSelected(propertyQuestion.getSelected());
+                                             projectPropertyQuestionRepository.save(pQuestion);
+                                         });
     }
 
     public List<ProjectTask> getProjectTasks (final Long projectId, final boolean isPermanentTask) {
@@ -158,6 +193,7 @@ public class ProjectService {
                                             .filter(Objects::nonNull)
                                             .filter(task -> !isPermanentTask || task.getIsPermanentTask()
                                                                                     .equals(true))
+                                            .filter(task -> task.getProjectPropertyQuestion() == null || task.getProjectPropertyQuestion().getSelected())
                                             .sorted(Comparator.comparing(ProjectTask::getSortOrder))
                                             .collect(Collectors.toList()));
             }
@@ -170,16 +206,23 @@ public class ProjectService {
 
         if (project.getProjectSize() != null && (project.getProjectSize().equals("SMALL") || project.getProjectSize().equals("MEDIUM"))
                 && project.getProjectTaskTemplate() == null) {
-            ProjectTaskTemplateEntity projectTaskTemplate = projectTaskTemplateRepository.findAll().stream().filter(
-                    ProjectTaskTemplateEntity::getMaster).findFirst().orElse(null);
+            ProjectTaskTemplateEntity projectTaskTemplate = projectTaskTemplateRepository.findByMaster().orElse(null);
 
-            ProjectTaskTemplateEntity projectTaskProject = new ProjectTaskTemplateEntity("Project Task Template" + project.getName(), false, project);
+            ProjectTaskTemplateEntity projectTaskProject = new ProjectTaskTemplateEntity("Project Task Template " + project.getName(), false, project);
             projectTaskTemplateRepository.save(projectTaskProject);
+
+            ProjectPropertyQuestionTemplateEntity propertyQuestionTemplate = createNewPropertyQuestions(project);
 
             for (ProjectTaskEntity projectTask: Objects.requireNonNull(projectTaskTemplate)
                                                        .getProjectTasks()) {
                 ProjectTaskEntity newProjectTask = new ProjectTaskEntity(projectTask);
                 newProjectTask.setProjectTaskTemplate(projectTaskProject);
+
+                if (projectTask.getProjectPropertyQuestion() != null) {
+                    projectPropertyQuestionRepository
+                            .findByTemplateAndSortOrder(propertyQuestionTemplate, projectTask.getProjectPropertyQuestion().getSortOrder())
+                            .ifPresent(newProjectTask::setProjectPropertyQuestion);
+                }
                 projectTaskRepository.save(newProjectTask);
 
                 for (FormFieldEntity entry: projectTask.getEntries()) {
@@ -191,8 +234,31 @@ public class ProjectService {
 
                 createNewResults(projectTask, newProjectTask);
             }
+
             project.setProjectTaskTemplate(projectTaskTemplate);
+            project.setProjectPropertyQuestionTemplate(propertyQuestionTemplate);
+
         }
+    }
+
+    public ProjectPropertyQuestionTemplateEntity createNewPropertyQuestions(ProjectEntity project) {
+
+        ProjectPropertyQuestionTemplateEntity propertyQuestionTemplate = new ProjectPropertyQuestionTemplateEntity
+                ("Property Question Template " + project.getName(), false, project);
+        projectPropertyQuestionTemplateRepository.save(propertyQuestionTemplate);
+
+        projectPropertyQuestionTemplateRepository.findByMaster().ifPresent(temp -> {
+            for (ProjectPropertyQuestionEntity projectPropertyQuestion: temp.getProjectPropertyQuestions()) {
+
+                ProjectPropertyQuestionEntity newPropertyQuestion = new ProjectPropertyQuestionEntity(projectPropertyQuestion);
+                newPropertyQuestion.setProjectPropertyQuestionTemplate(propertyQuestionTemplate);
+                propertyQuestionTemplate.getProjectPropertyQuestions().add(newPropertyQuestion);
+                projectPropertyQuestionRepository.save(newPropertyQuestion);
+
+            }
+        });
+
+        return propertyQuestionTemplate;
     }
 
     private void createNewResults(ProjectTaskEntity oldProjectTask, ProjectTaskEntity newProjectTask) {
@@ -354,9 +420,8 @@ public class ProjectService {
         ProjectEntity project = timelineService.getProject(projectId);
         
 
-        return userRepository.findAll().stream().filter(u -> u.getProjectRoles().stream()
-                                                              .anyMatch(role ->role.getProjectRoleTemplate().getProject().equals(project)))
-        .map(user -> conversionService.convert(user, User.class)).collect(Collectors.toList());
+        return userRepository.findByProject(project)
+                             .stream().map(user -> conversionService.convert(user, User.class)).collect(Collectors.toList());
         
     }
     

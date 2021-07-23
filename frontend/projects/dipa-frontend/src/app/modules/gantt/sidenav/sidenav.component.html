@@ -1,32 +1,26 @@
-<div *ngIf="timeline" class="sidenav-header">
-  <div class="mat-card-title">
-    {{ timeline.name }}
-  </div>
-  <div class="project-info">
-    <div class="mat-card-subtitle">
-      {{ timeline.projectType }}
+<ng-container *ngIf="timeline">
+  <div class="sidenav-header" fxLayout="row nowrap" style="justify-content: space-between">
+    <div>
+      <div class="mat-card-title">
+        {{ timeline.name }}
+        <span *ngIf="timeline.archived" style="font-size: 14px; color: rgba(0, 0, 0, 0.54)"> (archiviert) </span>
+      </div>
+      <div class="project-info">
+        <div class="mat-card-subtitle">
+          {{ timeline.projectType }}
+        </div>
+        <div class="mat-card-subtitle">
+          {{ roles }}
+        </div>
+      </div>
     </div>
-    <div class="mat-card-subtitle">
-      {{ roles }}
+    <div>
+      <button mat-button class="roundedButton" (click)="openProjectSettingsDialog(project, timeline)">
+        <mat-icon>settings</mat-icon>
+      </button>
     </div>
   </div>
-
-  <button style="float: right" mat-icon-button [matMenuTriggerFor]="menu">
-    <mat-icon>more_vert</mat-icon>
-  </button>
-  <mat-menu #menu="matMenu">
-    <button
-      *ngIf="project"
-      mat-menu-item
-      title="Projekt archivieren"
-      aria-label="Projekt archivieren"
-      (click)="archiveProject()"
-    >
-      <mat-icon>archive</mat-icon>
-      Projekt archivieren
-    </button>
-  </mat-menu>
-</div>
+</ng-container>
 <mat-nav-list>
   <app-nav-menu-list-item *ngFor="let item of navMenuItems" [item]="item"></app-nav-menu-list-item>
 </mat-nav-list>

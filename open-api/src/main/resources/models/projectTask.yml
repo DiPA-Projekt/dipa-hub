@@ -14,10 +14,6 @@ ProjectTask:
       description: icon of the task
       type: string
       example: "shopping_cart"
-    optional:
-      description: if this task is optional
-      type: boolean
-      example: true
     explanation:
       description: what is this task about
       type: string
@@ -39,6 +35,10 @@ ProjectTask:
       type: integer
       format: int64
       example: 2
+    projectPropertyQuestion:
+      description: Project property question
+      type: object
+      $ref: "../models/projectPropertyQuestion.yml#/PropertyQuestion"
     entries:
       type: array
       items:

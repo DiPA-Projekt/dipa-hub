@@ -67,7 +67,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
 
   loadTimelines(): void {
     this.observablesList = [];
-    this.timelinesSubscription = this.timelinesService.getTimelines().subscribe((data) => {
+    this.timelinesSubscription = this.timelinesService.getActiveTimelines().subscribe((data) => {
       this.timelineData = data;
 
       this.timelineData.forEach((timeline) => {

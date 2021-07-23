@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-import { Project, ProjectService, ProjectTask } from 'dipa-api-client';
+import { ProjectService, ProjectTask } from 'dipa-api-client';
 import { switchMap } from 'rxjs/operators';
+import { TimelineDataService } from '../../../shared/timelineDataService';
 
 @Component({
   selector: 'app-project-quickstart',
@@ -15,20 +16,23 @@ export class ProjectQuickstartComponent implements OnInit, OnDestroy {
   public timelineIdSubscription: Subscription;
   public projectTasksSubscription: Subscription;
 
-  public constructor(public activatedRoute: ActivatedRoute, private projectService: ProjectService) {}
+  public constructor(
+    public activatedRoute: ActivatedRoute,
+    private projectService: ProjectService,
+    private timelineDataService: TimelineDataService
+  ) {}
 
   public ngOnInit(): void {
     this.timelineIdSubscription = this.activatedRoute.parent.parent.params
       .pipe(
-        switchMap(
-          (params: Params): Observable<ProjectTask[]> => {
-            this.selectedTimelineId = parseInt(params.id, 10);
-            return this.projectService.getProjectTasks(this.selectedTimelineId);
-          }
-        )
+        switchMap((params: Params): Observable<ProjectTask[]> => {
+          this.selectedTimelineId = parseInt(params.id, 10);
+          this.timelineDataService.setProjectTasks(this.selectedTimelineId);
+          return this.timelineDataService.getProjectTasks();
+        })
       )
       .subscribe({
-        next: (data: Project[]) => {
+        next: (data: ProjectTask[]) => {
           this.projectTasks = data;
         },
         error: null,

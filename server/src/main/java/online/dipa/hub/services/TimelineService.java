@@ -14,7 +14,6 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -35,6 +34,9 @@ public class TimelineService {
 
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Autowired
+    private ProjectApproachRepository projectApproachRepository;
 
     @Autowired
     private MilestoneTemplateRepository milestoneTemplateRepository;
@@ -70,35 +72,37 @@ public class TimelineService {
                                  .map(p -> conversionService.convert(p, Timeline.class))
                                  .filter(Objects::nonNull)
                                  .filter(t -> projectIds.contains(t.getId()))
-                                 .filter(t -> !t.getArchived())
                                  .collect(Collectors.toList());
+    }
+
+    public List<Timeline> getActiveTimelines() {
+        List<Long> projectIds = userInformationService.getProjectIdList();
+
+        return projectRepository.findByArchived(false)
+                                .stream()
+                                .map(p -> conversionService.convert(p, Timeline.class))
+                                .filter(Objects::nonNull)
+                                .filter(t -> projectIds.contains(t.getId()))
+                                .filter(t -> !t.getArchived())
+                                .collect(Collectors.toList());
     }
 
     public List<Timeline> getArchivedTimelines() {
         List<Long> projectIds = userInformationService.getProjectIdList();
 
-        return projectRepository.findAll()
+        return projectRepository.findByArchived(true)
                                  .stream()
                                  .map(p -> conversionService.convert(p, Timeline.class))
                                  .filter(Objects::nonNull)
                                  .filter(t -> projectIds.contains(t.getId()))
-                                 .filter(Timeline::getArchived)
                                  .collect(Collectors.toList());
     }
 
 
     public ProjectEntity getProject(final Long timelineId) {
-             
-        return projectRepository.findAll().stream()
-                .filter(t -> t.getId().equals(timelineId)).findFirst().orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Project with id: %1$s not found.", timelineId)));
 
-    }
+        return projectRepository.getById(timelineId);
 
-    ProjectApproachEntity findProjectApproach(Long projectApproachId) {
-        return projectRepository.findAll().stream()
-        .filter(p -> p.getProjectApproach().getId().equals(projectApproachId)).findFirst().orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Project approach with id: %1$s not found.", projectApproachId))).getProjectApproach();
     }
 
     public void moveTimelineByDays(final Long timelineId, final Long days) {
@@ -228,21 +232,18 @@ public class TimelineService {
         IcsCalendar icsCalendar = new IcsCalendar();
         TimeZone timezone = icsCalendar.createTimezoneEurope();
 
-        final ProjectApproachEntity projectApproach = findProjectApproach(currentProject.getProjectApproach().getId());
+        final ProjectApproachEntity projectApproach = currentProject.getProjectApproach();
 
-        if (projectApproach != null) {
+        String projectEventTitle = "Projektstart" + " - " + projectApproach.getName();
+        icsCalendar.addEvent(timezone, currentProject.getStartDate().toLocalDate(), projectEventTitle, "Test Comment");
 
-            String projectEventTitle = "Projektstart" + " - " + projectApproach.getName();
-            icsCalendar.addEvent(timezone, currentProject.getStartDate().toLocalDate(), projectEventTitle, "Test Comment");
+        List<Milestone> milestones = milestoneService.getMilestonesForTimeline(timelineId);
+        for (Milestone milestone : milestones) {
+            LocalDate eventDate = milestone.getDate();
+            String eventTitle = milestone.getName() + " - " + projectApproach.getName();
+            String eventComment = "Test Comment";
 
-            List<Milestone> milestones = milestoneService.getMilestonesForTimeline(timelineId);
-            for (Milestone milestone : milestones) {
-                LocalDate eventDate = milestone.getDate();
-                String eventTitle = milestone.getName() + " - " + projectApproach.getName();
-                String eventComment = "Test Comment";
-
-                icsCalendar.addEvent(timezone, eventDate, eventTitle, eventComment);
-            }
+            icsCalendar.addEvent(timezone, eventDate, eventTitle, eventComment);
         }
 
         return icsCalendar.getCalendarFile("Meilensteine");
@@ -262,7 +263,7 @@ public class TimelineService {
 
             PlanTemplateEntity planTemplate = projectApproachService.getDefaultPlanTemplateEntityFromRepo(timeline.getProjectApproachId()); 
             List<MilestoneTemplateEntity> repoMilestones = new ArrayList<>(planTemplate.getMilestones());
-            
+
             PlanTemplateEntity projectPlanTemplate = project.getPlanTemplate();
 
             projectPlanTemplate.getMilestones()
@@ -341,18 +342,6 @@ public class TimelineService {
         downloadFileIds.addAll(vmxtProjectFiles);
 
         return downloadFileIds;
-    }
-
-    boolean filterProjectApproach(PlanTemplateEntity template, final Long projectApproachId) {
-        Optional<ProjectApproach> projectApproach = template.getProjectApproaches()
-                                                            .stream()
-                                                            .map(p -> conversionService.convert(p,
-                                                                    ProjectApproach.class))
-                                                            .filter(Objects::nonNull)
-                                                            .filter(o -> o.getId().equals(projectApproachId)).findFirst();
-
-        return projectApproach.isPresent();
-
     }
 
 }

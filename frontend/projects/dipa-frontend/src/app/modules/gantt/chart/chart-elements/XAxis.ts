@@ -2,30 +2,28 @@ import * as d3 from 'd3';
 import { ScaleTime } from 'd3-scale';
 
 export class XAxis {
-  svg: d3.Selection<any, any, any, any>;
-  tooltip: d3.Selection<any, any, any, any>;
-  readonly xScale: ScaleTime<any, any>;
+  public formatDate: (date: Date) => string;
+  public tickSetting: d3.TimeInterval;
 
-  svgBbox: DOMRect;
+  private svg: d3.Selection<any, any, any, any>;
+  private tooltip: d3.Selection<any, any, any, any>;
+  private readonly xScale: ScaleTime<any, any>;
 
-  height = 28;
+  private svgBbox: DOMRect;
 
-  formatDate: (date: Date) => string;
+  private height = 28;
 
-  tickSetting: d3.TimeInterval;
+  private dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
+  private today = new Date();
 
-  dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
-
-  today = new Date();
-
-  constructor(svg: d3.Selection<any, any, any, any>, chartElement: HTMLElement, xScale: ScaleTime<any, any>) {
+  public constructor(svg: d3.Selection<any, any, any, any>, chartElement: HTMLElement, xScale: ScaleTime<any, any>) {
     this.svg = svg;
     this.xScale = xScale;
     this.svgBbox = (this.svg.node() as SVGGraphicsElement).getBBox();
     this.tooltip = d3.select(chartElement).select('figure#chart .tooltip');
   }
 
-  draw(): void {
+  public draw(): void {
     const xGroup = this.svg.select('g.x-group');
 
     const viewBoxWidth = this.svgBbox.width;
@@ -55,7 +53,7 @@ export class XAxis {
     this.drawVerticalLineCurrentDate();
   }
 
-  redraw(): void {
+  public redraw(): void {
     const xGroup = this.svg.select('g.x-group');
 
     // x-axis labels
@@ -75,58 +73,62 @@ export class XAxis {
     this.redrawVerticalLineCurrentDate();
   }
 
-  resize(newSize: number): void {
+  public resize(newSize: number): void {
     const xGroup = this.svg.select('g.x-group');
 
     // x-axis header background
     xGroup.select('rect.headerX').attr('width', newSize);
   }
 
-  redrawVerticalGridLines(): void {
+  // Define filter conditions
+  public formatDateFull(date: Date): string {
+    return (
+      d3.timeSecond(date) < date
+        ? d3.timeFormat('.%L')
+        : d3.timeMinute(date) < date
+        ? d3.timeFormat(':%S')
+        : d3.timeHour(date) < date
+        ? d3.timeFormat('%H:%M')
+        : d3.timeDay(date) < date
+        ? d3.timeFormat('%H:%M')
+        : d3.timeMonth(date) < date
+        ? d3.timeWeek(date) < date
+          ? d3.timeFormat('%a, %d.')
+          : d3.timeFormat('%d. %b')
+        : d3.timeYear(date) < date
+        ? d3.timeFormat('%b')
+        : d3.timeFormat('%Y')
+    )(date);
+  }
+
+  public formatDateDay(date: Date): string {
+    return (
+      d3.timeYear(date) < date
+        ? d3.timeMonth(date) < date
+          ? d3.timeFormat('%a, %d.')
+          : d3.timeFormat('%d. %b')
+        : d3.timeFormat('%d.%m.%y')
+    )(date);
+  }
+
+  public formatDateWeek(date: Date): string {
+    return (d3.timeFormat('%V')(date) === '01' ? d3.timeFormat('KW %V-%y') : d3.timeFormat('KW %V'))(date);
+  }
+
+  public formatDateMonth(date: Date): string {
+    return (d3.timeYear(date) < date ? d3.timeFormat('%B') : d3.timeFormat('%b %y'))(date);
+  }
+
+  public formatDateYear(date: Date): string {
+    return d3.timeFormat('%Y')(date);
+  }
+
+  private redrawVerticalGridLines(): void {
     const xGroup = this.svg.select('g.x-group');
 
     // vertical grid lines
     xGroup.selectAll('line.xGridLines').remove();
     this.drawVerticalGridLines();
-  }
-
-  // Define filter conditions
-  formatDateFull(date: Date): string {
-    return (d3.timeSecond(date) < date
-      ? d3.timeFormat('.%L')
-      : d3.timeMinute(date) < date
-      ? d3.timeFormat(':%S')
-      : d3.timeHour(date) < date
-      ? d3.timeFormat('%H:%M')
-      : d3.timeDay(date) < date
-      ? d3.timeFormat('%H:%M')
-      : d3.timeMonth(date) < date
-      ? d3.timeWeek(date) < date
-        ? d3.timeFormat('%a, %d.')
-        : d3.timeFormat('%d. %b')
-      : d3.timeYear(date) < date
-      ? d3.timeFormat('%b')
-      : d3.timeFormat('%Y'))(date);
-  }
-
-  formatDateDay(date: Date): string {
-    return (d3.timeYear(date) < date
-      ? d3.timeMonth(date) < date
-        ? d3.timeFormat('%a, %d.')
-        : d3.timeFormat('%d. %b')
-      : d3.timeFormat('%d.%m.%y'))(date);
-  }
-
-  formatDateWeek(date: Date): string {
-    return (d3.timeFormat('%V')(date) === '01' ? d3.timeFormat('KW %V-%y') : d3.timeFormat('KW %V'))(date);
-  }
-
-  formatDateMonth(date: Date): string {
-    return (d3.timeYear(date) < date ? d3.timeFormat('%B') : d3.timeFormat('%b %y'))(date);
-  }
-
-  formatDateYear(date: Date): string {
-    return d3.timeFormat('%Y')(date);
   }
 
   private drawVerticalGridLines(): void {

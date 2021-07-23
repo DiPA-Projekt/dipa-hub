@@ -1,3 +1,4 @@
+<script src="../../../chart/chart.component.ts"></script>
 <app-chart-header
   [timelineData]="timelineData"
   [active]="false"
@@ -8,4 +9,7 @@
   (operationTypeChanged)="operationTypeChanged.emit($event)"
   (projectApproachChanged)="projectApproachChanged.emit($event)"
 ></app-chart-header>
-<figure id="chart" (resized)="onResized($event)" #templateChart></figure>
+
+<div class="chart">
+  <figure id="chart" (resized)="onResized($event)" #templateChart></figure>
+</div>

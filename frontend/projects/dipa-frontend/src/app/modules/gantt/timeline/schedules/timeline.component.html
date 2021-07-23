@@ -83,17 +83,20 @@
               </mat-form-field>
             </ng-container>
             <ng-container *ngIf="formField.key === 'status'">
-              <mat-form-field class="noHint full-width">
-                <mat-label>{{ formField.label }}</mat-label>
-                <mat-select
-                  [value]="formField.value"
-                  (selectionChange)="changeStatus($event.value, appt.id, formField.id)"
-                >
-                  <mat-option *ngFor="let opt of formField.options" [value]="opt.key">
-                    {{ opt.value }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
+              <ng-container *ngIf="vm$ | async as vm">
+                <mat-form-field class="noHint full-width">
+                  <mat-label>{{ formField.label }}</mat-label>
+                  <mat-select
+                    [value]="formField.value"
+                    (selectionChange)="changeStatus($event.value, appt.id, formField.id)"
+                    [disabled]="vm.selectedTimeline.archived"
+                  >
+                    <mat-option *ngFor="let opt of formField.options" [value]="opt.key">
+                      {{ opt.value }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </ng-container>
             </ng-container>
           </div>
         </div>
@@ -189,17 +192,20 @@
                 </mat-form-field>
               </ng-container>
               <ng-container *ngIf="formField.key === 'status'">
-                <mat-form-field class="noHint full-width">
-                  <mat-label>{{ formField.label }}</mat-label>
-                  <mat-select
-                    [value]="formField.value"
-                    (selectionChange)="changeStatus($event.value, appt.id, formField.id)"
-                  >
-                    <mat-option *ngFor="let opt of formField.options" [value]="opt.key">
-                      {{ opt.value }}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
+                <ng-container *ngIf="vm$ | async as vm">
+                  <mat-form-field class="noHint full-width">
+                    <mat-label>{{ formField.label }}</mat-label>
+                    <mat-select
+                      [value]="formField.value"
+                      (selectionChange)="changeStatus($event.value, appt.id, formField.id)"
+                      [disabled]="vm.selectedTimeline.archived"
+                    >
+                      <mat-option *ngFor="let opt of formField.options" [value]="opt.key">
+                        {{ opt.value }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </ng-container>
               </ng-container>
             </div>
           </div>
