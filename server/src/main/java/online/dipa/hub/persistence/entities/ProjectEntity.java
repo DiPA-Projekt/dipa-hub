@@ -38,6 +38,14 @@ public class ProjectEntity extends BaseEntity {
 
     @OneToOne(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private PermanentProjectTaskTemplateEntity permanentProjectTaskTemplate;
+
+    @OneToOne(mappedBy = "project")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private NonPermanentProjectTaskTemplateEntity nonPermanentProjectTaskTemplate;
+
+    @OneToOne(mappedBy = "project")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private PlanTemplateEntity planTemplate;
 
     @OneToMany(mappedBy = "project")
@@ -123,6 +131,22 @@ public class ProjectEntity extends BaseEntity {
 
     public void setProjectTaskTemplate(final ProjectTaskTemplateEntity projectTaskTemplate) {
         this.projectTaskTemplate = projectTaskTemplate;
+    }
+
+    public PermanentProjectTaskTemplateEntity getPermanentProjectTaskTemplate() {
+        return permanentProjectTaskTemplate;
+    }
+
+    public void setPermanentProjectTaskTemplate(final PermanentProjectTaskTemplateEntity permanentProjectTaskTemplate) {
+        this.permanentProjectTaskTemplate = permanentProjectTaskTemplate;
+    }
+
+    public NonPermanentProjectTaskTemplateEntity getNonPermanentProjectTaskTemplate() {
+        return nonPermanentProjectTaskTemplate;
+    }
+
+    public void setNonPermanentProjectTaskTemplate(final NonPermanentProjectTaskTemplateEntity nonPermanentProjectTaskTemplate) {
+        this.nonPermanentProjectTaskTemplate = nonPermanentProjectTaskTemplate;
     }
 
     public PlanTemplateEntity getPlanTemplate() {

@@ -6,24 +6,8 @@ ProjectTask:
       type: integer
       format: int64
       example: 2
-    title:
-      description: The title of the task
-      type: string
-      example: "Übergabe TLM-->PL"
-    icon:
-      description: icon of the task
-      type: string
-      example: "shopping_cart"
     explanation:
       description: what is this task about
-      type: string
-      example: "angelegtes iSAR-Projekt mit vorausgefülltem PSB"
-    isPermanentTask:
-      description: if this task is a permanent task
-      type: boolean
-      example: false
-    titlePermanentTask:
-      description: what is this permanent task about
       type: string
       example: "angelegtes iSAR-Projekt mit vorausgefülltem PSB"
     completed:
