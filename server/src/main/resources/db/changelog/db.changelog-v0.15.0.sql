@@ -41,3 +41,72 @@ ADD CONSTRAINT "FKprojectTaskPropertyQuestion" FOREIGN KEY (project_property_que
 -- changeset id:delete-optional-column-project-task
 ALTER TABLE project_task
 DROP COLUMN IF EXISTS optional
+
+-- changeset id:create-table-permanent-project-task-template
+CREATE TABLE permanent_project_task_template(
+   id BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
+   name VARCHAR(255),
+   master BOOLEAN,
+   project_id BIGINT,
+   CONSTRAINT "PKpermanentProjectTaskTemplate" PRIMARY KEY (id),
+   CONSTRAINT "FKpermanentProjectTaskTemplateProject"
+    FOREIGN KEY (project_id)
+    REFERENCES project (id)
+    ON DELETE CASCADE
+)
+
+-- changeset id:create-table-non-permanent-project-task-template
+CREATE TABLE non_permanent_project_task_template(
+   id BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
+   name VARCHAR(255),
+   master BOOLEAN,
+   project_id BIGINT,
+   CONSTRAINT "PKnonPermanentProjectTaskTemplate" PRIMARY KEY (id),
+   CONSTRAINT "FKnonPermanentProjectTaskTemplateProject"
+    FOREIGN KEY (project_id)
+    REFERENCES project (id)
+    ON DELETE CASCADE
+)
+
+-- changeset id:create-table-permanent-project-task
+CREATE TABLE permanent_project_task(
+   id BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
+   title VARCHAR(255),
+   icon VARCHAR(255),
+   sort_order BIGINT,
+   is_additional_task BOOLEAN,
+   permanent_project_task_template_id BIGINT NOT NULL,
+   project_task_id BIGINT,
+   CONSTRAINT "PKpermanentProjectTask" PRIMARY KEY (id),
+   CONSTRAINT "FKpermanentProjectTaskTemplate"
+    FOREIGN KEY (permanent_project_task_template_id)
+    REFERENCES permanent_project_task_template (id)
+    ON DELETE CASCADE,
+   CONSTRAINT "FKpermanentProjectTaskProjectTask"
+    FOREIGN KEY (project_task_id)
+    REFERENCES project_task (id)
+    ON DELETE CASCADE
+)
+
+-- changeset id:create-table-non-permanent-project-task
+CREATE TABLE non_permanent_project_task(
+   id BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
+   title VARCHAR(255),
+   icon VARCHAR(255),
+   sort_order BIGINT,
+   non_permanent_project_task_template_id BIGINT NOT NULL,
+   project_task_id BIGINT NOT NULL,
+   CONSTRAINT "PKnonPermanentProjectTask" PRIMARY KEY (id),
+   CONSTRAINT "FKnonPermanentProjectTaskTemplate"
+    FOREIGN KEY (non_permanent_project_task_template_id)
+    REFERENCES non_permanent_project_task_template (id)
+    ON DELETE CASCADE,
+   CONSTRAINT "FKnonPermanentProjectTaskProjectTask"
+    FOREIGN KEY (project_task_id)
+    REFERENCES project_task (id)
+    ON DELETE CASCADE
+)
+
+-- changeset id:add-column-task-number-project-task context:itzbund
+ALTER TABLE project_task
+ADD COLUMN task_number BIGINT

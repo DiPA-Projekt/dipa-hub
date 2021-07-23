@@ -21,6 +21,7 @@ import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
 
 import static online.dipa.hub.api.model.Timeline.ProjectTypeEnum;
@@ -100,7 +101,6 @@ public class TimelineService {
 
 
     public ProjectEntity getProject(final Long timelineId) {
-
         return projectRepository.getById(timelineId);
 
     }
@@ -255,6 +255,16 @@ public class TimelineService {
         if (timeline.getProjectType() != null) {
             project.setProjectType(timeline.getProjectType().toString());
             projectRepository.save(project);
+        }
+
+        if (timeline.getStart() != project.getStartDate().toLocalDate()) {
+            long daysBetween = DAYS.between(project.getStartDate().toLocalDate(), timeline.getStart());
+            moveTimelineStartByDays(timeline.getId(), daysBetween);
+        }
+
+        if (timeline.getEnd() != project.getEndDate().toLocalDate()) {
+            long daysBetween = DAYS.between(project.getEndDate().toLocalDate(), timeline.getEnd());
+            moveTimelineEndByDays(timeline.getId(), daysBetween);
         }
    
         if (!timeline.getProjectApproachId().equals(project.getProjectApproach().getId())) {

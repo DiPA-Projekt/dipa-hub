@@ -14,6 +14,7 @@ import {
   ProjectTask,
   Result,
   FormField,
+  PermanentProjectTask,
 } from 'dipa-api-client';
 import { ActivatedRoute, Params } from '@angular/router';
 import { ChartComponent } from '../../chart/chart.component';
@@ -106,9 +107,9 @@ export class TimelineComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.projectTasksSubscription = this.projectService.getProjectTasks(this.selectedTimelineId).subscribe({
-      next: (data: ProjectTask[]) => {
-        this.projectTask = data[4];
+    this.projectTasksSubscription = this.projectService.getPermanentProjectTasks(this.selectedTimelineId).subscribe({
+      next: (data: PermanentProjectTask[]) => {
+        this.projectTask = data[4]?.projectTask;
         this.appointmentsList = this.projectTask?.results.sort(
           (b, a) =>
             new Date(b.formFields.find((field) => field.key === 'date').value).getTime() -
@@ -221,7 +222,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
     const today = Utils.createDateAtMidnight(new Date());
 
     const appointmentsInPeriod = appointments.filter((appt) => {
-      const dateValue = appt.formFields.find((field) => field.key === 'date').value;
+      const dateValue = appt.formFields.find((field) => field.key === 'date')?.value;
       if (dateValue == null) {
         return false;
       }
@@ -236,7 +237,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
   public filterAllOpenAppointmentsInPeriod(appointments: Result[]): void {
     const appointmentsInPeriod = appointments.filter((appt) => {
-      const dateValue = appt.formFields.find((field) => field.key === 'date').value;
+      const dateValue = appt.formFields.find((field) => field.key === 'date')?.value;
       if (dateValue == null) {
         return false;
       }

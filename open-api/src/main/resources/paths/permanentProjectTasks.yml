@@ -1,0 +1,39 @@
+get:
+  tags:
+    - project
+  summary: Project Permanent Task List for Timeline
+  description: Retrieves the list of Permanent Project Tasks.
+  operationId: getPermanentProjectTasks
+  parameters:
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../models/permanentProjectTask.yml#/PermanentProjectTask"
+patch:
+  tags:
+    - project
+  summary: Update Permanent Project Task
+  description: Update Permanent Project Task
+  operationId: updatePermanentProjectTasks
+  parameters:
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
+  requestBody:
+    description: PermanentProjectTask as requestBody
+    required: true
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            $ref: "../models/permanentProjectTask.yml#/PermanentProjectTask"
+  responses:
+    204:
+      description: The update was applied successfully.
+
+

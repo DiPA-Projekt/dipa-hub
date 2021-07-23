@@ -1,53 +1,160 @@
 <ng-container *ngIf="projectTasks?.length; else noProjectTask">
   <mat-vertical-stepper [linear]="false" #stepper>
-    <mat-step
-      *ngFor="let task of projectTasks"
-      [stepControl]="formGroup"
-      [completed]="task.completed"
-      [state]="getTaskIcon(task)"
-    >
-      <ng-template matStepLabel>
-        <div style="display: flex">
-          <div class="ellipsis" title="{{ getTaskTitle(task) }}">{{ getTaskTitle(task) }}</div>
-          <div *ngIf="task.projectPropertyQuestion != null" (click)="$event.stopPropagation()">
-            <mat-icon color="primary" style="font-size: 20px; margin-left: 0.5em" [matMenuTriggerFor]="menu"
-              >info</mat-icon
-            >
-            <mat-menu #menu="matMenu">
-              <mat-list style="padding-top: 0">
-                <mat-list-item
-                  (click)="$event.stopPropagation()"
-                  style="font-weight: 500; font-size: 14px; background-color: rgba(0, 0, 0, 0.05)"
-                >
-                  Zugehöriges Projektmerkmal
-                </mat-list-item>
-                <mat-list-item (click)="$event.stopPropagation()" style="font-size: 14px"
-                  >{{ task.projectPropertyQuestion.question }}
-                </mat-list-item>
-              </mat-list>
-            </mat-menu>
+    <ng-container *ngFor="let task of projectTasks">
+      <mat-step
+        *ngIf="task.sortOrder > -1"
+        [stepControl]="formGroup"
+        [completed]="task.completed"
+        [state]="getTaskIcon(task)"
+      >
+        <ng-template matStepLabel>
+          <div style="display: flex">
+            <div class="ellipsis" title="{{ task.title }}">{{ task.title }}</div>
+            <div *ngIf="task.projectPropertyQuestion != null" (click)="$event.stopPropagation()">
+              <mat-icon color="primary" style="font-size: 20px; margin-left: 0.5em" [matMenuTriggerFor]="menu"
+                >info</mat-icon
+              >
+              <mat-menu #menu="matMenu">
+                <mat-list style="padding-top: 0">
+                  <mat-list-item
+                    (click)="$event.stopPropagation()"
+                    style="font-weight: 500; font-size: 14px; background-color: rgba(0, 0, 0, 0.05)"
+                  >
+                    Zugehöriges Projektmerkmal
+                  </mat-list-item>
+                  <mat-list-item (click)="$event.stopPropagation()" style="font-size: 14px"
+                    >{{ task.projectPropertyQuestion.question }}
+                  </mat-list-item>
+                </mat-list>
+              </mat-menu>
+            </div>
           </div>
-        </div>
-        <div
-          class="ellipsis"
-          style="font-weight: 500; font-size: 12px; color: rgba(0, 0, 0, 0.54)"
-          title="{{ task.explanation }}"
-        >
-          {{ task.explanation }}
-        </div>
-      </ng-template>
-      <app-project-task-form
-        [completable]="checklistType !== 'permanentTasks'"
-        [selectedTimelineId]="timelineId"
-        [taskData]="task"
-        (stepStatusChanged)="stepStatusChanged(stepper, $event)"
-      ></app-project-task-form>
-    </mat-step>
-
+          <div
+            class="ellipsis"
+            style="font-weight: 500; font-size: 12px; color: rgba(0, 0, 0, 0.54)"
+            title="{{ task.projectTask.explanation }}"
+          >
+            {{ task.projectTask.explanation }}
+          </div>
+        </ng-template>
+        <app-project-task-form
+          [completable]="checklistType !== 'permanentTasks'"
+          [selectedTimelineId]="timelineId"
+          [taskData]="task.projectTask"
+          (stepStatusChanged)="stepStatusChanged(stepper, $event)"
+        ></app-project-task-form>
+      </mat-step>
+    </ng-container>
     <ng-template *ngFor="let task of projectTasks" [matStepperIcon]="task.icon">
       <mat-icon>{{ task.icon }}</mat-icon>
     </ng-template>
   </mat-vertical-stepper>
+
+  <div class="fab-bottom-right">
+    <button
+      mat-mini-fab
+      color="primary"
+      aria-label="Liste sortieren und Eventualitäten hinzufügen"
+      [matMenuTriggerFor]="menu"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <mat-action-list
+        class="projectTaskSortMenu"
+        cdkDropList
+        (cdkDropListDropped)="drop($event)"
+        (click)="$event.stopPropagation()"
+      >
+        <mat-list-item
+          *ngFor="let task of visibleProjectTasks"
+          cdkDrag
+          class="visibleTasks ellipsis"
+          style="font-size: 14px"
+        >
+          <div class="example-handle" cdkDragHandle>
+            <mat-icon>drag_handle</mat-icon>
+          </div>
+          <div
+            class="full-width"
+            style="
+              display: flex;
+              flex-direction: row;
+              box-sizing: border-box;
+              justify-content: space-between;
+              align-items: center;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              height: inherit;
+            "
+          >
+            <mat-icon *ngIf="task.icon != null" style="margin-right: 3px">{{ task.icon }}</mat-icon>
+            <div class="full-width ellipsis" style="margin-right: 16px">
+              {{ task.title }}
+            </div>
+            <div>
+              <mat-checkbox
+                #checkbox
+                *ngIf="task?.isAdditionalTask === true"
+                [checked]="true"
+                color="primary"
+                style="margin-right: 16px"
+                (change)="setTaskVisibility(task, checkbox.checked)"
+              ></mat-checkbox>
+            </div>
+          </div>
+          <ng-template cdkDragPreview [matchSize]="true">
+            <div class="drag-preview ellipsis" style="font-size: 14px; display: flex; align-items: center">
+              <div class="example-handle">
+                <mat-icon>drag_handle</mat-icon>
+              </div>
+              <div class="full-width ellipsis" style="display: flex; align-items: center">
+                <mat-icon *ngIf="task.icon != null" style="margin-right: 3px">{{ task.icon }}</mat-icon>
+                <div class="ellipsis">{{ task.title }}</div>
+              </div>
+            </div>
+          </ng-template>
+        </mat-list-item>
+      </mat-action-list>
+
+      <mat-list *ngIf="invisibleProjectTasks.length > 0" style="padding-top: 0">
+        <mat-list-item
+          (click)="$event.stopPropagation()"
+          style="color: rgba(0, 0, 0, 0.54); font-size: inherit; font-weight: 500"
+          >Eventualitäten</mat-list-item
+        >
+      </mat-list>
+      <mat-action-list class="invisibleTasks" (click)="$event.stopPropagation()">
+        <mat-list-item *ngFor="let task of invisibleProjectTasks" class="ellipsis" style="font-size: 14px">
+          <div
+            class="full-width ellipsis"
+            style="
+              display: flex;
+              flex-direction: row;
+              box-sizing: border-box;
+              justify-content: space-between;
+              align-items: center;
+              height: inherit;
+            "
+          >
+            <mat-icon *ngIf="task.icon != null" style="margin-right: 3px">{{ task.icon }}</mat-icon>
+            <div class="full-width ellipsis" style="margin-right: 16px">
+              {{ task.title }}
+            </div>
+            <div>
+              <mat-checkbox
+                #checkbox
+                [checked]="false"
+                color="primary"
+                style="margin-right: 16px"
+                (change)="setTaskVisibility(task, checkbox.checked)"
+              ></mat-checkbox>
+            </div>
+          </div>
+        </mat-list-item>
+      </mat-action-list>
+    </mat-menu>
+  </div>
 </ng-container>
 <ng-template #noProjectTask>
   <p>Es gibt derzeit noch keine Aufgabenliste für diese Projektgröße bzw. diese Vorhabensart</p>
