@@ -33,6 +33,7 @@
  import online.dipa.hub.persistence.repositories.ProjectRepository;
  import online.dipa.hub.persistence.repositories.ProjectTaskRepository;
  import online.dipa.hub.persistence.repositories.ProjectTaskTemplateRepository;
+ import online.dipa.hub.tenancy.CurrentTenantContextHolder;
 
  import static org.assertj.core.api.Assertions.*;
  import static org.mockito.Mockito.when;
@@ -92,6 +93,8 @@
         testProject.setProjectApproach(projectApproachRepository.getById(2L));
         testProject.setProjectSize("SMALL");
         projectRepository.save(testProject);
+        CurrentTenantContextHolder.setTenantId("itzbund");
+
     }
 
     @Nested
