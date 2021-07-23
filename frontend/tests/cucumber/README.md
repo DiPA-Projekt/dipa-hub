@@ -1,3 +1,25 @@
+# TODO: ORDNEN: E2E-Testkonzept
+
+- Nur die Development-Branch kann aktuell getestet werden
+- die E2E-Tests werden nach einem Merge ausgeführt
+- Nächtliche Durchläufe
+- Läuft gegen ein einheitliches Backend (develop)
+- Getestet wird auf develop.dipa.online
+- E2E-Tests haben immer die Gefahr von asynchronen Problemen und Überlagerungen
+- Einhaltung der Testpyramide!
+- Die zu testenden Testfälle befinden sich im Sprint-Board in der Spalte "E-to-E Tests" und können vom Automatisierer erledigt werden
+- Wenn Daten in einem Test umgeändert werden, dann müssen sie am Ende des Tests wieder zurückgesetzt werden
+- Für jedes Ticket wird ein neuer Branch aufgemacht und nach dem Schema e2e/"Ticketnummer" benannt
+- diese Branch darf nur bei einem erfolgreichen Durchlauf der E2E-Tests in den develop-Branch gemerged werden
+
+
+## Handlungsschritte
+[ ] cucumber-Branch in develop mergen
+[ ] Vor dem mergen einer e2e/"Ticketnummer"-Branch müssen die vorhandenen E2E-Tests durchlaufen
+
+
+
+
 # DiPA - Cucumber + nightwatch.js  
 
   - [Getting Started](#getting-started)
@@ -11,6 +33,7 @@
     - [useXpath() und useCss()](#usexpath-und-usecss)
     - [Unterschied visible und present](#unterschied-visible-und-present)
     - [Ausführung einer einzelnen Feature](#ausführung-einer-einzelnen-feature)
+
 ## Getting Started
 Ist die Einrichtung der Entwicklungsumgebung abgeschlossen muss anschließend im Root-Verzeichnis die Anwendung mit Maven istalliert werden:
 ```bash
