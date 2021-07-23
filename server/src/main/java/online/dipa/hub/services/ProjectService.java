@@ -250,6 +250,7 @@ public class ProjectService {
         List<Long> projectIds = userInformationService.getProjectIdList();
         final String tenantId = CurrentTenantContextHolder.getTenantId();
 
+        
         if (projectIds.contains(projectId) && tenantId.equals("itzbund")) {
 
             ProjectEntity project = projectRepository.getById(projectId);
