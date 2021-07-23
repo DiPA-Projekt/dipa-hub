@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-import { ProjectService, ProjectTask } from 'dipa-api-client';
+import { ProjectService, NonPermanentProjectTask } from 'dipa-api-client';
 import { switchMap } from 'rxjs/operators';
 import { TimelineDataService } from '../../../shared/timelineDataService';
 
@@ -10,7 +10,7 @@ import { TimelineDataService } from '../../../shared/timelineDataService';
   templateUrl: './project-quickstart.component.html',
 })
 export class ProjectQuickstartComponent implements OnInit, OnDestroy {
-  public projectTasks: ProjectTask[];
+  public projectTasks: NonPermanentProjectTask[];
 
   public selectedTimelineId: number;
   public timelineIdSubscription: Subscription;
@@ -25,14 +25,14 @@ export class ProjectQuickstartComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.timelineIdSubscription = this.activatedRoute.parent.parent.params
       .pipe(
-        switchMap((params: Params): Observable<ProjectTask[]> => {
+        switchMap((params: Params): Observable<NonPermanentProjectTask[]> => {
           this.selectedTimelineId = parseInt(params.id, 10);
-          this.timelineDataService.setProjectTasks(this.selectedTimelineId);
-          return this.timelineDataService.getProjectTasks();
+          this.timelineDataService.setNonPermanentProjectTasks(this.selectedTimelineId);
+          return this.timelineDataService.getNonPermanentProjectTasks();
         })
       )
       .subscribe({
-        next: (data: ProjectTask[]) => {
+        next: (data: NonPermanentProjectTask[]) => {
           this.projectTasks = data;
         },
         error: null,
@@ -46,8 +46,9 @@ export class ProjectQuickstartComponent implements OnInit, OnDestroy {
   }
 
   public reloadProjectTasks(): void {
-    this.projectTasksSubscription = this.projectService.getProjectTasks(this.selectedTimelineId).subscribe({
-      next: (data: ProjectTask[]) => {
+    this.timelineDataService.setNonPermanentProjectTasks(this.selectedTimelineId);
+    this.projectTasksSubscription = this.timelineDataService.getNonPermanentProjectTasks().subscribe({
+      next: (data: NonPermanentProjectTask[]) => {
         this.projectTasks = data;
       },
       error: null,
