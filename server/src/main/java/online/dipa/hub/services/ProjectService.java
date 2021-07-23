@@ -13,6 +13,7 @@ import online.dipa.hub.api.model.Timeline;
 import online.dipa.hub.api.model.User;
 import online.dipa.hub.persistence.entities.*;
 import online.dipa.hub.persistence.repositories.*;
+import online.dipa.hub.tenancy.CurrentTenantContextHolder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
@@ -88,6 +89,11 @@ public class ProjectService {
 
     @Autowired
     private UserRepository userRepository;
+
+    private static final String ITZBUND_TENANT = "itzbund";
+    private static final String PROJECT_SIZE_SMALL = "SMALL";
+    private static final String PROJECT_SIZE_MEDIUM = "MEDIUM";
+
 
     public Project getProjectData(final Long projectId) {
         List<Long> projectIds = userInformationService.getProjectIdList();
@@ -169,11 +175,13 @@ public class ProjectService {
             ProjectEntity project = timelineService.getProject(projectId);
             ProjectPropertyQuestionTemplateEntity template = project.getProjectPropertyQuestionTemplate();
 
-            propertyQuestions.addAll(template.getProjectPropertyQuestions()
-                                    .stream()
-                                    .map(p -> conversionService.convert(p, PropertyQuestion.class))
-                                    .collect(Collectors.toList())
-            );
+            if(template != null) {
+                propertyQuestions.addAll(template.getProjectPropertyQuestions()
+                                                 .stream()
+                                                 .map(p -> conversionService.convert(p, PropertyQuestion.class))
+                                                 .collect(Collectors.toList())
+                );
+            }
         }
 
         return propertyQuestions;
@@ -199,7 +207,7 @@ public class ProjectService {
 
             ProjectTaskTemplateEntity template = project.getProjectTaskTemplate();
             if (project.getProjectSize() != null && !project.getProjectSize()
-                        .equals(Project.ProjectSizeEnum.BIG.toString())) {
+                        .equals(Project.ProjectSizeEnum.BIG.toString()) && template != null) {
 
                 projectTasks.addAll(template.getProjectTasks()
                                             .stream()
@@ -226,7 +234,7 @@ public class ProjectService {
             PermanentProjectTaskTemplateEntity template = project.getPermanentProjectTaskTemplate();
 
             if (project.getProjectSize() != null && !project.getProjectSize()
-                                                            .equals(Project.ProjectSizeEnum.BIG.toString())) {
+                                                            .equals(Project.ProjectSizeEnum.BIG.toString()) && template != null) {
 
                 permanentProjectTasks.addAll(template.getPermanentProjectTasks()
                                             .stream()
@@ -253,7 +261,8 @@ public class ProjectService {
 
             NonPermanentProjectTaskTemplateEntity template = project.getNonPermanentProjectTaskTemplate();
             if (project.getProjectSize() != null && !project.getProjectSize()
-                                                            .equals(Project.ProjectSizeEnum.BIG.toString())) {
+                                                            .equals(Project.ProjectSizeEnum.BIG.toString())
+                    && template != null) {
 
                 nonPermanentProjectTasks.addAll(template.getNonPermanentProjectTasks()
                                                      .stream()
@@ -288,8 +297,10 @@ public class ProjectService {
 
     public void initializeProjectTasks(final Long projectId) {
         ProjectEntity project = projectRepository.getById(projectId);
+        final String tenantId = CurrentTenantContextHolder.getTenantId();
 
-        if (project.getProjectSize() != null && (project.getProjectSize().equals("SMALL") || project.getProjectSize().equals("MEDIUM"))
+        if (tenantId.equals(ITZBUND_TENANT) && project.getProjectSize() != null &&
+                (project.getProjectSize().equals(PROJECT_SIZE_SMALL) || project.getProjectSize().equals(PROJECT_SIZE_MEDIUM))
                 && project.getProjectTaskTemplate() == null) {
             ProjectTaskTemplateEntity projectTaskTemplate = projectTaskTemplateRepository.findByMaster().orElse(null);
 
