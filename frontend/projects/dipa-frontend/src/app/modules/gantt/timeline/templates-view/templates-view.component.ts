@@ -17,6 +17,7 @@ import { map } from 'rxjs/internal/operators/map';
 import { TemplatesViewControlsService } from './templates-view-controls.service';
 import { MatButtonToggleChange, MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { switchMap } from 'rxjs/operators';
+import { TimelineDataService } from '../../../../shared/timelineDataService';
 
 @Component({
   selector: 'app-templates-view',
@@ -26,34 +27,35 @@ import { switchMap } from 'rxjs/operators';
 export class TemplatesViewComponent implements OnInit, OnDestroy {
   private static readonly currentTemplateName = 'aktuell';
 
-  @ViewChild('templateChart', { static: true }) template: TemplatesComponent;
+  @ViewChild('templateChart', { static: true }) public template: TemplatesComponent;
 
-  periodStartDate = new Date(2020, 0, 1);
-  periodEndDate = new Date(2020, 11, 31);
+  public periodStartDate = new Date(2020, 0, 1);
+  public periodEndDate = new Date(2020, 11, 31);
 
-  vm$: Observable<any>;
+  public vm$: Observable<any>;
 
-  timelineData: Timeline[] = [];
+  public timelineData: Timeline[] = [];
 
-  timelinesSubscription: Subscription;
-  activatedRouteSubscription: Subscription;
-  updateTemplateSubscription: Subscription;
+  public selectedTimelineId: number;
+  public selectedOperationTypeId: number;
 
-  selectedTimelineId: number;
-  selectedOperationTypeId: number;
+  public selectedTemplatesList: TimelineTemplate[] = [];
+  public standardTemplatesList: TimelineTemplate[] = [];
+  public nonStandardTemplatesList: TimelineTemplate[] = [];
 
-  selectedTemplatesList: TimelineTemplate[] = [];
-  selectedTemplatesIdList: any[];
+  private selectedTemplatesIdList: any[];
+  private selectedStandardTemplateIndex: number;
+  private selectedNonStandardTemplateIndex: number;
 
-  standardTemplatesList: TimelineTemplate[] = [];
-  selectedStandardTemplateIndex: number;
+  private timelineDataSubscription: Subscription;
+  private timelinesSubscription: Subscription;
+  private activatedRouteSubscription: Subscription;
+  private updateTemplateSubscription: Subscription;
 
-  nonStandardTemplatesList: TimelineTemplate[] = [];
-  selectedNonStandardTemplateIndex: number;
-
-  constructor(
+  public constructor(
     public templatesViewControlsService: TemplatesViewControlsService,
     public ganttControlsService: GanttControlsService,
+    private timelineDataService: TimelineDataService,
     private timelinesService: TimelinesService,
     private operationTypesService: OperationTypesService,
     private projectApproachesService: ProjectApproachesService,
@@ -61,17 +63,15 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
     private timelineTemplatesService: TimelineTemplatesService
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.selectedStandardTemplateIndex = null;
 
     this.timelinesSubscription = this.activatedRoute.parent.parent.params
       .pipe(
-        switchMap(
-          (params: Params): Observable<Timeline[]> => {
-            this.selectedTimelineId = parseInt(params.id, 10);
-            return this.timelinesService.getTimelines();
-          }
-        )
+        switchMap((params: Params): Observable<Timeline[]> => {
+          this.selectedTimelineId = parseInt(params.id, 10);
+          return this.timelinesService.getTimelines();
+        })
       )
       .subscribe((data: Timeline[]) => {
         this.timelineData = data;
@@ -82,15 +82,20 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
           (item) => item.id === Number(this.selectedTimelineId)
         ).operationTypeId;
       });
+
+    this.timelineDataSubscription = this.timelineDataService.getTimelines().subscribe(() => {
+      this.setData();
+    });
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.activatedRouteSubscription?.unsubscribe();
+    this.timelineDataSubscription?.unsubscribe();
     this.timelinesSubscription?.unsubscribe();
     this.updateTemplateSubscription?.unsubscribe();
   }
 
-  setData(): void {
+  public setData(): void {
     this.vm$ = forkJoin([
       this.timelinesService.getTimelines(),
       this.timelineTemplatesService.getTemplatesForTimeline(this.selectedTimelineId),
@@ -127,7 +132,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
     );
   }
 
-  onPrevStandard(): void {
+  public onPrevStandard(): void {
     if (this.standardTemplatesList.length > 0) {
       this.selectedStandardTemplateIndex = this.getPrevItemList(
         this.standardTemplatesList,
@@ -140,7 +145,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  onNextStandard(): void {
+  public onNextStandard(): void {
     if (this.standardTemplatesList.length > 0) {
       this.selectedStandardTemplateIndex = this.getNextItemList(
         this.standardTemplatesList,
@@ -153,7 +158,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  onPrevNonStandard(): void {
+  public onPrevNonStandard(): void {
     if (this.nonStandardTemplatesList.length > 0) {
       this.selectedNonStandardTemplateIndex = this.getPrevItemList(
         this.nonStandardTemplatesList,
@@ -166,7 +171,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  onNextNonStandard(): void {
+  public onNextNonStandard(): void {
     if (this.nonStandardTemplatesList.length > 0) {
       this.selectedNonStandardTemplateIndex = this.getNextItemList(
         this.nonStandardTemplatesList,
@@ -179,7 +184,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  getNextItemList(listItems: TimelineTemplate[], currentIndex: number): number {
+  public getNextItemList(listItems: TimelineTemplate[], currentIndex: number): number {
     if (currentIndex + 1 < listItems.length) {
       currentIndex++;
     } else {
@@ -189,7 +194,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
     return currentIndex;
   }
 
-  getPrevItemList(listItems: TimelineTemplate[], currentIndex: number): number {
+  public getPrevItemList(listItems: TimelineTemplate[], currentIndex: number): number {
     if (currentIndex - 1 >= 0) {
       currentIndex--;
     } else {
@@ -199,7 +204,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
     return currentIndex;
   }
 
-  changeViewType(event: MatButtonToggleChange): void {
+  public changeViewType(event: MatButtonToggleChange): void {
     const toggle = event.source;
 
     if (toggle) {
@@ -216,7 +221,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateTemplateStandard(): void {
+  public updateTemplateStandard(): void {
     const templateId = this.standardTemplatesList[this.selectedStandardTemplateIndex].id;
 
     this.updateTemplateSubscription = this.timelineTemplatesService
@@ -226,7 +231,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
       });
   }
 
-  updateTemplateNonStandard(): void {
+  public updateTemplateNonStandard(): void {
     const templateId = this.nonStandardTemplatesList[this.selectedNonStandardTemplateIndex].id;
 
     this.updateTemplateSubscription = this.timelineTemplatesService

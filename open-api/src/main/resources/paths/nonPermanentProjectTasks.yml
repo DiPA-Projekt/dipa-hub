@@ -1,0 +1,38 @@
+get:
+  tags:
+    - project
+  summary: Non Permanent Project Task List for Timeline
+  description: Retrieves the list of Non Permanent Project Tasks.
+  operationId: getNonPermanentProjectTasks
+  parameters:
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../models/nonPermanentProjectTask.yml#/NonPermanentProjectTask"
+patch:
+  tags:
+    - project
+  summary: Update Non Permanent Project Task
+  description: Update Non Permanent Project Task
+  operationId: updateNonPermanentProjectTasks
+  parameters:
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
+  requestBody:
+    description: nonPermanentProjectTask as requestBody
+    required: true
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            $ref: "../models/nonPermanentProjectTask.yml#/NonPermanentProjectTask"
+  responses:
+    204:
+      description: The update was applied successfully.
+

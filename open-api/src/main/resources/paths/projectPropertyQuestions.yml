@@ -1,0 +1,35 @@
+get:
+  tags:
+    - project
+  summary: Project Property Question List for Timeline
+  description: Retrieves the list of Project Property Questions.
+  operationId: getProjectPropertyQuestions
+  parameters:
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../models/projectPropertyQuestion.yml#/PropertyQuestion"
+patch:
+  tags:
+    - project
+  summary: Update Project Property Question Timeline
+  description: Update Project Property Question Timeline
+  operationId: updateProjectPropertyQuestion
+  parameters:
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
+  requestBody:
+    description: Project Property Question as requestBody
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../models/projectPropertyQuestion.yml#/PropertyQuestion"
+    responses:
+      204:
+        description: The operation was applied successfully.

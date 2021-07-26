@@ -70,7 +70,9 @@ export class ChartHeaderComponent implements OnInit, OnDestroy {
         data.filter((d) => d.projectId === this.timelineData.id && d.abbreviation === 'PE').length > 0;
     });
 
-    this.projectSubscription = this.projectService.getProjectData(this.timelineData.id).subscribe((data) => {
+    this.timelineDataService.setProjectData(this.timelineData.id);
+
+    this.projectSubscription = this.timelineDataService.getProjectData().subscribe((data) => {
       this.project = data;
     });
   }
@@ -82,23 +84,26 @@ export class ChartHeaderComponent implements OnInit, OnDestroy {
     this.projectSubscription?.unsubscribe();
   }
 
+  public changeOperationType(event: MatSelectChange): void {
+    this.timelineData.operationTypeId = parseInt(event.value, 10);
+
+    this.operationTypeChanged.emit(event.value);
+  }
+
   public changeProjectApproach(event: MatSelectChange): void {
     this.timelineData.projectApproachId = parseInt(event.value, 10);
 
     this.timelinesService.updateTimeline(this.timelineData.id, this.timelineData).subscribe(() => {
+      this.timelineDataService.setTimelines();
       this.projectApproachChanged.emit(event.value);
     });
-  }
-
-  public changeOperationType(event: MatSelectChange): void {
-    this.timelineData.operationTypeId = parseInt(event.value, 10);
-    this.operationTypeChanged.emit(event.value);
   }
 
   public changeProjectType(event: MatSelectChange): void {
     this.timelineData.projectType = event.value as ProjectTypeEnum;
 
     this.timelinesService.updateTimeline(this.timelineData.id, this.timelineData).subscribe(() => {
+      this.timelineDataService.setTimelines();
       this.projectTypeChanged.emit(event.value);
     });
   }
@@ -138,6 +143,7 @@ export class ChartHeaderComponent implements OnInit, OnDestroy {
     this.projectService.updateProjectData(this.timelineData.id, this.project).subscribe({
       next: () => {
         this.timelineDataService.setTimelines();
+        this.timelineDataService.setProjectData(this.timelineData.id);
         this.router.navigate([`/gantt/${this.timelineData.id}/project-checklist/quickstart`]);
       },
       error: null,

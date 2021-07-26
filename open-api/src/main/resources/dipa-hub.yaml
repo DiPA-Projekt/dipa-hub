@@ -26,6 +26,8 @@ paths:
     $ref: "paths/projectUsers.yml"
   /timelines:
     $ref: "paths/timelines.yml"
+  /timelines/active:
+    $ref: "paths/activeTimelines.yml"
   /timelines/archived:
     $ref: "paths/archivedTimelines.yml"
   /timelines/operationTypes:
@@ -38,8 +40,12 @@ paths:
     $ref: "paths/projectData.yml"
   /timelines/{timelineId}/projectTasks:
     $ref: "paths/projectTasks.yml"
-  /timelines/{timelineId}/projectPermanentTasks:
-    $ref: "paths/projectPermanentTasks.yml"
+  /timelines/{timelineId}/permanentProjectTasks:
+    $ref: "paths/permanentProjectTasks.yml"
+  /timelines/{timelineId}/nonPermanentProjectTasks:
+    $ref: "paths/nonPermanentProjectTasks.yml"
+  /timelines/{timelineId}/projectPropertyQuestions:
+    $ref: "paths/projectPropertyQuestions.yml"
   /timelines/{timelineId}/timelineTemplates:
     $ref: "paths/timelineTemplates.yml"
   /timelines/{timelineId}/timelineTemplates/{timelineTemplateId}:

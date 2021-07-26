@@ -4,7 +4,7 @@
   <parent>
     <groupId>online.dipa.hub</groupId>
     <artifactId>dipa-parent</artifactId>
-    <version>0.14.0</version>
+    <version>0.150.0</version>
   </parent>
 
   <artifactId>dipa-frontend</artifactId>
@@ -113,7 +113,7 @@
       <plugin>
         <groupId>com.google.code.maven-replacer-plugin</groupId>
         <artifactId>replacer</artifactId>
-        <version>1.5.2</version>
+        <version>1.5.3</version>
         <executions>
           <execution>
             <id>replace-for-v1</id>

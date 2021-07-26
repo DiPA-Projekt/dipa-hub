@@ -40,7 +40,6 @@ public class PlanTemplateEntity extends BaseEntity {
     )
     private Set<ProjectApproachEntity> projectApproaches;
 
-    @NotNull
     @OneToOne(fetch = FetchType.EAGER)
     private ProjectEntity project;
 

@@ -44,6 +44,8 @@ import { AuthenticationService } from '../../../../../authentication.service';
 export class TemplatesComponent implements OnInit, OnChanges, OnDestroy {
   @Input() showTitle: boolean;
   @Input() active: boolean;
+  @Input() projectApproachModifiable: boolean;
+
   @Input() timelineData: Timeline;
   @Input() templateData: TimelineTemplate[] = [];
   @Input() allTemplates: TimelineTemplate[];
@@ -153,9 +155,6 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy {
     this.incrementsArea = [];
     this.svg = null;
 
-    // TODO: this is just temporary
-    this.modifiable = false;
-
     this.periodStartDate = new Date(this.timelineData.start);
     this.periodEndDate = new Date(this.timelineData.end);
 
@@ -246,6 +245,9 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy {
           (d) => d.projectId === this.timelineData.id && (d.abbreviation === 'PL' || d.abbreviation === 'PE')
         ).length > 0;
 
+      this.modifiable =
+        !this.timelineData.archived && (this.active || this.projectApproachModifiable) && this.userHasProjectEditRights;
+
       this.drawChart();
     });
   }
@@ -295,7 +297,13 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy {
     this.headerX.formatDate = (d: Date) => this.headerX.formatDateFull(d);
     this.headerX.draw();
 
-    this.projectDuration = new ProjectDuration(this.svg, this.chartElement, this.xScale, this.timelineData, true);
+    this.projectDuration = new ProjectDuration(
+      this.svg,
+      this.chartElement,
+      this.xScale,
+      this.timelineData,
+      this.modifiable
+    );
     this.projectDuration.draw();
 
     this.projectDuration.onDragEnd = (offsetDays: number) => {

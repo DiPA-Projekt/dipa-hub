@@ -2,9 +2,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavItem } from '../../../nav-item';
 import { ExternalLinksService, Timeline, Project, TimelinesService, ProjectService } from 'dipa-api-client';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { AuthenticationService } from '../../../authentication.service';
 import { TimelineDataService } from '../../../shared/timelineDataService';
+import { ProjectSettingsDialogComponent } from '../project-settings-dialog/project-settings-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sidenav',
@@ -18,6 +21,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   public selectedTimelineId: number;
 
+  public project: Project;
+
   public navMenuItems: NavItem[] = [];
   public favoriteLinkItems: NavItem[] = [];
   public roles: string;
@@ -26,10 +31,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private rolesSubscription: Subscription;
   private timelineDataSubscription: Subscription;
   private paramsSubscription: Subscription;
-  private projectSubscription: Subscription;
-  private project: Project;
 
   public constructor(
+    public dialog: MatDialog,
     private authenticationService: AuthenticationService,
     private timelinesService: TimelinesService,
     private externalLinksService: ExternalLinksService,
@@ -46,19 +50,24 @@ export class SidenavComponent implements OnInit, OnDestroy {
       this.timelineDataService.setRoles(this.selectedTimelineId);
     });
 
-    this.timelineDataSubscription = this.timelineDataService.getTimelines().subscribe((data) => {
-      if (data !== null) {
-        this.timeline = data.find((c) => c.id === Number(this.selectedTimelineId));
-        this.setSideNavMenu();
-      }
-    });
+    this.timelineDataSubscription = this.timelineDataService
+      .getTimelines()
+      .pipe(
+        switchMap((data: Timeline[]): Observable<Project> => {
+          if (data !== null) {
+            this.timeline = data.find((c) => c.id === Number(this.selectedTimelineId));
+            this.setSideNavMenu();
+          }
+          this.timelineDataService.setProjectData(this.selectedTimelineId);
+          return this.timelineDataService.getProjectData();
+        })
+      )
+      .subscribe((data: Project) => {
+        this.project = data;
+      });
 
     this.rolesSubscription = this.timelineDataService.getRoles().subscribe((data) => {
       this.roles = data;
-    });
-
-    this.projectSubscription = this.projectService.getProjectData(this.selectedTimelineId).subscribe((data) => {
-      this.project = data;
     });
   }
 
@@ -67,7 +76,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.paramsSubscription?.unsubscribe();
     this.timelineDataSubscription?.unsubscribe();
     this.rolesSubscription?.unsubscribe();
-    this.projectSubscription?.unsubscribe();
   }
 
   public setSideNavMenu(): void {
@@ -138,18 +146,11 @@ export class SidenavComponent implements OnInit, OnDestroy {
     });
   }
 
-  public archiveProject(): void {
-    this.project.archived = true;
-
-    this.projectService.updateProjectData(this.selectedTimelineId, this.project).subscribe({
-      next: () => {
-        this.timelineDataService.setTimelines();
-        this.router.navigate([`overview/archivedProjects`], {
-          fragment: `gantt${this.selectedTimelineId}`,
-        });
-      },
-      error: null,
-      complete: () => void 0,
+  public openProjectSettingsDialog(project: Project, timeline: Timeline): void {
+    this.dialog.open(ProjectSettingsDialogComponent, {
+      data: { project, timeline },
+      height: '80vh',
+      width: '80vw',
     });
   }
 }

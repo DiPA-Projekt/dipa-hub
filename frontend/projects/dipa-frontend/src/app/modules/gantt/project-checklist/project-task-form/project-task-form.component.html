@@ -69,12 +69,13 @@
   </div>
 
   <app-results-form
+    [isEditable]="!isArchivedProject"
     [formData]="resultsArray"
     [selectedFields]="selectedFields"
     (dataChanged)="onSubmit(formGroup)"
   ></app-results-form>
 
-  <div *ngIf="completable">
+  <div *ngIf="!isArchivedProject && completable">
     <button mat-raised-button color="primary" class="stepDoneButton" (click)="toggleCompleteStatus()">
       <mat-icon>{{ formGroup.get('completed').value === true ? 'undo' : 'done' }}</mat-icon>
       {{ formGroup.get('completed').value === true ? 'Schritt erneut öffnen' : 'Schritt abschließen' }}

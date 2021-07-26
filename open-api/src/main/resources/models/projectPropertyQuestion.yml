@@ -1,0 +1,28 @@
+PropertyQuestion:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the property question
+      type: integer
+      format: int64
+      example: 2
+    question:
+      description: The property question
+      type: string
+      example: "Werden externe DL benötigt?"
+    description:
+      description: description of the property question
+      type: string
+      example: "Auswirkung auf AeDL und Arbeitsmittel für Externe bestellen"
+    selected:
+      description: property question is selected
+      type: boolean
+      example: true
+    sortOrder:
+      description: Sort order of the property question
+      type: integer
+      format: int32
+      example: 2
+  required:
+    - id
+    - question

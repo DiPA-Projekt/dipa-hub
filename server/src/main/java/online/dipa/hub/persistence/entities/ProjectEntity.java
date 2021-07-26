@@ -38,11 +38,23 @@ public class ProjectEntity extends BaseEntity {
 
     @OneToOne(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private PermanentProjectTaskTemplateEntity permanentProjectTaskTemplate;
+
+    @OneToOne(mappedBy = "project")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private NonPermanentProjectTaskTemplateEntity nonPermanentProjectTaskTemplate;
+
+    @OneToOne(mappedBy = "project")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private PlanTemplateEntity planTemplate;
 
     @OneToMany(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<IncrementEntity> increments;
+
+    @OneToOne(mappedBy = "project")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private ProjectPropertyQuestionTemplateEntity projectPropertyQuestionTemplate;
 
     @OneToOne(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -60,6 +72,15 @@ public class ProjectEntity extends BaseEntity {
 
     public ProjectEntity() {
         super();
+    }
+
+    public ProjectEntity(String name, String projectSize, String projectType, OffsetDateTime startDate, OffsetDateTime endDate, boolean archived) {
+        this.name = name;
+        this.projectSize = projectSize;
+        this.projectType = projectType;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.archived = archived;
     }
 
     public ProjectEntity(Project project) {
@@ -112,6 +133,22 @@ public class ProjectEntity extends BaseEntity {
         this.projectTaskTemplate = projectTaskTemplate;
     }
 
+    public PermanentProjectTaskTemplateEntity getPermanentProjectTaskTemplate() {
+        return permanentProjectTaskTemplate;
+    }
+
+    public void setPermanentProjectTaskTemplate(final PermanentProjectTaskTemplateEntity permanentProjectTaskTemplate) {
+        this.permanentProjectTaskTemplate = permanentProjectTaskTemplate;
+    }
+
+    public NonPermanentProjectTaskTemplateEntity getNonPermanentProjectTaskTemplate() {
+        return nonPermanentProjectTaskTemplate;
+    }
+
+    public void setNonPermanentProjectTaskTemplate(final NonPermanentProjectTaskTemplateEntity nonPermanentProjectTaskTemplate) {
+        this.nonPermanentProjectTaskTemplate = nonPermanentProjectTaskTemplate;
+    }
+
     public PlanTemplateEntity getPlanTemplate() {
         return planTemplate;
     }
@@ -127,6 +164,14 @@ public class ProjectEntity extends BaseEntity {
 
     public void setIncrements(final Set<IncrementEntity> increments) {
         this.increments = increments;
+    }
+
+    public ProjectPropertyQuestionTemplateEntity getProjectPropertyQuestionTemplate() {
+        return projectPropertyQuestionTemplate;
+    }
+
+    public void setProjectPropertyQuestionTemplate(final ProjectPropertyQuestionTemplateEntity projectPropertyQuestionTemplate) {
+        this.projectPropertyQuestionTemplate = projectPropertyQuestionTemplate;
     }
 
     public String getProjectSize() {

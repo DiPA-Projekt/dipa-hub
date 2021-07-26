@@ -29,17 +29,28 @@ public class ProjectController implements ProjectApi {
     }
 
     @Override
-    public ResponseEntity<List<ProjectTask>> getProjectTasks(final Long timelineId) {
-        List<ProjectTask> projectTasks =  projectService.getProjectTasks(timelineId, false);
-        return ResponseEntity.ok(projectTasks);
-    }
-    
-    @Override
-    public ResponseEntity<List<ProjectTask>> getProjectPermanentTasks(final Long timelineId) {
-        List<ProjectTask> projectTasks =  projectService.getProjectTasks(timelineId, true);
+    public ResponseEntity<List<PermanentProjectTask>> getPermanentProjectTasks(final Long timelineId) {
+        List<PermanentProjectTask> projectTasks =  projectService.getPermanentProjectTasks(timelineId);
         return ResponseEntity.ok(projectTasks);
     }
 
+    @Override
+    public ResponseEntity<List<NonPermanentProjectTask>> getNonPermanentProjectTasks(final Long timelineId) {
+        List<NonPermanentProjectTask> projectTasks =  projectService.getNonPermanentProjectTasks(timelineId);
+        return ResponseEntity.ok(projectTasks);
+    }
+
+    @Override
+    public ResponseEntity<Void> updatePermanentProjectTasks(final Long timelineId, List<PermanentProjectTask> permanentProjectTasks) {
+        projectService.updatePermanentProjectTasks(permanentProjectTasks);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> updateNonPermanentProjectTasks(final Long timelineId, List<NonPermanentProjectTask> nonPermanentProjectTasks) {
+        projectService.updateNonPermanentProjectTasks(nonPermanentProjectTasks);
+        return ResponseEntity.noContent().build();
+    }
 
     @Override
     public ResponseEntity<Void> updateProjectTask(final Long timelineId, ProjectTask projectTask) {
@@ -66,6 +77,17 @@ public class ProjectController implements ProjectApi {
     @Override
     public ResponseEntity<List<User>> getProjectUsers(final Long projectId) {
         return ResponseEntity.ok(projectService.getProjectUsers(projectId));
+    }
+
+    @Override
+    public ResponseEntity<List<PropertyQuestion>> getProjectPropertyQuestions(final Long projectId) {
+        return ResponseEntity.ok(projectService.getProjectPropertyQuestions(projectId));
+    }
+
+    @Override
+    public ResponseEntity<Void> updateProjectPropertyQuestion(final Long projectId, final PropertyQuestion propertyQuestion) {
+        projectService.updateProjectPropertyQuestion(propertyQuestion);
+        return ResponseEntity.noContent().build();
     }
 
 }

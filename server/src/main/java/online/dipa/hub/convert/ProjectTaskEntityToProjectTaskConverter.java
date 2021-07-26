@@ -24,19 +24,21 @@ public class ProjectTaskEntityToProjectTaskConverter implements Converter<Projec
     @Autowired
     private FormFieldEntityToFormFieldConverter formFieldConverter;
 
+    @Autowired
+    private PropertyQuestionEntityToPropertyQuestionConverter propertyQuestionConverter;
+
     @Override
     public ProjectTask convert(final ProjectTaskEntity template) {
 
         ProjectTask projectTask = new ProjectTask().id(template.getId())
-                             .title(template.getTitle())
-                             .optional(template.getOptional())
                              .completed((template.getCompleted()))
-                             .icon(template.getIcon())
                              .explanation(template.getExplanation())
-                             .isPermanentTask(template.getIsPermanentTask())
-                             .titlePermanentTask(template.getTitlePermanentTask())
-                             .sortOrder(template.getSortOrder());
+                                                   .sortOrder(template.getSortOrder());
 
+        if (template.getProjectPropertyQuestion() != null) {
+            projectTask.projectPropertyQuestion(propertyQuestionConverter.convert(
+                    template.getProjectPropertyQuestion()));
+        }
         List<FormField> entries = template.getEntries().stream().sorted(Comparator.comparing(FormFieldEntity::getSortOrder)).map(p -> formFieldConverter.convert(p)).collect(Collectors.toList());
         projectTask.entries(entries);
 
