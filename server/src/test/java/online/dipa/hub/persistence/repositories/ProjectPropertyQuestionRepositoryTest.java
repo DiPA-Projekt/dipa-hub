@@ -4,6 +4,7 @@ import static org.assertj.core.api.BDDAssertions.then;
 
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import online.dipa.hub.persistence.entities.ProjectPropertyQuestionEntity;
 import online.dipa.hub.persistence.entities.ProjectPropertyQuestionTemplateEntity;
+import online.dipa.hub.tenancy.CurrentTenantContextHolder;
 
 @SpringBootTest
 class ProjectPropertyQuestionRepositoryTest {
@@ -20,6 +22,11 @@ class ProjectPropertyQuestionRepositoryTest {
 
     @Autowired
     private ProjectPropertyQuestionRepository projectPropertyQuestionRepository;
+
+    @BeforeAll
+    static void setUpContext() {
+        CurrentTenantContextHolder.setTenantId("itzbund");
+    }
 
     @Nested
     class FindByTemplateAndSortOrder {

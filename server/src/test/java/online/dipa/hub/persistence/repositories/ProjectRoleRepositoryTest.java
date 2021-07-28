@@ -4,6 +4,7 @@
 
  import java.util.Optional;
 
+ import org.junit.jupiter.api.BeforeAll;
  import org.junit.jupiter.api.Nested;
  import org.junit.jupiter.api.Test;
  import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@
 
  import online.dipa.hub.persistence.entities.ProjectRoleEntity;
  import online.dipa.hub.persistence.entities.ProjectRoleTemplateEntity;
+ import online.dipa.hub.tenancy.CurrentTenantContextHolder;
 
  @SpringBootTest
  class ProjectRoleRepositoryTest {
@@ -20,6 +22,11 @@
 
      @Autowired
      private ProjectRoleTemplateRepository projectRoleTemplateRepository;
+
+     @BeforeAll
+     static void setUpContext() {
+         CurrentTenantContextHolder.setTenantId("itzbund");
+     }
 
      @Nested
      class FindByTemplateAndAbbreviation {
