@@ -1,12 +1,10 @@
  package online.dipa.hub.services;
  import javax.transaction.Transactional;
 
- import org.junit.jupiter.api.BeforeAll;
  import org.junit.jupiter.api.BeforeEach;
  import org.junit.jupiter.api.Nested;
  import org.junit.jupiter.api.Test;
 
- import org.junit.jupiter.api.TestInstance;
  import org.springframework.beans.factory.annotation.Autowired;
  import org.springframework.boot.test.context.SpringBootTest;
  import org.springframework.boot.test.mock.mockito.MockBean;
@@ -51,40 +49,40 @@
     @Autowired
     private ProjectApproachRepository projectApproachRepository;
 
-     @Autowired
-     private ProjectRepository projectRepository;
+    @Autowired
+    private ProjectRepository projectRepository;
 
-     @Autowired
-     private ProjectPropertyQuestionRepository projectPropertyQuestionRepository;
+    @Autowired
+    private ProjectPropertyQuestionRepository projectPropertyQuestionRepository;
 
-     @Autowired
-     private ProjectService projectService;
+    @Autowired
+    private ProjectService projectService;
 
-     @Autowired
-     private ConversionService conversionService;
+    @Autowired
+    private ConversionService conversionService;
 
-     @Autowired
-     private ProjectTaskTemplateRepository projectTaskTemplateRepository;
+    @Autowired
+    private ProjectTaskTemplateRepository projectTaskTemplateRepository;
 
-     @Autowired
-     private ProjectTaskRepository projectTaskRepository;
+    @Autowired
+    private ProjectTaskRepository projectTaskRepository;
 
-     @Autowired
-     private NonPermanentProjectTaskTemplateRepository nonPermanentProjectTaskTempRep;
+    @Autowired
+    private NonPermanentProjectTaskTemplateRepository nonPermanentProjectTaskTempRep;
 
-     @Autowired
-     private PermanentProjectTaskTemplateRepository permanentProjectTaskTempRep;
+    @Autowired
+    private PermanentProjectTaskTemplateRepository permanentProjectTaskTempRep;
 
-     @Autowired
-     private NonPermanentProjectTaskRepository nonPermanentProjectTaskRepository;
+    @Autowired
+    private NonPermanentProjectTaskRepository nonPermanentProjectTaskRepository;
 
-     @Autowired
-     private PermanentProjectTaskRepository permanentProjectTaskRepository;
+    @Autowired
+    private PermanentProjectTaskRepository permanentProjectTaskRepository;
 
-     @MockBean
-     private UserInformationService userInformationService;
+    @MockBean
+    private UserInformationService userInformationService;
 
-     ProjectEntity testProject;
+    ProjectEntity testProject;
 
     @BeforeEach
     void setUp() {
@@ -92,16 +90,19 @@
 
         testProject = new ProjectEntity();
         testProject.setName("Test Project");
-        testProject.setProjectApproach(projectApproachRepository.findAll().stream().findFirst().get());
+        testProject.setProjectApproach(projectApproachRepository.getById(2L));
         testProject.setProjectSize("SMALL");
         projectRepository.save(testProject);
-                   System.out.println(        testProject.getProjectApproach().getName()
-                   );
 
     }
 
     @Nested
     class CreateNewPropertyQuestions {
+
+        @BeforeEach
+        void setUp() {
+            CurrentTenantContextHolder.setTenantId("itzbund");
+        }
 
         @Test
         void should_return_when_template_created() {
@@ -125,6 +126,7 @@
 
         @BeforeEach
         void setUp() {
+            CurrentTenantContextHolder.setTenantId("itzbund");
             template = projectService.createNewPropertyQuestions(testProject);
         }
 
@@ -174,6 +176,8 @@
 
         @BeforeEach
         void setUp() {
+            CurrentTenantContextHolder.setTenantId("itzbund");
+
             projectTaskProject = new
                     ProjectTaskTemplateEntity("Project Task Template " + testProject.getName(), false, testProject);
             projectTaskTemplateRepository.save(projectTaskProject);
@@ -235,6 +239,13 @@
     @Nested
     class GetProjectTasks {
 
+        @BeforeEach
+        void setUp() {
+            CurrentTenantContextHolder.setTenantId("itzbund");
+
+        }
+
+
         @Test
         void should_return_permanent_project_tasks() {
             // GIVEN
@@ -242,7 +253,6 @@
 
             //WHEN
             List<PermanentProjectTask> permanentProjectTasks = projectService.getPermanentProjectTasks(testProject.getId());
-            System.out.println(permanentProjectTasks);
 
             // THEN
             assertThat(permanentProjectTasks).isNotEmpty()
@@ -256,7 +266,6 @@
 
             //WHEN
             List<NonPermanentProjectTask> nonPermanentProjectTasks = projectService.getNonPermanentProjectTasks(testProject.getId());
-            System.out.println(nonPermanentProjectTasks);
 
             // THEN
             assertThat(nonPermanentProjectTasks).isNotEmpty().hasSize(13);
@@ -267,6 +276,12 @@
 
      @Nested
      class SortOrderProjectTasks {
+
+         @BeforeEach
+         void setUp() {
+             CurrentTenantContextHolder.setTenantId("itzbund");
+         }
+
 
          @Test
          void should_return_new_sort_order_permanent_project_tasks() {
