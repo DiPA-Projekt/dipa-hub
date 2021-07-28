@@ -89,6 +89,7 @@
     @BeforeEach
     void setUp() {
         testProject = new ProjectEntity();
+        projectApproachRepository.getOneProjectApproachEntity().ifPresent(testProject::setProjectApproach);
         testProject.setName("Test Project");
         testProject.setProjectApproach(projectApproachRepository.getById(2L));
         testProject.setProjectSize("SMALL");
