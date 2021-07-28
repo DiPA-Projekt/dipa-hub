@@ -90,7 +90,7 @@
     void setUp() {
         testProject = new ProjectEntity();
         testProject.setName("Test Project");
-        testProject.setProjectApproach(projectApproachRepository.getById(2L));
+        testProject.setProjectApproach(projectApproachRepository.findAll().stream().findFirst().get());
         testProject.setProjectSize("SMALL");
         projectRepository.save(testProject);
         CurrentTenantContextHolder.setTenantId("itzbund");
