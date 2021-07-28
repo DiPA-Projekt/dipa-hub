@@ -1,6 +1,7 @@
  package online.dipa.hub.services;
  import javax.transaction.Transactional;
 
+ import org.junit.jupiter.api.BeforeAll;
  import org.junit.jupiter.api.BeforeEach;
  import org.junit.jupiter.api.Nested;
  import org.junit.jupiter.api.Test;
@@ -84,6 +85,11 @@
 
     ProjectEntity testProject;
 
+    @BeforeAll
+    static void setUpContext() {
+        CurrentTenantContextHolder.setTenantId("itzbund");
+    }
+
     @BeforeEach
     void setUp() {
         CurrentTenantContextHolder.setTenantId("itzbund");
@@ -98,11 +104,6 @@
 
     @Nested
     class CreateNewPropertyQuestions {
-
-        @BeforeEach
-        void setUp() {
-            CurrentTenantContextHolder.setTenantId("itzbund");
-        }
 
         @Test
         void should_return_when_template_created() {
@@ -126,7 +127,6 @@
 
         @BeforeEach
         void setUp() {
-            CurrentTenantContextHolder.setTenantId("itzbund");
             template = projectService.createNewPropertyQuestions(testProject);
         }
 
@@ -176,7 +176,6 @@
 
         @BeforeEach
         void setUp() {
-            CurrentTenantContextHolder.setTenantId("itzbund");
 
             projectTaskProject = new
                     ProjectTaskTemplateEntity("Project Task Template " + testProject.getName(), false, testProject);
@@ -239,13 +238,6 @@
     @Nested
     class GetProjectTasks {
 
-        @BeforeEach
-        void setUp() {
-            CurrentTenantContextHolder.setTenantId("itzbund");
-
-        }
-
-
         @Test
         void should_return_permanent_project_tasks() {
             // GIVEN
@@ -276,12 +268,6 @@
 
      @Nested
      class SortOrderProjectTasks {
-
-         @BeforeEach
-         void setUp() {
-             CurrentTenantContextHolder.setTenantId("itzbund");
-         }
-
 
          @Test
          void should_return_new_sort_order_permanent_project_tasks() {
