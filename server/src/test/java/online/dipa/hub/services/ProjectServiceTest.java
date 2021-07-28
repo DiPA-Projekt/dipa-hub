@@ -88,12 +88,15 @@
 
     @BeforeEach
     void setUp() {
+        CurrentTenantContextHolder.setTenantId("itzbund");
+
         testProject = new ProjectEntity();
         testProject.setName("Test Project");
         testProject.setProjectApproach(projectApproachRepository.findAll().stream().findFirst().get());
         testProject.setProjectSize("SMALL");
         projectRepository.save(testProject);
-        CurrentTenantContextHolder.setTenantId("itzbund");
+                   System.out.println(        testProject.getProjectApproach().getName()
+                   );
 
     }
 
@@ -239,6 +242,7 @@
 
             //WHEN
             List<PermanentProjectTask> permanentProjectTasks = projectService.getPermanentProjectTasks(testProject.getId());
+            System.out.println(permanentProjectTasks);
 
             // THEN
             assertThat(permanentProjectTasks).isNotEmpty()
@@ -248,53 +252,58 @@
         @Test
         void should_return_non_permanent_project_task() {
             // GIVEN
-            when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(
-                    Collections.singleton(testProject.getId())));
+            when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(Collections.singleton(testProject.getId())));
 
             //WHEN
             List<NonPermanentProjectTask> nonPermanentProjectTasks = projectService.getNonPermanentProjectTasks(testProject.getId());
+            System.out.println(nonPermanentProjectTasks);
 
             // THEN
             assertThat(nonPermanentProjectTasks).isNotEmpty().hasSize(13);
 
         }
 
-        @Test
-        void should_return_new_sort_order_permanent_project_tasks() {
-            // GIVEN
-            when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(Collections.singleton(testProject.getId())));
-
-            List<PermanentProjectTask> projectTasks = projectService.getPermanentProjectTasks(testProject.getId());
-            projectTasks.get(0).setSortOrder(2L);
-            projectTasks.get(1).setSortOrder(1L);
-
-            //WHEN
-            projectService.updatePermanentProjectTasks(projectTasks);
-
-            // THEN
-            then(permanentProjectTaskRepository.getById(projectTasks.get(0).getId())).returns(2L, PermanentProjectTaskEntity::getSortOrder);
-            then(permanentProjectTaskRepository.getById(projectTasks.get(1).getId())).returns(1L, PermanentProjectTaskEntity::getSortOrder);
-        }
-
-
-        @Test
-        void should_return_new_sort_order_non_permanent_project_tasks() {
-            // GIVEN
-            when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(Collections.singleton(testProject.getId())));
-
-            List<NonPermanentProjectTask> projectTasks = projectService.getNonPermanentProjectTasks(testProject.getId());
-            projectTasks.get(0).setSortOrder(2L);
-            projectTasks.get(1).setSortOrder(1L);
-
-            //WHEN
-            projectService.updateNonPermanentProjectTasks(projectTasks);
-
-            // THEN
-            then(nonPermanentProjectTaskRepository.getById(projectTasks.get(0).getId())).returns(2L, NonPermanentProjectTaskEntity::getSortOrder);
-            then(nonPermanentProjectTaskRepository.getById(projectTasks.get(1).getId())).returns(1L, NonPermanentProjectTaskEntity::getSortOrder);
-
-        }
     }
+
+     @Nested
+     class SortOrderProjectTasks {
+
+         @Test
+         void should_return_new_sort_order_permanent_project_tasks() {
+             // GIVEN
+             when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(Collections.singleton(testProject.getId())));
+
+             List<PermanentProjectTask> projectTasks = projectService.getPermanentProjectTasks(testProject.getId());
+             projectTasks.get(0).setSortOrder(2L);
+             projectTasks.get(1).setSortOrder(1L);
+
+             //WHEN
+             projectService.updatePermanentProjectTasks(projectTasks);
+
+             // THEN
+             then(permanentProjectTaskRepository.getById(projectTasks.get(0).getId())).returns(2L, PermanentProjectTaskEntity::getSortOrder);
+             then(permanentProjectTaskRepository.getById(projectTasks.get(1).getId())).returns(1L, PermanentProjectTaskEntity::getSortOrder);
+         }
+
+
+         @Test
+         void should_return_new_sort_order_non_permanent_project_tasks() {
+             // GIVEN
+             when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(Collections.singleton(testProject.getId())));
+
+             List<NonPermanentProjectTask> projectTasks = projectService.getNonPermanentProjectTasks(testProject.getId());
+             projectTasks.get(0).setSortOrder(2L);
+             projectTasks.get(1).setSortOrder(1L);
+
+             //WHEN
+             projectService.updateNonPermanentProjectTasks(projectTasks);
+
+             // THEN
+             then(nonPermanentProjectTaskRepository.getById(projectTasks.get(0).getId())).returns(2L, NonPermanentProjectTaskEntity::getSortOrder);
+             then(nonPermanentProjectTaskRepository.getById(projectTasks.get(1).getId())).returns(1L, NonPermanentProjectTaskEntity::getSortOrder);
+
+         }
+     }
 
 
  }
