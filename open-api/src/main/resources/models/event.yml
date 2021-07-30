@@ -1,0 +1,25 @@
+Result:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the Result
+      type: integer
+      format: int64
+      example: 2
+    resultType:
+      type: string
+      enum:
+        - TYPE_STD
+        - TYPE_ELBE_SC
+        - TYPE_CONTACT_PERS
+        - TYPE_APPT_SERIES
+        - TYPE_RISK
+        - TYPE_SINGLE_APPOINTMENT
+        - TYPE_LINK
+        - TYPE_TEAM_PERS
+        - TYPE_SUBTASK
+      example: TYPE_STD
+    formFields:
+      type: array
+      items:
+        $ref: "../models/formField.yml#/FormField"
