@@ -1,71 +1,92 @@
 package online.dipa.hub.persistence.entities;
-
 import java.time.OffsetDateTime;
 
-import javax.persistence.Basic;
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
-@Table(name = "increment")
+@Table(name = "event")
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class IncrementEntity extends BaseEntity {
+public class EventEntity extends BaseEntity {
 
-    @Size(max = 255)
-    @NotEmpty
-    @Basic(optional = false)
-    private String name;
+    private String title;
+    private String eventType;
+    private OffsetDateTime dateTime;
+    private Integer duration;
+    private String status;
 
-    private OffsetDateTime startDate;
-    private OffsetDateTime endDate;
-    
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private ProjectEntity project;
 
-    public IncrementEntity() {
+    @ManyToOne(fetch = FetchType.EAGER)
+    private ResultEntity result;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private RecurringEventTypeEntity recurringEventType;
+
+    public EventEntity() {
         super();
     }
 
-    public IncrementEntity(String name, OffsetDateTime startDate, OffsetDateTime endDate, ProjectEntity project) {
-        this.name = name;
-        this.startDate = startDate;
-        this.endDate = endDate;
+    public EventEntity(String title, String eventType, OffsetDateTime dateTime, Integer duration, String status,
+            ProjectEntity project, RecurringEventTypeEntity recurringEventType) {
+        this.title = title;
+        this.eventType = eventType;
+        this.dateTime = dateTime;
+        this.duration = duration;
+        this.status = status;
         this.project = project;
+        this.recurringEventType = recurringEventType;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(final String name) {
-        this.name = name;
+    public void setTitle(final String title) {
+        this.title = title;
     }
 
-    public OffsetDateTime getStartDate() {
-        return startDate;
+    public String getEventType() {
+        return eventType;
     }
 
-    public void setStartDate(final OffsetDateTime startDate) {
-        this.startDate = startDate;
-    }
-    
-    public OffsetDateTime getEndDate() {
-        return endDate;
+    public void setEventType(final String eventType) {
+        this.eventType = eventType;
     }
 
-    public void setEndDate(final OffsetDateTime endDate) {
-        this.endDate = endDate;
+
+    public OffsetDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(final OffsetDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public void setDuration(final Integer duration) {
+        this.duration = duration;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(final String status) {
+        this.status = status;
     }
 
     public ProjectEntity getProject() {
@@ -74,5 +95,21 @@ public class IncrementEntity extends BaseEntity {
 
     public void setProject(final ProjectEntity project) {
         this.project = project;
+    }
+
+    public ResultEntity getResult() {
+        return result;
+    }
+
+    public void setResult(final ResultEntity result) {
+        this.result = result;
+    }
+
+    public RecurringEventTypeEntity getRecurringEventType() {
+        return recurringEventType;
+    }
+
+    public void setRecurringEventType(final RecurringEventTypeEntity recurringEventType) {
+        this.recurringEventType = recurringEventType;
     }
 }

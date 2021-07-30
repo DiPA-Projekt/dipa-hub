@@ -90,4 +90,9 @@ public class ProjectController implements ProjectApi {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
+    public ResponseEntity<List<Event>> getEvents(final Long projectId) {
+        return ResponseEntity.ok(projectService.getEvents(projectId));
+    }
+
 }

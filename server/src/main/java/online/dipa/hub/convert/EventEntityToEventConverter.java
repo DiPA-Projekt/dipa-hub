@@ -1,18 +1,20 @@
 package online.dipa.hub.convert;
 
-import online.dipa.hub.api.model.DownloadFile;
-import online.dipa.hub.persistence.entities.FileEntity;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-@Component
-public class FileEntityToDownloadFileConverter implements Converter<FileEntity, DownloadFile> {
-    @Override
-    public DownloadFile convert(final FileEntity entity) {
+import online.dipa.hub.api.model.Event;
+import online.dipa.hub.persistence.entities.EventEntity;
 
-        return new DownloadFile().id(entity.getId())
-                .name(entity.getName())
-                .description(entity.getDescription())
-                .path(entity.getPath());
+@Component
+public class EventEntityToEventConverter implements Converter<EventEntity, Event> {
+    @Override
+    public Event convert(final EventEntity entity) {
+
+        return new Event().id(entity.getId())
+//                          .tit
+                          .eventType(Event.EventTypeEnum.valueOf(entity.getEventType()))
+                          .dateTime(entity.getDateTime())
+                          .duration(entity.getDuration());
     }
 }

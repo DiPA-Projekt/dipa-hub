@@ -27,6 +27,9 @@ public class ResultEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     private ProjectTaskEntity projectTask;
 
+    @OneToOne(mappedBy = "result")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private RecurringEventPatternEntity recurringEventPattern;
 
     public String getResultType() {
         return resultType;
@@ -50,5 +53,13 @@ public class ResultEntity extends BaseEntity {
 
     public void setFormFields(Set<FormFieldEntity> formFields) {
         this.formFields = formFields;
+    }
+
+    public RecurringEventPatternEntity getRecurringEventPattern() {
+        return recurringEventPattern;
+    }
+
+    public void setRecurringEventPattern(final RecurringEventPatternEntity recurringEventPattern) {
+        this.recurringEventPattern = recurringEventPattern;
     }
 }

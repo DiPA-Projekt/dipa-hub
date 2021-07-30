@@ -1,4 +1,4 @@
-Result:
+Event:
   type: object
   properties:
     id:
@@ -6,20 +6,29 @@ Result:
       type: integer
       format: int64
       example: 2
-    resultType:
+    title:
+      descrition: The title of the event
+      type: string
+      example: "Trackingtabelle externe Dienstleistung pflegen"
+    eventType:
+      descrition: The type of the event
       type: string
       enum:
-        - TYPE_STD
-        - TYPE_ELBE_SC
-        - TYPE_CONTACT_PERS
         - TYPE_APPT_SERIES
-        - TYPE_RISK
         - TYPE_SINGLE_APPOINTMENT
-        - TYPE_LINK
-        - TYPE_TEAM_PERS
-        - TYPE_SUBTASK
+        - TYPE_RECURRING_EVENT
       example: TYPE_STD
-    formFields:
-      type: array
-      items:
-        $ref: "../models/formField.yml#/FormField"
+    dateTime:
+      description: The date time of the event
+      type: string
+      format: date-time
+      example: "2021-07-21T17:30:00Z"
+    duration:
+      description: The duration of the event
+      type: integer
+      format: int32
+      example: 2
+    status:
+      description: Status of the event
+      type: string
+      example: PLANNED

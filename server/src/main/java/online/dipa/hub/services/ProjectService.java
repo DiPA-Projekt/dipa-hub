@@ -1,5 +1,10 @@
 package online.dipa.hub.services;
 
+import net.fortuna.ical4j.model.DateList;
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.parameter.Value;
+import net.fortuna.ical4j.model.property.RRule;
+import online.dipa.hub.api.model.Event;
 import online.dipa.hub.api.model.FormField;
 import online.dipa.hub.api.model.NonPermanentProjectTask;
 import online.dipa.hub.api.model.PermanentProjectTask;
@@ -22,6 +27,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 
+import java.text.ParseException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -89,6 +101,9 @@ public class ProjectService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EventRepository eventRepository;
 
     private static final String ITZBUND_TENANT = "itzbund";
     private static final String PROJECT_SIZE_SMALL = "SMALL";
@@ -543,6 +558,64 @@ public class ProjectService {
                 }
             }
         }
+    }
+
+    public List<Event> getEvents (final Long projectId) {
+        ProjectEntity project = projectRepository.getById(projectId);
+        if (project.getEvents()
+                   .stream()
+                   .noneMatch(e -> e.getEventType()
+                                    .equals("TYPE_RECURRING_EVENT"))) {
+            initializeRecurringEvents(project);
+        }
+
+        System.out.println(project.getEvents());
+        return project.getEvents()
+                      .stream()
+                      .map(p -> conversionService.convert(p, Event.class))
+                      .collect(Collectors.toList());
+
+    }
+
+    public void initializeRecurringEvents(ProjectEntity project) {
+        for (RecurringEventTypeEntity recurringEventType: project.getRecurringEventTypes()) {
+
+            System.out.println(recurringEventType.getRecurringEventPattern().getTitle());
+            if (recurringEventType.getProjectPropertyQuestion() == null || (recurringEventType.getProjectPropertyQuestion() != null
+                    && recurringEventType.getProjectPropertyQuestion().getSelected())) {
+                createRecurringEvents(project, recurringEventType.getRecurringEventPattern(), recurringEventType);
+            }
+
+        }
+    }
+
+    public void createRecurringEvents (ProjectEntity project, RecurringEventPatternEntity eventPattern, RecurringEventTypeEntity eventType) {
+        RRule rrule = new RRule();
+        String pattern = eventPattern.getRulePattern();
+        try {
+            rrule.setValue(pattern);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        DateTime start = dateTimeConverter(eventPattern.getStartDate(), eventPattern);
+        DateTime end = dateTimeConverter(eventPattern.getEndDate(), eventPattern);
+        DateList recurDates = rrule.getRecur().getDates(start, end, Value.DATE_TIME);
+        for (Date recurDate: recurDates) {
+            EventEntity event = new EventEntity(eventType.getTitle(), "TYPE_RECURRING_EVENT",
+                    recurDate.toInstant().atOffset(ZoneOffset.UTC), eventPattern.getDuration(), null, project, eventType);
+
+            eventRepository.save(event);
+            project.getEvents().add(event);
+            eventType.getEvents().add(event);
+        }
+    }
+
+    private DateTime dateTimeConverter (LocalDate date, RecurringEventPatternEntity eventPattern) {
+        LocalDateTime dt = LocalDateTime.of(date, eventPattern.getTime());
+        ZonedDateTime zdt = dt.atZone(ZoneId.systemDefault());
+        Date output = Date.from(zdt.toInstant());
+        return new DateTime(output);
     }
 
     public List<ProjectRole> getProjectRoles (final Long projectId) {

@@ -60,6 +60,14 @@ public class ProjectEntity extends BaseEntity {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private ProjectRoleTemplateEntity projectRoleTemplate;
 
+    @OneToMany(mappedBy = "project")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<RecurringEventTypeEntity> recurringEventTypes;
+    
+    @OneToMany(mappedBy = "project")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<EventEntity> events;
+
     private String projectType;
     private String projectSize;
     private String akz;
@@ -228,6 +236,22 @@ public class ProjectEntity extends BaseEntity {
 
     public void setProjectRoleTemplate(final ProjectRoleTemplateEntity projectRoleTemplate) {
         this.projectRoleTemplate = projectRoleTemplate;
+    }
+
+    public Set<RecurringEventTypeEntity> getRecurringEventTypes() {
+        return recurringEventTypes;
+    }
+
+    public void setRecurringEventTypes(final Set<RecurringEventTypeEntity> recurringEventTypes) {
+        this.recurringEventTypes = recurringEventTypes;
+    }
+
+    public Set<EventEntity> getEvents() {
+        return events;
+    }
+
+    public void setEvents(final Set<EventEntity> events) {
+        this.events = events;
     }
 
 }
