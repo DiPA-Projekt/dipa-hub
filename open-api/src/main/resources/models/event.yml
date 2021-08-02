@@ -2,33 +2,24 @@ Event:
   type: object
   properties:
     id:
-      description: Unique identifier of the Result
+      description: Unique identifier of the event
       type: integer
       format: int64
-      example: 2
+      example: 1
     title:
-      descrition: The title of the event
+      description: Title of the event
       type: string
-      example: "Trackingtabelle externe Dienstleistung pflegen"
-    eventType:
-      descrition: The type of the event
-      type: string
-      enum:
-        - TYPE_APPT_SERIES
-        - TYPE_SINGLE_APPOINTMENT
-        - TYPE_RECURRING_EVENT
-      example: TYPE_STD
+      example: Trackingtabelle externe Dienstleistung pflegen
     dateTime:
       description: The date time of the event
       type: string
       format: date-time
-      example: "2021-07-21T17:30:00Z"
+      example: 2021-07-21T17:30:00Z
     duration:
       description: The duration of the event
       type: integer
-      format: int32
-      example: 2
+      example: 3
     status:
-      description: Status of the event
+      description: The date time of the event
       type: string
       example: PLANNED

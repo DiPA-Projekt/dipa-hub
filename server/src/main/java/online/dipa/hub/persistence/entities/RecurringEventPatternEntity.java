@@ -38,18 +38,14 @@ public class RecurringEventPatternEntity extends BaseEntity {
         super();
     }
 
-//    public RecurringEventPatternEntity(final String title, final String icon, final Long sortOrder) {
-//        this.title = title;
-//        this.icon = icon;
-//        this.sortOrder = sortOrder;
-//    }
-//
-//    public RecurringEventPatternEntity(RecurringEventPatternEntity projectTaskEntity) {
-//        this.title = projectTaskEntity.getTitle();
-//        this.icon = projectTaskEntity.getIcon();
-//        this.isAdditionalTask = projectTaskEntity.isAdditionalTask();
-//        this.sortOrder = projectTaskEntity.getSortOrder();
-//    }
+    public RecurringEventPatternEntity(RecurringEventPatternEntity entity, ProjectEntity project) {
+        this.title = entity.getTitle();
+        this.rulePattern = entity.getRulePattern();
+        this.startDate = project.getStartDate().toLocalDate();
+        this.endDate = project.getEndDate().toLocalDate();
+        this.time = entity.getTime();
+        this.duration = entity.getDuration();
+    }
 
     public String getTitle() {
         return title;

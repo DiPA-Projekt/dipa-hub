@@ -52,3 +52,9 @@ WHERE recurring_event_type.project_property_question_id IS NOT NULL AND q.sort_o
 INSERT INTO public.recurring_event_pattern(recurring_event_type_id, title, rule_pattern, start_date, end_date, time, duration)
 SELECT t.id, CONCAT('Recurring Pattern ', title), 'FREQ=MONTHLY;BYMONTHDAY=10;INTERVAL=1', DATE(p.start_date), DATE(p.end_date), '08:00:00', null
 FROM recurring_event_type t JOIN project p ON t.project_id = p.id
+
+--changeset id:insert-recurring-pattern-recurring-type-master
+INSERT INTO public.recurring_event_pattern(recurring_event_type_id, title, rule_pattern, start_date, end_date, time, duration)
+SELECT t.id, CONCAT('Recurring Pattern ', title), 'FREQ=MONTHLY;BYMONTHDAY=10;INTERVAL=1',  null, null, '08:00:00', null
+FROM recurring_event_type t
+WHERE t.master = true

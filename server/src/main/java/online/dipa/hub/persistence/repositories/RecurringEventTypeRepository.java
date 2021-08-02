@@ -10,15 +10,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
 
-import online.dipa.hub.persistence.entities.EventEntity;
 import online.dipa.hub.persistence.entities.RecurringEventTypeEntity;
 
-public interface EventRepository extends JpaRepository<EventEntity, Long> {
+public interface RecurringEventTypeRepository extends JpaRepository<RecurringEventTypeEntity, Long> {
 
     @QueryHints(value = { @QueryHint(name = HINT_CACHEABLE, value = "true") })
-    @Query("from EventEntity as event join event.eventTemplate.recurringEventType as type " +
-            "where type = :recurringEventType")
-    Collection<EventEntity> findByRecurringEventType(RecurringEventTypeEntity recurringEventType);
-
+    @Query("from RecurringEventTypeEntity t where t.master = true")
+    Collection<RecurringEventTypeEntity> findByMaster();
 
 }

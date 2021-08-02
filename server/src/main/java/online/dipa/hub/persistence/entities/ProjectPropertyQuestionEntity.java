@@ -40,6 +40,10 @@ public class ProjectPropertyQuestionEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     private ProjectPropertyQuestionTemplateEntity projectPropertyQuestionTemplate;
 
+    @OneToMany(mappedBy = "projectPropertyQuestion", cascade = { ALL })
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private Set<RecurringEventTypeEntity> recurringEventTypes = new HashSet<>();
+
     public ProjectPropertyQuestionEntity() {
         super();
     }
@@ -97,4 +101,13 @@ public class ProjectPropertyQuestionEntity extends BaseEntity {
     public void setProjectPropertyQuestionTemplate(final ProjectPropertyQuestionTemplateEntity projectPropertyQuestionTemplate) {
         this.projectPropertyQuestionTemplate = projectPropertyQuestionTemplate;
     }
+
+    public Set<RecurringEventTypeEntity> getRecurringEventTypes() {
+        return recurringEventTypes;
+    }
+
+    public void setRecurringEventTypes(final Set<RecurringEventTypeEntity> recurringEventTypes) {
+        this.recurringEventTypes = recurringEventTypes;
+    }
+
 }

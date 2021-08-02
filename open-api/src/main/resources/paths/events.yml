@@ -14,4 +14,4 @@ get:
           schema:
             type: array
             items:
-              $ref: "../models/event.yml#/Event"
+              $ref: "../models/eventTemplate.yml#/EventTemplate"

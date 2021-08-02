@@ -91,7 +91,7 @@ public class ProjectController implements ProjectApi {
     }
 
     @Override
-    public ResponseEntity<List<Event>> getEvents(final Long projectId) {
+    public ResponseEntity<List<EventTemplate>> getEvents(final Long projectId) {
         return ResponseEntity.ok(projectService.getEvents(projectId));
     }
 

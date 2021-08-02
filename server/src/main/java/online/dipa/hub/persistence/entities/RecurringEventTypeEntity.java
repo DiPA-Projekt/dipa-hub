@@ -28,15 +28,10 @@ public class RecurringEventTypeEntity extends BaseEntity {
     private boolean mandatory;
     private boolean master;
 
-    //    @OneToMany(mappedBy = "result", cascade = { ALL })
-    //    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    //    private Set<FormFieldEntity> formFields = new HashSet<>();
-
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private ProjectEntity project;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private ProjectPropertyQuestionEntity projectPropertyQuestion;
 
@@ -46,7 +41,18 @@ public class RecurringEventTypeEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "recurringEventType", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<EventEntity> events = new HashSet<>();
+    private Set<EventTemplateEntity> eventTemplates = new HashSet<>();
+
+    public RecurringEventTypeEntity() {
+        super();
+    }
+
+    public RecurringEventTypeEntity(final RecurringEventTypeEntity entity) {
+        this.title = entity.getTitle();
+        this.description = entity.getDescription();
+        this.mandatory = entity.isMandatory();
+        this.master = false;
+    }
 
     public String getTitle() {
         return title;
@@ -105,12 +111,12 @@ public class RecurringEventTypeEntity extends BaseEntity {
         this.recurringEventPattern = recurringEventPattern;
     }
 
-    public Set<EventEntity> getEvents() {
-        return events;
+    public Set<EventTemplateEntity> getEventTemplates() {
+        return eventTemplates;
     }
 
-    public void setEvents(Set<EventEntity> events) {
-        this.events = events;
+    public void setEventTemplates(Set<EventTemplateEntity> eventTemplates) {
+        this.eventTemplates = eventTemplates;
     }
 
 }
