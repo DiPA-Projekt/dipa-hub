@@ -4,7 +4,6 @@ import net.fortuna.ical4j.model.DateList;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.parameter.Value;
 import net.fortuna.ical4j.model.property.RRule;
-import online.dipa.hub.api.model.Event;
 import online.dipa.hub.api.model.EventTemplate;
 import online.dipa.hub.api.model.FormField;
 import online.dipa.hub.api.model.NonPermanentProjectTask;
@@ -29,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 
 import java.text.ParseException;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
