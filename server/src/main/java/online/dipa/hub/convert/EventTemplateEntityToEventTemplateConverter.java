@@ -1,5 +1,6 @@
 package online.dipa.hub.convert;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
@@ -19,7 +20,10 @@ public class EventTemplateEntityToEventTemplateConverter implements Converter<Ev
 
     @Override
     public EventTemplate convert(final EventTemplateEntity entity) {
-        List<Event> events = entity.getEvents().stream().map(p -> eventConverter.convert(p)).collect(
+        List<Event> events = entity.getEvents().stream()
+                                   .map(p -> eventConverter.convert(p))
+                                   .sorted(Comparator.comparing(event -> event != null ? event.getDateTime() : null))
+                                   .collect(
                 Collectors.toList());
 
         return new EventTemplate().id(entity.getId())

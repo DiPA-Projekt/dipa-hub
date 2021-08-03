@@ -1,7 +1,6 @@
 package online.dipa.hub.persistence.entities;
 import static javax.persistence.CascadeType.ALL;
 
-import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
 

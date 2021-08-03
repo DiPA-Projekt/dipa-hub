@@ -63,6 +63,9 @@ public class TimelineService {
     @Autowired
     private IncrementService incrementService;
 
+    @Autowired
+    private ProjectService projectService;
+
     private final static String milestoneFileName = "Projekteinrichtung";
 
     public List<Timeline> getTimelines() {
@@ -109,9 +112,15 @@ public class TimelineService {
 
         ProjectEntity currentProject = getProject(timelineId);
 
+        currentProject.getRecurringEventTypes().forEach(t -> t.getRecurringEventPattern()
+                                                              .setStartDate(currentProject.getStartDate().plusDays(days).toLocalDate()));
+        currentProject.getRecurringEventTypes().forEach(t -> t.getRecurringEventPattern()
+                                                              .setEndDate(currentProject.getEndDate().plusDays(days).toLocalDate()));
+        projectService.updateRecurringEventsAfterChangingStartEndDate(currentProject, currentProject.getStartDate().plusDays(days),
+                currentProject.getEndDate().plusDays(days));
         currentProject.setStartDate(currentProject.getStartDate().plusDays(days));
         currentProject.setEndDate(currentProject.getEndDate().plusDays(days));
-    
+
         for (MilestoneTemplateEntity m : currentProject.getPlanTemplate().getMilestones()) {
             m.setDate(m.getDate().plusDays(days));
         }
@@ -133,6 +142,10 @@ public class TimelineService {
         double factor = (double) newHoursBetween / oldHoursBetween;
         
         OffsetDateTime newTimelineStart = timelineStart.plusDays(days);
+        currentProject.getRecurringEventTypes().forEach(t -> t.getRecurringEventPattern()
+                                                              .setStartDate(currentProject.getStartDate().plusDays(days).toLocalDate()));
+        projectService.updateRecurringEventsAfterChangingStartEndDate(currentProject, currentProject.getStartDate().plusDays(days),
+                null);
         currentProject.setStartDate(currentProject.getStartDate().plusDays(days));
 
         for (MilestoneTemplateEntity m : currentProject.getPlanTemplate().getMilestones()) {
@@ -160,6 +173,11 @@ public class TimelineService {
         double factor = (double) newHoursBetween / oldHoursBetween;
         
         OffsetDateTime newTimelineEnd = timelineEnd.plusDays(days);
+
+        currentProject.getRecurringEventTypes().forEach(t -> t.getRecurringEventPattern()
+                                                              .setEndDate(currentProject.getEndDate().plusDays(days).toLocalDate()));
+        projectService.updateRecurringEventsAfterChangingStartEndDate(currentProject,null,
+                currentProject.getEndDate().plusDays(days));
         currentProject.setEndDate(newTimelineEnd);
 
         for (MilestoneTemplateEntity m : currentProject.getPlanTemplate().getMilestones()) {
@@ -204,7 +222,13 @@ public class TimelineService {
                 if (newFirstMilestoneDate.isBefore(oldProjectStart) || newFirstMilestoneDate.isEqual(oldProjectStart)) {
                     OffsetDateTime newProjectStart = oldProjectStart.plusHours(hoursOffsetStart - 24);
 
+                    currentProject.getRecurringEventTypes()
+                                  .forEach(t -> t.getRecurringEventPattern()
+                                                 .setStartDate(newProjectStart.toLocalDate()));
+                    projectService.updateRecurringEventsAfterChangingStartEndDate(currentProject, newProjectStart,
+                            null);
                     currentProject.setStartDate(newProjectStart);
+
                 }
                 
             }
@@ -219,6 +243,12 @@ public class TimelineService {
 
                 long hoursOffsetEnd = HOURS.between(oldProjectEnd, newLastMilestoneDate);
                 if (hoursOffsetEnd != 0) {
+
+                    currentProject.getRecurringEventTypes()
+                                  .forEach(t -> t.getRecurringEventPattern()
+                                                 .setEndDate(newLastMilestoneDate.toLocalDate()));
+                    projectService.updateRecurringEventsAfterChangingStartEndDate(currentProject,null,
+                            newLastMilestoneDate);
                     currentProject.setEndDate(newLastMilestoneDate);
                 }
             }

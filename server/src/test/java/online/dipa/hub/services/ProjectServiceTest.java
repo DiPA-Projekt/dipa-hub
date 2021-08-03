@@ -11,18 +11,11 @@
  import org.springframework.boot.test.mock.mockito.MockBean;
  import org.springframework.core.convert.ConversionService;
 
+ import online.dipa.hub.api.model.EventTemplate;
  import online.dipa.hub.api.model.NonPermanentProjectTask;
  import online.dipa.hub.api.model.PermanentProjectTask;
  import online.dipa.hub.api.model.PropertyQuestion;
- import online.dipa.hub.persistence.entities.NonPermanentProjectTaskEntity;
- import online.dipa.hub.persistence.entities.NonPermanentProjectTaskTemplateEntity;
- import online.dipa.hub.persistence.entities.PermanentProjectTaskEntity;
- import online.dipa.hub.persistence.entities.PermanentProjectTaskTemplateEntity;
- import online.dipa.hub.persistence.entities.ProjectEntity;
- import online.dipa.hub.persistence.entities.ProjectPropertyQuestionEntity;
- import online.dipa.hub.persistence.entities.ProjectPropertyQuestionTemplateEntity;
- import online.dipa.hub.persistence.entities.ProjectTaskEntity;
- import online.dipa.hub.persistence.entities.ProjectTaskTemplateEntity;
+ import online.dipa.hub.persistence.entities.*;
  import online.dipa.hub.persistence.repositories.NonPermanentProjectTaskRepository;
  import online.dipa.hub.persistence.repositories.NonPermanentProjectTaskTemplateRepository;
  import online.dipa.hub.persistence.repositories.PermanentProjectTaskRepository;
@@ -38,10 +31,12 @@
  import static org.mockito.Mockito.when;
  import static org.assertj.core.api.BDDAssertions.then;
 
+ import java.time.OffsetDateTime;
  import java.util.ArrayList;
  import java.util.Collections;
  import java.util.List;
  import java.util.Objects;
+ import java.util.stream.Collectors;
 
  @SpringBootTest
  @Transactional
@@ -83,23 +78,28 @@
     @MockBean
     private UserInformationService userInformationService;
 
-    ProjectEntity testProject;
+    ProjectEntity testProject = new ProjectEntity();
 
     @BeforeAll
     static void setUpContext() {
         CurrentTenantContextHolder.setTenantId("itzbund");
     }
 
+    private void createProject (ProjectEntity newProject, OffsetDateTime startDate, OffsetDateTime endDate) {
+        newProject.setName("Test Project");
+        newProject.setProjectApproach(projectApproachRepository.getById(2L));
+        newProject.setProjectSize("SMALL");
+        newProject.setStartDate(startDate);
+        newProject.setEndDate(endDate);
+        projectRepository.save(newProject);
+    }
+
     @BeforeEach
     void setUp() {
         CurrentTenantContextHolder.setTenantId("itzbund");
+        OffsetDateTime today = OffsetDateTime.now().withDayOfMonth(6);
 
-        testProject = new ProjectEntity();
-        testProject.setName("Test Project");
-        testProject.setProjectApproach(projectApproachRepository.getById(2L));
-        testProject.setProjectSize("SMALL");
-        projectRepository.save(testProject);
-
+        createProject(testProject, today.minusMonths(5L), today.plusMonths(4L));
     }
 
     @Nested
@@ -241,7 +241,7 @@
         @Test
         void should_return_permanent_project_tasks() {
             // GIVEN
-            when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(Collections.singleton(testProject.getId())));
+            when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<>(Collections.singleton(testProject.getId())));
 
             //WHEN
             List<PermanentProjectTask> permanentProjectTasks = projectService.getPermanentProjectTasks(testProject.getId());
@@ -254,7 +254,7 @@
         @Test
         void should_return_non_permanent_project_task() {
             // GIVEN
-            when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(Collections.singleton(testProject.getId())));
+            when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<>(Collections.singleton(testProject.getId())));
 
             //WHEN
             List<NonPermanentProjectTask> nonPermanentProjectTasks = projectService.getNonPermanentProjectTasks(testProject.getId());
@@ -272,7 +272,7 @@
          @Test
          void should_return_new_sort_order_permanent_project_tasks() {
              // GIVEN
-             when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(Collections.singleton(testProject.getId())));
+             when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<>(Collections.singleton(testProject.getId())));
 
              List<PermanentProjectTask> projectTasks = projectService.getPermanentProjectTasks(testProject.getId());
              projectTasks.get(0).setSortOrder(2L);
@@ -290,7 +290,7 @@
          @Test
          void should_return_new_sort_order_non_permanent_project_tasks() {
              // GIVEN
-             when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<Long>(Collections.singleton(testProject.getId())));
+             when(userInformationService.getProjectIdList()).thenReturn(new ArrayList<>(Collections.singleton(testProject.getId())));
 
              List<NonPermanentProjectTask> projectTasks = projectService.getNonPermanentProjectTasks(testProject.getId());
              projectTasks.get(0).setSortOrder(2L);
@@ -302,6 +302,157 @@
              // THEN
              then(nonPermanentProjectTaskRepository.getById(projectTasks.get(0).getId())).returns(2L, NonPermanentProjectTaskEntity::getSortOrder);
              then(nonPermanentProjectTaskRepository.getById(projectTasks.get(1).getId())).returns(1L, NonPermanentProjectTaskEntity::getSortOrder);
+
+         }
+     }
+
+     @Nested
+     class RecurringEvents {
+
+         @Test
+         void should_create_recurring_event_types() {
+             // GIVEN
+             projectService.initializeProjectTasks(testProject.getId());
+
+             //WHEN
+             projectService.createRecurringEventTypes(testProject);
+
+             // THEN
+             List<RecurringEventTypeEntity> recurringEventTypes = new ArrayList<>(testProject.getRecurringEventTypes());
+             assertThat(recurringEventTypes).isNotEmpty().hasSize(4);
+
+             recurringEventTypes.forEach(t -> assertThat(t.getRecurringEventPattern())
+                     .returns("FREQ=MONTHLY;BYMONTHDAY=10;INTERVAL=1", RecurringEventPatternEntity::getRulePattern)
+                     .returns(testProject.getStartDate().toLocalDate(), RecurringEventPatternEntity::getStartDate)
+                     .returns(testProject.getEndDate().toLocalDate(), RecurringEventPatternEntity::getEndDate));
+         }
+
+         @Test
+         void should_create_recurring_events() {
+             // GIVEN
+             projectService.initializeProjectTasks(testProject.getId());
+             projectService.createRecurringEventTypes(testProject);
+
+             //WHEN
+             projectService.initializeRecurringEvents(testProject);
+
+             // THEN
+             List<EventTemplateEntity> eventTemplates = testProject.getEventTemplates()
+                                                               .stream()
+                                                               .filter(e -> e.getEventType()
+                                                                                .equals("TYPE_RECURRING_EVENT")).collect(
+                             Collectors.toList());
+
+             assertThat(eventTemplates).isNotEmpty().hasSize(4);
+             eventTemplates.forEach(t -> assertThat(t)
+                     .returns("TYPE_RECURRING_EVENT", EventTemplateEntity::getEventType));
+
+             eventTemplates.forEach(t -> assertThat(t.getEvents()).hasSize(9));
+             EventTemplateEntity eventTemplate = eventTemplates.get(0);
+             eventTemplate.getEvents().forEach(e -> assertThat(e.getDateTime().getDayOfMonth()).isEqualTo(10));
+
+         }
+
+         @Test
+         void should_return_events() {
+             // GIVEN
+             projectService.initializeProjectTasks(testProject.getId());
+             projectService.createRecurringEventTypes(testProject);
+
+             //WHEN
+             List<EventTemplate> eventTemplates = projectService.getEvents(testProject.getId());
+
+             // THEN
+             assertThat(eventTemplates).isNotEmpty();
+
+         }
+
+         @Test
+         void should_update_recurring_events_based_on_pQuestions() {
+             // GIVEN
+             projectService.initializeProjectTasks(testProject.getId());
+             projectService.createRecurringEventTypes(testProject);
+             projectService.initializeRecurringEvents(testProject);
+             ProjectPropertyQuestionEntity propertyQuestion = testProject.getProjectPropertyQuestionTemplate().getProjectPropertyQuestions()
+                        .stream().filter(q -> q.getSortOrder() == 1).findFirst().get();
+
+             propertyQuestion.setSelected(false);
+
+             //WHEN
+             projectService.updateRecurringEventsBasedOnPQuestions(propertyQuestion);
+
+             // THEN
+             assertThat(testProject.getEventTemplates()).hasSize(2);
+
+         }
+     }
+
+     @Nested
+     class UpdateRecurringEvents {
+
+        @BeforeEach
+        void setUp() {
+            // GIVEN
+            projectService.initializeProjectTasks(testProject.getId());
+            projectService.createRecurringEventTypes(testProject);
+            projectService.initializeRecurringEvents(testProject);
+        }
+
+         @Test
+         void should_delete_events_after_newEndDate() {
+
+             //WHEN
+             OffsetDateTime newEndDate = OffsetDateTime.now().withDayOfMonth(6).minusMonths(2L);
+             projectService.updateRecurringEventsAfterChangingStartEndDate(testProject, null, newEndDate);
+
+             // THEN
+             testProject.getEventTemplates().forEach(t -> assertThat(t.getEvents()).hasSize(3));
+
+         }
+
+         @Test
+         void should_update_events_endDate_in_future() {
+             // GIVEN
+             // WHEN
+             OffsetDateTime newEndDate = OffsetDateTime.now().withDayOfMonth(6).plusMonths(6L);
+             testProject.getRecurringEventTypes()
+                        .forEach(t -> t.getRecurringEventPattern()
+                                       .setEndDate(newEndDate.toLocalDate()));
+             projectService.updateRecurringEventsAfterChangingStartEndDate(testProject, null, newEndDate);
+
+             // THEN
+             testProject.getEventTemplates().forEach(t -> assertThat(t.getEvents()).hasSize(11));
+
+         }
+
+         @Test
+         void should_update_events_startDate_in_the_future() {
+             //WHEN
+             OffsetDateTime startDate = OffsetDateTime.now().withDayOfMonth(6).plusMonths(2L);
+             projectService.updateRecurringEventsAfterChangingStartEndDate(testProject, startDate, null);
+
+             // THEN
+             testProject.getEventTemplates().forEach(t -> assertThat(t.getEvents()).hasSize(7));
+
+         }
+
+         @Test
+         void should_update_events_newStartDate_in_the_past_oldStartDate_in_the_future() {
+             // GIVEN
+             ProjectEntity testProject2 = new ProjectEntity();
+             OffsetDateTime today = OffsetDateTime.now().withDayOfMonth(6);
+             createProject(testProject2, today.plusMonths(2L), today.plusMonths(8L));
+
+             projectService.initializeProjectTasks(testProject2.getId());
+             projectService.createRecurringEventTypes(testProject2);
+             projectService.initializeRecurringEvents(testProject2);
+
+             //WHEN
+             OffsetDateTime startDate = OffsetDateTime.now().withDayOfMonth(6).minusMonths(2L);
+             projectService.updateRecurringEventsAfterChangingStartEndDate(testProject2, startDate, null);
+
+             // THEN
+             testProject2.getEventTemplates().forEach(t -> assertThat(t.getEvents()).hasSize(8));
 
          }
      }
