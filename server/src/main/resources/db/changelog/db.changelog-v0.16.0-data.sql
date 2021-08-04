@@ -58,3 +58,8 @@ INSERT INTO public.recurring_event_pattern(recurring_event_type_id, title, rule_
 SELECT t.id, CONCAT('Recurring Pattern ', title), 'FREQ=MONTHLY;BYMONTHDAY=10;INTERVAL=1',  null, null, '08:00:00', null
 FROM recurring_event_type t
 WHERE t.master = true
+
+--changeset id:fix-documentationLink-label-null context:itzbund
+UPDATE public.project_task_form_field
+SET label = 'Link'
+WHERE key = 'documentationLink' and label = ''
