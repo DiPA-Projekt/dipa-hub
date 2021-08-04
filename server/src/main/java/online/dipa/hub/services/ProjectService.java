@@ -685,7 +685,7 @@ public class ProjectService {
     }
 
     private DateTime dateTimeConverter (final LocalDate date, final RecurringEventPatternEntity eventPattern) {
-        LocalDateTime dt = LocalDateTime.of(date, eventPattern.getTime());
+        LocalDateTime dt = LocalDateTime.of(date, eventPattern.getStartTime());
         ZonedDateTime zdt = dt.atZone(ZoneId.systemDefault());
         Date output = Date.from(zdt.toInstant());
         return new DateTime(output);

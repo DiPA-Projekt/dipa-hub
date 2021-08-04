@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS public.recurring_event_pattern
     rule_pattern VARCHAR(255),
     start_date DATE,
     end_date DATE,
-    time TIME,
+    start_time TIME,
     duration INTEGER,
     recurring_event_type_id BIGINT,
     result_id BIGINT,

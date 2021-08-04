@@ -22,7 +22,7 @@ public class RecurringEventPatternEntity extends BaseEntity {
     private String rulePattern;
     private LocalDate startDate;
     private LocalDate endDate;
-    private LocalTime time;
+    private LocalTime startTime;
     private Integer duration;
 
     @OneToOne(fetch = FetchType.EAGER)
@@ -40,7 +40,7 @@ public class RecurringEventPatternEntity extends BaseEntity {
         this.rulePattern = entity.getRulePattern();
         this.startDate = project.getStartDate().toLocalDate();
         this.endDate = project.getEndDate().toLocalDate();
-        this.time = entity.getTime();
+        this.startTime = entity.getStartTime();
         this.duration = entity.getDuration();
     }
 
@@ -76,12 +76,12 @@ public class RecurringEventPatternEntity extends BaseEntity {
         this.endDate = endDate;
     }
 
-    public LocalTime getTime() {
-        return time;
+    public LocalTime getStartTime() {
+        return startTime;
     }
 
-    public void setTime(LocalTime time) {
-        this.time = time;
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
     }
 
     public Integer getDuration() {
