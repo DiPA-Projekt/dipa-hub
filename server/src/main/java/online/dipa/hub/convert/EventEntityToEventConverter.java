@@ -14,10 +14,15 @@ public class EventEntityToEventConverter implements Converter<EventEntity, Event
     public Event convert(final EventEntity entity) {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 
-        return new Event().id(entity.getId())
+        Event event =  new Event().id(entity.getId())
                           .title(entity.getTitle())
                           .dateTime(entity.getDateTime())
-                          .duration(entity.getDuration())
-                            .status(entity.getStatus());
+                          .duration(entity.getDuration());
+
+        if (entity.getStatus() != null) {
+            event.status(Event.StatusEnum.fromValue(entity.getStatus()));
+        }
+
+        return event;
     }
 }

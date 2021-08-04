@@ -674,8 +674,9 @@ public class ProjectService {
 
         Set<EventEntity> events = new HashSet<>();
         for (Date recurDate: recurDates) {
+            String status = eventType.isMandatory() ? "OPEN" : null;
             EventEntity event = new EventEntity(eventType.getTitle(),
-                    recurDate.toInstant().atOffset(ZoneOffset.UTC), eventPattern.getDuration(), null, eventTemplate);
+                    recurDate.toInstant().atOffset(ZoneOffset.UTC), eventPattern.getDuration(), status, eventTemplate);
             eventRepository.save(event);
             events.add(event);
         }
@@ -770,8 +771,9 @@ public class ProjectService {
 
         Set<EventEntity> events = new HashSet<>();
         for (Date recurDate: recurDates) {
+            String status = template.getRecurringEventType().isMandatory() ? "OPEN" : null;
             EventEntity event = new EventEntity(template.getRecurringEventType().getTitle(),
-                    recurDate.toInstant().atOffset(ZoneOffset.UTC), eventPattern.getDuration(), null, template);
+                    recurDate.toInstant().atOffset(ZoneOffset.UTC), eventPattern.getDuration(), status, template);
             eventRepository.save(event);
             events.add(event);
         }

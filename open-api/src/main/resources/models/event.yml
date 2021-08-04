@@ -22,4 +22,8 @@ Event:
     status:
       description: The status of the event
       type: string
-      example: PLANNED
+      enum:
+        - OPEN
+        - DONE
+      default: null
+      example: OPEN
