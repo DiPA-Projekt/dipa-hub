@@ -20,6 +20,6 @@ Event:
       type: integer
       example: 3
     status:
-      description: The date time of the event
+      description: The status of the event
       type: string
       example: PLANNED

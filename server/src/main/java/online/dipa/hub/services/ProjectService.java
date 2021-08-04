@@ -20,9 +20,10 @@ import online.dipa.hub.persistence.entities.*;
 import online.dipa.hub.persistence.repositories.*;
 import online.dipa.hub.tenancy.CurrentTenantContextHolder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +43,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class ProjectService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProjectService.class);
 
     @Autowired
     private ProjectRepository projectRepository;
@@ -356,9 +359,7 @@ public class ProjectService {
         ProjectEntity project = projectRepository.getById(projectId);
         final String tenantId = CurrentTenantContextHolder.getTenantId();
 
-        if (
-//                tenantId.equals(ITZBUND_TENANT) &&
-                project.getProjectSize() != null &&
+        if (tenantId.equals(ITZBUND_TENANT) && project.getProjectSize() != null &&
                 (project.getProjectSize().equals(PROJECT_SIZE_SMALL) || project.getProjectSize().equals(PROJECT_SIZE_MEDIUM))
                 && project.getProjectTaskTemplate() == null) {
             ProjectTaskTemplateEntity projectTaskTemplate = projectTaskTemplateRepository.findByMaster().orElse(null);
@@ -661,16 +662,12 @@ public class ProjectService {
 
     public EventTemplateEntity createRecurringTemplatesAndEvents (final ProjectEntity project, final RecurringEventTypeEntity eventType) {
         RecurringEventPatternEntity eventPattern = eventType.getRecurringEventPattern();
-        RRule rrule = new RRule();
-        try {
-            rrule.setValue(eventPattern.getRulePattern());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        RRule rrule = createRRule(eventPattern.getRulePattern());
 
         DateTime start = dateTimeConverter(eventPattern.getStartDate(), eventPattern);
         DateTime end = dateTimeConverter(eventPattern.getEndDate(), eventPattern);
         DateList recurDates = rrule.getRecur().getDates(start, end, Value.DATE_TIME);
+
         EventTemplateEntity eventTemplate = new EventTemplateEntity("Wiederkehrende Termine "+ eventType.getTitle(),
                 "TYPE_RECURRING_EVENT",  project, eventType);
         eventTemplateRepository.save(eventTemplate);
@@ -693,38 +690,50 @@ public class ProjectService {
         return new DateTime(output);
     }
 
-    public void updateRecurringEventsAfterChangingStartEndDate (final ProjectEntity project, @Nullable final OffsetDateTime newStartDate,
-            @Nullable final OffsetDateTime newEndDate ) {
+    public void updateRecurringEventsBasedOnEndDate (final ProjectEntity project, final OffsetDateTime newEndDate) {
         OffsetDateTime today = OffsetDateTime.now();
 
-        if (newEndDate != null) {
-            if (newEndDate.isAfter(today) ) {
-                for (EventTemplateEntity template: project.getEventTemplates()) {
-                    List<EventEntity> events = template.getEvents().stream().filter(e -> e.getDateTime().isAfter(today))
-                                                       .collect(Collectors.toList());
-                    template.getEvents().removeAll(events);
-                    eventRepository.deleteAll(events);
+        if (newEndDate.isAfter(today)) {
+            for (EventTemplateEntity template : project.getEventTemplates()) {
+                List<EventEntity> events = template.getEvents()
+                                                   .stream()
+                                                   .filter(e -> e.getDateTime()
+                                                                 .isAfter(today))
+                                                   .collect(Collectors.toList());
+                template.getEvents()
+                        .removeAll(events);
+                eventRepository.deleteAll(events);
 
-                    if (project.getStartDate().isAfter(today)) {
-                        createNewEvents(template, project.getStartDate().toLocalDate(),
-                                template.getRecurringEventType().getRecurringEventPattern().getEndDate());
-                    }
-                    else {
-                        createNewEvents(template, today.toLocalDate(),
-                                template.getRecurringEventType().getRecurringEventPattern().getEndDate());
+                if (project.getStartDate()
+                           .isAfter(today)) {
+                    createNewEvents(template, project.getStartDate()
+                                                     .toLocalDate(), template.getRecurringEventType()
+                                                                             .getRecurringEventPattern()
+                                                                             .getEndDate());
+                } else {
+                    createNewEvents(template, today.toLocalDate(), template.getRecurringEventType()
+                                                                           .getRecurringEventPattern()
+                                                                           .getEndDate());
 
-                    }
                 }
             }
-            else {
-                for (EventTemplateEntity template: project.getEventTemplates()) {
-                    List<EventEntity> events = template.getEvents().stream().filter(e -> e.getDateTime().isAfter(newEndDate)).collect(Collectors.toList());
-                    template.getEvents().removeAll(events);
-                    eventRepository.deleteAll(events);
+        } else {
+            for (EventTemplateEntity template : project.getEventTemplates()) {
+                List<EventEntity> events = template.getEvents()
+                                                   .stream()
+                                                   .filter(e -> e.getDateTime()
+                                                                 .isAfter(newEndDate))
+                                                   .collect(Collectors.toList());
+                template.getEvents()
+                        .removeAll(events);
+                eventRepository.deleteAll(events);
 
-                }
             }
         }
+    }
+
+    public void updateRecurringEventsBasedOnStartDate (final ProjectEntity project, final OffsetDateTime newStartDate) {
+        OffsetDateTime today = OffsetDateTime.now();
 
         if (newStartDate != null) {
             if (newStartDate.isBefore(today) && project.getStartDate().isAfter(today)) {
@@ -753,12 +762,8 @@ public class ProjectService {
 
     private void createNewEvents (EventTemplateEntity template, LocalDate startDate, LocalDate endDate) {
         RecurringEventPatternEntity eventPattern = template.getRecurringEventType().getRecurringEventPattern();
-        RRule rrule = new RRule();
-        try {
-            rrule.setValue(eventPattern.getRulePattern());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        RRule rrule = createRRule(eventPattern.getRulePattern());
+
         DateTime start = dateTimeConverter(startDate, eventPattern);
         DateTime end = dateTimeConverter(endDate, eventPattern);
         DateList recurDates = rrule.getRecur().getDates(start, end, Value.DATE_TIME);
@@ -772,6 +777,16 @@ public class ProjectService {
         }
         events.addAll(template.getEvents());
         template.setEvents(events);
+    }
+
+    private RRule createRRule (String rulePattern) {
+        RRule rrule = new RRule();
+        try {
+            rrule.setValue(rulePattern);
+        } catch (ParseException e) {
+            LOGGER.debug("context", e);
+        }
+        return  rrule;
     }
 
     public List<ProjectRole> getProjectRoles (final Long projectId) {

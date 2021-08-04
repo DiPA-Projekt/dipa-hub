@@ -403,7 +403,7 @@
 
              //WHEN
              OffsetDateTime newEndDate = OffsetDateTime.now().withDayOfMonth(6).minusMonths(2L);
-             projectService.updateRecurringEventsAfterChangingStartEndDate(testProject, null, newEndDate);
+             projectService.updateRecurringEventsBasedOnEndDate(testProject, newEndDate);
 
              // THEN
              testProject.getEventTemplates().forEach(t -> assertThat(t.getEvents()).hasSize(3));
@@ -418,7 +418,7 @@
              testProject.getRecurringEventTypes()
                         .forEach(t -> t.getRecurringEventPattern()
                                        .setEndDate(newEndDate.toLocalDate()));
-             projectService.updateRecurringEventsAfterChangingStartEndDate(testProject, null, newEndDate);
+             projectService.updateRecurringEventsBasedOnEndDate(testProject, newEndDate);
 
              // THEN
              testProject.getEventTemplates().forEach(t -> assertThat(t.getEvents()).hasSize(11));
@@ -429,7 +429,7 @@
          void should_update_events_startDate_in_the_future() {
              //WHEN
              OffsetDateTime startDate = OffsetDateTime.now().withDayOfMonth(6).plusMonths(2L);
-             projectService.updateRecurringEventsAfterChangingStartEndDate(testProject, startDate, null);
+             projectService.updateRecurringEventsBasedOnStartDate(testProject, startDate);
 
              // THEN
              testProject.getEventTemplates().forEach(t -> assertThat(t.getEvents()).hasSize(7));
@@ -449,7 +449,7 @@
 
              //WHEN
              OffsetDateTime startDate = OffsetDateTime.now().withDayOfMonth(6).minusMonths(2L);
-             projectService.updateRecurringEventsAfterChangingStartEndDate(testProject2, startDate, null);
+             projectService.updateRecurringEventsBasedOnStartDate(testProject2, startDate);
 
              // THEN
              testProject2.getEventTemplates().forEach(t -> assertThat(t.getEvents()).hasSize(8));

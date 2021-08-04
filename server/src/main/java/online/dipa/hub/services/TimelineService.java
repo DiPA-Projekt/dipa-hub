@@ -114,11 +114,14 @@ public class TimelineService {
 
         currentProject.getRecurringEventTypes().forEach(t -> t.getRecurringEventPattern()
                                                               .setStartDate(currentProject.getStartDate().plusDays(days).toLocalDate()));
+
+        projectService.updateRecurringEventsBasedOnStartDate(currentProject, currentProject.getStartDate().plusDays(days));
+        currentProject.setStartDate(currentProject.getStartDate().plusDays(days));
+
+
         currentProject.getRecurringEventTypes().forEach(t -> t.getRecurringEventPattern()
                                                               .setEndDate(currentProject.getEndDate().plusDays(days).toLocalDate()));
-        projectService.updateRecurringEventsAfterChangingStartEndDate(currentProject, currentProject.getStartDate().plusDays(days),
-                currentProject.getEndDate().plusDays(days));
-        currentProject.setStartDate(currentProject.getStartDate().plusDays(days));
+        projectService.updateRecurringEventsBasedOnEndDate(currentProject, currentProject.getEndDate().plusDays(days));
         currentProject.setEndDate(currentProject.getEndDate().plusDays(days));
 
         for (MilestoneTemplateEntity m : currentProject.getPlanTemplate().getMilestones()) {
@@ -144,8 +147,7 @@ public class TimelineService {
         OffsetDateTime newTimelineStart = timelineStart.plusDays(days);
         currentProject.getRecurringEventTypes().forEach(t -> t.getRecurringEventPattern()
                                                               .setStartDate(currentProject.getStartDate().plusDays(days).toLocalDate()));
-        projectService.updateRecurringEventsAfterChangingStartEndDate(currentProject, currentProject.getStartDate().plusDays(days),
-                null);
+        projectService.updateRecurringEventsBasedOnStartDate(currentProject, currentProject.getStartDate().plusDays(days));
         currentProject.setStartDate(currentProject.getStartDate().plusDays(days));
 
         for (MilestoneTemplateEntity m : currentProject.getPlanTemplate().getMilestones()) {
@@ -176,8 +178,7 @@ public class TimelineService {
 
         currentProject.getRecurringEventTypes().forEach(t -> t.getRecurringEventPattern()
                                                               .setEndDate(currentProject.getEndDate().plusDays(days).toLocalDate()));
-        projectService.updateRecurringEventsAfterChangingStartEndDate(currentProject,null,
-                currentProject.getEndDate().plusDays(days));
+        projectService.updateRecurringEventsBasedOnEndDate(currentProject, currentProject.getEndDate().plusDays(days));
         currentProject.setEndDate(newTimelineEnd);
 
         for (MilestoneTemplateEntity m : currentProject.getPlanTemplate().getMilestones()) {
@@ -225,8 +226,7 @@ public class TimelineService {
                     currentProject.getRecurringEventTypes()
                                   .forEach(t -> t.getRecurringEventPattern()
                                                  .setStartDate(newProjectStart.toLocalDate()));
-                    projectService.updateRecurringEventsAfterChangingStartEndDate(currentProject, newProjectStart,
-                            null);
+                    projectService.updateRecurringEventsBasedOnStartDate(currentProject, newProjectStart);
                     currentProject.setStartDate(newProjectStart);
 
                 }
@@ -247,8 +247,7 @@ public class TimelineService {
                     currentProject.getRecurringEventTypes()
                                   .forEach(t -> t.getRecurringEventPattern()
                                                  .setEndDate(newLastMilestoneDate.toLocalDate()));
-                    projectService.updateRecurringEventsAfterChangingStartEndDate(currentProject,null,
-                            newLastMilestoneDate);
+                    projectService.updateRecurringEventsBasedOnEndDate(currentProject, newLastMilestoneDate);
                     currentProject.setEndDate(newLastMilestoneDate);
                 }
             }
