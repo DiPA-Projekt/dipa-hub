@@ -59,7 +59,7 @@ export class ProjectTaskFormComponent implements OnInit, OnDestroy {
       validators.push(typeValidator);
     }
     if (entry?.required === true) {
-      validators.push(Validators.required);
+      validators.push(Validators.required.bind(this));
     }
 
     return validators;

@@ -645,7 +645,7 @@ export class ResultsFormComponent implements OnInit {
 
     resultsArray.push(
       this.fb.group({
-        value: new FormControl('', { validators: [Validators.required] }),
+        value: new FormControl('', { validators: [Validators.required.bind(this)] }),
         key: 'serie',
         label: 'Name der Serie',
         required: true,
@@ -657,7 +657,9 @@ export class ResultsFormComponent implements OnInit {
     );
     resultsArray.push(
       this.fb.group({
-        value: new FormControl(this.datePipe.transform(new Date(), 'HH:mm'), { validators: [Validators.required] }),
+        value: new FormControl(this.datePipe.transform(new Date(), 'HH:mm'), {
+          validators: [Validators.required.bind(this)],
+        }),
         key: 'startTime',
         label: 'Termin',
         required: true,
@@ -669,7 +671,7 @@ export class ResultsFormComponent implements OnInit {
     );
     resultsArray.push(
       this.fb.group({
-        value: new FormControl(1, { validators: [Validators.required] }),
+        value: new FormControl(1, { validators: [Validators.required.bind(this)] }),
         key: 'duration',
         label: 'Dauer',
         required: true,
@@ -692,7 +694,7 @@ export class ResultsFormComponent implements OnInit {
     );
     resultsArray.push(
       this.fb.group({
-        value: new FormControl(this.apptStartDate, { validators: [Validators.required] }),
+        value: new FormControl(this.apptStartDate, { validators: [Validators.required.bind(this)] }),
         key: 'startDate',
         label: 'Beginn',
         required: true,
@@ -704,7 +706,7 @@ export class ResultsFormComponent implements OnInit {
     );
     resultsArray.push(
       this.fb.group({
-        value: new FormControl(this.apptEndDate, { validators: [Validators.required] }),
+        value: new FormControl(this.apptEndDate, { validators: [Validators.required.bind(this)] }),
         key: 'endDate',
         label: 'Ende',
         required: true,
@@ -716,7 +718,7 @@ export class ResultsFormComponent implements OnInit {
     );
     resultsArray.push(
       this.fb.group({
-        value: new FormControl('', { validators: [Validators.required] }),
+        value: new FormControl('', { validators: [Validators.required.bind(this)] }),
         key: 'participants',
         label: 'Teilnehmende',
         required: true,
@@ -750,7 +752,7 @@ export class ResultsFormComponent implements OnInit {
     );
     resultsArray.push(
       this.fb.group({
-        value: new FormControl('', { validators: [Validators.required] }),
+        value: new FormControl('', { validators: [Validators.required.bind(this)] }),
         key: 'status',
         label: 'Status',
         required: true,

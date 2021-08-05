@@ -158,22 +158,22 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
     this.formGroup = this.fb.group(
       {
         id: null,
-        name: new FormControl(null, { validators: [Validators.required], updateOn: 'blur' }),
+        name: new FormControl(null, { validators: [Validators.required.bind(this)], updateOn: 'blur' }),
         operationTypeId: new FormControl(null, {
-          validators: [Validators.required],
+          validators: [Validators.required.bind(this)],
           updateOn: 'blur',
         }),
         projectApproachId: new FormControl(null, {
-          validators: [Validators.required],
+          validators: [Validators.required.bind(this)],
           updateOn: 'blur',
         }),
         projectType: new FormControl(null, {
-          validators: [Validators.required],
+          validators: [Validators.required.bind(this)],
           updateOn: 'blur',
         }),
-        start: new FormControl(null, { validators: [Validators.required], updateOn: 'blur' }),
-        end: new FormControl(null, { validators: [Validators.required], updateOn: 'blur' }),
-        projectSize: new FormControl(null, { validators: [Validators.required], updateOn: 'blur' }),
+        start: new FormControl(null, { validators: [Validators.required.bind(this)], updateOn: 'blur' }),
+        end: new FormControl(null, { validators: [Validators.required.bind(this)], updateOn: 'blur' }),
+        projectSize: new FormControl(null, { validators: [Validators.required.bind(this)], updateOn: 'blur' }),
         projectOwner: null,
       },
       { updateOn: 'blur' }

@@ -74,9 +74,9 @@ export class MilestoneDialogComponent implements OnInit {
   private setReactiveForm(): void {
     this.formGroup = this.fb.group({
       id: -1,
-      name: new FormControl('', { validators: [Validators.required], updateOn: 'change' }),
-      status: new FormControl(StatusEnum.Open, { validators: [Validators.required], updateOn: 'change' }),
-      date: new FormControl('', { validators: [Validators.required], updateOn: 'change' }),
+      name: new FormControl('', { validators: [Validators.required.bind(this)], updateOn: 'change' }),
+      status: new FormControl(StatusEnum.Open, { validators: [Validators.required.bind(this)], updateOn: 'change' }),
+      date: new FormControl('', { validators: [Validators.required.bind(this)], updateOn: 'change' }),
     });
   }
 }

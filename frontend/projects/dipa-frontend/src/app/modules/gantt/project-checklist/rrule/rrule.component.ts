@@ -8,8 +8,8 @@ import { FormGroup } from '@angular/forms';
 })
 export class RruleComponent implements OnInit {
   @Input() public formField: FormGroup;
-  @Input() private rruleString: string;
   @Output() public dataChanged = new EventEmitter();
+  @Input() private rruleString: string;
 
   public frequency = 'MONTHLY';
   public interval = 1;
