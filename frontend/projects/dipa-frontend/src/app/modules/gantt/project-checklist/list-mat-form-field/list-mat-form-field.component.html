@@ -1,7 +1,7 @@
 <ng-container [formGroup]="controlContainer.control">
   <mat-form-field class="full-width" *ngIf="formField.get('show')?.value">
     <mat-label>{{ formField.get('label')?.value }}</mat-label>
-    <mat-chip-list #chipList aria-label="Chip selection">
+    <mat-chip-list #chipList aria-label="Chip selection" [required]="formField.get('required').value">
       <span style="max-height: 100px; overflow: auto" #scrollChip>
         <mat-chip
           *ngFor="let chip of chips"
@@ -21,6 +21,8 @@
         (matChipInputTokenEnd)="add($event, formField)"
       />
     </mat-chip-list>
-    <mat-error *ngIf="formField.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>
+    <mat-error *ngIf="formField.get('value').touched && formField.get('value').hasError('required')">
+      Bitte Feld ausfüllen
+    </mat-error>
   </mat-form-field>
 </ng-container>

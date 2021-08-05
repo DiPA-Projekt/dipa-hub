@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
-import { OptionEntry, Result } from 'dipa-api-client';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
+import { OptionEntry, Result, TimelinesService } from 'dipa-api-client';
 import ResultTypeEnum = Result.ResultTypeEnum;
+import { AppointmentSeriesValidator } from './appt-series-validator';
+import { DatePipe } from '@angular/common';
 
 interface SelectOption {
   value: string;
@@ -21,6 +23,7 @@ interface SelectOptionGroup {
 export class ResultsFormComponent implements OnInit {
   @Input() public isEditable: boolean;
   @Input() public formData: FormArray;
+  @Input() public selectedTimelineId: number;
   @Input() public statusList: OptionEntry[];
   @Input() public selectedFields: string[];
   @Output() public showSelectionChanged = new EventEmitter();
@@ -32,10 +35,28 @@ export class ResultsFormComponent implements OnInit {
 
   public formGroup: FormGroup;
 
-  public constructor(public formGroupDirective: FormGroupDirective, private fb: FormBuilder) {}
+  public apptStartDate: string;
+  public apptEndDate: string;
+
+  public constructor(
+    public formGroupDirective: FormGroupDirective,
+    private fb: FormBuilder,
+    private timelineService: TimelinesService,
+    private datePipe: DatePipe,
+    private appointmentSeriesValidator: AppointmentSeriesValidator
+  ) {}
 
   public ngOnInit(): void {
     this.formGroup = this.formGroupDirective.control;
+
+    this.apptStartDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+
+    if (this.apptEndDate == null) {
+      this.timelineService.getTimelines().subscribe((data) => {
+        const selectedTimeline = data.find((c) => c.id === Number(this.selectedTimelineId));
+        this.apptEndDate = this.datePipe.transform(new Date(selectedTimeline.end), 'yyyy-MM-dd');
+      });
+    }
 
     this.initSelectedFields();
   }
@@ -194,10 +215,19 @@ export class ResultsFormComponent implements OnInit {
           formFields: this.getSingleAppointmentFormFields(),
         });
       case 'TYPE_APPT_SERIES':
-        return this.fb.group({
-          resultType: 'TYPE_APPT_SERIES',
-          formFields: this.getAppointmentSeriesFormFields(),
-        });
+        return this.fb.group(
+          {
+            resultType: 'TYPE_APPT_SERIES',
+            formFields: this.getAppointmentSeriesFormFields(),
+          },
+          {
+            validators: [
+              this.appointmentSeriesValidator.validRruleAndStatusSet(),
+              this.appointmentSeriesValidator.startBeforeEnd(),
+              this.appointmentSeriesValidator.statusMissingForEventCalculation(),
+            ],
+          }
+        );
       case 'TYPE_TEAM_PERS':
         return this.fb.group({
           resultType: 'TYPE_TEAM_PERS',
@@ -615,37 +645,84 @@ export class ResultsFormComponent implements OnInit {
 
     resultsArray.push(
       this.fb.group({
-        value: '',
+        value: new FormControl('', { validators: [Validators.required] }),
         key: 'serie',
         label: 'Name der Serie',
-        required: false,
+        required: true,
         sortOrder: 1,
         controlType: 'TEXTBOX',
         type: 'TEXT',
-        show: selectedValues.includes('formFields.serie'),
+        show: true,
       })
     );
     resultsArray.push(
       this.fb.group({
-        value: '',
-        key: 'date',
+        value: new FormControl(this.datePipe.transform(new Date(), 'HH:mm'), { validators: [Validators.required] }),
+        key: 'startTime',
         label: 'Termin',
-        required: false,
+        required: true,
         sortOrder: 2,
         controlType: 'TEXTBOX',
-        type: 'TEXT',
-        show: selectedValues.includes('formFields.date'),
+        type: 'TIME',
+        show: true,
       })
     );
     resultsArray.push(
       this.fb.group({
-        value: '',
+        value: new FormControl(1, { validators: [Validators.required] }),
+        key: 'duration',
+        label: 'Dauer',
+        required: true,
+        sortOrder: 3,
+        controlType: 'TEXTBOX',
+        type: 'NUMBER',
+        show: true,
+      })
+    );
+    resultsArray.push(
+      this.fb.group({
+        value: 'FREQ=MONTHLY;BYMONTHDAY=10;INTERVAL=1',
+        key: 'appointment',
+        label: 'Terminregel',
+        required: true,
+        sortOrder: 4,
+        controlType: 'RRULE',
+        show: selectedValues.includes('formFields.appointment'),
+      })
+    );
+    resultsArray.push(
+      this.fb.group({
+        value: new FormControl(this.apptStartDate, { validators: [Validators.required] }),
+        key: 'startDate',
+        label: 'Beginn',
+        required: true,
+        sortOrder: 5,
+        controlType: 'TEXTBOX',
+        type: 'DATE',
+        show: true,
+      })
+    );
+    resultsArray.push(
+      this.fb.group({
+        value: new FormControl(this.apptEndDate, { validators: [Validators.required] }),
+        key: 'endDate',
+        label: 'Ende',
+        required: true,
+        sortOrder: 6,
+        controlType: 'TEXTBOX',
+        type: 'DATE',
+        show: true,
+      })
+    );
+    resultsArray.push(
+      this.fb.group({
+        value: new FormControl('', { validators: [Validators.required] }),
         key: 'participants',
         label: 'Teilnehmende',
-        required: false,
-        sortOrder: 3,
+        required: true,
+        sortOrder: 7,
         controlType: 'LIST',
-        show: selectedValues.includes('formFields.participants'),
+        show: true,
       })
     );
     resultsArray.push(
@@ -654,7 +731,7 @@ export class ResultsFormComponent implements OnInit {
         key: 'link',
         label: 'Einwahllink',
         required: false,
-        sortOrder: 4,
+        sortOrder: 8,
         controlType: 'TEXTBOX',
         type: 'URL',
         show: selectedValues.includes('formFields.link'),
@@ -666,20 +743,20 @@ export class ResultsFormComponent implements OnInit {
         key: 'note',
         label: 'Notizen',
         required: false,
-        sortOrder: 5,
+        sortOrder: 9,
         controlType: 'TEXTAREA',
         show: selectedValues.includes('formFields.note'),
       })
     );
     resultsArray.push(
       this.fb.group({
-        value: '',
+        value: new FormControl('', { validators: [Validators.required] }),
         key: 'status',
         label: 'Status',
-        required: false,
-        sortOrder: 6,
+        required: true,
+        sortOrder: 10,
         controlType: 'DROPDOWN',
-        show: selectedValues.includes('formFields.status'),
+        show: true,
         options: this.getStatusOptions([
           { key: 'PLANNED', value: 'geplant' },
           { key: 'INVITED', value: 'eingeladen' },

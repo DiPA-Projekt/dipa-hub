@@ -11,6 +11,7 @@
               <input
                 matInput
                 [type]="entry.get('type').value.toLowerCase()"
+                [step]="entry.get('type').value.toLowerCase() === 'time' ? 300 : 1"
                 formControlName="value"
                 [id]="entry.get('key')?.value"
                 [value]="entry.get('value')?.value"
@@ -70,6 +71,7 @@
 
   <app-results-form
     [isEditable]="!isArchivedProject"
+    [selectedTimelineId]="selectedTimelineId"
     [formData]="resultsArray"
     [selectedFields]="selectedFields"
     (dataChanged)="onSubmit(formGroup)"

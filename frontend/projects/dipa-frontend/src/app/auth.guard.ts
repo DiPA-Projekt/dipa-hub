@@ -28,7 +28,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     private oauthService: OAuthService,
     private userService: UserService,
     private authenticationService: AuthenticationService,
-    private timelineServie: TimelinesService,
+    private timelineService: TimelinesService,
     private router: Router
   ) {}
 
@@ -45,7 +45,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
         });
 
         this.authenticationService.getUserData().subscribe((data) => (this.currentUser = data));
-        this.timelineServie.getTimelines().subscribe((data) => (this.timelines = data));
+        this.timelineService.getTimelines().subscribe((data) => (this.timelines = data));
 
         const result = await this.isAccessAllowed(route);
         resolve(result);

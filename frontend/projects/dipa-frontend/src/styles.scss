@@ -96,3 +96,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-sidenav {
   width: 300px;
 }
+
+.cross-validation-error-message {
+  color: red;
+  white-space: pre-line;
+}
