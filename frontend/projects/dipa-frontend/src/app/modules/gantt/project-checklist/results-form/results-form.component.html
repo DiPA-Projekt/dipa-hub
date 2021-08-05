@@ -32,6 +32,7 @@
                             formControlName="value"
                             [id]="formField.get('key')?.value + '_' + i + '_' + j"
                             [value]="formField.get('value')?.value"
+                            [required]="formField.get('required').value"
                             (change)="dataChanged.emit()"
                             (focus)="onFocus($event, ['results', i, 'formFields', j, 'value'])"
                             (keyup.esc)="onEscape($event, ['results', i, 'formFields', j, 'value'])"
@@ -80,6 +81,7 @@
                             formControlName="value"
                             [id]="formField.get('key')?.value + '_' + i + '_' + j"
                             [value]="formField.get('value')?.value"
+                            [required]="formField.get('required').value"
                             (change)="dataChanged.emit()"
                             (focus)="onFocus($event, ['results', i, 'formFields', j, 'value'])"
                             (keyup.esc)="onEscape($event, ['results', i, 'formFields', j, 'value'])"
@@ -98,6 +100,19 @@
                           (focus)="onFocus($event, ['results', i, 'formFields', j, 'value'])"
                           (keyup.esc)="onEscape($event, ['results', i, 'formFields', j, 'value'])"
                         ></app-list-mat-form-field>
+                        <mat-error
+                          *ngIf="formField.get('value').hasError('required')"
+                          style="font-size: 75%; margin-top: -15px"
+                        >
+                          Bitte Feld ausfüllen
+                        </mat-error>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'RRULE'">
+                        <app-rrule
+                          [formField]="formField"
+                          (dataChanged)="dataChanged.emit()"
+                          [rruleString]="formField.get('value')?.value"
+                        ></app-rrule>
                       </ng-container>
                       <ng-container *ngSwitchCase="'DROPDOWN'">
                         <mat-form-field
@@ -106,7 +121,11 @@
                           *ngIf="formField.get('show')?.value"
                         >
                           <mat-label>{{ formField.get('label')?.value }}</mat-label>
-                          <mat-select (selectionChange)="dataChanged.emit()" formControlName="value">
+                          <mat-select
+                            (selectionChange)="dataChanged.emit()"
+                            formControlName="value"
+                            [required]="formField.get('required').value"
+                          >
                             <mat-option *ngFor="let opt of formField.get('options')?.value" [value]="opt.key">
                               {{ opt.value }}
                             </mat-option>
@@ -118,6 +137,12 @@
                 </ng-container>
               </ng-container>
             </p>
+            <div class="cross-validation-error-message">
+              <mat-error *ngIf="result.hasError('startBeforeEnd')"> Terminende liegt vor Terminstart </mat-error>
+              <mat-error *ngIf="!result.hasError('startBeforeEnd') && result.hasError('readyForEventCalculation')">
+                Bitte setze den Status zur Berechnung aller Termine
+              </mat-error>
+            </div>
           </mat-card-content>
           <mat-card-actions *ngIf="isEditable && resultsArray.controls.length > 1">
             <button

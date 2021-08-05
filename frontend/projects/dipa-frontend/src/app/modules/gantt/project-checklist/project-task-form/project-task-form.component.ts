@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators
 import { FormField, ProjectService, ProjectTask, Project, Result } from 'dipa-api-client';
 import { TimelineDataService } from '../../../../shared/timelineDataService';
 import { Subscription } from 'rxjs';
+import { AppointmentSeriesValidator } from '../results-form/appt-series-validator';
 
 @Component({
   selector: 'app-project-task-form',
@@ -26,7 +27,8 @@ export class ProjectTaskFormComponent implements OnInit, OnDestroy {
   public constructor(
     private projectService: ProjectService,
     private timelineDataService: TimelineDataService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private appointmentSeriesValidator: AppointmentSeriesValidator
   ) {}
 
   public static getValidators(entry: FormField): ValidatorFn[] {
@@ -136,7 +138,6 @@ export class ProjectTaskFormComponent implements OnInit, OnDestroy {
   private setReactiveForm(data: ProjectTask): void {
     this.formGroup = this.fb.group({
       id: [data?.id],
-      // title: [data?.title],
       explanation: [data?.explanation],
       completed: [data?.completed],
       entries: this.getFormFieldsArray(data?.entries),
@@ -187,11 +188,23 @@ export class ProjectTaskFormComponent implements OnInit, OnDestroy {
     if (results?.length) {
       for (const entry of results) {
         resultsArray.push(
-          this.fb.group({
-            id: entry?.id,
-            resultType: entry?.resultType,
-            formFields: this.getFormFieldsArray(entry?.formFields),
-          })
+          this.fb.group(
+            {
+              id: entry?.id,
+              resultType: entry?.resultType,
+              formFields: this.getFormFieldsArray(entry?.formFields),
+            },
+            {
+              validators:
+                entry?.resultType === 'TYPE_APPT_SERIES'
+                  ? [
+                      this.appointmentSeriesValidator.validRruleAndStatusSet(),
+                      this.appointmentSeriesValidator.startBeforeEnd(),
+                      this.appointmentSeriesValidator.statusMissingForEventCalculation(),
+                    ]
+                  : [],
+            }
+          )
         );
       }
     }
