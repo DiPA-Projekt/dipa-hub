@@ -32,6 +32,7 @@ import javax.persistence.EntityNotFoundException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -359,7 +360,9 @@ public class ProjectService {
         ProjectEntity project = projectRepository.getById(projectId);
         final String tenantId = CurrentTenantContextHolder.getTenantId();
 
-        if (tenantId.equals(ITZBUND_TENANT) && project.getProjectSize() != null &&
+        if (
+//                tenantId.equals(ITZBUND_TENANT) &&
+                        project.getProjectSize() != null &&
                 (project.getProjectSize().equals(PROJECT_SIZE_SMALL) || project.getProjectSize().equals(PROJECT_SIZE_MEDIUM))
                 && project.getProjectTaskTemplate() == null) {
             ProjectTaskTemplateEntity projectTaskTemplate = projectTaskTemplateRepository.findByMaster().orElse(null);
@@ -789,6 +792,38 @@ public class ProjectService {
             LOGGER.debug("context", e);
         }
         return  rrule;
+    }
+
+    public void createSerieAppointments (ResultEntity resultEntity) {
+
+
+    }
+
+    private void createRecurringPatternSerieAppts (ResultEntity result) {
+        String title =  filterFormFieldsFromResult(result, "serie");
+        String rulePattern =  filterFormFieldsFromResult(result, "rule");
+        LocalDate startDate =  LocalDate.parse(filterFormFieldsFromResult(result, "startDate"));
+        LocalDate endDate =  LocalDate.parse(filterFormFieldsFromResult(result, "endDate"));
+        LocalTime startTime =  LocalTime.parse(filterFormFieldsFromResult(result, "startTime"));
+        Integer duration =  Integer.valueOf(filterFormFieldsFromResult(result, "duration"));
+
+        if (result.getRecurringEventPattern() == null) {
+            RecurringEventPatternEntity recurringEventPattern = new RecurringEventPatternEntity(title, rulePattern, startDate,
+                    endDate, startTime, duration);
+            recurringEventPattern.setResult(result);
+            recurringEventPatternRepository.save(recurringEventPattern);
+            result.setRecurringEventPattern(recurringEventPattern);
+        }
+        else {
+            RecurringEventPatternEntity recurringEventPattern = result.getRecurringEventPattern();
+            recurringEventPatternRepository.updateRecurringPattern(recurringEventPattern.getId(), title, rulePattern,
+                    startDate, endDate, startTime, duration);
+        }
+
+    }
+
+    private String filterFormFieldsFromResult (ResultEntity result, String key) {
+        return result.getFormFields().stream().filter(f -> f.getKey().equals(key)).findFirst().get().getValue();
     }
 
     public List<ProjectRole> getProjectRoles (final Long projectId) {

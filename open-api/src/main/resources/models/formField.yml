@@ -48,6 +48,7 @@ FormField:
         - TEXT
         - NUMBER
         - DATE
+        - TIME
         - URL
         - EMAIL
       default: TEXT

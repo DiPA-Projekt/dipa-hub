@@ -44,6 +44,16 @@ public class RecurringEventPatternEntity extends BaseEntity {
         this.duration = entity.getDuration();
     }
 
+    public RecurringEventPatternEntity(String title, String rulePattern, LocalDate startDate, LocalDate endDate,
+            LocalTime startTime, Integer duration) {
+        this.title = title;
+        this.rulePattern = rulePattern;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.startTime = startTime;
+        this.duration = duration;
+    }
+
     public String getTitle() {
         return title;
     }

@@ -63,3 +63,92 @@ WHERE t.master = true
 UPDATE public.project_task_form_field
 SET label = 'Link'
 WHERE key = 'documentationLink' and label = ''
+
+--changeset id:delete-form-field-termin-project-task-appt-series context:itzbund
+DELETE FROM project_task_form_field
+WHERE label = 'Termin'
+
+--changeset id:insert-form-field-rule-pattern-project-task-appt-series context:itzbund
+INSERT INTO project_task_form_field (value, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
+SELECT 'FREQ=MONTHLY;BYMONTHDAY=10;INTERVAL=1', 'rule', 'Termin', true, 2, 'TEXTBOX', 'TEXT', true, id
+FROM project_task_result
+WHERE result_type = 'TYPE_APPT_SERIES'
+
+--changeset id:insert-form-field-start-date-project-task-appt-series context:itzbund
+INSERT INTO project_task_form_field (value, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
+SELECT '', 'startDate', 'Start', true, 3, 'TEXTBOX', 'DATE', true, id
+FROM project_task_result
+WHERE result_type = 'TYPE_APPT_SERIES'
+
+--changeset id:insert-form-field-end-date-project-task-appt-series context:itzbund
+INSERT INTO project_task_form_field (value, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
+SELECT '', 'endDate', 'Ende', true, 4, 'TEXTBOX', 'DATE', true, id
+FROM project_task_result
+WHERE result_type = 'TYPE_APPT_SERIES'
+
+--changeset id:insert-form-field-start-time-project-task-appt-series context:itzbund
+INSERT INTO project_task_form_field (value, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
+SELECT '', 'startTime', 'Uhrzeit', true, 5, 'TEXTBOX', 'TIME', true, id
+FROM project_task_result
+WHERE result_type = 'TYPE_APPT_SERIES'
+
+--changeset id:insert-form-field-duration-project-task-appt-series context:itzbund
+INSERT INTO project_task_form_field (value, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
+SELECT '', 'duration', 'Dauer', true, 6, 'TEXTBOX', 'NUMBER', true, id
+FROM project_task_result
+WHERE result_type = 'TYPE_APPT_SERIES'
+
+--changeset id:update-form-field-serie-title-required context:itzbund
+UPDATE public.project_task_form_field
+SET required = true
+WHERE id in
+(SELECT f.id
+FROM project_task_result r
+JOIN project_task_form_field f
+on r.id = f.result_id
+WHERE result_type = 'TYPE_APPT_SERIES'
+AND key = 'serie')
+
+--changeset id:update-form-field-participants-sort-order context:itzbund
+UPDATE public.project_task_form_field
+SET sort_order = 7
+WHERE id in
+(SELECT f.id
+FROM project_task_result r
+JOIN project_task_form_field f
+on r.id = f.result_id
+WHERE result_type = 'TYPE_APPT_SERIES'
+AND key = 'participants')
+
+--changeset id:update-form-field-link-sort-order context:itzbund
+UPDATE public.project_task_form_field
+SET sort_order = 8
+WHERE id in
+(SELECT f.id
+FROM project_task_result r
+JOIN project_task_form_field f
+on r.id = f.result_id
+WHERE result_type = 'TYPE_APPT_SERIES'
+AND key = 'link')
+
+--changeset id:update-form-field-note-sort-order context:itzbund
+UPDATE public.project_task_form_field
+SET sort_order = 9
+WHERE id in
+(SELECT f.id
+FROM project_task_result r
+JOIN project_task_form_field f
+on r.id = f.result_id
+WHERE result_type = 'TYPE_APPT_SERIES'
+AND key = 'note')
+
+--changeset id:update-form-field-status-sort-order context:itzbund
+UPDATE public.project_task_form_field
+SET sort_order = 10
+WHERE id in
+(SELECT f.id
+FROM project_task_result r
+JOIN project_task_form_field f
+on r.id = f.result_id
+WHERE result_type = 'TYPE_APPT_SERIES'
+AND key = 'status')
