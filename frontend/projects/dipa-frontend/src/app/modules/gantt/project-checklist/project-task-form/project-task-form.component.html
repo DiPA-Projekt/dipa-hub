@@ -1,86 +1,88 @@
-<form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup)">
-  <app-show-fields-menu (selectionChange)="changeShowSelection()"></app-show-fields-menu>
-  <div class="entries" formArrayName="entries">
-    <ng-container *ngFor="let entry of entriesArray.controls; let i = index">
-      <ng-container [formGroupName]="i">
-        <ng-container [ngSwitch]="entry.get('controlType')?.value">
-          <ng-container *ngSwitchCase="'TEXTBOX'">
-            <mat-form-field *ngIf="entry.get('show')?.value" [hintLabel]="entry.get('hint')?.value">
-              <mat-label>{{ entry.get('label')?.value }}</mat-label>
-              <mat-icon matPrefix *ngIf="entry.get('type')?.value === 'URL'" class="matPrefixIcon"> link </mat-icon>
-              <input
-                matInput
-                [type]="entry.get('type').value.toLowerCase()"
-                [step]="entry.get('type').value.toLowerCase() === 'time' ? 300 : 1"
-                formControlName="value"
-                [id]="entry.get('key')?.value"
-                [value]="entry.get('value')?.value"
-                (change)="onSubmit(formGroup)"
-                (focus)="onFocus($event, ['entries', i, 'value'])"
-                (keyup.esc)="onEscape($event, ['entries', i, 'value'])"
-              />
-              <button
-                matSuffix
-                mat-icon-button
-                *ngIf="entry.get('type')?.value === 'URL'"
-                [disabled]="!isValidUrl(entry.get('value'))"
-                (click)="onClickLink(entry)"
-              >
-                <mat-icon style="font-size: 150%"> open_in_new </mat-icon>
-              </button>
+<ng-form *ngIf="formGroup">
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup)">
+    <app-show-fields-menu (selectionChange)="changeShowSelection()"></app-show-fields-menu>
+    <div class="entries" formArrayName="entries">
+      <ng-container *ngFor="let entry of entriesArray.controls; let i = index">
+        <ng-container [formGroupName]="i">
+          <ng-container [ngSwitch]="entry.get('controlType')?.value">
+            <ng-container *ngSwitchCase="'TEXTBOX'">
+              <mat-form-field *ngIf="entry.get('show')?.value" [hintLabel]="entry.get('hint')?.value">
+                <mat-label>{{ entry.get('label')?.value }}</mat-label>
+                <mat-icon matPrefix *ngIf="entry.get('type')?.value === 'URL'" class="matPrefixIcon"> link </mat-icon>
+                <input
+                  matInput
+                  [type]="entry.get('type').value.toLowerCase()"
+                  [step]="entry.get('type').value.toLowerCase() === 'time' ? 300 : 1"
+                  formControlName="value"
+                  [id]="entry.get('key')?.value"
+                  [value]="entry.get('value')?.value"
+                  (change)="onSubmit(formGroup)"
+                  (focus)="onFocus($event, ['entries', i, 'value'])"
+                  (keyup.esc)="onEscape($event, ['entries', i, 'value'])"
+                />
+                <button
+                  matSuffix
+                  mat-icon-button
+                  *ngIf="entry.get('type')?.value === 'URL'"
+                  [disabled]="!isValidUrl(entry.get('value'))"
+                  (click)="onClickLink(entry)"
+                >
+                  <mat-icon style="font-size: 150%"> open_in_new </mat-icon>
+                </button>
 
-              <mat-error *ngIf="entry.get('value').hasError('email') && !entry.get('value').hasError('required')">
-                Bitte gültige E-Mailadresse eingeben
-              </mat-error>
-              <mat-error *ngIf="entry.get('value').hasError('url') && !entry.get('value').hasError('required')">
-                Bitte gültige URL eingeben
-              </mat-error>
-              <mat-error *ngIf="entry.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>
-            </mat-form-field>
-          </ng-container>
-          <ng-container *ngSwitchCase="'TEXTAREA'">
-            <mat-form-field [hintLabel]="entry.get('hint')?.value" *ngIf="entry.get('show')?.value">
-              <mat-label>{{ entry.get('label')?.value }}</mat-label>
-              <textarea
-                matInput
-                formControlName="value"
-                [id]="entry.get('key')?.value"
-                [value]="entry.get('value')?.value"
-                (change)="onSubmit(formGroup)"
-                (focus)="onFocus($event, ['entries', i, 'value'])"
-                (keyup.esc)="onEscape($event, ['entries', i, 'value'])"
-              >
-              </textarea>
-              <mat-error *ngIf="entry.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>
-            </mat-form-field>
-          </ng-container>
-          <ng-container *ngSwitchCase="'DROPDOWN'">
-            <mat-form-field [hintLabel]="entry.get('hint')?.value" *ngIf="entry.get('show')?.value">
-              <mat-label>{{ entry.get('label')?.value }}</mat-label>
-              <mat-select formControlName="value">
-                <mat-option *ngFor="let opt of entry.get('options')?.value" [value]="opt.key">
-                  {{ opt.value }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+                <mat-error *ngIf="entry.get('value').hasError('email') && !entry.get('value').hasError('required')">
+                  Bitte gültige E-Mailadresse eingeben
+                </mat-error>
+                <mat-error *ngIf="entry.get('value').hasError('url') && !entry.get('value').hasError('required')">
+                  Bitte gültige URL eingeben
+                </mat-error>
+                <mat-error *ngIf="entry.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>
+              </mat-form-field>
+            </ng-container>
+            <ng-container *ngSwitchCase="'TEXTAREA'">
+              <mat-form-field [hintLabel]="entry.get('hint')?.value" *ngIf="entry.get('show')?.value">
+                <mat-label>{{ entry.get('label')?.value }}</mat-label>
+                <textarea
+                  matInput
+                  formControlName="value"
+                  [id]="entry.get('key')?.value"
+                  [value]="entry.get('value')?.value"
+                  (change)="onSubmit(formGroup)"
+                  (focus)="onFocus($event, ['entries', i, 'value'])"
+                  (keyup.esc)="onEscape($event, ['entries', i, 'value'])"
+                >
+                </textarea>
+                <mat-error *ngIf="entry.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>
+              </mat-form-field>
+            </ng-container>
+            <ng-container *ngSwitchCase="'DROPDOWN'">
+              <mat-form-field [hintLabel]="entry.get('hint')?.value" *ngIf="entry.get('show')?.value">
+                <mat-label>{{ entry.get('label')?.value }}</mat-label>
+                <mat-select formControlName="value">
+                  <mat-option *ngFor="let opt of entry.get('options')?.value" [value]="opt.key">
+                    {{ opt.value }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </ng-container>
           </ng-container>
         </ng-container>
       </ng-container>
-    </ng-container>
-  </div>
+    </div>
 
-  <app-results-form
-    [isEditable]="!isArchivedProject"
-    [selectedTimelineId]="selectedTimelineId"
-    [formData]="resultsArray"
-    [selectedFields]="selectedFields"
-    (dataChanged)="onSubmit(formGroup)"
-  ></app-results-form>
+    <app-results-form
+      [isEditable]="!isArchivedProject"
+      [selectedTimelineId]="selectedTimelineId"
+      [formData]="resultsArray"
+      [selectedFields]="selectedFields"
+      (dataChanged)="onSubmit(formGroup)"
+    ></app-results-form>
 
-  <div *ngIf="!isArchivedProject && completable">
-    <button mat-raised-button color="primary" class="stepDoneButton" (click)="toggleCompleteStatus()">
-      <mat-icon>{{ formGroup.get('completed').value === true ? 'undo' : 'done' }}</mat-icon>
-      {{ formGroup.get('completed').value === true ? 'Schritt erneut öffnen' : 'Schritt abschließen' }}
-    </button>
-  </div>
-</form>
+    <div *ngIf="!isArchivedProject && completable">
+      <button mat-raised-button color="primary" class="stepDoneButton" (click)="toggleCompleteStatus()">
+        <mat-icon>{{ formGroup.get('completed').value === true ? 'undo' : 'done' }}</mat-icon>
+        {{ formGroup.get('completed').value === true ? 'Schritt erneut öffnen' : 'Schritt abschließen' }}
+      </button>
+    </div>
+  </form>
+</ng-form>
