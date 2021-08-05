@@ -2,6 +2,7 @@
 
  import java.util.Optional;
 
+ import org.junit.jupiter.api.BeforeAll;
  import org.junit.jupiter.api.Nested;
  import org.junit.jupiter.api.Test;
  import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@
 
  import online.dipa.hub.persistence.entities.PlanTemplateEntity;
  import online.dipa.hub.persistence.entities.ProjectApproachEntity;
+ import online.dipa.hub.tenancy.CurrentTenantContextHolder;
+
  import static org.assertj.core.api.BDDAssertions.then;
 
  import javax.transaction.Transactional;
@@ -25,6 +28,11 @@
 
      @Autowired
      private OperationTypeRepository operationTypeRepository;
+
+     @BeforeAll
+     static void setUpContext() {
+         CurrentTenantContextHolder.setTenantId("itzbund");
+     }
 
      @Nested
      class FindByDefaultAndProjectApproach {

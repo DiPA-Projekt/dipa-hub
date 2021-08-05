@@ -4,13 +4,13 @@
       <mat-step
         *ngIf="task.sortOrder > -1"
         [stepControl]="formGroup"
-        [completed]="task.completed"
+        [completed]="task.projectTask.completed"
         [state]="getTaskIcon(task)"
       >
         <ng-template matStepLabel>
           <div style="display: flex">
             <div class="ellipsis" title="{{ task.title }}">{{ task.title }}</div>
-            <div *ngIf="task.projectPropertyQuestion != null" (click)="$event.stopPropagation()">
+            <div *ngIf="task.projectTask.projectPropertyQuestion != null" (click)="$event.stopPropagation()">
               <mat-icon color="primary" style="font-size: 20px; margin-left: 0.5em" [matMenuTriggerFor]="menu"
                 >info</mat-icon
               >
@@ -23,7 +23,7 @@
                     Zugehöriges Projektmerkmal
                   </mat-list-item>
                   <mat-list-item (click)="$event.stopPropagation()" style="font-size: 14px"
-                    >{{ task.projectPropertyQuestion.question }}
+                    >{{ task.projectTask.projectPropertyQuestion.question }}
                   </mat-list-item>
                 </mat-list>
               </mat-menu>
