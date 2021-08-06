@@ -8,16 +8,13 @@ import { FormGroup } from '@angular/forms';
 })
 export class RruleComponent implements OnInit {
   @Input() public formField: FormGroup;
-  @Input() private rruleString: string;
   @Output() public dataChanged = new EventEmitter();
+  @Input() private rruleString: string;
 
   public frequency = 'MONTHLY';
   public interval = 1;
   public byMonthDay = 10;
-  public byDay = ['MO', 'MI', 'FR'];
-
-  // DTSTART:20210714T144700Z
-  // RRULE:FREQ=WEEKLY;UNTIL=20210918T144300Z;COUNT=30;INTERVAL=1;WKST=MO;BYDAY=MO
+  public byDay = ['MO', 'WE', 'FR'];
 
   public ngOnInit(): void {
     this.parse(this.rruleString);
