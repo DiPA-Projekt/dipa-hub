@@ -875,7 +875,13 @@ public class ProjectService {
     }
 
     private String filterFormFieldsFromResult (ResultEntity result, String key) {
-        return result.getFormFields().stream().filter(f -> f.getKey().equals(key)).findFirst().get().getValue();
+        String value = null;
+        Optional<FormFieldEntity> optionalFormField = result.getFormFields().stream().filter(f -> f.getKey().equals(key))
+                                                            .findFirst();
+        if (optionalFormField.isPresent()) {
+            value = optionalFormField.get().getValue();
+        }
+        return value;
     }
 
     public List<ProjectRole> getProjectRoles (final Long projectId) {
