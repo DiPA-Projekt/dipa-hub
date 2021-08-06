@@ -2,14 +2,10 @@ package online.dipa.hub.persistence.entities;
 
 import static javax.persistence.CascadeType.ALL;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;

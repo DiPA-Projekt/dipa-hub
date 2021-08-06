@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +41,6 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.sun.istack.Nullable;
 
 @Service
 @Transactional
@@ -123,7 +123,8 @@ public class ProjectService {
     private static final String ITZBUND_TENANT = "itzbund";
     private static final String PROJECT_SIZE_SMALL = "SMALL";
     private static final String PROJECT_SIZE_MEDIUM = "MEDIUM";
-
+    private static final String TYPE_RECURRING_EVENT = "TYPE_RECURRING_EVENT";
+    private static final String TYPE_APPT_SERIES = "TYPE_APPT_SERIES";
 
     public Project getProjectData(final Long projectId) {
         List<Long> projectIds = userInformationService.getProjectIdList();
@@ -582,7 +583,7 @@ public class ProjectService {
                     newResultEntity.getFormFields().add(formField);
 
                 }
-                if (newResultEntity.getResultType().equals("TYPE_APPT_SERIES")) {
+                if (newResultEntity.getResultType().equals(TYPE_APPT_SERIES)) {
                     createSerieAppointments(newResultEntity);
                 }
             }
@@ -594,7 +595,7 @@ public class ProjectService {
                 for (FormField formField: newListEntries) {
                     FormFieldEntity formFieldEntity = findFormFieldEntity(oldEntriesList, formField.getId());
 
-                    if (resultEntity.getResultType().equals("TYPE_APPT_SERIES") &&
+                    if (resultEntity.getResultType().equals(TYPE_APPT_SERIES) &&
                     formFieldEntity.getValue() != null && !formFieldEntity.getValue().equals(formField.getValue())
                             && resultEntity.getRecurringEventPattern() != null) {
                         formFieldEntity.setValue(formField.getValue());
@@ -606,7 +607,7 @@ public class ProjectService {
                     formFieldEntity.setShow(formField.getShow());
                 }
 
-                if (resultEntity.getResultType().equals("TYPE_APPT_SERIES")
+                if (resultEntity.getResultType().equals(TYPE_APPT_SERIES)
                         && resultEntity.getRecurringEventPattern() == null) {
                     createSerieAppointments(resultEntity);
                 }
@@ -632,7 +633,7 @@ public class ProjectService {
         if (project.getEventTemplates() == null ||
                 project.getEventTemplates().stream()
                    .noneMatch(e -> e.getEventType()
-                                    .equals("TYPE_RECURRING_EVENT"))) {
+                                    .equals(TYPE_RECURRING_EVENT))) {
             initializeRecurringEvents(project);
         }
 
@@ -690,7 +691,7 @@ public class ProjectService {
             RecurringEventPatternEntity eventPattern = eventType.getRecurringEventPattern();
 
             eventTemplate = new EventTemplateEntity("Wiederkehrende Termine "+ eventType.getTitle(),
-                    "TYPE_RECURRING_EVENT", project, eventType, null);
+                    TYPE_RECURRING_EVENT, project, eventType, null);
             eventTemplateRepository.save(eventTemplate);
             String status = eventType.isMandatory() ? "OPEN" : null;
             eventTemplate = createEventsForEventTemplate(eventPattern, eventType.getTitle(), eventTemplate, status);
@@ -701,7 +702,7 @@ public class ProjectService {
             RecurringEventPatternEntity eventPattern = resultEntity.getRecurringEventPattern();
 
             eventTemplate = new EventTemplateEntity("Serie Termine "+ eventPattern.getTitle(),
-                    "TYPE_APPT_SERIES", project, null, resultEntity);
+                    TYPE_APPT_SERIES, project, null, resultEntity);
             eventTemplateRepository.save(eventTemplate);
             eventTemplate = createEventsForEventTemplate(eventPattern, eventPattern.getTitle(), eventTemplate, null);
             resultEntity.setEventTemplate(eventTemplate);
@@ -741,7 +742,7 @@ public class ProjectService {
 
         if (newEndDate.isAfter(today)) {
             for (EventTemplateEntity template : project.getEventTemplates().stream()
-                                                       .filter(t -> t.getEventType().equals("TYPE_RECURRING_EVENT")).collect(
+                                                       .filter(t -> t.getEventType().equals(TYPE_RECURRING_EVENT)).collect(
                             Collectors.toList())) {
                 List<EventEntity> events = template.getEvents()
                                                    .stream()

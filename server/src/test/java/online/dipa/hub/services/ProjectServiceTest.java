@@ -17,11 +17,8 @@
  import online.dipa.hub.api.model.PropertyQuestion;
  import online.dipa.hub.persistence.entities.*;
  import online.dipa.hub.persistence.repositories.NonPermanentProjectTaskRepository;
- import online.dipa.hub.persistence.repositories.NonPermanentProjectTaskTemplateRepository;
  import online.dipa.hub.persistence.repositories.PermanentProjectTaskRepository;
- import online.dipa.hub.persistence.repositories.PermanentProjectTaskTemplateRepository;
  import online.dipa.hub.persistence.repositories.ProjectApproachRepository;
- import online.dipa.hub.persistence.repositories.ProjectPropertyQuestionRepository;
  import online.dipa.hub.persistence.repositories.ProjectRepository;
  import online.dipa.hub.persistence.repositories.ProjectTaskRepository;
  import online.dipa.hub.persistence.repositories.ProjectTaskTemplateRepository;
@@ -51,9 +48,6 @@
     private ProjectRepository projectRepository;
 
     @Autowired
-    private ProjectPropertyQuestionRepository projectPropertyQuestionRepository;
-
-    @Autowired
     private ProjectService projectService;
 
     @Autowired
@@ -65,11 +59,6 @@
     @Autowired
     private ProjectTaskRepository projectTaskRepository;
 
-    @Autowired
-    private NonPermanentProjectTaskTemplateRepository nonPermanentProjectTaskTempRep;
-
-    @Autowired
-    private PermanentProjectTaskTemplateRepository permanentProjectTaskTempRep;
 
     @Autowired
     private NonPermanentProjectTaskRepository nonPermanentProjectTaskRepository;
