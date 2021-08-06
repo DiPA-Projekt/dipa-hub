@@ -1,0 +1,25 @@
+EventTemplate:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the event template
+      type: integer
+      format: int64
+      example: 1
+    title:
+      description: Title of the event template
+      type: string
+      example: Wiederkehrende Termine Trackingtabelle externe Dienstleistung pflegen
+    eventType:
+      description: Event Type
+      type: string
+      enum:
+        - TYPE_APPT_SERIES
+        - TYPE_SINGLE_APPOINTMENT
+        - TYPE_RECURRING_EVENT
+      example: TYPE_RECURRING_EVENT
+    events:
+      description: The list of events
+      type: array
+      items:
+        $ref: "../models/event.yml#/Event"

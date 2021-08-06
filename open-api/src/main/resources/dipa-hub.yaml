@@ -62,6 +62,8 @@ paths:
     $ref: "paths/milestoneFiles.yml"
   /timelines/{timelineId}/tasks:
     $ref: "paths/tasks.yml"
+  /timelines/{timelineId}/events:
+    $ref: "paths/events.yml"
   /users:
     $ref: "paths/users.yml"
   /users/currentUser:

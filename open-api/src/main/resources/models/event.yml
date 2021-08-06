@@ -1,0 +1,29 @@
+Event:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the event
+      type: integer
+      format: int64
+      example: 1
+    title:
+      description: Title of the event
+      type: string
+      example: Trackingtabelle externe Dienstleistung pflegen
+    dateTime:
+      description: The date time of the event
+      type: string
+      format: date-time
+      example: 2021-07-21T17:30:00Z
+    duration:
+      description: The duration of the event
+      type: integer
+      example: 3
+    status:
+      description: The status of the event
+      type: string
+      enum:
+        - OPEN
+        - DONE
+      default: null
+      example: OPEN
