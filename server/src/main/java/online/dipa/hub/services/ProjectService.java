@@ -40,6 +40,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.sun.istack.Nullable;
 
 @Service
 @Transactional
@@ -248,8 +249,8 @@ public class ProjectService {
         else {
             for (RecurringEventTypeEntity recurringEventType: pQuestion.getRecurringEventTypes()) {
                 if (eventTemplateRepository.findByRecurringEventType(recurringEventType).isEmpty()) {
-                    createRecurringTemplatesAndEvents(pQuestion.getProjectPropertyQuestionTemplate()
-                                                   .getProject(), recurringEventType);
+                    createRecurringTemplates(pQuestion.getProjectPropertyQuestionTemplate()
+                                                      .getProject(), recurringEventType, null);
                 }
             }
         }
@@ -580,16 +581,30 @@ public class ProjectService {
                             optionEntryRepository.save(opt);
                         });
                     }
+                    newResultEntity.getFormFields().add(formField);
+
                 }
+                createRecurringPatternSerieAppts(resultRepository.getById(newResultEntity.getId()));
             }
             else {
                 List<FormFieldEntity> oldEntriesList = new ArrayList<>(findResultEntity(oldList, newResult.getId()).getFormFields());
                 List<FormField> newListEntries = newResult.getFormFields();
 
-
                 for (FormField formField: newListEntries) {
-                    findFormFieldEntity(oldEntriesList, formField.getId()).setValue(formField.getValue());
-                    findFormFieldEntity(oldEntriesList, formField.getId()).setShow(formField.getShow());
+                    FormFieldEntity formFieldEntity = findFormFieldEntity(oldEntriesList, formField.getId());
+
+                    if (findResultEntity(oldList, newResult.getId()).getResultType().equals("TYPE_APPT_SERIES") &&
+                    formFieldEntity.getValue() != null && !formFieldEntity.getValue().equals(formField.getValue())) {
+                        formFieldEntity.setValue(formField.getValue());
+                        ResultEntity resultEntity = findResultEntity(oldList, newResult.getId());
+                        createRecurringPatternSerieAppts(resultEntity);
+                        System.out.println(resultEntity.getRecurringEventPattern().getStartTime());
+//                        RecurringEventPatternEntity recurringEventPattern1 = recurringEventPatternRepository.getById(resultEntity.recurringEventPattern.getId());
+
+                    }
+
+                    formFieldEntity.setValue(formField.getValue());
+                    formFieldEntity.setShow(formField.getShow());
                 }
             }
 
@@ -656,34 +671,55 @@ public class ProjectService {
         for (RecurringEventTypeEntity recurringEventType: project.getRecurringEventTypes()) {
             if (recurringEventType.getProjectPropertyQuestion() == null || (recurringEventType.getProjectPropertyQuestion() != null
                     && recurringEventType.getProjectPropertyQuestion().getSelected())) {
-                eventTemplates.add(createRecurringTemplatesAndEvents(project, recurringEventType));
+                eventTemplates.add(createRecurringTemplates(project, recurringEventType, null));
             }
 
         }
         project.setEventTemplates(eventTemplates);
     }
 
-    public EventTemplateEntity createRecurringTemplatesAndEvents (final ProjectEntity project, final RecurringEventTypeEntity eventType) {
-        RecurringEventPatternEntity eventPattern = eventType.getRecurringEventPattern();
+    public EventTemplateEntity createRecurringTemplates (final ProjectEntity project, @Nullable final RecurringEventTypeEntity eventType,
+            @Nullable final ResultEntity resultEntity) {
+        EventTemplateEntity eventTemplate = null;
+
+        if (eventType != null) {
+            RecurringEventPatternEntity eventPattern = eventType.getRecurringEventPattern();
+
+            eventTemplate = new EventTemplateEntity("Wiederkehrende Termine "+ eventType.getTitle(),
+                    "TYPE_RECURRING_EVENT", project, eventType, null);
+            eventTemplateRepository.save(eventTemplate);
+            String status = eventType.isMandatory() ? "OPEN" : null;
+            eventTemplate = createEventsForTemplate(eventPattern, eventType.getTitle(), eventTemplate, status);
+        }
+        if (resultEntity != null) {
+            RecurringEventPatternEntity eventPattern = resultEntity.getRecurringEventPattern();
+
+            eventTemplate = new EventTemplateEntity("Serie Termine "+ eventPattern.getTitle(),
+                    "TYPE_APPT_SERIES", project, null, resultEntity);
+            eventTemplateRepository.save(eventTemplate);
+            eventTemplate = createEventsForTemplate(eventPattern, eventPattern.getTitle(), eventTemplate, null);
+        }
+
+        return eventTemplate;
+    }
+
+    public EventTemplateEntity createEventsForTemplate (final RecurringEventPatternEntity eventPattern,
+            String eventTitle, EventTemplateEntity eventTemplate, String status) {
         RRule rrule = createRRule(eventPattern.getRulePattern());
 
         DateTime start = dateTimeConverter(eventPattern.getStartDate(), eventPattern);
         DateTime end = dateTimeConverter(eventPattern.getEndDate(), eventPattern);
         DateList recurDates = rrule.getRecur().getDates(start, end, Value.DATE_TIME);
 
-        EventTemplateEntity eventTemplate = new EventTemplateEntity("Wiederkehrende Termine "+ eventType.getTitle(),
-                "TYPE_RECURRING_EVENT",  project, eventType);
-        eventTemplateRepository.save(eventTemplate);
-
         Set<EventEntity> events = new HashSet<>();
         for (Date recurDate: recurDates) {
-            String status = eventType.isMandatory() ? "OPEN" : null;
-            EventEntity event = new EventEntity(eventType.getTitle(),
+            EventEntity event = new EventEntity(eventTitle,
                     recurDate.toInstant().atOffset(ZoneOffset.UTC), eventPattern.getDuration(), status, eventTemplate);
             eventRepository.save(event);
             events.add(event);
         }
         eventTemplate.setEvents(events);
+        System.out.println(eventTemplate.getEvents().size());
         return eventTemplate;
     }
 
@@ -794,30 +830,49 @@ public class ProjectService {
         return  rrule;
     }
 
-    public void createSerieAppointments (ResultEntity resultEntity) {
-
-
-    }
 
     private void createRecurringPatternSerieAppts (ResultEntity result) {
+        ProjectEntity project = result.getProjectTask().getProjectTaskTemplate()
+                                      .getProject();
+
         String title =  filterFormFieldsFromResult(result, "serie");
-        String rulePattern =  filterFormFieldsFromResult(result, "rule");
+        String rulePattern =  filterFormFieldsFromResult(result, "appointment");
         LocalDate startDate =  LocalDate.parse(filterFormFieldsFromResult(result, "startDate"));
         LocalDate endDate =  LocalDate.parse(filterFormFieldsFromResult(result, "endDate"));
         LocalTime startTime =  LocalTime.parse(filterFormFieldsFromResult(result, "startTime"));
         Integer duration =  Integer.valueOf(filterFormFieldsFromResult(result, "duration"));
+        System.out.println(rulePattern);
+        System.out.println(startTime);
 
         if (result.getRecurringEventPattern() == null) {
             RecurringEventPatternEntity recurringEventPattern = new RecurringEventPatternEntity(title, rulePattern, startDate,
                     endDate, startTime, duration);
             recurringEventPattern.setResult(result);
             recurringEventPatternRepository.save(recurringEventPattern);
+
             result.setRecurringEventPattern(recurringEventPattern);
+            createRecurringTemplates(project, null, result);
         }
         else {
             RecurringEventPatternEntity recurringEventPattern = result.getRecurringEventPattern();
-            recurringEventPatternRepository.updateRecurringPattern(recurringEventPattern.getId(), title, rulePattern,
-                    startDate, endDate, startTime, duration);
+//            recurringEventPatternRepository.updateRecurringPattern(recurringEventPattern.getId(), title, rulePattern,
+//                    startDate, endDate, startTime, duration);
+            recurringEventPattern.setTitle(title);
+            recurringEventPattern.setRulePattern(rulePattern);
+            recurringEventPattern.setStartDate(startDate);
+            recurringEventPattern.setEndDate(endDate);
+            recurringEventPattern.setStartTime(startTime);
+            recurringEventPattern.setDuration(duration);
+            RecurringEventPatternEntity recurringEventPattern1 = recurringEventPatternRepository.getById(recurringEventPattern.getId());
+
+            eventRepository.deleteAll(result.getEventTemplate().getEvents());
+            System.out.println(recurringEventPattern.getId());
+
+            System.out.println(recurringEventPattern1.getRulePattern());
+            System.out.println(recurringEventPattern1.getStartTime());
+
+            System.out.println(recurringEventPattern.getTitle());
+            result.setEventTemplate(createEventsForTemplate(recurringEventPattern, title, result.getEventTemplate(), null));
         }
 
     }

@@ -20,10 +20,10 @@ public interface RecurringEventPatternRepository extends JpaRepository<Recurring
     @QueryHints(value = { @QueryHint(name = HINT_CACHEABLE, value = "true") })
     @Transactional
     @Modifying
-    @Query("update RecurringEventPatternEntity p " +
-            "SET p.title = :title p.rulePattern = :rulePattern, p.startDate = :startDate," +
-            "p.endDate = :endDate, p.startTime = :startTime, p.duration = :duration, " +
-            "WHERE p.id = :id")
+    @Query("update RecurringEventPatternEntity c " +
+            "SET c.title = :title, c.rulePattern = :rulePattern, c.startDate = :startDate," +
+            "c.endDate = :endDate, c.startTime = :startTime, c.duration = :duration " +
+            "WHERE c.id = :id")
     void updateRecurringPattern(Long id, String title, String rulePattern, LocalDate startDate,
             LocalDate endDate, LocalTime startTime, Integer duration);
 

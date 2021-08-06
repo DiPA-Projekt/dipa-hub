@@ -31,6 +31,10 @@ public class ResultEntity extends BaseEntity {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private RecurringEventPatternEntity recurringEventPattern;
 
+    @OneToOne(mappedBy = "result", cascade = { ALL })
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private EventTemplateEntity eventTemplate;
+
     public String getResultType() {
         return resultType;
     }
@@ -61,5 +65,13 @@ public class ResultEntity extends BaseEntity {
 
     public void setRecurringEventPattern(final RecurringEventPatternEntity recurringEventPattern) {
         this.recurringEventPattern = recurringEventPattern;
+    }
+
+    public EventTemplateEntity getEventTemplate() {
+        return eventTemplate;
+    }
+
+    public void setEventTemplate(final EventTemplateEntity eventTemplate) {
+        this.eventTemplate = eventTemplate;
     }
 }

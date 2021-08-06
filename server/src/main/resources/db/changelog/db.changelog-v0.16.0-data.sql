@@ -68,35 +68,36 @@ WHERE key = 'documentationLink' and label = ''
 DELETE FROM project_task_form_field
 WHERE label = 'Termin'
 
---changeset id:insert-form-field-rule-pattern-project-task-appt-series context:itzbund
-INSERT INTO project_task_form_field (value, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
-SELECT 'FREQ=MONTHLY;BYMONTHDAY=10;INTERVAL=1', 'rule', 'Termin', true, 2, 'TEXTBOX', 'TEXT', true, id
-FROM project_task_result
-WHERE result_type = 'TYPE_APPT_SERIES'
-
---changeset id:insert-form-field-start-date-project-task-appt-series context:itzbund
-INSERT INTO project_task_form_field (value, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
-SELECT '', 'startDate', 'Start', true, 3, 'TEXTBOX', 'DATE', true, id
-FROM project_task_result
-WHERE result_type = 'TYPE_APPT_SERIES'
-
---changeset id:insert-form-field-end-date-project-task-appt-series context:itzbund
-INSERT INTO project_task_form_field (value, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
-SELECT '', 'endDate', 'Ende', true, 4, 'TEXTBOX', 'DATE', true, id
-FROM project_task_result
-WHERE result_type = 'TYPE_APPT_SERIES'
-
 --changeset id:insert-form-field-start-time-project-task-appt-series context:itzbund
 INSERT INTO project_task_form_field (value, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
-SELECT '', 'startTime', 'Uhrzeit', true, 5, 'TEXTBOX', 'TIME', true, id
+SELECT '', 'startTime', 'Uhrzeit', true, 2, 'TEXTBOX', 'TIME', true, id
 FROM project_task_result
 WHERE result_type = 'TYPE_APPT_SERIES'
 
 --changeset id:insert-form-field-duration-project-task-appt-series context:itzbund
 INSERT INTO project_task_form_field (value, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
-SELECT '', 'duration', 'Dauer', true, 6, 'TEXTBOX', 'NUMBER', true, id
+SELECT '', 'duration', 'Dauer', true, 3, 'TEXTBOX', 'NUMBER', true, id
 FROM project_task_result
 WHERE result_type = 'TYPE_APPT_SERIES'
+
+--changeset id:insert-form-field-rule-pattern-project-task-appt-series context:itzbund
+INSERT INTO project_task_form_field (value, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
+SELECT 'FREQ=MONTHLY;BYMONTHDAY=10;INTERVAL=1', 'appointment', 'Terminregel', true, 4, 'RRULE', 'TEXT', true, id
+FROM project_task_result
+WHERE result_type = 'TYPE_APPT_SERIES'
+
+--changeset id:insert-form-field-start-date-project-task-appt-series context:itzbund
+INSERT INTO project_task_form_field (value, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
+SELECT '', 'startDate', 'Start', true, 5, 'TEXTBOX', 'DATE', true, id
+FROM project_task_result
+WHERE result_type = 'TYPE_APPT_SERIES'
+
+--changeset id:insert-form-field-end-date-project-task-appt-series context:itzbund
+INSERT INTO project_task_form_field (value, key, label, required, sort_order, CONTROL_TYPE, type, show, result_id)
+SELECT '', 'endDate', 'Ende', true, 6, 'TEXTBOX', 'DATE', true, id
+FROM project_task_result
+WHERE result_type = 'TYPE_APPT_SERIES'
+
 
 --changeset id:update-form-field-serie-title-required context:itzbund
 UPDATE public.project_task_form_field
@@ -111,7 +112,7 @@ AND key = 'serie')
 
 --changeset id:update-form-field-participants-sort-order context:itzbund
 UPDATE public.project_task_form_field
-SET sort_order = 7
+SET sort_order = 7, required = true
 WHERE id in
 (SELECT f.id
 FROM project_task_result r
