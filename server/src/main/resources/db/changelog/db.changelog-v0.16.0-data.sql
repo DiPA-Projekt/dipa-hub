@@ -145,7 +145,7 @@ AND key = 'note')
 
 --changeset id:update-form-field-status-sort-order context:itzbund
 UPDATE public.project_task_form_field
-SET sort_order = 10
+SET sort_order = 10, required = true
 WHERE id in
 (SELECT f.id
 FROM project_task_result r

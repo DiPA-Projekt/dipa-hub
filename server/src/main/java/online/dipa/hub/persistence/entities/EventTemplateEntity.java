@@ -32,7 +32,7 @@ public class EventTemplateEntity extends BaseEntity {
     @OneToOne(fetch = FetchType.EAGER)
     private ResultEntity result;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     private RecurringEventTypeEntity recurringEventType;
 
     @OneToMany(mappedBy = "eventTemplate", cascade = { ALL })
