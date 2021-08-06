@@ -1,0 +1,17 @@
+get:
+  tags:
+    - project
+  summary: Retrieves the list of events.
+  description: Retrieves the list of events.
+  operationId: getEvents
+  parameters:
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../models/eventTemplate.yml#/EventTemplate"
