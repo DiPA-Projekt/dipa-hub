@@ -112,17 +112,20 @@ public class TimelineService {
 
         ProjectEntity currentProject = getProject(timelineId);
 
-        currentProject.getRecurringEventTypes().forEach(t -> t.getRecurringEventPattern()
-                                                              .setStartDate(currentProject.getStartDate().plusDays(days).toLocalDate()));
-
-        projectService.updateRecurringEventsBasedOnStartDate(currentProject, currentProject.getStartDate().plusDays(days));
-        currentProject.setStartDate(currentProject.getStartDate().plusDays(days));
-
+        OffsetDateTime newTimelineStart = currentProject.getStartDate().plusDays(days);
+        OffsetDateTime newTimelineEnd = currentProject.getEndDate().plusDays(days);
 
         currentProject.getRecurringEventTypes().forEach(t -> t.getRecurringEventPattern()
-                                                              .setEndDate(currentProject.getEndDate().plusDays(days).toLocalDate()));
-        projectService.updateRecurringEventsBasedOnEndDate(currentProject, currentProject.getEndDate().plusDays(days));
-        currentProject.setEndDate(currentProject.getEndDate().plusDays(days));
+                                                              .setStartDate(newTimelineStart.toLocalDate()));
+
+        projectService.updateRecurringEventsBasedOnStartDate(currentProject, newTimelineStart);
+        currentProject.setStartDate(newTimelineStart);
+
+
+        currentProject.getRecurringEventTypes().forEach(t -> t.getRecurringEventPattern()
+                                                              .setEndDate(newTimelineEnd.toLocalDate()));
+        projectService.updateRecurringEventsBasedOnEndDate(currentProject, newTimelineEnd);
+        currentProject.setEndDate(newTimelineEnd);
 
         for (MilestoneTemplateEntity m : currentProject.getPlanTemplate().getMilestones()) {
             m.setDate(m.getDate().plusDays(days));
@@ -146,9 +149,9 @@ public class TimelineService {
         
         OffsetDateTime newTimelineStart = timelineStart.plusDays(days);
         currentProject.getRecurringEventTypes().forEach(t -> t.getRecurringEventPattern()
-                                                              .setStartDate(currentProject.getStartDate().plusDays(days).toLocalDate()));
-        projectService.updateRecurringEventsBasedOnStartDate(currentProject, currentProject.getStartDate().plusDays(days));
-        currentProject.setStartDate(currentProject.getStartDate().plusDays(days));
+                                                              .setStartDate(newTimelineStart.toLocalDate()));
+        projectService.updateRecurringEventsBasedOnStartDate(currentProject, newTimelineStart);
+        currentProject.setStartDate(newTimelineStart);
 
         for (MilestoneTemplateEntity m : currentProject.getPlanTemplate().getMilestones()) {
             long oldMilestoneRelativePosition = HOURS.between(timelineStart, m.getDate());
@@ -177,8 +180,8 @@ public class TimelineService {
         OffsetDateTime newTimelineEnd = timelineEnd.plusDays(days);
 
         currentProject.getRecurringEventTypes().forEach(t -> t.getRecurringEventPattern()
-                                                              .setEndDate(currentProject.getEndDate().plusDays(days).toLocalDate()));
-        projectService.updateRecurringEventsBasedOnEndDate(currentProject, currentProject.getEndDate().plusDays(days));
+                                                              .setEndDate(newTimelineEnd.toLocalDate()));
+        projectService.updateRecurringEventsBasedOnEndDate(currentProject, newTimelineEnd);
         currentProject.setEndDate(newTimelineEnd);
 
         for (MilestoneTemplateEntity m : currentProject.getPlanTemplate().getMilestones()) {
