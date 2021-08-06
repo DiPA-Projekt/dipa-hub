@@ -14,7 +14,7 @@ export class RruleComponent implements OnInit {
   public frequency = 'MONTHLY';
   public interval = 1;
   public byMonthDay = 10;
-  public byDay = ['MO', 'MI', 'FR'];
+  public byDay = ['MO', 'WE', 'FR'];
 
   public ngOnInit(): void {
     this.parse(this.rruleString);
