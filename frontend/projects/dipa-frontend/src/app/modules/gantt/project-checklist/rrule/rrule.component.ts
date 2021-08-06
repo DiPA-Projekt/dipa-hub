@@ -16,9 +16,6 @@ export class RruleComponent implements OnInit {
   public byMonthDay = 10;
   public byDay = ['MO', 'MI', 'FR'];
 
-  // DTSTART:20210714T144700Z
-  // RRULE:FREQ=WEEKLY;UNTIL=20210918T144300Z;COUNT=30;INTERVAL=1;WKST=MO;BYDAY=MO
-
   public ngOnInit(): void {
     this.parse(this.rruleString);
   }
