@@ -11,6 +11,17 @@ import {
 } from 'dipa-api-client';
 import { BehaviorSubject, Observable } from 'rxjs';
 
+interface EventEntry {
+  id: number;
+  seriesId: number;
+  eventType: string; // TYPE_APPT_SERIES, TYPE_SINGLE_APPOINTMENT, TYPE_RECURRING_EVENT
+  title: string;
+  dateTime: string;
+  duration: number;
+  status: string; // OPEN, DONE
+  visibility: boolean;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -24,6 +35,7 @@ export class TimelineDataService {
   public permanentProjectTasks: BehaviorSubject<PermanentProjectTask[]> = new BehaviorSubject<PermanentProjectTask[]>(
     null
   );
+  public eventEntryList: BehaviorSubject<EventEntry[]> = new BehaviorSubject<EventEntry[]>(null);
 
   public constructor(
     private timelinesService: TimelinesService,
@@ -85,6 +97,15 @@ export class TimelineDataService {
     this.projectService.getPermanentProjectTasks(timelineId).subscribe((data: PermanentProjectTask[]) => {
       this.permanentProjectTasks.next(data);
     });
+  }
+
+  public getEvents(): Observable<EventEntry[]> {
+    return this.eventEntryList;
+  }
+
+  public setEvents(data: EventEntry[]): void {
+    console.log('setEvents', data);
+    this.eventEntryList.next(data);
   }
 
   public getCurrentUserProjectRoles(userData: User, timelineId: number): string {

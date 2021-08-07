@@ -22,6 +22,19 @@ import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import Utils from '../../../../shared/utils';
 import { DatePipe } from '@angular/common';
 import { TimelineDataService } from '../../../../shared/timelineDataService';
+import { Event, EventTemplate } from 'dipa-api-client';
+
+interface EventEntry {
+  id: number;
+  seriesId: number;
+  eventType: string; // TYPE_APPT_SERIES, TYPE_SINGLE_APPOINTMENT, TYPE_RECURRING_EVENT
+  title: string;
+  dateTime: string;
+  duration: number;
+  status: string; // OPEN, DONE
+  mandatory: boolean;
+  visibility: boolean;
+}
 
 @Component({
   selector: 'app-timeline',
@@ -43,9 +56,9 @@ export class TimelineComponent implements OnInit, OnDestroy {
   public operationTypesList: OperationType[] = [];
   public projectApproachesList: ProjectApproach[] = [];
   public appointmentsListProjectTasks: ProjectTask[] = [];
-  public appointmentsList: Result[] = [];
-  public appointmentsInPeriod: Result[] = [];
-  public overdueAppointments: Result[] = [];
+  public appointmentsList: EventEntry[] = [];
+  public openEventsInPeriod: EventEntry[] = [];
+  public overdueEvents: EventEntry[] = [];
   public vm$: Observable<any>;
 
   public apptFormfieldsKeys = ['goal', 'date', 'status'];
@@ -69,6 +82,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
   private periodStartDateSubscription: Subscription;
   private periodEndDateSubscription: Subscription;
 
+  private eventsSubscription: Subscription;
   private timelineDataSubscription: Subscription;
   private timelinesSubscription: Subscription;
   private projectTasksSubscription: Subscription;
@@ -106,42 +120,10 @@ export class TimelineComponent implements OnInit, OnDestroy {
         this.periodEndDate = data;
       }
     });
-
-    this.projectTasksSubscription = this.projectService.getPermanentProjectTasks(this.selectedTimelineId).subscribe({
-      next: (data: PermanentProjectTask[]) => {
-        let singleAppointmentResults: Result[] = [];
-
-        data.forEach((task: PermanentProjectTask) => {
-          this.appointmentsListProjectTasks.push(task);
-          singleAppointmentResults = singleAppointmentResults.concat(
-            task.projectTask.results.filter((result: Result) => result.resultType === 'TYPE_SINGLE_APPOINTMENT')
-          );
-        });
-
-        this.appointmentsList = singleAppointmentResults.sort(
-          (b, a) =>
-            new Date(b.formFields.find((field) => field.key === 'date').value).getTime() -
-            new Date(a.formFields.find((field) => field.key === 'date').value).getTime()
-        );
-        this.filterAllOverdueAppointments(this.appointmentsList);
-        this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
-
-        const keysOrder = {};
-        this.apptFormfieldsKeys.forEach((id, i) => {
-          keysOrder[id] = i + 1;
-        });
-
-        this.appointmentsList?.forEach((result) => {
-          result.formFields = result.formFields.filter((field) => this.apptFormfieldsKeys.includes(field.key));
-          result.formFields.sort((a, b) => keysOrder[a.key] - keysOrder[b.key]);
-        });
-      },
-      error: null,
-      complete: () => void 0,
-    });
   }
 
   public ngOnDestroy(): void {
+    this.eventsSubscription?.unsubscribe();
     this.timelineDataSubscription?.unsubscribe();
     this.timelinesSubscription?.unsubscribe();
     this.periodStartDateSubscription?.unsubscribe();
@@ -155,8 +137,10 @@ export class TimelineComponent implements OnInit, OnDestroy {
       this.tasksService.getTasksForTimeline(this.selectedTimelineId),
       this.milestonesService.getMilestonesForTimeline(this.selectedTimelineId),
       this.incrementsService.getIncrementsForTimeline(this.selectedTimelineId),
+      this.projectService.getEvents(this.selectedTimelineId),
+      this.projectService.getPermanentProjectTasks(this.selectedTimelineId),
     ]).pipe(
-      map(([timelineData, taskData, milestoneData, incrementsData]) => {
+      map(([timelineData, taskData, milestoneData, incrementsData, eventData, projectTaskData]) => {
         this.timelineData = timelineData;
         const selectedTimeline = this.timelineData.find((c) => c.id === Number(this.selectedTimelineId));
         const periodStartDate = new Date(selectedTimeline.start);
@@ -164,12 +148,72 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
         // set default appointments list end to project end
         this.apptEndDate = this.datePipe.transform(periodEndDate, 'yyyy-MM-dd');
-        this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
+        this.openEventsInPeriod = this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
 
+        //////////
+
+        if (this.appointmentsList?.length === 0) {
+          const eventList: EventEntry[] = [];
+
+          eventData.forEach((eventTemplate: EventTemplate) => {
+            eventTemplate.events.forEach((event: Event) => {
+              eventList.push({
+                id: event.id,
+                seriesId: eventTemplate.id,
+                eventType: eventTemplate.eventType,
+                title: event.title,
+                dateTime: this.datePipe.transform(event.dateTime, 'yyyy-MM-dd'),
+                duration: event.duration,
+                status: event.status,
+                mandatory: eventTemplate.eventType === 'TYPE_RECURRING_EVENT' && event.status != null,
+                visibility: false,
+              });
+            });
+          });
+
+          let singleAppointmentResults: Result[] = [];
+
+          projectTaskData.forEach((task: PermanentProjectTask) => {
+            this.appointmentsListProjectTasks.push(task);
+            singleAppointmentResults = singleAppointmentResults.concat(
+              task.projectTask.results.filter((result: Result) => result.resultType === 'TYPE_SINGLE_APPOINTMENT')
+            );
+          });
+
+          singleAppointmentResults.forEach((result: Result) => {
+            eventList.push({
+              id: result.id,
+              seriesId: -1,
+              eventType: result.resultType,
+              title: result.formFields.find((field) => field.key === 'goal').value,
+              dateTime: this.datePipe.transform(
+                result.formFields.find((field) => field.key === 'date').value,
+                'yyyy-MM-dd'
+              ),
+              duration: 0,
+              status: result.formFields.find((field) => field.key === 'status').value,
+              mandatory: true,
+              visibility: false,
+            });
+          });
+
+          const sortedEvents = eventList.sort(
+            (b, a) => new Date(b.dateTime).getTime() - new Date(a.dateTime).getTime()
+          );
+
+          this.appointmentsList = sortedEvents;
+          this.overdueEvents = this.filterAllOverdueAppointments(this.appointmentsList);
+          this.openEventsInPeriod = this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
+        }
+
+        ///////
+
+        const appointmentsListTemp = this.appointmentsList;
         return {
           milestoneData,
           taskData,
           incrementsData,
+          appointmentsListTemp,
           selectedTimeline,
           periodStartDate,
           periodEndDate,
@@ -199,79 +243,83 @@ export class TimelineComponent implements OnInit, OnDestroy {
     }
   }
 
-  public changeStatus(value: string, appointmentId: number, formFieldId: number): void {
-    this.appointmentsListProjectTasks.forEach((task: PermanentProjectTask) => {
-      const foundAppointment = task.projectTask.results.find((result) => result.id === appointmentId);
-
-      if (foundAppointment) {
-        foundAppointment.formFields.find((field) => field.id === formFieldId).value = value;
-        this.projectService.updateProjectTask(this.selectedTimelineId, task.projectTask).subscribe({
-          next: null,
-          error: null,
-          complete: () => void 0,
-        });
-        return;
-      }
-    });
+  public changeStatus(value: string, entry: EventEntry): void {
+    if (entry.eventType === 'TYPE_SINGLE_APPOINTMENT') {
+      this.appointmentsListProjectTasks.forEach((task: PermanentProjectTask) => {
+        const foundResult = task.projectTask.results.find((result) => result.id === entry.id);
+        if (foundResult) {
+          foundResult.formFields.find((field) => field.key === 'status').value = value;
+          this.projectService.updateProjectTask(this.selectedTimelineId, task.projectTask).subscribe({
+            next: null,
+            error: null,
+            complete: () => void 0,
+          });
+          return;
+        }
+      });
+    } else {
+      // TODO: update events
+      // this.projectService...
+    }
   }
 
-  public onChangeAppointmentPeriodStart(event: Event): void {
+  public onChangeAppointmentPeriodStart(event: any): void {
     if ((event.target as HTMLInputElement).value !== null) {
       this.apptStartDate = (event.target as HTMLInputElement).value;
       this.periodTemplate = 'CUSTOM';
-      this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
+      this.openEventsInPeriod = this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
     }
   }
 
-  public onChangeAppointmentPeriodEnd(event: Event): void {
+  public onChangeAppointmentPeriodEnd(event: any): void {
     if ((event.target as HTMLInputElement).value !== null) {
       this.apptEndDate = (event.target as HTMLInputElement).value;
       this.periodTemplate = 'CUSTOM';
-      this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
+      this.openEventsInPeriod = this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
     }
   }
 
-  public filterAllOverdueAppointments(appointments: Result[]): void {
+  public filterAllOverdueAppointments(appointments: EventEntry[]): EventEntry[] {
     if (appointments == null) {
-      return;
+      return [];
     }
 
     const today = Utils.createDateAtMidnight(new Date());
 
     const appointmentsInPeriod = appointments.filter((appt) => {
-      const dateValue = appt.formFields.find((field) => field.key === 'date')?.value;
-      if (dateValue == null) {
+      if (appt.dateTime == null) {
         return false;
       }
 
-      const apptDate = Utils.createDateAtMidnight(dateValue);
+      const apptDate = Utils.createDateAtMidnight(appt.dateTime);
       return apptDate && apptDate <= today;
     });
-    this.overdueAppointments = appointmentsInPeriod?.filter(
-      (appt) => appt.formFields.find((field) => field.key === 'status').value !== 'CLOSED'
+
+    return appointmentsInPeriod?.filter(
+      (appt) =>
+        (appt.eventType === 'TYPE_SINGLE_APPOINTMENT' && appt.status !== 'CLOSED') ||
+        (appt.eventType === 'TYPE_RECURRING_EVENT' && appt.status === 'OPEN') ||
+        (appt.eventType === 'TYPE_APPT_SERIES' && appt.status === 'OPEN')
     );
   }
 
-  public filterAllOpenAppointmentsInPeriod(appointments: Result[]): void {
+  public filterAllOpenAppointmentsInPeriod(appointments: EventEntry[]): EventEntry[] {
     if (appointments == null) {
-      return;
+      return [];
     }
 
     const appointmentsInPeriod = appointments?.filter((appt) => {
-      const dateValue = appt.formFields.find((field) => field.key === 'date')?.value;
-      if (dateValue == null) {
+      if (appt.dateTime == null) {
         return false;
       }
 
-      const apptDate = Utils.createDateAtMidnight(dateValue);
+      const apptDate = Utils.createDateAtMidnight(appt.dateTime);
       return (
         apptDate >= Utils.createDateAtMidnight(new Date(this.apptStartDate)) &&
         apptDate <= Utils.createDateAtMidnight(new Date(this.apptEndDate))
       );
     });
-    this.appointmentsInPeriod = appointmentsInPeriod?.filter(
-      (appt) => appt.formFields.find((field) => field.key === 'status').value !== 'CLOSED'
-    );
+    return appointmentsInPeriod?.filter((appt) => appt.status !== 'CLOSED');
   }
 
   public changePeriodTemplates(value: string): void {
@@ -309,10 +357,28 @@ export class TimelineComponent implements OnInit, OnDestroy {
     }
     this.apptEndDate = this.datePipe.transform(now, 'yyyy-MM-dd');
 
-    this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
+    this.openEventsInPeriod = this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
   }
 
-  public isOverdueAppointment(formField: FormField): boolean {
-    return formField.key === 'date' && new Date(formField.value) < new Date();
+  public isOverdueAppointment(eventDate: string): boolean {
+    return new Date(eventDate) < new Date();
+  }
+
+  public toggleShow(appt: EventEntry): void {
+    if (appt.eventType === 'TYPE_RECURRING_EVENT' || appt.eventType === 'TYPE_APPT_SERIES') {
+      this.appointmentsList
+        .filter((event: EventEntry) => event.seriesId === appt.seriesId)
+        .forEach((event: EventEntry) => {
+          event.visibility = !event.visibility;
+        });
+
+      // this.vm$.sortedEvents = this.appointmentsList;
+    } else {
+      appt.visibility = !appt.visibility;
+    }
+    this.timelineDataService.setEvents(this.appointmentsList);
+
+    // TODO: just update EventsArea
+    this.setData();
   }
 }
