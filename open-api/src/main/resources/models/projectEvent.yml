@@ -1,4 +1,4 @@
-Event:
+ProjectEvent:
   type: object
   properties:
     id:
@@ -24,6 +24,6 @@ Event:
       type: string
       enum:
         - OPEN
-        - DONE
+        - CLOSED
       default: null
       example: OPEN

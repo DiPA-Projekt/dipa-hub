@@ -63,7 +63,7 @@ paths:
   /timelines/{timelineId}/tasks:
     $ref: "paths/tasks.yml"
   /timelines/{timelineId}/events:
-    $ref: "paths/events.yml"
+    $ref: "paths/projectEvents.yml"
   /users:
     $ref: "paths/users.yml"
   /users/currentUser:

@@ -36,7 +36,6 @@ export class MilestonesArea implements IChartElement {
 
   public onDragEndMilestone?: (days: number, id: number) => void;
   public onSelectMilestone?: (data: any) => void;
-  // public onCloseMenu?: () => void;
 
   modifiable = false;
   showMenu = false;
