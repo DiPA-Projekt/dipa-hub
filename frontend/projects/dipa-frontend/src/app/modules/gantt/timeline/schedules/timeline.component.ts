@@ -208,7 +208,6 @@ export class TimelineComponent implements OnInit, OnDestroy {
         }
       });
     } else {
-      // TODO: update event
       const projectEvent: ProjectEvent = { id: entry.id, status: value as ProjectEvent.StatusEnum };
       this.projectService.updateProjectEvent(this.selectedTimelineId, projectEvent).subscribe({
         next: null,
@@ -218,7 +217,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onChangeAppointmentPeriodStart(event: any): void {
+  public onChangeAppointmentPeriodStart(event: Event): void {
     if ((event.target as HTMLInputElement).value !== null) {
       this.apptStartDate = (event.target as HTMLInputElement).value;
       this.periodTemplate = 'CUSTOM';
@@ -226,7 +225,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onChangeAppointmentPeriodEnd(event: any): void {
+  public onChangeAppointmentPeriodEnd(event: Event): void {
     if ((event.target as HTMLInputElement).value !== null) {
       this.apptEndDate = (event.target as HTMLInputElement).value;
       this.periodTemplate = 'CUSTOM';
