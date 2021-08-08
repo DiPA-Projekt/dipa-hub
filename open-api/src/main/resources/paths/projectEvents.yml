@@ -1,0 +1,32 @@
+get:
+  tags:
+    - project
+  summary: Retrieves the list of events.
+  description: Retrieves the list of events.
+  operationId: getEvents
+  parameters:
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../models/projectEventTemplate.yml#/ProjectEventTemplate"
+patch:
+  tags:
+    - project
+  summary: Update event
+  description: Update event
+  operationId: updateProjectEvent
+  parameters:
+    - $ref: "./params/timelineIdParam.yml#/timelineIdParam"
+  requestBody:
+    description: projectEvent as requestBody
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../models/projectEvent.yml#/ProjectEvent"

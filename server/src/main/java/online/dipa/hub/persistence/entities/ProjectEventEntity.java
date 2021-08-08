@@ -12,10 +12,10 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
-@Table(name = "event")
+@Table(name = "project_event")
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class EventEntity extends BaseEntity {
+public class ProjectEventEntity extends BaseEntity {
 
     private String title;
     private OffsetDateTime dateTime;
@@ -23,18 +23,18 @@ public class EventEntity extends BaseEntity {
     private String status;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private EventTemplateEntity eventTemplate;
+    private ProjectEventTemplateEntity projectEventTemplate;
 
-    public EventEntity() {
+    public ProjectEventEntity() {
         super();
     }
 
-    public EventEntity(String title, OffsetDateTime dateTime, Integer duration, String status, EventTemplateEntity eventTemplate) {
+    public ProjectEventEntity(String title, OffsetDateTime dateTime, Integer duration, String status, ProjectEventTemplateEntity projectEventTemplate) {
         this.title = title;
         this.dateTime = dateTime;
         this.duration = duration;
         this.status = status;
-        this.eventTemplate = eventTemplate;
+        this.projectEventTemplate = projectEventTemplate;
     }
 
     public String getTitle() {
@@ -69,11 +69,11 @@ public class EventEntity extends BaseEntity {
         this.status = status;
     }
 
-    public EventTemplateEntity getEventTemplate() {
-        return eventTemplate;
+    public ProjectEventTemplateEntity getProjectEventTemplate() {
+        return projectEventTemplate;
     }
 
-    public void setEventTemplate(final EventTemplateEntity eventTemplate) {
-        this.eventTemplate = eventTemplate;
+    public void setProjectEventTemplate(final ProjectEventTemplateEntity eventTemplate) {
+        this.projectEventTemplate = eventTemplate;
     }
 }

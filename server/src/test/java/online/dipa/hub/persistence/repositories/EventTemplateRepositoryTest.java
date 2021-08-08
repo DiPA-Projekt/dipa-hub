@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import online.dipa.hub.persistence.entities.EventTemplateEntity;
+import online.dipa.hub.persistence.entities.ProjectEventTemplateEntity;
 import online.dipa.hub.persistence.entities.ProjectEntity;
 import online.dipa.hub.persistence.entities.RecurringEventTypeEntity;
 import online.dipa.hub.services.ProjectService;
@@ -69,12 +69,12 @@ public class EventTemplateRepositoryTest {
             RecurringEventTypeEntity recurringEventType = testProject.getRecurringEventTypes().stream().findFirst().get();
 
             // WHEN
-            final Collection<EventTemplateEntity> eventTemplates = eventTemplateRepository.findByRecurringEventType(recurringEventType);
+            final Collection<ProjectEventTemplateEntity> eventTemplates = eventTemplateRepository.findByRecurringEventType(recurringEventType);
 
             // THEN
             assertThat(eventTemplates).isNotEmpty().hasSize(1);
             assertThat(new ArrayList<>(eventTemplates).get(0))
-                    .returns("TYPE_RECURRING_EVENT", EventTemplateEntity::getEventType);
+                    .returns("TYPE_RECURRING_EVENT", ProjectEventTemplateEntity::getEventType);
         }
 
     }

@@ -41,7 +41,7 @@ public class RecurringEventTypeEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "recurringEventType", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<EventTemplateEntity> eventTemplates = new HashSet<>();
+    private Set<ProjectEventTemplateEntity> eventTemplates = new HashSet<>();
 
     public RecurringEventTypeEntity() {
         super();
@@ -111,11 +111,11 @@ public class RecurringEventTypeEntity extends BaseEntity {
         this.recurringEventPattern = recurringEventPattern;
     }
 
-    public Set<EventTemplateEntity> getEventTemplates() {
+    public Set<ProjectEventTemplateEntity> getEventTemplates() {
         return eventTemplates;
     }
 
-    public void setEventTemplates(Set<EventTemplateEntity> eventTemplates) {
+    public void setEventTemplates(Set<ProjectEventTemplateEntity> eventTemplates) {
         this.eventTemplates = eventTemplates;
     }
 
