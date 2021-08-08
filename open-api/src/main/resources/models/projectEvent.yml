@@ -24,6 +24,6 @@ ProjectEvent:
       type: string
       enum:
         - OPEN
-        - DONE
+        - CLOSED
       default: null
       example: OPEN
