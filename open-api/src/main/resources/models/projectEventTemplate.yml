@@ -1,4 +1,4 @@
-EventTemplate:
+ProjectEventTemplate:
   type: object
   properties:
     id:
@@ -22,4 +22,4 @@ EventTemplate:
       description: The list of events
       type: array
       items:
-        $ref: "../models/event.yml#/Event"
+        $ref: "../models/projectEvent.yml#/ProjectEvent"

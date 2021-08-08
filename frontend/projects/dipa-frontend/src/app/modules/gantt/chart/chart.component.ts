@@ -1,8 +1,8 @@
 import { ResizedEvent } from 'angular-resize-event';
 import * as d3 from 'd3';
 import {
-  Event,
-  EventTemplate,
+  ProjectEvent,
+  ProjectEventTemplate,
   Increment,
   IncrementsService,
   InlineObject,
@@ -770,7 +770,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
             this.tasksService.getTasksForTimeline(this.timelineData.id),
             this.milestonesService.getMilestonesForTimeline(this.timelineData.id),
             this.incrementsService.getIncrementsForTimeline(this.timelineData.id),
-            this.milestonesService.getMilestonesForTimeline(this.timelineData.id),
+            this.projectService.getEvents(this.timelineData.id),
           ])
         )
       )
@@ -820,11 +820,11 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
       });
   }
 
-  private convertEventTemplateToEventList(events: EventTemplate[]): EventEntry[] {
+  private convertEventTemplateToEventList(events: ProjectEventTemplate[]): EventEntry[] {
     const eventList: EventEntry[] = [];
 
-    events.forEach((eventTemplate: EventTemplate) => {
-      eventTemplate.events.forEach((event: Event) => {
+    events.forEach((eventTemplate: ProjectEventTemplate) => {
+      eventTemplate.events.forEach((event: ProjectEvent) => {
         eventList.push({
           id: event.id,
           seriesId: eventTemplate.id,

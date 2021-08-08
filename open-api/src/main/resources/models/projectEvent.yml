@@ -1,4 +1,4 @@
-Event:
+ProjectEvent:
   type: object
   properties:
     id:

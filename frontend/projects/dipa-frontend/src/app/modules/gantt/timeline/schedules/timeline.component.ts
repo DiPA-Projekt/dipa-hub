@@ -3,8 +3,8 @@ import { forkJoin, Observable, Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { GanttControlsService } from '../../gantt-controls.service';
 import {
-  Event,
-  EventTemplate,
+  ProjectEvent,
+  ProjectEventTemplate,
   IncrementsService,
   MilestonesService,
   OperationType,
@@ -209,7 +209,12 @@ export class TimelineComponent implements OnInit, OnDestroy {
       });
     } else {
       // TODO: update event
-      // this.projectService...
+      const projectEvent: ProjectEvent = { id: entry.id, status: value as ProjectEvent.StatusEnum };
+      this.projectService.updateProjectEvent(this.selectedTimelineId, projectEvent).subscribe({
+        next: null,
+        error: null,
+        complete: () => void 0,
+      });
     }
   }
 
@@ -328,11 +333,11 @@ export class TimelineComponent implements OnInit, OnDestroy {
     this.appointmentsList = [...this.appointmentsList];
   }
 
-  private generateEventList(eventData: EventTemplate[], projectTaskData: PermanentProjectTask[]): EventEntry[] {
+  private generateEventList(eventData: ProjectEventTemplate[], projectTaskData: PermanentProjectTask[]): EventEntry[] {
     const eventList: EventEntry[] = [];
 
-    eventData.forEach((eventTemplate: EventTemplate) => {
-      eventTemplate.events.forEach((event: Event) => {
+    eventData.forEach((eventTemplate: ProjectEventTemplate) => {
+      eventTemplate.events.forEach((event: ProjectEvent) => {
         eventList.push({
           id: event.id,
           seriesId: eventTemplate.id,

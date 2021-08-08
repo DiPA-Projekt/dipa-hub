@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 import { parseSvg } from 'd3-interpolate/src/transform/parse';
-import { Timeline, Event } from 'dipa-api-client';
+import { Timeline, ProjectEvent } from 'dipa-api-client';
 
 import { IChartElement } from './IChartElement';
 

@@ -16,10 +16,10 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
-@Table(name = "event_template")
+@Table(name = "project_event_template")
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class EventTemplateEntity extends BaseEntity {
+public class ProjectEventTemplateEntity extends BaseEntity {
 
     private String title;
     private String eventType;
@@ -34,15 +34,15 @@ public class EventTemplateEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     private RecurringEventTypeEntity recurringEventType;
 
-    @OneToMany(mappedBy = "eventTemplate", cascade = { ALL })
+    @OneToMany(mappedBy = "projectEventTemplate", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<EventEntity> events = new HashSet<>();
+    private Set<ProjectEventEntity> projectEvents = new HashSet<>();
 
-    public EventTemplateEntity() {
+    public ProjectEventTemplateEntity() {
         super();
     }
 
-    public EventTemplateEntity(String title, String eventType,
+    public ProjectEventTemplateEntity(String title, String eventType,
             ProjectEntity project, RecurringEventTypeEntity recurringEventType) {
         this.title = title;
         this.eventType = eventType;
@@ -91,11 +91,11 @@ public class EventTemplateEntity extends BaseEntity {
         this.recurringEventType = recurringEventType;
     }
 
-    public Set<EventEntity> getEvents() {
-        return events;
+    public Set<ProjectEventEntity> getProjectEvents() {
+        return projectEvents;
     }
 
-    public void setEvents(final Set<EventEntity> events) {
-        this.events = events;
+    public void setProjectEvents(final Set<ProjectEventEntity> events) {
+        this.projectEvents = events;
     }
 }
