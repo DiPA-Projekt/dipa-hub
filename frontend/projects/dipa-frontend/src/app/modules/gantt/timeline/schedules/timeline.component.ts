@@ -151,9 +151,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
         this.openEventsInPeriod = this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
 
         if (this.appointmentsList?.length === 0) {
-          const eventList = this.generateEventList(eventData, projectTaskData);
-
-          this.appointmentsList = eventList.sort(
+          this.appointmentsList = this.generateEventList(eventData, projectTaskData).sort(
             (b, a) => new Date(b.dateTime).getTime() - new Date(a.dateTime).getTime()
           );
           this.overdueEvents = this.filterAllOverdueAppointments(this.appointmentsList);
