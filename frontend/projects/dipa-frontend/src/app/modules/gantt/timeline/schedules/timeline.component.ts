@@ -3,18 +3,19 @@ import { forkJoin, Observable, Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { GanttControlsService } from '../../gantt-controls.service';
 import {
+  Event,
+  EventTemplate,
   IncrementsService,
   MilestonesService,
   OperationType,
+  PermanentProjectTask,
   ProjectApproach,
-  TasksService,
-  Timeline,
-  TimelinesService,
   ProjectService,
   ProjectTask,
   Result,
-  FormField,
-  PermanentProjectTask,
+  TasksService,
+  Timeline,
+  TimelinesService,
 } from 'dipa-api-client';
 import { ActivatedRoute, Params } from '@angular/router';
 import { ChartComponent } from '../../chart/chart.component';
@@ -22,7 +23,6 @@ import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import Utils from '../../../../shared/utils';
 import { DatePipe } from '@angular/common';
 import { TimelineDataService } from '../../../../shared/timelineDataService';
-import { Event, EventTemplate } from 'dipa-api-client';
 
 interface EventEntry {
   id: number;
@@ -150,70 +150,20 @@ export class TimelineComponent implements OnInit, OnDestroy {
         this.apptEndDate = this.datePipe.transform(periodEndDate, 'yyyy-MM-dd');
         this.openEventsInPeriod = this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
 
-        //////////
-
         if (this.appointmentsList?.length === 0) {
-          const eventList: EventEntry[] = [];
+          const eventList = this.generateEventList(eventData, projectTaskData);
 
-          eventData.forEach((eventTemplate: EventTemplate) => {
-            eventTemplate.events.forEach((event: Event) => {
-              eventList.push({
-                id: event.id,
-                seriesId: eventTemplate.id,
-                eventType: eventTemplate.eventType,
-                title: event.title,
-                dateTime: this.datePipe.transform(event.dateTime, 'yyyy-MM-dd'),
-                duration: event.duration,
-                status: event.status,
-                mandatory: eventTemplate.eventType === 'TYPE_RECURRING_EVENT' && event.status != null,
-                visibility: false,
-              });
-            });
-          });
-
-          let singleAppointmentResults: Result[] = [];
-
-          projectTaskData.forEach((task: PermanentProjectTask) => {
-            this.appointmentsListProjectTasks.push(task);
-            singleAppointmentResults = singleAppointmentResults.concat(
-              task.projectTask.results.filter((result: Result) => result.resultType === 'TYPE_SINGLE_APPOINTMENT')
-            );
-          });
-
-          singleAppointmentResults.forEach((result: Result) => {
-            eventList.push({
-              id: result.id,
-              seriesId: -1,
-              eventType: result.resultType,
-              title: result.formFields.find((field) => field.key === 'goal').value,
-              dateTime: this.datePipe.transform(
-                result.formFields.find((field) => field.key === 'date').value,
-                'yyyy-MM-dd'
-              ),
-              duration: 0,
-              status: result.formFields.find((field) => field.key === 'status').value,
-              mandatory: true,
-              visibility: false,
-            });
-          });
-
-          const sortedEvents = eventList.sort(
+          this.appointmentsList = eventList.sort(
             (b, a) => new Date(b.dateTime).getTime() - new Date(a.dateTime).getTime()
           );
-
-          this.appointmentsList = sortedEvents;
           this.overdueEvents = this.filterAllOverdueAppointments(this.appointmentsList);
           this.openEventsInPeriod = this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
         }
 
-        ///////
-
-        const appointmentsListTemp = this.appointmentsList;
         return {
           milestoneData,
           taskData,
           incrementsData,
-          appointmentsListTemp,
           selectedTimeline,
           periodStartDate,
           periodEndDate,
@@ -258,7 +208,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
         }
       });
     } else {
-      // TODO: update events
+      // TODO: update event
       // this.projectService...
     }
   }
@@ -371,14 +321,55 @@ export class TimelineComponent implements OnInit, OnDestroy {
         .forEach((event: EventEntry) => {
           event.visibility = !event.visibility;
         });
-
-      // this.vm$.sortedEvents = this.appointmentsList;
     } else {
       appt.visibility = !appt.visibility;
     }
-    this.timelineDataService.setEvents(this.appointmentsList);
+    // this triggers ngOnChanges in chart
+    this.appointmentsList = [...this.appointmentsList];
+  }
 
-    // TODO: just update EventsArea
-    this.setData();
+  private generateEventList(eventData: EventTemplate[], projectTaskData: PermanentProjectTask[]): EventEntry[] {
+    const eventList: EventEntry[] = [];
+
+    eventData.forEach((eventTemplate: EventTemplate) => {
+      eventTemplate.events.forEach((event: Event) => {
+        eventList.push({
+          id: event.id,
+          seriesId: eventTemplate.id,
+          eventType: eventTemplate.eventType,
+          title: event.title,
+          dateTime: this.datePipe.transform(event.dateTime, 'yyyy-MM-dd'),
+          duration: event.duration,
+          status: event.status,
+          mandatory: eventTemplate.eventType === 'TYPE_RECURRING_EVENT' && event.status != null,
+          visibility: false,
+        });
+      });
+    });
+
+    let singleAppointmentResults: Result[] = [];
+
+    projectTaskData.forEach((task: PermanentProjectTask) => {
+      this.appointmentsListProjectTasks.push(task);
+      singleAppointmentResults = singleAppointmentResults.concat(
+        task.projectTask.results.filter((result: Result) => result.resultType === 'TYPE_SINGLE_APPOINTMENT')
+      );
+    });
+
+    singleAppointmentResults.forEach((result: Result) => {
+      eventList.push({
+        id: result.id,
+        seriesId: -1,
+        eventType: result.resultType,
+        title: result.formFields.find((field) => field.key === 'goal').value,
+        dateTime: this.datePipe.transform(result.formFields.find((field) => field.key === 'date').value, 'yyyy-MM-dd'),
+        duration: 0,
+        status: result.formFields.find((field) => field.key === 'status').value,
+        mandatory: true,
+        visibility: false,
+      });
+    });
+
+    return eventList;
   }
 }

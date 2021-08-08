@@ -46,7 +46,6 @@ export class EventsArea implements IChartElement {
 
   public onDragEndEvent?: (days: number, id: number) => void;
   public onSelectEvent?: (data: any) => void;
-  // public onCloseMenu?: () => void;
 
   modifiable = false;
   showMenu = false;
@@ -109,7 +108,7 @@ export class EventsArea implements IChartElement {
     const dataGroup = this.svg.select(`g#eventsArea${this.eventsAreaId}.event-data-group`);
 
     // events
-    const blaEvent = dataGroup
+    const drawEvent = dataGroup
       .selectAll('g.eventEntry')
       .data(
         d3.group(
@@ -129,7 +128,7 @@ export class EventsArea implements IChartElement {
         })`;
       });
 
-    const eventIcon = blaEvent
+    const eventIcon = drawEvent
       .append('path')
       .attr('class', 'event')
       .attr('transform', 'scale(1.4 1.4)')
@@ -159,21 +158,12 @@ export class EventsArea implements IChartElement {
       });
     }
 
-    // event status icon
-    // blaEvent
-    //   .append('text')
-    //   .text('done')
-    //   .attr('class', 'material-icons eventStatusIcon')
-    //   .attr('x', 0)
-    //   .attr('y', 6)
-    //   .style('opacity', (d: { status: string }) => (d.status === Event.StatusEnum.Open ? 0 : 1));
-
     const maxLabelWidth = 30;
 
     // event labels
-    blaEvent
+    drawEvent
       .append('text')
-      .text((d) => `${d[1].length} Termine`)
+      .text((d) => (d[1].length === 1 ? `Termin` : `${d[1].length} Termine`))
       .attr('class', 'eventLabel')
       .attr('x', 0)
       .attr('y', this.elementHeight)
@@ -201,14 +191,6 @@ export class EventsArea implements IChartElement {
           offset.top + this.elementHeight / 2
         })`;
       });
-
-    // update tooltip
-    // dataGroup
-    //   .selectAll('g.eventEntry')
-    //   .select('path.event')
-    //   .on('mouseover', (event: MouseEvent, d) => {
-    //     this.showTooltip(d, event.clientX, event.clientY);
-    //   });
   }
 
   public arrangeLabels(): void {
@@ -309,31 +291,6 @@ export class EventsArea implements IChartElement {
     });
 
     return tooltip;
-  }
-
-  private adjustEventPosition(eventData: Event): void {
-    const dataGroup = this.svg.select(`g#eventsArea${this.eventsAreaId}.event-data-group`);
-
-    const event = dataGroup.select(`#eventEntry_${eventData.id}`);
-
-    const eventDate = new Date(eventData.dateTime);
-    eventDate.setHours(0, 0, 0, 0);
-
-    const xValueNew = parseInt(this.xScale(eventDate), 10);
-
-    const transform = event.attr('transform');
-    const transformSVGElement = parseSvg(transform) as SvgParse;
-
-    console.log('adjustEventPosition', transform);
-
-    const yTransformValue = transformSVGElement.translateY;
-    console.log('adjustEventPosition yTransformValue', yTransformValue);
-
-    event
-      .transition()
-      .ease(d3.easeCubic)
-      .duration(this.animationDuration)
-      .attr('transform', `translate(${xValueNew},${yTransformValue})`);
   }
 
   private updateEventStyle(eventId: number): void {

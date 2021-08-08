@@ -45,7 +45,6 @@ import { MilestoneDialogComponent } from './milestone-dialog/milestone-dialog.co
 import { MatDialog } from '@angular/material/dialog';
 import { AuthenticationService } from '../../../authentication.service';
 import { EventsArea } from './chart-elements/EventsArea';
-import { DragBehavior, ScaleLinear } from 'd3';
 import { TimelineDataService } from '../../../shared/timelineDataService';
 
 interface EventEntry {
@@ -148,9 +147,9 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
   private padding = { top: 40, left: 0 };
 
   private xScale: ScaleTime<any, any>;
-  private yScale: ScaleLinear<any, any>;
+  // // For future insertion
+  // private yScale: ScaleLinear<any, any>;
   private zoom: ZoomBehavior<any, any>;
-  private drag: DragBehavior<any, any, any>;
 
   private oneDayTick = 1.2096e9;
 
@@ -226,11 +225,12 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
   public ngOnChanges(changes: SimpleChanges): void {
     if (
       (changes.taskData && !changes.taskData.isFirstChange()) ||
-      (changes.milestoneData && !changes.milestoneData.isFirstChange()) ||
-      (changes.eventData && !changes.eventData.isFirstChange())
+      (changes.milestoneData && !changes.milestoneData.isFirstChange())
     ) {
-      console.log(changes.eventData);
       this.drawChart();
+    } else if (changes.eventData && !changes.eventData.isFirstChange()) {
+      this.eventViewItem.setData(changes.eventData.currentValue);
+      this.eventViewItem.reset({ left: 0, top: 30 });
     }
   }
 
@@ -349,7 +349,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     this.initializeXScale();
-    this.initializeYScale();
+    // // For future insertion
+    // this.initializeYScale();
 
     this.headerX = new XAxis(this.svg, this.chartElement, this.xScale);
     this.headerX.formatDate = (d: Date) => this.headerX.formatDateFull(d);
@@ -469,32 +470,12 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     );
     this.eventViewItem.draw({
       left: 0,
-      top: 1 /*this.taskViewItem.getAreaHeight() + this.milestoneViewItem.getAreaHeight()*/,
+      top: 30,
     });
 
-    this.eventViewItem.onDragEndEvent = (offsetDays: number, id: number) => {
-      // if (offsetDays !== 0) {
-      //   const moveMilestone$ = this.timelinesService.applyOperation(this.timelineData.id, {
-      //     operation: this.operationMoveMilestone,
-      //     days: offsetDays,
-      //     movedMilestoneId: id,
-      //   });
-      //
-      //   this.milestoneSubscription = this.subscribeForRedraw(moveMilestone$);
-      // } else {
-      //   this.milestoneViewItem.redraw({ left: 0, top: this.taskViewItem.getAreaHeight() }, 200);
-      // }
-    };
+    this.eventViewItem.onDragEndEvent = (offsetDays: number, id: number) => {};
 
-    this.eventViewItem.onSelectEvent = (data: Milestone) => {
-      // if (data.id !== this.selectedMilestoneId) {
-      //   this.showMilestoneMenu = true;
-      //   this.selectedMilestoneDataMenu = data;
-      //   this.selectedMilestoneId = data.id;
-      // } else {
-      //   this.closeMenu();
-      // }
-    };
+    this.eventViewItem.onSelectEvent = (data: EventEntry) => {};
   }
 
   private redrawChart(animationDuration): void {
@@ -596,11 +577,12 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
       { left: 0, top: this.yStartValue + this.taskViewItem.getAreaHeight() },
       animationDuration
     );
+
     this.incrementsViewItem.redraw({ left: 0, top: this.yStartValue + this.taskViewItem.getAreaHeight() });
     this.eventViewItem.redraw(
       {
         left: 0,
-        top: this.yStartValue + 10 /* this.taskViewItem.getAreaHeight() + this.milestoneViewItem.getAreaHeight()*/,
+        top: this.yStartValue + 30,
       },
       animationDuration
     );
@@ -688,12 +670,13 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     // zoom to new start and end dates
     this.xScale.domain([start, end]);
 
-    if (eventTransform.k === 1) {
-      this.yStartValue += eventTransform.y;
-      this.yEndValue += eventTransform.y;
-
-      this.refreshYScale();
-    }
+    // // For future insertion
+    // if (eventTransform.k === 1) {
+    //   this.yStartValue += eventTransform.y;
+    //   this.yEndValue += eventTransform.y;
+    //
+    //   this.refreshYScale();
+    // }
 
     if (event.sourceEvent) {
       if ((event.sourceEvent as MouseEvent).type === 'mousemove') {
@@ -722,6 +705,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     clearTimeout(this.arrangeLabelTimeout);
     this.arrangeLabelTimeout = setTimeout(() => {
       this.milestoneViewItem.arrangeLabels();
+      this.eventViewItem.arrangeLabels();
     }, timeout);
   }
 
@@ -746,25 +730,27 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     this.setZoomScaleExtent(this.oneDayTick);
   }
 
+  // // For future insertion
   // Set Y axis
-  private initializeYScale(): void {
-    this.yScale = d3.scaleLinear().range([this.padding.top, this.viewBoxHeight]);
-
-    // Add scales to axis
-    const yAxis = d3.axisLeft(this.yScale);
-
-    //Append group and insert axis
-    this.svg.append('g').call(yAxis);
-  }
+  // private initializeYScale(): void {
+  //   this.yScale = d3.scaleLinear().range([this.padding.top, this.viewBoxHeight]);
+  //
+  //   // Add scales to axis
+  //   const yAxis = d3.axisLeft(this.yScale);
+  //
+  //   //Append group and insert axis
+  //   this.svg.append('g').call(yAxis);
+  // }
 
   private refreshXScale(): void {
     this.xScale.domain([this.periodStartDate, this.periodEndDate]);
     this.setZoomScaleExtent(this.oneDayTick);
   }
 
-  private refreshYScale(): void {
-    this.yScale.domain([this.yStartValue, this.yEndValue]);
-  }
+  // // For future insertion
+  // private refreshYScale(): void {
+  //   this.yScale.domain([this.yStartValue, this.yEndValue]);
+  // }
 
   private resizeXScale(newSize): void {
     this.xScale?.range([0, newSize - this.padding.left]);
@@ -800,7 +786,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
         this.eventViewItem.redraw(
           {
             left: 0,
-            top: 10 /*this.taskViewItem.getAreaHeight() + this.milestoneViewItem.getAreaHeight()*/,
+            top: 30,
           },
           200
         );
@@ -830,7 +816,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
         this.taskViewItem.reset({ left: 0, top: 0 });
         this.milestoneViewItem.reset({ left: 0, top: this.taskViewItem.getAreaHeight() });
         this.incrementsViewItem.reset({ left: 0, top: this.taskViewItem.getAreaHeight() });
-        this.eventViewItem.reset({ left: 0, top: 30 /*this.taskViewItem.getAreaHeight()*/ });
+        this.eventViewItem.reset({ left: 0, top: 30 });
       });
   }
 
@@ -844,7 +830,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
           seriesId: eventTemplate.id,
           eventType: eventTemplate.eventType,
           title: event.title,
-          dateTime: event.dateTime, // TODO?!?
+          dateTime: event.dateTime,
           duration: event.duration,
           status: event.status,
           visibility: false,
@@ -972,11 +958,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
           }
         }
       }
-    });
-
-    this.eventsSubscription = this.timelineDataService.getEvents().subscribe((d) => {
-      console.log('eventsSubscription', d);
-      this.eventViewItem.setData(d);
     });
   }
 }
