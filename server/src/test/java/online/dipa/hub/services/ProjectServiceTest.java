@@ -500,7 +500,6 @@
          void should_create_appointments_for_result() {
              // WHEN
              projectService.createSerieAppointments(result);
-             System.out.println(result.getRecurringEventPattern().getStartTime());
              // THEN
              assertThat(result.getEventTemplate()).isNotNull();
              assertThat(result.getEventTemplate().getEvents()).isNotNull().hasSize(4);
@@ -510,7 +509,6 @@
                      .returns(Integer.valueOf(filterFormFieldKey(result, "duration").getValue()), EventEntity::getDuration));
 
              result.getEventTemplate().getEvents().forEach(e -> {
-                 System.out.println(e.getDateTime());
                  assertThat(e.getDateTime()
                              .getDayOfMonth()).isEqualTo(10);
                  assertThat(e.getDateTime().getHour()).isEqualTo(14);
