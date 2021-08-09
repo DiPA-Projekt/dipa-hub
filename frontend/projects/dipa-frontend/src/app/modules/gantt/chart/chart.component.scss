@@ -115,9 +115,11 @@
         }
       }
 
-      g.data-group {
+      g.data-group,
+      g.event-data-group {
 
-        g.milestoneEntry {
+        g.milestoneEntry,
+        g.eventEntry {
 
           path.milestone {
             width: 50px;
@@ -127,7 +129,8 @@
             cursor: pointer;
           }
 
-          text.milestoneLabel, text.milestoneStatusIcon {
+          text.milestoneLabel, text.milestoneStatusIcon,
+          text.eventLabel {
             font-size: 11px;
             pointer-events: none;
             text-anchor: middle;

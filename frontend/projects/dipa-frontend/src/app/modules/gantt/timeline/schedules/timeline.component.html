@@ -21,6 +21,7 @@
         #ganttChart
         [timelineData]="vm.selectedTimeline"
         [milestoneData]="vm.milestoneData"
+        [eventData]="this.appointmentsList"
         [taskData]="vm.taskData"
         [incrementsData]="vm.incrementsData"
         id="gantt{{ vm.selectedTimeline.id }}"
@@ -33,12 +34,9 @@
     </ng-container>
   </div>
 </div>
-<div *ngIf="appointmentsList">
-  <mat-card
-    *ngIf="overdueAppointments.length > 0"
-    class="appointments-card"
-    style="background-color: rgba(255, 0, 0, 0.08)"
-  >
+
+<ng-container *ngIf="appointmentsList">
+  <mat-card *ngIf="overdueEvents.length > 0" class="appointments-card" style="background-color: rgba(255, 0, 0, 0.08)">
     <mat-card-content>
       <div class="matCardContentHeader" style="color: white; background-color: rgba(255, 0, 0, 0.8)">
         <div fxLayout="row wrap">
@@ -49,58 +47,69 @@
         </div>
       </div>
 
-      <div *ngFor="let appt of overdueAppointments">
-        <ng-container [ngSwitch]="appt.resultType">
-          <div class="appointmentTypeIcon">
-            <ng-container *ngSwitchCase="'TYPE_SINGLE_APPOINTMENT'">
-              <span class="circle" title="Einzeltermin">E</span>
-            </ng-container>
-            <ng-container *ngSwitchCase="'TYPE_APPT_SERIES'">
-              <span class="circle" title="Terminserie">S</span>
-            </ng-container>
-          </div>
-        </ng-container>
-        <div fxLayout="row wrap" fxLayoutGap="12px grid" style="padding-bottom: 20px">
-          <div
-            fxFlex="33%"
-            fxFlex.xs="100%"
-            fxFlex.sm="100%"
-            fxFlex.md="100%"
-            fxFlex.lg="33%"
-            *ngFor="let formField of appt.formFields"
-          >
-            <ng-container *ngIf="formField.key !== 'status'">
-              <mat-form-field class="noHint full-width">
-                <mat-label>{{ formField.label }}</mat-label>
-                <input [type]="formField.type.toLowerCase()" matInput [value]="formField.value" disabled />
-                <mat-icon
-                  *ngIf="formField.key === 'date'"
-                  matSuffix
-                  style="color: rgba(255, 0, 0, 0.8)"
-                  title="Termin ist überfällig"
-                  >error</mat-icon
-                >
-              </mat-form-field>
-            </ng-container>
-            <ng-container *ngIf="formField.key === 'status'">
-              <ng-container *ngIf="vm$ | async as vm">
+      <ng-container *ngIf="vm$ | async as vmE">
+        <ng-container *ngFor="let appt of overdueEvents">
+          <div fxLayout="row nowrap" fxLayoutGap="6px grid" style="width: 100%; padding-bottom: 10px">
+            <div class="appointmentTypeIconWrapper" [ngSwitch]="appt.eventType">
+              <div class="appointmentTypeIcon">
+                <ng-container *ngSwitchCase="'TYPE_SINGLE_APPOINTMENT'">
+                  <span class="circle" title="Einzeltermin">E</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="'TYPE_APPT_SERIES'">
+                  <span class="circle" title="Terminserie">S</span>
+                </ng-container>
+                <ng-container *ngSwitchCase="'TYPE_RECURRING_EVENT'">
+                  <span class="circle" title="Wiederkehrender Termin">W</span>
+                </ng-container>
+              </div>
+            </div>
+            <div fxLayout="row wrap" fxLayoutGap="12px grid" style="width: 100%; padding-bottom: 20px">
+              <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="33%">
                 <mat-form-field class="noHint full-width">
-                  <mat-label>{{ formField.label }}</mat-label>
-                  <mat-select
-                    [value]="formField.value"
-                    (selectionChange)="changeStatus($event.value, appt.id, formField.id)"
-                    [disabled]="vm.selectedTimeline.archived"
+                  <mat-label>Titel</mat-label>
+                  <input type="text" matInput [value]="appt.title" disabled />
+                </mat-form-field>
+              </div>
+              <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="33%">
+                <mat-form-field class="noHint full-width">
+                  <mat-label>Datum</mat-label>
+                  <input type="date" matInput [value]="appt.dateTime" disabled />
+                  <mat-icon
+                    *ngIf="isOverdueAppointment(appt.dateTime)"
+                    matSuffix
+                    style="color: rgba(255, 0, 0, 0.8)"
+                    title="Termin ist überfällig"
+                    >error</mat-icon
                   >
-                    <mat-option *ngFor="let opt of formField.options" [value]="opt.key">
-                      {{ opt.value }}
-                    </mat-option>
+                </mat-form-field>
+              </div>
+              <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="33%">
+                <mat-form-field *ngIf="appt.mandatory" class="noHint full-width">
+                  <mat-label>Status</mat-label>
+                  <mat-select
+                    [value]="appt.status"
+                    (selectionChange)="changeStatus($event.value, appt)"
+                    [disabled]="vmE.selectedTimeline.archived"
+                  >
+                    <mat-option value="OPEN"> offen </mat-option>
+                    <mat-option value="CLOSED"> geschlossen </mat-option>
                   </mat-select>
                 </mat-form-field>
-              </ng-container>
-            </ng-container>
+              </div>
+            </div>
+            <div class="appointmentTypeIcon">
+              <button
+                #appointmentShowButton
+                mat-icon-button
+                aria-label="Zeige Termin in Zeitleiste"
+                (click)="toggleShow(appt)"
+              >
+                <mat-icon>{{ appt.visibility ? 'visibility' : 'visibility_off' }}</mat-icon>
+              </button>
+            </div>
           </div>
-        </div>
-      </div>
+        </ng-container>
+      </ng-container>
     </mat-card-content>
   </mat-card>
   <mat-card class="appointments-card">
@@ -157,58 +166,69 @@
         </div>
       </div>
 
-      <ng-container *ngIf="appointmentsInPeriod.length > 0; else noAppointments">
-        <ng-container *ngFor="let appt of appointmentsInPeriod">
-          <ng-container [ngSwitch]="appt.resultType">
-            <div class="appointmentTypeIcon">
-              <ng-container *ngSwitchCase="'TYPE_SINGLE_APPOINTMENT'">
-                <span class="circle" title="Einzeltermin">E</span>
-              </ng-container>
-              <ng-container *ngSwitchCase="'TYPE_APPT_SERIES'">
-                <span class="circle" title="Terminserie">S</span>
-              </ng-container>
-            </div>
-          </ng-container>
-          <div fxLayout="row wrap" fxLayoutGap="12px grid" style="padding-bottom: 20px">
-            <div
-              fxFlex="33%"
-              fxFlex.xs="100%"
-              fxFlex.sm="100%"
-              fxFlex.md="100%"
-              fxFlex.lg="33%"
-              *ngFor="let formField of appt.formFields"
-            >
-              <ng-container *ngIf="formField.key !== 'status'">
-                <mat-form-field class="noHint full-width">
-                  <mat-label>{{ formField.label }}</mat-label>
-                  <input [type]="formField.type.toLowerCase()" matInput [value]="formField.value" disabled />
-                  <mat-icon
-                    *ngIf="isOverdueAppointment(formField)"
-                    matSuffix
-                    style="color: rgba(255, 0, 0, 0.8)"
-                    title="Termin ist überfällig"
-                    >error</mat-icon
-                  >
-                </mat-form-field>
-              </ng-container>
-              <ng-container *ngIf="formField.key === 'status'">
-                <ng-container *ngIf="vm$ | async as vm">
+      <ng-container *ngIf="vm$ | async as vmE">
+        <ng-container *ngIf="openEventsInPeriod.length > 0; else noAppointments">
+          <ng-container *ngFor="let appt of openEventsInPeriod">
+            <div fxLayout="row nowrap" fxLayoutGap="6px grid" style="width: 100%; padding-bottom: 10px">
+              <div class="appointmentTypeIconWrapper" [ngSwitch]="appt.eventType">
+                <div class="appointmentTypeIcon">
+                  <ng-container *ngSwitchCase="'TYPE_SINGLE_APPOINTMENT'">
+                    <span class="circle" title="Einzeltermin">E</span>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'TYPE_APPT_SERIES'">
+                    <span class="circle" title="Terminserie">S</span>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'TYPE_RECURRING_EVENT'">
+                    <span class="circle" title="Wiederkehrender Termin">W</span>
+                  </ng-container>
+                </div>
+              </div>
+              <div fxLayout="row wrap" fxLayoutGap="12px grid" style="width: 100%; padding-bottom: 20px">
+                <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="33%">
                   <mat-form-field class="noHint full-width">
-                    <mat-label>{{ formField.label }}</mat-label>
-                    <mat-select
-                      [value]="formField.value"
-                      (selectionChange)="changeStatus($event.value, appt.id, formField.id)"
-                      [disabled]="vm.selectedTimeline.archived"
+                    <mat-label>Titel</mat-label>
+                    <input type="text" matInput [value]="appt.title" disabled />
+                  </mat-form-field>
+                </div>
+                <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="33%">
+                  <mat-form-field class="noHint full-width">
+                    <mat-label>Datum</mat-label>
+                    <input type="date" matInput [value]="appt.dateTime" disabled />
+                    <mat-icon
+                      *ngIf="isOverdueAppointment(appt.dateTime)"
+                      matSuffix
+                      style="color: rgba(255, 0, 0, 0.8)"
+                      title="Termin ist überfällig"
+                      >error</mat-icon
                     >
-                      <mat-option *ngFor="let opt of formField.options" [value]="opt.key">
-                        {{ opt.value }}
-                      </mat-option>
+                  </mat-form-field>
+                </div>
+                <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="33%">
+                  <mat-form-field *ngIf="appt.mandatory" class="noHint full-width">
+                    <mat-label>Status</mat-label>
+                    <mat-select
+                      [value]="appt.status"
+                      (selectionChange)="changeStatus($event.value, appt)"
+                      [disabled]="vmE.selectedTimeline.archived"
+                    >
+                      <mat-option value="OPEN"> offen </mat-option>
+                      <mat-option value="CLOSED"> geschlossen </mat-option>
                     </mat-select>
                   </mat-form-field>
-                </ng-container>
-              </ng-container>
+                </div>
+              </div>
+              <div class="appointmentTypeIcon">
+                <button
+                  #appointmentShowButton
+                  mat-icon-button
+                  aria-label="Zeige Termin in Zeitleiste"
+                  (click)="toggleShow(appt)"
+                >
+                  <mat-icon>{{ appt.visibility ? 'visibility' : 'visibility_off' }}</mat-icon>
+                </button>
+              </div>
             </div>
-          </div>
+          </ng-container>
         </ng-container>
       </ng-container>
       <ng-template #noAppointments>
@@ -216,4 +236,4 @@
       </ng-template>
     </mat-card-content>
   </mat-card>
-</div>
+</ng-container>

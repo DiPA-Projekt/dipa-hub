@@ -33,7 +33,7 @@ public class ResultEntity extends BaseEntity {
 
     @OneToOne(mappedBy = "result", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private EventTemplateEntity eventTemplate;
+    private ProjectEventTemplateEntity projectEventTemplate;
 
     public String getResultType() {
         return resultType;
@@ -67,11 +67,11 @@ public class ResultEntity extends BaseEntity {
         this.recurringEventPattern = recurringEventPattern;
     }
 
-    public EventTemplateEntity getEventTemplate() {
-        return eventTemplate;
+    public ProjectEventTemplateEntity getProjectEventTemplate() {
+        return projectEventTemplate;
     }
 
-    public void setEventTemplate(final EventTemplateEntity eventTemplate) {
-        this.eventTemplate = eventTemplate;
+    public void setProjectEventTemplate(final ProjectEventTemplateEntity projectEventTemplate) {
+        this.projectEventTemplate = projectEventTemplate;
     }
 }

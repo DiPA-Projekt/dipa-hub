@@ -11,9 +11,9 @@
  import org.springframework.boot.test.mock.mockito.MockBean;
  import org.springframework.core.convert.ConversionService;
 
- import online.dipa.hub.api.model.EventTemplate;
  import online.dipa.hub.api.model.NonPermanentProjectTask;
  import online.dipa.hub.api.model.PermanentProjectTask;
+ import online.dipa.hub.api.model.ProjectEventTemplate;
  import online.dipa.hub.api.model.PropertyQuestion;
  import online.dipa.hub.persistence.entities.*;
  import online.dipa.hub.persistence.repositories.NonPermanentProjectTaskRepository;
@@ -330,19 +330,19 @@
              projectService.initializeRecurringEvents(testProject);
 
              // THEN
-             List<EventTemplateEntity> eventTemplates = testProject.getEventTemplates()
-                                                               .stream()
-                                                               .filter(e -> e.getEventType()
+             List<ProjectEventTemplateEntity> eventTemplates = testProject.getEventTemplates()
+                                                                          .stream()
+                                                                          .filter(e -> e.getEventType()
                                                                                 .equals("TYPE_RECURRING_EVENT")).collect(
                              Collectors.toList());
 
              assertThat(eventTemplates).isNotEmpty().hasSize(4);
              eventTemplates.forEach(t -> assertThat(t)
-                     .returns("TYPE_RECURRING_EVENT", EventTemplateEntity::getEventType));
+                     .returns("TYPE_RECURRING_EVENT", ProjectEventTemplateEntity::getEventType));
 
-             eventTemplates.forEach(t -> assertThat(t.getEvents()).hasSize(9));
-             EventTemplateEntity eventTemplate = eventTemplates.get(0);
-             eventTemplate.getEvents().forEach(e -> assertThat(e.getDateTime().getDayOfMonth()).isEqualTo(10));
+             eventTemplates.forEach(t -> assertThat(t.getProjectEvents()).hasSize(9));
+             ProjectEventTemplateEntity eventTemplate = eventTemplates.get(0);
+             eventTemplate.getProjectEvents().forEach(e -> assertThat(e.getDateTime().getDayOfMonth()).isEqualTo(10));
 
          }
 
@@ -353,7 +353,7 @@
              projectService.createRecurringEventTypes(testProject);
 
              //WHEN
-             List<EventTemplate> eventTemplates = projectService.getEvents(testProject.getId());
+             List<ProjectEventTemplate> eventTemplates = projectService.getEvents(testProject.getId());
 
              // THEN
              assertThat(eventTemplates).isNotEmpty();
@@ -390,10 +390,10 @@
              projectService.createEventTemplates(testProject, eventType, null);
 
              // THEN
-             assertThat(eventType.getEventTemplate()).isNotNull();
-             assertThat(eventType.getEventTemplate())
-                     .returns("TYPE_RECURRING_EVENT",EventTemplateEntity::getEventType)
-             .returns("Wiederkehrende Termine " + eventType.getTitle(),EventTemplateEntity::getTitle);
+             assertThat(eventType.getProjectEventTemplate()).isNotNull();
+             assertThat(eventType.getProjectEventTemplate())
+                     .returns("TYPE_RECURRING_EVENT",ProjectEventTemplateEntity::getEventType)
+             .returns("Wiederkehrende Termine " + eventType.getTitle(),ProjectEventTemplateEntity::getTitle);
 
          }
 
@@ -418,7 +418,7 @@
              projectService.updateRecurringEventsBasedOnEndDate(testProject, newEndDate);
 
              // THEN
-             testProject.getEventTemplates().forEach(t -> assertThat(t.getEvents()).hasSize(3));
+             testProject.getEventTemplates().forEach(t -> assertThat(t.getProjectEvents()).hasSize(3));
 
          }
 
@@ -433,7 +433,7 @@
              projectService.updateRecurringEventsBasedOnEndDate(testProject, newEndDate);
 
              // THEN
-             testProject.getEventTemplates().forEach(t -> assertThat(t.getEvents()).hasSize(11));
+             testProject.getEventTemplates().forEach(t -> assertThat(t.getProjectEvents()).hasSize(11));
 
          }
 
@@ -444,7 +444,7 @@
              projectService.updateRecurringEventsBasedOnStartDate(testProject, startDate);
 
              // THEN
-             testProject.getEventTemplates().forEach(t -> assertThat(t.getEvents()).hasSize(7));
+             testProject.getEventTemplates().forEach(t -> assertThat(t.getProjectEvents()).hasSize(7));
 
          }
 
@@ -464,7 +464,7 @@
              projectService.updateRecurringEventsBasedOnStartDate(testProject2, startDate);
 
              // THEN
-             testProject2.getEventTemplates().forEach(t -> assertThat(t.getEvents()).hasSize(8));
+             testProject2.getEventTemplates().forEach(t -> assertThat(t.getProjectEvents()).hasSize(8));
 
          }
      }
@@ -501,14 +501,14 @@
              // WHEN
              projectService.createSerieAppointments(result);
              // THEN
-             assertThat(result.getEventTemplate()).isNotNull();
-             assertThat(result.getEventTemplate().getEvents()).isNotNull().hasSize(4);
+             assertThat(result.getProjectEventTemplate()).isNotNull();
+             assertThat(result.getProjectEventTemplate().getProjectEvents()).isNotNull().hasSize(4);
 
-             result.getEventTemplate().getEvents().forEach(e -> assertThat(e)
-                     .returns(filterFormFieldKey(result, "serie").getValue(), EventEntity::getTitle)
-                     .returns(Integer.valueOf(filterFormFieldKey(result, "duration").getValue()), EventEntity::getDuration));
+             result.getProjectEventTemplate().getProjectEvents().forEach(e -> assertThat(e)
+                     .returns(filterFormFieldKey(result, "serie").getValue(), ProjectEventEntity::getTitle)
+                     .returns(Integer.valueOf(filterFormFieldKey(result, "duration").getValue()), ProjectEventEntity::getDuration));
 
-             result.getEventTemplate().getEvents().forEach(e -> {
+             result.getProjectEventTemplate().getProjectEvents().forEach(e -> {
                  assertThat(e.getDateTime()
                              .getDayOfMonth()).isEqualTo(10);
                  assertThat(e.getDateTime().getHour()).isEqualTo(14);
@@ -526,9 +526,9 @@
              projectService.updateSerieAppointments(result);
 
              // THEN
-             assertThat(result.getEventTemplate()).isNotNull();
+             assertThat(result.getProjectEventTemplate()).isNotNull();
 
-             result.getEventTemplate().getEvents().forEach(e -> {
+             result.getProjectEventTemplate().getProjectEvents().forEach(e -> {
                  assertThat(e.getDateTime()
                              .getDayOfWeek()).isEqualTo(DayOfWeek.MONDAY);
                  assertThat(e.getDateTime().getHour()).isEqualTo(12);
