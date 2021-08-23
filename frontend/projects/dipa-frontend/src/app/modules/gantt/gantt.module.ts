@@ -31,6 +31,7 @@ import { TasksComponent } from './timeline/tasks/tasks.component';
 import { ShowFieldsMenuComponent } from './project-checklist/show-fields-menu/show-fields-menu.component';
 import { DeleteProjectDialogComponent } from './chart/chart-header/delete-project-dialog/delete-project-dialog.component';
 import { ProjectSettingsDialogComponent } from './project-settings-dialog/project-settings-dialog.component';
+import { RruleComponent } from './project-checklist/rrule/rrule.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { ProjectSettingsDialogComponent } from './project-settings-dialog/projec
     ShowFieldsMenuComponent,
     DeleteProjectDialogComponent,
     ProjectSettingsDialogComponent,
+    RruleComponent,
   ],
   exports: [ChartComponent, FilesComponent, NavMenuListItemComponent],
   imports: [

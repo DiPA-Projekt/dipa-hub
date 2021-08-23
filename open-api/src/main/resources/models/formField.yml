@@ -39,6 +39,7 @@ FormField:
         - TEXTAREA
         - DROPDOWN
         - LIST
+        - RRULE
       default: TEXTBOX
       example: TEXTBOX
     type:
@@ -48,6 +49,7 @@ FormField:
         - TEXT
         - NUMBER
         - DATE
+        - TIME
         - URL
         - EMAIL
       default: TEXT

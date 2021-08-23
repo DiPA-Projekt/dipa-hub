@@ -118,7 +118,7 @@ export class ShowFieldsMenuComponent implements OnInit {
   private setEntries(): void {
     const entryValues: { value: string; viewValue: string }[] = [];
     for (const formFieldEntry of this.entriesArray.controls) {
-      if (formFieldEntry.get('show').value !== null) {
+      if (!formFieldEntry.get('required').value && formFieldEntry.get('show').value !== null) {
         entryValues.push({
           value: `${formFieldEntry.get('key').value as string}`,
           viewValue: formFieldEntry.get('label').value as string,
@@ -168,7 +168,7 @@ export class ShowFieldsMenuComponent implements OnInit {
       const formFieldsArray = this.getFormFieldsArray(resultFormGroup);
       if (formFieldsArray?.length > 0) {
         for (const formFieldEntry of formFieldsArray.controls) {
-          if (formFieldEntry.get('show').value !== null) {
+          if (!formFieldEntry.get('required').value && formFieldEntry.get('show').value !== null) {
             groupValues.push({
               value: `formFields.${formFieldEntry.get('key').value as string}`,
               viewValue: formFieldEntry.get('label').value as string,

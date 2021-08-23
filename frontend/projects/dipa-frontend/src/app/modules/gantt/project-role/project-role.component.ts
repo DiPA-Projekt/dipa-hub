@@ -62,11 +62,11 @@ export class ProjectRoleComponent implements OnInit {
     this.formGroup = this.fb.group({
       user: new FormControl(
         { value: null, disabled: !this.isEditable },
-        { validators: [Validators.required], updateOn: 'change' }
+        { validators: [Validators.required.bind(this)], updateOn: 'change' }
       ),
       role: new FormControl(
         { value: '', disabled: !this.isEditable },
-        { validators: [Validators.required], updateOn: 'change' }
+        { validators: [Validators.required.bind(this)], updateOn: 'change' }
       ),
     });
   }

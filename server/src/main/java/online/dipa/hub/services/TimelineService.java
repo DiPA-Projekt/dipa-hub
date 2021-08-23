@@ -37,9 +37,6 @@ public class TimelineService {
     private ProjectRepository projectRepository;
 
     @Autowired
-    private ProjectApproachRepository projectApproachRepository;
-
-    @Autowired
     private MilestoneTemplateRepository milestoneTemplateRepository;
 
     @Autowired

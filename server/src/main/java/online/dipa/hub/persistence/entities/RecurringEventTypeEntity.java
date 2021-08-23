@@ -2,14 +2,10 @@ package online.dipa.hub.persistence.entities;
 
 import static javax.persistence.CascadeType.ALL;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -39,9 +35,9 @@ public class RecurringEventTypeEntity extends BaseEntity {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private RecurringEventPatternEntity recurringEventPattern;
 
-    @OneToMany(mappedBy = "recurringEventType", cascade = { ALL })
+    @OneToOne(mappedBy = "recurringEventType", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<ProjectEventTemplateEntity> eventTemplates = new HashSet<>();
+    private ProjectEventTemplateEntity projectEventTemplate;
 
     public RecurringEventTypeEntity() {
         super();
@@ -111,12 +107,12 @@ public class RecurringEventTypeEntity extends BaseEntity {
         this.recurringEventPattern = recurringEventPattern;
     }
 
-    public Set<ProjectEventTemplateEntity> getEventTemplates() {
-        return eventTemplates;
+    public ProjectEventTemplateEntity getProjectEventTemplate() {
+        return projectEventTemplate;
     }
 
-    public void setEventTemplates(Set<ProjectEventTemplateEntity> eventTemplates) {
-        this.eventTemplates = eventTemplates;
+    public void setProjectEventTemplate(ProjectEventTemplateEntity projectEventTemplate) {
+        this.projectEventTemplate = projectEventTemplate;
     }
 
 }

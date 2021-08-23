@@ -205,7 +205,7 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
         id: new FormControl({ value: project?.id, disabled: !this.userHasProjectEditRights }),
         name: new FormControl(
           { value: project?.name, disabled: !this.userHasProjectEditRights },
-          { validators: [Validators.required] }
+          { validators: [Validators.required.bind(this)] }
         ),
         projectOwner: null,
         akz: new FormControl({ value: project?.akz, disabled: this.isNotEditable }),
@@ -232,24 +232,24 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
         defaultTimeline: new FormControl({ value: timeline.defaultTimeline, disabled: !this.userHasProjectEditRights }),
         name: new FormControl(
           { value: project?.name, disabled: !this.userHasProjectEditRights },
-          { validators: [Validators.required] }
+          { validators: [Validators.required.bind(this)] }
         ),
         operationTypeId: new FormControl(
           { value: this.data.timeline.operationTypeId, disabled: this.isNotEditable },
           {
-            validators: [Validators.required],
+            validators: [Validators.required.bind(this)],
           }
         ),
         projectApproachId: new FormControl(
           { value: timeline.projectApproachId, disabled: this.isNotEditable },
           {
-            validators: [Validators.required],
+            validators: [Validators.required.bind(this)],
           }
         ),
         projectType: new FormControl(
           { value: timeline.projectType, disabled: this.isNotEditable },
           {
-            validators: [Validators.required],
+            validators: [Validators.required.bind(this)],
           }
         ),
       });

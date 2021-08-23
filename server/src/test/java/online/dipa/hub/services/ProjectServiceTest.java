@@ -17,11 +17,8 @@
  import online.dipa.hub.api.model.PropertyQuestion;
  import online.dipa.hub.persistence.entities.*;
  import online.dipa.hub.persistence.repositories.NonPermanentProjectTaskRepository;
- import online.dipa.hub.persistence.repositories.NonPermanentProjectTaskTemplateRepository;
  import online.dipa.hub.persistence.repositories.PermanentProjectTaskRepository;
- import online.dipa.hub.persistence.repositories.PermanentProjectTaskTemplateRepository;
  import online.dipa.hub.persistence.repositories.ProjectApproachRepository;
- import online.dipa.hub.persistence.repositories.ProjectPropertyQuestionRepository;
  import online.dipa.hub.persistence.repositories.ProjectRepository;
  import online.dipa.hub.persistence.repositories.ProjectTaskRepository;
  import online.dipa.hub.persistence.repositories.ProjectTaskTemplateRepository;
@@ -31,11 +28,13 @@
  import static org.mockito.Mockito.when;
  import static org.assertj.core.api.BDDAssertions.then;
 
+ import java.time.DayOfWeek;
  import java.time.OffsetDateTime;
  import java.util.ArrayList;
  import java.util.Collections;
  import java.util.List;
  import java.util.Objects;
+ import java.util.TimeZone;
  import java.util.stream.Collectors;
 
  @SpringBootTest
@@ -49,9 +48,6 @@
     private ProjectRepository projectRepository;
 
     @Autowired
-    private ProjectPropertyQuestionRepository projectPropertyQuestionRepository;
-
-    @Autowired
     private ProjectService projectService;
 
     @Autowired
@@ -63,11 +59,6 @@
     @Autowired
     private ProjectTaskRepository projectTaskRepository;
 
-    @Autowired
-    private NonPermanentProjectTaskTemplateRepository nonPermanentProjectTaskTempRep;
-
-    @Autowired
-    private PermanentProjectTaskTemplateRepository permanentProjectTaskTempRep;
 
     @Autowired
     private NonPermanentProjectTaskRepository nonPermanentProjectTaskRepository;
@@ -83,6 +74,8 @@
     @BeforeAll
     static void setUpContext() {
         CurrentTenantContextHolder.setTenantId("itzbund");
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
     }
 
     private void createProject (ProjectEntity newProject, OffsetDateTime startDate, OffsetDateTime endDate) {
@@ -385,6 +378,25 @@
              assertThat(testProject.getEventTemplates()).hasSize(2);
 
          }
+
+         @Test
+         void should_create_event_template_for_recurring_type() {
+             // GIVEN
+             projectService.initializeProjectTasks(testProject.getId());
+             projectService.createRecurringEventTypes(testProject);
+             RecurringEventTypeEntity eventType = testProject.getRecurringEventTypes().stream().findFirst().get();
+
+             //WHEN
+             projectService.createEventTemplates(testProject, eventType, null);
+
+             // THEN
+             assertThat(eventType.getProjectEventTemplate()).isNotNull();
+             assertThat(eventType.getProjectEventTemplate())
+                     .returns("TYPE_RECURRING_EVENT",ProjectEventTemplateEntity::getEventType)
+             .returns("Wiederkehrende Termine " + eventType.getTitle(),ProjectEventTemplateEntity::getTitle);
+
+         }
+
      }
 
      @Nested
@@ -432,7 +444,7 @@
              projectService.updateRecurringEventsBasedOnStartDate(testProject, startDate);
 
              // THEN
-             testProject.getEventTemplates().forEach(t -> assertThat(t.getProjectEvents()).hasSize(7));
+             testProject.getEventTemplates().forEach(t -> assertThat(t.getProjectEvents()).hasSizeLessThan(9));
 
          }
 
@@ -452,9 +464,77 @@
              projectService.updateRecurringEventsBasedOnStartDate(testProject2, startDate);
 
              // THEN
-             testProject2.getEventTemplates().forEach(t -> assertThat(t.getProjectEvents()).hasSize(8));
+             testProject2.getEventTemplates().forEach(t -> assertThat(t.getProjectEvents()).hasSizeGreaterThan(6));
 
          }
+     }
+
+     private FormFieldEntity filterFormFieldKey (ResultEntity result, String key) {
+         return result.getFormFields().stream().filter(r -> r.getKey().equals(key)).findFirst().get();
+     }
+
+     @Nested
+     class SerieAppointments {
+        ResultEntity result = null;
+
+         @BeforeEach
+         void setUp() {
+             projectService.initializeProjectTasks(testProject.getId());
+
+             for (ProjectTaskEntity projectTask: testProject.getProjectTaskTemplate().getProjectTasks()) {
+                 if (projectTask.getResults().stream().anyMatch(r -> r.getResultType().equals("TYPE_APPT_SERIES"))) {
+                     result = projectTask.getResults().stream().findFirst().get();
+                 }
+             }
+
+             filterFormFieldKey(result, "participants").setValue("Müller");
+             filterFormFieldKey(result, "startDate").setValue("2021-08-01");
+             filterFormFieldKey(result, "endDate").setValue("2021-12-01");
+             filterFormFieldKey(result, "startTime").setValue("14:05");
+             filterFormFieldKey(result, "duration").setValue("2");
+             filterFormFieldKey(result, "status").setValue("PLANNED");
+
+         }
+
+         @Test
+         void should_create_appointments_for_result() {
+             // WHEN
+             projectService.createSerieAppointments(result);
+             // THEN
+             assertThat(result.getProjectEventTemplate()).isNotNull();
+             assertThat(result.getProjectEventTemplate().getProjectEvents()).isNotNull().hasSize(4);
+
+             result.getProjectEventTemplate().getProjectEvents().forEach(e -> assertThat(e)
+                     .returns(filterFormFieldKey(result, "serie").getValue(), ProjectEventEntity::getTitle)
+                     .returns(Integer.valueOf(filterFormFieldKey(result, "duration").getValue()), ProjectEventEntity::getDuration));
+
+             result.getProjectEventTemplate().getProjectEvents().forEach(e -> {
+                 assertThat(e.getDateTime()
+                             .getDayOfMonth()).isEqualTo(10);
+                 assertThat(e.getDateTime().getHour()).isEqualTo(14);
+             });
+         }
+
+         @Test
+         void should_update_appointments_for_result_after_updating_result() {
+             // GIVEN
+             projectService.createSerieAppointments(result);
+             filterFormFieldKey(result, "appointment").setValue("FREQ=WEEKLY;BYDAY=MO;INTERVAL=1");
+             filterFormFieldKey(result, "startTime").setValue("12:05");
+
+             // WHEN
+             projectService.updateSerieAppointments(result);
+
+             // THEN
+             assertThat(result.getProjectEventTemplate()).isNotNull();
+
+             result.getProjectEventTemplate().getProjectEvents().forEach(e -> {
+                 assertThat(e.getDateTime()
+                             .getDayOfWeek()).isEqualTo(DayOfWeek.MONDAY);
+                 assertThat(e.getDateTime().getHour()).isEqualTo(12);
+             });
+         }
+
      }
 
 

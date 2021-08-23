@@ -46,6 +46,8 @@ public class MilestoneService {
     @Autowired
     private TimelineService timelineService;
 
+    @Autowired
+    private ProjectService projectService;
 
     public List<Milestone> getMilestonesForTimeline(final Long timelineId) {
 
@@ -251,9 +253,17 @@ public class MilestoneService {
         milestoneTemplateRepository.save(newMilestone);
 
         if (milestone.getDate().isBefore(currentProject.getStartDate().toLocalDate())) {
-            currentProject.setStartDate(OffsetDateTime.of(milestone.getDate(), LocalTime.NOON, ZoneOffset.UTC));
+            currentProject.getRecurringEventTypes().forEach(t -> t.getRecurringEventPattern()
+                                                                  .setStartDate(milestone.getDate()));
+            OffsetDateTime newStartDate = OffsetDateTime.of(milestone.getDate(), LocalTime.NOON, ZoneOffset.UTC);
+            projectService.updateRecurringEventsBasedOnStartDate(currentProject, newStartDate);
+            currentProject.setStartDate(newStartDate);
         } else if (milestone.getDate().isAfter(currentProject.getEndDate().toLocalDate())) {
-            currentProject.setEndDate(OffsetDateTime.of(milestone.getDate(), LocalTime.NOON, ZoneOffset.UTC));
+            currentProject.getRecurringEventTypes().forEach(t -> t.getRecurringEventPattern()
+                                                                  .setEndDate(milestone.getDate()));
+            OffsetDateTime newEndDate = OffsetDateTime.of(milestone.getDate(), LocalTime.NOON, ZoneOffset.UTC);
+            projectService.updateRecurringEventsBasedOnEndDate(currentProject, newEndDate);
+            currentProject.setEndDate(newEndDate);
         }
     }
 

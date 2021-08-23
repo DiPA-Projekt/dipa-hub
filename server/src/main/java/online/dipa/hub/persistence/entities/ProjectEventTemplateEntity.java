@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -28,10 +29,10 @@ public class ProjectEventTemplateEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     private ProjectEntity project;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     private ResultEntity result;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     private RecurringEventTypeEntity recurringEventType;
 
     @OneToMany(mappedBy = "projectEventTemplate", cascade = { ALL })
@@ -43,11 +44,12 @@ public class ProjectEventTemplateEntity extends BaseEntity {
     }
 
     public ProjectEventTemplateEntity(String title, String eventType,
-            ProjectEntity project, RecurringEventTypeEntity recurringEventType) {
+            ProjectEntity project, RecurringEventTypeEntity recurringEventType, ResultEntity result) {
         this.title = title;
         this.eventType = eventType;
         this.project = project;
         this.recurringEventType = recurringEventType;
+        this.result = result;
     }
 
     public String getTitle() {
