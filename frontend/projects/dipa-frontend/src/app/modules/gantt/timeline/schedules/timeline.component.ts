@@ -61,6 +61,9 @@ export class TimelineComponent implements OnInit, OnDestroy {
   public overdueEvents: EventEntry[] = [];
   public vm$: Observable<any>;
 
+  public appointmentVisibility = false;
+  public overdueVisibility = false;
+
   public apptFormfieldsKeys = ['goal', 'date', 'status'];
   public apptStartDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
   public apptEndDate;
@@ -316,16 +319,31 @@ export class TimelineComponent implements OnInit, OnDestroy {
     return new Date(eventDate) < new Date();
   }
 
-  public toggleShow(appt: EventEntry): void {
+  public toggleVisibility(appt: EventEntry): void {
+    let events;
     if (appt.eventType === 'TYPE_RECURRING_EVENT' || appt.eventType === 'TYPE_APPT_SERIES') {
-      this.appointmentsList
-        .filter((event: EventEntry) => event.seriesId === appt.seriesId)
-        .forEach((event: EventEntry) => {
-          event.visibility = !event.visibility;
-        });
+      events = this.appointmentsList.filter((event: EventEntry) => event.seriesId === appt.seriesId);
     } else {
-      appt.visibility = !appt.visibility;
+      events = [appt];
     }
+    this.setVisibility(events, !appt.visibility);
+  }
+
+  public toggleOverdueVisibilityAll(): void {
+    this.overdueVisibility = !this.overdueVisibility;
+    this.setVisibility(this.overdueEvents, this.overdueVisibility);
+  }
+
+  public toggleAppointmentsVisibilityAll(): void {
+    this.appointmentVisibility = !this.appointmentVisibility;
+    this.setVisibility(this.openEventsInPeriod, this.appointmentVisibility);
+  }
+
+  private setVisibility(entries: EventEntry[], visibility: boolean): void {
+    entries.forEach((event) => {
+      event.visibility = visibility;
+    });
+
     // this triggers ngOnChanges in chart
     this.appointmentsList = [...this.appointmentsList];
   }

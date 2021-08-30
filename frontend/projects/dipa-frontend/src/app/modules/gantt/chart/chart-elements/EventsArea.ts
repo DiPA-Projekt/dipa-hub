@@ -91,10 +91,15 @@ export class EventsArea implements IChartElement {
   setData(data: EventEntry[]): void {
     this.data = data;
     const dataGroup = this.svg.select(`g#eventsArea${this.eventsAreaId}.event-data-group`);
-    dataGroup.selectAll('g.eventEntry').data(this.data);
+    dataGroup.selectAll('g.eventEntry').data(
+      d3.group(
+        this.data.filter((d) => d.visibility === true),
+        (d: EventEntry) => d.dateTime
+      )
+    );
   }
 
-  reset(offset: { [key: string]: number }): void {
+  public reset(offset: { [key: string]: number }): void {
     const dataGroup = this.svg.select(`g#eventsArea${this.eventsAreaId}.event-data-group`);
     dataGroup.selectAll('g.eventEntry').remove();
     this.draw(offset);
@@ -103,7 +108,7 @@ export class EventsArea implements IChartElement {
     this.updateEventStyle(this.selectedEventId);
   }
 
-  draw(offset: { [key: string]: number }): void {
+  public draw(offset: { [key: string]: number }): void {
     const dataGroup = this.svg.select(`g#eventsArea${this.eventsAreaId}.event-data-group`);
 
     // events
