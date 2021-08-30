@@ -39,11 +39,17 @@
   <mat-card *ngIf="overdueEvents.length > 0" class="appointments-card" style="background-color: rgba(255, 0, 0, 0.08)">
     <mat-card-content>
       <div class="matCardContentHeader" style="color: white; background-color: rgba(255, 0, 0, 0.8)">
-        <div fxLayout="row wrap">
-          <div class="matCardContentHeaderTitle ellipsis" style="margin: 12px 0">
-            <mat-icon style="margin-right: 5px">warning_amber</mat-icon>
-            Überfällige Termine
-          </div>
+        <div fxLayout="row nowrap" fxLayoutAlign="space-between center">
+          <mat-icon style="margin-right: 5px">warning_amber</mat-icon>
+          <div class="matCardContentHeaderTitle ellipsis full-width">Überfällige Termine</div>
+          <button
+            #appointmentShowButton
+            mat-icon-button
+            aria-label="Zeige Termin in Zeitleiste"
+            (click)="toggleOverdueVisibilityAll()"
+          >
+            <mat-icon>{{ overdueVisibility ? 'visibility' : 'visibility_off' }}</mat-icon>
+          </button>
         </div>
       </div>
 
@@ -102,7 +108,7 @@
                 #appointmentShowButton
                 mat-icon-button
                 aria-label="Zeige Termin in Zeitleiste"
-                (click)="toggleShow(appt)"
+                (click)="toggleVisibility(appt)"
               >
                 <mat-icon>{{ appt.visibility ? 'visibility' : 'visibility_off' }}</mat-icon>
               </button>
@@ -115,20 +121,19 @@
   <mat-card class="appointments-card">
     <mat-card-content>
       <div class="matCardContentHeader">
-        <div fxLayout="row wrap" fxLayoutGap="10px grid">
-          <div
-            fxFlex="33%"
-            fxFlex.xs="100%"
-            fxFlex.sm="100%"
-            fxFlex.md="100%"
-            fxFlex.lg="100%"
-            style="margin-top: 12px"
+        <div fxLayout="row nowrap" fxLayoutAlign="space-between center">
+          <mat-icon style="margin-right: 5px">event_note</mat-icon>
+          <div class="matCardContentHeaderTitle ellipsis full-width">Offene Termine</div>
+          <button
+            #appointmentShowButton
+            mat-icon-button
+            aria-label="Zeige Termin in Zeitleiste"
+            (click)="toggleAppointmentsVisibilityAll()"
           >
-            <div class="matCardContentHeaderTitle ellipsis">
-              <mat-icon style="margin-right: 5px">event_note</mat-icon>
-              Offene Termine
-            </div>
-          </div>
+            <mat-icon>{{ appointmentVisibility ? 'visibility' : 'visibility_off' }}</mat-icon>
+          </button>
+        </div>
+        <div fxLayout="row wrap" fxLayoutGap="10px grid">
           <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
             <mat-form-field class="noHint full-width" fxFlex="50%">
               <mat-label>Start Datum</mat-label>
@@ -222,7 +227,7 @@
                   #appointmentShowButton
                   mat-icon-button
                   aria-label="Zeige Termin in Zeitleiste"
-                  (click)="toggleShow(appt)"
+                  (click)="toggleVisibility(appt)"
                 >
                   <mat-icon>{{ appt.visibility ? 'visibility' : 'visibility_off' }}</mat-icon>
                 </button>
