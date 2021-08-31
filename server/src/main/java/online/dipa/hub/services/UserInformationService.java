@@ -1,28 +1,32 @@
 package online.dipa.hub.services;
 
-import online.dipa.hub.api.model.ProjectRole;
-import online.dipa.hub.api.model.User;
-import online.dipa.hub.persistence.entities.*;
-import online.dipa.hub.persistence.repositories.*;
-import online.dipa.hub.security.DipaKeycloakAuthenticationToken;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
-import org.keycloak.adapters.OidcKeycloakAccount;
-import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.keycloak.representations.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.Set;
+import online.dipa.hub.api.model.ProjectRole;
+import online.dipa.hub.api.model.User;
+import online.dipa.hub.persistence.entities.BaseEntity;
+import online.dipa.hub.persistence.entities.ProjectEntity;
+import online.dipa.hub.persistence.entities.ProjectRoleEntity;
+import online.dipa.hub.persistence.entities.ProjectRoleTemplateEntity;
+import online.dipa.hub.persistence.entities.UserEntity;
+import online.dipa.hub.persistence.repositories.ProjectRepository;
+import online.dipa.hub.persistence.repositories.ProjectRoleRepository;
+import online.dipa.hub.persistence.repositories.ProjectRoleTemplateRepository;
+import online.dipa.hub.persistence.repositories.UserRepository;
+import online.dipa.hub.security.DipaKeycloakAuthenticationToken;
 
 @Service
 public class UserInformationService {
