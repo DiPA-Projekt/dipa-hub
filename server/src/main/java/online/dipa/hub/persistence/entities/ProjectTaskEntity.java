@@ -38,6 +38,10 @@ public class ProjectTaskEntity extends BaseEntity {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private NonPermanentProjectTaskEntity nonPermanentProjectTask;
 
+    @OneToOne(mappedBy = "projectTask")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private FinalProjectTaskEntity finalProjectTask;
+
     @ManyToOne(fetch = FetchType.EAGER)
     private ProjectPropertyQuestionEntity projectPropertyQuestion;
 
@@ -56,7 +60,7 @@ public class ProjectTaskEntity extends BaseEntity {
         this.completed = projectTaskEntity.getCompleted();
         this.sortOrder = projectTaskEntity.getSortOrder();
     }
-    
+
     public ProjectTaskTemplateEntity getProjectTaskTemplate() {
         return projectTaskTemplate;
     }
@@ -68,7 +72,7 @@ public class ProjectTaskEntity extends BaseEntity {
     public String getExplanation() {
         return explanation;
     }
-    
+
     public void setExplanation(final String explanation) {
         this.explanation = explanation;
     }
@@ -120,6 +124,14 @@ public class ProjectTaskEntity extends BaseEntity {
     public void setNonPermanentProjectTask(NonPermanentProjectTaskEntity nonPermanentProjectTask) {
         this.nonPermanentProjectTask = nonPermanentProjectTask;
 
+    }
+
+    public FinalProjectTaskEntity getFinalProjectTask() {
+        return finalProjectTask;
+    }
+
+    public void setFinalProjectTask(FinalProjectTaskEntity finalProjectTask) {
+        this.finalProjectTask = finalProjectTask;
     }
 
     public ProjectPropertyQuestionEntity getProjectPropertyQuestion() {

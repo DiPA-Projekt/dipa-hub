@@ -1,4 +1,5 @@
 <div class="content-container">
-  <app-project-data [timelineId]="selectedTimelineId"></app-project-data>
-  <p>project-end works!</p>
+  <app-project-data (projectSizeChanged)="reloadProjectTasks()" [timelineId]="selectedTimelineId"></app-project-data>
+  <h2 class="project-checklist-header">Projektcheckliste</h2>
+  <app-project-checklist [projectTasks]="projectTasks" [timelineId]="selectedTimelineId"></app-project-checklist>
 </div>

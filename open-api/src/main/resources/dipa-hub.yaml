@@ -44,6 +44,8 @@ paths:
     $ref: "paths/permanentProjectTasks.yml"
   /timelines/{timelineId}/nonPermanentProjectTasks:
     $ref: "paths/nonPermanentProjectTasks.yml"
+  /timelines/{timelineId}/finalProjectTasks:
+    $ref: "paths/finalProjectTasks.yml"
   /timelines/{timelineId}/projectPropertyQuestions:
     $ref: "paths/projectPropertyQuestions.yml"
   /timelines/{timelineId}/timelineTemplates:
