@@ -18,6 +18,7 @@ import { TemplatesViewControlsService } from './templates-view-controls.service'
 import { MatButtonToggleChange, MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { switchMap } from 'rxjs/operators';
 import { TimelineDataService } from '../../../../shared/timelineDataService';
+import { AuthenticationService } from 'projects/dipa-frontend/src/app/authentication.service';
 
 @Component({
   selector: 'app-templates-view',
@@ -42,6 +43,7 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
   public selectedTemplatesList: TimelineTemplate[] = [];
   public standardTemplatesList: TimelineTemplate[] = [];
   public nonStandardTemplatesList: TimelineTemplate[] = [];
+  public userHasProjectEditRights = false;
 
   private selectedTemplatesIdList: any[];
   private selectedStandardTemplateIndex: number;
@@ -57,8 +59,8 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
     public ganttControlsService: GanttControlsService,
     private timelineDataService: TimelineDataService,
     private timelinesService: TimelinesService,
-    private operationTypesService: OperationTypesService,
-    private projectApproachesService: ProjectApproachesService,
+    private authenticationService: AuthenticationService,
+
     public activatedRoute: ActivatedRoute,
     private timelineTemplatesService: TimelineTemplatesService
   ) {}
@@ -85,6 +87,13 @@ export class TemplatesViewComponent implements OnInit, OnDestroy {
 
     this.timelineDataSubscription = this.timelineDataService.getTimelines().subscribe(() => {
       this.setData();
+    });
+
+    this.authenticationService.getProjectRoles().then((roles) => {
+      this.userHasProjectEditRights =
+        roles.filter(
+          (d) => d.projectId === this.selectedTimelineId && (d.abbreviation === 'PL' || d.abbreviation === 'PE')
+        ).length > 0;
     });
   }
 
