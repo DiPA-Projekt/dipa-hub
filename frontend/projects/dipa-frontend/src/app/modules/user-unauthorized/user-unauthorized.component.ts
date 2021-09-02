@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { AuthenticationService } from '../../authentication.service';
 
 @Component({
@@ -6,19 +6,8 @@ import { AuthenticationService } from '../../authentication.service';
   templateUrl: './user-unauthorized.component.html',
   styleUrls: ['./user-unauthorized.component.scss'],
 })
-export class UserUnauthorizedComponent implements OnInit {
-  public userName: string;
+export class UserUnauthorizedComponent {
   public constructor(private authenticationService: AuthenticationService) {}
-
-  public ngOnInit(): void {
-    this.authenticationService.getUserData().subscribe((user) => {
-      if (user !== null) {
-        this.userName = user.name;
-      } else {
-        this.authenticationService.login();
-      }
-    });
-  }
 
   public logOut(): void {
     this.authenticationService.logout();

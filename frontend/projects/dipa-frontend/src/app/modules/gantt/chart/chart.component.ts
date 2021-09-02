@@ -816,7 +816,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
         this.taskViewItem.reset({ left: 0, top: 0 });
         this.milestoneViewItem.reset({ left: 0, top: this.taskViewItem.getAreaHeight() });
         this.incrementsViewItem.reset({ left: 0, top: this.taskViewItem.getAreaHeight() });
-        this.eventViewItem.reset({ left: 0, top: 30 });
       });
   }
 
