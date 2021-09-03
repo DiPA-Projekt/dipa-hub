@@ -40,7 +40,6 @@ export class ProjectEndComponent implements OnInit, OnDestroy {
   }
 
   public reloadProjectTasks(): void {
-    // this.timelineDataService.setNonPermanentProjectTasks(this.selectedTimelineId);
     this.projectTasksSubscription = this.projectService.getFinalProjectTasks(this.selectedTimelineId).subscribe({
       next: (data: FinalProjectTask[]) => {
         this.projectTasks = data;
