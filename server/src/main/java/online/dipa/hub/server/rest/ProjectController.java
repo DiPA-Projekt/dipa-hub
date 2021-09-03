@@ -62,13 +62,13 @@ public class ProjectController implements ProjectApi {
     public ResponseEntity<Timeline> createProject(ProjectWithUser projectWithUser) {
         return ResponseEntity.ok(projectService.createProject(projectWithUser.getProject(), projectWithUser.getProjectOwner()));
     }
-    
+
     @Override
     public ResponseEntity<Void> deleteProject(final Long timelineId) {
         projectService.deleteProject(timelineId);
         return ResponseEntity.noContent().build();
     }
-    
+
     @Override
     public ResponseEntity<List<ProjectRole>> getProjectRoles(final Long projectId) {
         return ResponseEntity.ok(projectService.getProjectRoles(projectId));
@@ -98,6 +98,18 @@ public class ProjectController implements ProjectApi {
     @Override
     public ResponseEntity<Void> updateProjectEvent(final Long projectId, final ProjectEvent projectEvent) {
         projectService.updateProjectEvent(projectEvent);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<List<FinalProjectTask>> getFinalProjectTasks(final Long timelineId) {
+        List<FinalProjectTask> projectTasks =  projectService.getFinalProjectTasks(timelineId);
+        return ResponseEntity.ok(projectTasks);
+    }
+
+    @Override
+    public ResponseEntity<Void> updateFinalProjectTasks(final Long timelineId, List<FinalProjectTask> finalProjectTasks) {
+        projectService.updateFinalProjectTasks(finalProjectTasks);
         return ResponseEntity.noContent().build();
     }
 
