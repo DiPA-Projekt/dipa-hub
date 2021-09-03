@@ -69,7 +69,6 @@ public class ProjectController implements ProjectApi {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("@securityService.isProjectMember(#timelineId)")
     @Override
     public ResponseEntity<Timeline> createProject(ProjectWithUser projectWithUser) {
         return ResponseEntity.ok(projectService.createProject(projectWithUser.getProject(), projectWithUser.getProjectOwner()));
@@ -82,38 +81,38 @@ public class ProjectController implements ProjectApi {
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("@securityService.isProjectMember(#timelineId)")
+    @PreAuthorize("@securityService.isProjectMember(#projectId)")
     @Override
     public ResponseEntity<List<ProjectRole>> getProjectRoles(final Long projectId) {
         return ResponseEntity.ok(projectService.getProjectRoles(projectId));
     }
 
-    @PreAuthorize("@securityService.isProjectMember(#timelineId)")
+    @PreAuthorize("@securityService.isProjectMember(#projectId)")
     @Override
     public ResponseEntity<List<User>> getProjectUsers(final Long projectId) {
         return ResponseEntity.ok(projectService.getProjectUsers(projectId));
     }
 
-    @PreAuthorize("@securityService.isProjectMember(#timelineId)")
+    @PreAuthorize("@securityService.isProjectMember(#projectId)")
     @Override
     public ResponseEntity<List<PropertyQuestion>> getProjectPropertyQuestions(final Long projectId) {
         return ResponseEntity.ok(projectService.getProjectPropertyQuestions(projectId));
     }
 
-    @PreAuthorize("@securityService.isProjectMemberAndHasRole(#timelineId, {'PE','PL'})")
+    @PreAuthorize("@securityService.isProjectMemberAndHasRole(#projectId, {'PE','PL'})")
     @Override
     public ResponseEntity<Void> updateProjectPropertyQuestion(final Long projectId, final PropertyQuestion propertyQuestion) {
         projectService.updateProjectPropertyQuestion(propertyQuestion);
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("@securityService.isProjectMember(#timelineId)")
+    @PreAuthorize("@securityService.isProjectMember(#projectId)")
     @Override
     public ResponseEntity<List<ProjectEventTemplate>> getEvents(final Long projectId) {
         return ResponseEntity.ok(projectService.getEvents(projectId));
     }
 
-    @PreAuthorize("@securityService.isProjectMember(#timelineId)")
+    @PreAuthorize("@securityService.isProjectMember(#projectId)")
     @Override
     public ResponseEntity<Void> updateProjectEvent(final Long projectId, final ProjectEvent projectEvent) {
         projectService.updateProjectEvent(projectEvent);

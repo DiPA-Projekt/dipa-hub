@@ -21,7 +21,6 @@ public class DownloadFileController implements FilesApi {
     @Autowired
     private DownloadFileService downloadFileService;
 
-    @PreAuthorize("@securityService.isProjectMember(#timelineId)")
     @Override
     public ResponseEntity<Resource> getFile(final Long fileId) {
 
