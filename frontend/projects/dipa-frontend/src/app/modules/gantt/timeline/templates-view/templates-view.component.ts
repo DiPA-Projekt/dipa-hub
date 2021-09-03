@@ -3,14 +3,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { GanttControlsService } from '../../gantt-controls.service';
 import { TemplatesComponent } from './templates/templates.component';
 
-import {
-  OperationTypesService,
-  ProjectApproachesService,
-  TimelineTemplatesService,
-  TimelineTemplate,
-  Timeline,
-  TimelinesService,
-} from 'dipa-api-client';
+import { TimelineTemplatesService, TimelineTemplate, Timeline, TimelinesService } from 'dipa-api-client';
 
 import { forkJoin, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
