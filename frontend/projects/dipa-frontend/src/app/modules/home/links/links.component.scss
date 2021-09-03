@@ -7,6 +7,14 @@
     min-width: 36px;
     padding: 0 3px;
   }
+
+  ::ng-deep app-external-link {
+    .mat-button {
+      color: #000;
+      min-width: 36px;
+      padding: 0 3px;
+    }
+  }
 }
 
 .mat-card-title {

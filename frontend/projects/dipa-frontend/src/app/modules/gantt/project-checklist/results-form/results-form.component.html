@@ -37,15 +37,11 @@
                             (focus)="onFocus($event, ['results', i, 'formFields', j, 'value'])"
                             (keyup.esc)="onEscape($event, ['results', i, 'formFields', j, 'value'])"
                           />
-                          <button
-                            matSuffix
-                            mat-icon-button
+                          <app-external-link
                             *ngIf="formField.get('type')?.value === 'URL'"
-                            [disabled]="!isValidUrl(formField.get('value'))"
-                            (click)="onClickLink(formField)"
-                          >
-                            <mat-icon style="font-size: 150%"> open_in_new </mat-icon>
-                          </button>
+                            matSuffix
+                            [url]="formField.get('value')?.value"
+                          ></app-external-link>
 
                           <mat-error
                             *ngIf="
