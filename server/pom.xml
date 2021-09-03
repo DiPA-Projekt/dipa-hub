@@ -6,7 +6,7 @@
     <parent>
         <groupId>online.dipa.hub</groupId>
         <artifactId>dipa-parent</artifactId>
-        <version>0.15.1-SNAPSHOT</version>
+        <version>0.16.2-SNAPSHOT</version>
     </parent>
     <artifactId>dipa-server</artifactId>
     <name>DiPA :: Server</name>
@@ -201,6 +201,24 @@
                         <version>${project.version}</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>src/main/config/${profile.properties.file}</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.liquibase</groupId>
