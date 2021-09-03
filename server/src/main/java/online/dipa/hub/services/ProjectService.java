@@ -485,16 +485,16 @@ public class ProjectService {
                     List<FormFieldEntity> oldEntriesList = new ArrayList<>(oldProjectTask.getEntries());
                     List<FormField> newList = projectTask.getEntries().stream().map(FormField.class::cast).collect(Collectors.toList());
 
-                    for (int i = 0; i < newList.size(); i++) {
+                    for (FormField formField: newList) {
 
-                        if (i > oldEntriesList.size() - 1) {
+                        if (formField.getId() == null) {
 
-                            FormFieldEntity entity = new FormFieldEntity(newList.get(i));
+                            FormFieldEntity entity = new FormFieldEntity(formField);
                             entity.setProjectTask(oldProjectTask);
 
-                            if (newList.get(i).getOptions() != null) {
+                            if (entity.getOptions() != null) {
 
-                                Set<OptionEntryEntity> options = newList.get(i).getOptions()
+                                Set<OptionEntryEntity> options = formField.getOptions()
                                                                         .stream().map(o -> conversionService.convert(o, OptionEntryEntity.class))
                                                                         .collect(Collectors.toSet());
 
@@ -506,8 +506,9 @@ public class ProjectService {
                             formFieldRepository.save(entity);
                         }
                         else {
-                            oldEntriesList.get(i).setValue(newList.get(i).getValue());
-                            oldEntriesList.get(i).setShow(newList.get(i).getShow());
+                            findFormFieldEntity(oldEntriesList, formField.getId()).setValue(formField.getValue());
+                            findFormFieldEntity(oldEntriesList, formField.getId()).setShow(formField.getShow());
+
                         }
                     }
                     updateResults(oldProjectTask, projectTask);
