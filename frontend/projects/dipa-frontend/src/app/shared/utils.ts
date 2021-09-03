@@ -15,7 +15,7 @@ export default class Utils {
   }
 
   public static isValidUrl(urlString: string): boolean {
-    const urlRegExp = RegExp('(https?)\\:\\/\\/(www.)+[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,6}(\\/\\S*)?');
-    return urlRegExp.test(urlString);
+    const regex = /(https?)\:\/\/(www.)+[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,6}(\/\S*)?/;
+    return regex.test(urlString);
   }
 }
