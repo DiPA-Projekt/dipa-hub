@@ -17,9 +17,12 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
+import { InvalidLinkDialogComponent } from './invalid-link-dialog/invalid-link-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ExternalLinkComponent } from './external-link/external-link.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [InvalidLinkDialogComponent, ExternalLinkComponent],
   imports: [
     MatCardModule,
     MatIconModule,
@@ -38,6 +41,8 @@ import { MatListModule } from '@angular/material/list';
     FormsModule,
     CommonModule,
     MatListModule,
+    MatDialogModule,
   ],
+  exports: [ExternalLinkComponent],
 })
 export class SharedModule {}

@@ -35,15 +35,7 @@
                   >star</mat-icon
                 >
               </button>
-              <a href="{{ link.url }}" target="_blank" rel="noopener" mat-button>
-                <mat-icon
-                  role="img"
-                  class="mat-icon notranslate material-icons mat-icon-no-color"
-                  aria-hidden="true"
-                  data-mat-icon-type="font"
-                  >open_in_new</mat-icon
-                >
-              </a>
+              <app-external-link [url]="link.url"></app-external-link>
             </div>
           </mat-card-header>
         </mat-card>

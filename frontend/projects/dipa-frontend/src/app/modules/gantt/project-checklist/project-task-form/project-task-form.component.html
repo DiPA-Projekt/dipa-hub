@@ -20,15 +20,11 @@
                   (focus)="onFocus($event, ['entries', i, 'value'])"
                   (keyup.esc)="onEscape($event, ['entries', i, 'value'])"
                 />
-                <button
-                  matSuffix
-                  mat-icon-button
+                <app-external-link
                   *ngIf="entry.get('type')?.value === 'URL'"
-                  [disabled]="!isValidUrl(entry.get('value'))"
-                  (click)="onClickLink(entry)"
-                >
-                  <mat-icon style="font-size: 150%"> open_in_new </mat-icon>
-                </button>
+                  matSuffix
+                  [url]="entry.get('value')?.value"
+                ></app-external-link>
 
                 <mat-error *ngIf="entry.get('value').hasError('email') && !entry.get('value').hasError('required')">
                   Bitte gültige E-Mailadresse eingeben
