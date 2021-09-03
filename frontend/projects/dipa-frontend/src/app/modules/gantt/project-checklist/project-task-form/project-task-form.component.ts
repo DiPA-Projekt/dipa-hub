@@ -82,19 +82,6 @@ export class ProjectTaskFormComponent implements OnInit, OnDestroy {
     this.projectDataSubscription?.unsubscribe();
   }
 
-  public isValidUrl(entry: FormControl): boolean {
-    const urlString = entry.value as string;
-    return urlString?.length > 0 && entry.valid;
-  }
-
-  public onClickLink(entry: FormControl): void {
-    const url = entry.get('value')?.value as string;
-
-    if (this.isValidUrl(entry.get('value') as FormControl)) {
-      window.open(url);
-    }
-  }
-
   public get entriesArray(): FormArray {
     return this.formGroup.get('entries') as FormArray;
   }

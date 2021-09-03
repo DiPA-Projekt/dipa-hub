@@ -61,19 +61,6 @@ export class ResultsFormComponent implements OnInit {
     this.initSelectedFields();
   }
 
-  public isValidUrl(formField: FormControl): boolean {
-    const urlString = formField.value as string;
-    return urlString?.length > 0 && formField.valid;
-  }
-
-  public onClickLink(formField: FormControl): void {
-    const url = formField.get('value')?.value as string;
-
-    if (this.isValidUrl(formField.get('value') as FormControl)) {
-      window.open(url);
-    }
-  }
-
   public getFormFieldsArray(resultGroup: FormGroup): FormArray {
     return resultGroup.get(['formFields']) as FormArray;
   }

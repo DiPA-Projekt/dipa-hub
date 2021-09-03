@@ -8,19 +8,19 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./project-tour.component.scss'],
 })
 export class ProjectTourComponent implements OnInit, OnDestroy {
-  projectFlowSubscription: Subscription;
+  public projectFlowItems: ProjectFlowStep[] = [];
 
-  projectFlowItems: ProjectFlowStep[] = [];
+  private projectFlowSubscription: Subscription;
 
-  constructor(private projectFlowService: ProjectFlowService) {}
+  public constructor(private projectFlowService: ProjectFlowService) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.projectFlowSubscription = this.projectFlowService.getProjectFlow().subscribe((data: ProjectFlowStep[]) => {
       this.projectFlowItems = data;
     });
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.projectFlowSubscription?.unsubscribe();
   }
 }
