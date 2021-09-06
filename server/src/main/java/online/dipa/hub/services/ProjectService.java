@@ -148,20 +148,17 @@ public class ProjectService {
     }
 
     public void updateProjectData(final Long projectId, final Project project) {
-        List<Long> projectIds = userInformationService.getProjectIdList();
         var projectEntity = projectRepository.getById(projectId);
 
-        if (projectIds.contains(projectId)) {
-            projectEntity.setAkz(project.getAkz());
-            projectEntity.setName(project.getName());
-            projectEntity.setProjectSize(project.getProjectSize().toString());
-            projectEntity.setClient(project.getClient());
-            projectEntity.setDepartment(project.getDepartment());
-            projectEntity.setArchived(project.getArchived());
+        projectEntity.setAkz(project.getAkz());
+        projectEntity.setName(project.getName());
+        projectEntity.setProjectSize(project.getProjectSize().toString());
+        projectEntity.setClient(project.getClient());
+        projectEntity.setDepartment(project.getDepartment());
+        projectEntity.setArchived(project.getArchived());
 
-            projectRepository.save(projectEntity);
+        projectRepository.save(projectEntity);
 
-        }
     }
 
     public Timeline createProject(final Project project, final User projectOwner) {
@@ -209,20 +206,16 @@ public class ProjectService {
 
     public List<PropertyQuestion> getProjectPropertyQuestions (final Long projectId) {
         List<PropertyQuestion> propertyQuestions = new ArrayList<>();
-        List<Long> projectIds = userInformationService.getProjectIdList();
 
-        if (projectIds.contains(projectId)) {
+        ProjectEntity project = timelineService.getProject(projectId);
+        ProjectPropertyQuestionTemplateEntity template = project.getProjectPropertyQuestionTemplate();
 
-            ProjectEntity project = timelineService.getProject(projectId);
-            ProjectPropertyQuestionTemplateEntity template = project.getProjectPropertyQuestionTemplate();
-
-            if(template != null) {
-                propertyQuestions.addAll(template.getProjectPropertyQuestions()
-                                                 .stream()
-                                                 .map(p -> conversionService.convert(p, PropertyQuestion.class))
-                                                 .collect(Collectors.toList())
-                );
-            }
+        if(template != null) {
+            propertyQuestions.addAll(template.getProjectPropertyQuestions()
+                                             .stream()
+                                             .map(p -> conversionService.convert(p, PropertyQuestion.class))
+                                             .collect(Collectors.toList())
+            );
         }
 
         return propertyQuestions;
@@ -269,112 +262,96 @@ public class ProjectService {
 
     public List<ProjectTask> getProjectTasks (final Long projectId) {
         List<ProjectTask> projectTasks = new ArrayList<>();
-        List<Long> projectIds = userInformationService.getProjectIdList();
+        ProjectEntity project = projectRepository.getById(projectId);
 
-        if (projectIds.contains(projectId)) {
+        initializeProjectTasks(projectId);
 
-            ProjectEntity project = projectRepository.getById(projectId);
+        ProjectTaskTemplateEntity template = project.getProjectTaskTemplate();
+        if (project.getProjectSize() != null && !project.getProjectSize()
+                    .equals(Project.ProjectSizeEnum.BIG.toString()) && template != null) {
 
-            initializeProjectTasks(projectId);
-
-            ProjectTaskTemplateEntity template = project.getProjectTaskTemplate();
-            if (project.getProjectSize() != null && !project.getProjectSize()
-                                                            .equals(Project.ProjectSizeEnum.BIG.toString()) && template != null) {
-
-                projectTasks.addAll(template.getProjectTasks()
-                                            .stream()
-                                            .map(p -> conversionService.convert(p, ProjectTask.class))
-                                            .filter(Objects::nonNull)
-                                            .filter(task -> task.getProjectPropertyQuestion() == null || task.getProjectPropertyQuestion().getSelected())
-                                            .sorted(Comparator.comparing(ProjectTask::getSortOrder))
-                                            .collect(Collectors.toList()));
-            }
+            projectTasks.addAll(template.getProjectTasks()
+                                        .stream()
+                                        .map(p -> conversionService.convert(p, ProjectTask.class))
+                                        .filter(Objects::nonNull)
+                                        .filter(task -> task.getProjectPropertyQuestion() == null || task.getProjectPropertyQuestion().getSelected())
+                                        .sorted(Comparator.comparing(ProjectTask::getSortOrder))
+                                        .collect(Collectors.toList()));
         }
         return projectTasks;
     }
 
     public List<PermanentProjectTask> getPermanentProjectTasks (final Long projectId) {
         List<PermanentProjectTask> permanentProjectTasks = new ArrayList<>();
-        List<Long> projectIds = userInformationService.getProjectIdList();
 
-        if (projectIds.contains(projectId)) {
+        ProjectEntity project = projectRepository.getById(projectId);
 
-            ProjectEntity project = projectRepository.getById(projectId);
+        initializeProjectTasks(projectId);
 
-            initializeProjectTasks(projectId);
+        PermanentProjectTaskTemplateEntity template = project.getPermanentProjectTaskTemplate();
 
-            PermanentProjectTaskTemplateEntity template = project.getPermanentProjectTaskTemplate();
+        if (project.getProjectSize() != null && !project.getProjectSize()
+                                                        .equals(Project.ProjectSizeEnum.BIG.toString()) && template != null) {
 
-            if (project.getProjectSize() != null && !project.getProjectSize()
-                                                            .equals(Project.ProjectSizeEnum.BIG.toString()) && template != null) {
-
-                permanentProjectTasks.addAll(template.getPermanentProjectTasks()
-                                                     .stream()
-                                                     .map(p -> conversionService.convert(p, PermanentProjectTask.class))
-                                                     .filter(Objects::nonNull)
-                                                     .filter(task -> task.getProjectTask().getProjectPropertyQuestion() == null ||
-                                                             task.getProjectTask().getProjectPropertyQuestion().getSelected())
-                                                     .sorted(Comparator.comparing(PermanentProjectTask::getSortOrder))
-                                                     .collect(Collectors.toList()));
-            }
+            permanentProjectTasks.addAll(template.getPermanentProjectTasks()
+                                        .stream()
+                                        .map(p -> conversionService.convert(p, PermanentProjectTask.class))
+                                        .filter(Objects::nonNull)
+                                        .filter(task -> task.getProjectTask().getProjectPropertyQuestion() == null ||
+                                                task.getProjectTask().getProjectPropertyQuestion().getSelected())
+                                        .sorted(Comparator.comparing(PermanentProjectTask::getSortOrder))
+                                        .collect(Collectors.toList()));
         }
+
         return permanentProjectTasks;
     }
 
     public List<NonPermanentProjectTask> getNonPermanentProjectTasks (final Long projectId) {
         List<NonPermanentProjectTask> nonPermanentProjectTasks = new ArrayList<>();
-        List<Long> projectIds = userInformationService.getProjectIdList();
 
-        if (projectIds.contains(projectId)) {
+        ProjectEntity project = projectRepository.getById(projectId);
 
-            ProjectEntity project = projectRepository.getById(projectId);
+        initializeProjectTasks(projectId);
 
-            initializeProjectTasks(projectId);
+        NonPermanentProjectTaskTemplateEntity template = project.getNonPermanentProjectTaskTemplate();
+        if (project.getProjectSize() != null && !project.getProjectSize()
+                                                        .equals(Project.ProjectSizeEnum.BIG.toString())
+                && template != null) {
 
-            NonPermanentProjectTaskTemplateEntity template = project.getNonPermanentProjectTaskTemplate();
-            if (project.getProjectSize() != null && !project.getProjectSize()
-                                                            .equals(Project.ProjectSizeEnum.BIG.toString())
-                    && template != null) {
-
-                nonPermanentProjectTasks.addAll(template.getNonPermanentProjectTasks()
-                                                        .stream()
-                                                        .map(p -> conversionService.convert(p, NonPermanentProjectTask.class))
-                                                        .filter(Objects::nonNull)
-                                                        .filter(task -> task.getProjectTask().getProjectPropertyQuestion() == null ||
-                                                                task.getProjectTask().getProjectPropertyQuestion().getSelected())
-                                                        .sorted(Comparator.comparing(NonPermanentProjectTask::getSortOrder))
-                                                        .collect(Collectors.toList()));
-            }
+            nonPermanentProjectTasks.addAll(template.getNonPermanentProjectTasks()
+                                                 .stream()
+                                                 .map(p -> conversionService.convert(p, NonPermanentProjectTask.class))
+                                                 .filter(Objects::nonNull)
+                                                 .filter(task -> task.getProjectTask().getProjectPropertyQuestion() == null ||
+                                                         task.getProjectTask().getProjectPropertyQuestion().getSelected())
+                                                 .sorted(Comparator.comparing(NonPermanentProjectTask::getSortOrder))
+                                                 .collect(Collectors.toList()));
         }
+
         return nonPermanentProjectTasks;
     }
 
 
     public List<FinalProjectTask> getFinalProjectTasks (final Long projectId) {
         List<FinalProjectTask> finalProjectTasks = new ArrayList<>();
-        List<Long> projectIds = userInformationService.getProjectIdList();
+        ProjectEntity project = projectRepository.getById(projectId);
 
-        if (projectIds.contains(projectId)) {
+        initializeProjectTasks(projectId);
 
-            ProjectEntity project = projectRepository.getById(projectId);
+        FinalProjectTaskTemplateEntity template = project.getFinalProjectTaskTemplate();
 
-            initializeProjectTasks(projectId);
+        if (project.getProjectSize() != null && !project.getProjectSize()
+                                                        .equals(Project.ProjectSizeEnum.BIG.toString()) && template != null) {
 
-            FinalProjectTaskTemplateEntity template = project.getFinalProjectTaskTemplate();
-
-            if (project.getProjectSize() != null && !project.getProjectSize()
-                                                            .equals(Project.ProjectSizeEnum.BIG.toString()) && template != null) {
-
-                finalProjectTasks.addAll(template.getFinalProjectTasks()
-                                                 .stream()
-                                                 .map(p -> conversionService.convert(p, FinalProjectTask.class))
-                                                 .filter(Objects::nonNull)
-                                                 .filter(task -> task.getProjectTask().getProjectPropertyQuestion() == null ||
-                                                         task.getProjectTask().getProjectPropertyQuestion().getSelected())
-                                                 //                                                     .sorted(Comparator.comparing(FinalProjectTask::getSortOrder))
-                                                 .collect(Collectors.toList()));
-            }
+            finalProjectTasks.addAll(template.getFinalProjectTasks()
+                                             .stream()
+                                             .map(p -> conversionService.convert(p, FinalProjectTask.class))
+                                             .filter(Objects::nonNull)
+                                             .filter(task -> task.getProjectTask().getProjectPropertyQuestion() == null ||
+                                                     task.getProjectTask().getProjectPropertyQuestion().getSelected())
+                                             .collect(Collectors.toList()));
         }
+
         return finalProjectTasks;
     }
 
@@ -554,51 +531,48 @@ public class ProjectService {
 
     public void updateProjectTask (final Long projectId, final ProjectTask projectTask) {
 
-        List<Long> projectIds = userInformationService.getProjectIdList();
+        ProjectEntity project = projectRepository.getById(projectId);
+        ProjectTaskTemplateEntity template = project.getProjectTaskTemplate();
 
-        if (projectIds.contains(projectId)) {
+        template.getProjectTasks().stream()
+                .filter(t -> t.getId().equals(projectTask.getId()))
+                .findFirst()
+                .ifPresent(oldProjectTask -> {
+                    List<FormFieldEntity> oldEntriesList = new ArrayList<>(oldProjectTask.getEntries());
+                    List<FormField> newList = projectTask.getEntries().stream().map(FormField.class::cast).collect(Collectors.toList());
 
-            ProjectEntity project = projectRepository.getById(projectId);
-            ProjectTaskTemplateEntity template = project.getProjectTaskTemplate();
+                    for (FormField formField: newList) {
 
-            template.getProjectTasks().stream()
-                    .filter(t -> t.getId().equals(projectTask.getId()))
-                    .findFirst()
-                    .ifPresent(oldProjectTask -> {
-                        List<FormFieldEntity> oldEntriesList = new ArrayList<>(oldProjectTask.getEntries());
-                        List<FormField> newList = projectTask.getEntries().stream().map(FormField.class::cast).collect(Collectors.toList());
+                        if (formField.getId() == null) {
 
-                        for (int i = 0; i < newList.size(); i++) {
+                            FormFieldEntity entity = new FormFieldEntity(formField);
+                            entity.setProjectTask(oldProjectTask);
 
-                            if (i > oldEntriesList.size() - 1) {
+                            if (entity.getOptions() != null) {
 
-                                FormFieldEntity entity = new FormFieldEntity(newList.get(i));
-                                entity.setProjectTask(oldProjectTask);
+                                Set<OptionEntryEntity> options = formField.getOptions()
+                                                                        .stream().map(o -> conversionService.convert(o, OptionEntryEntity.class))
+                                                                        .collect(Collectors.toSet());
 
-                                if (newList.get(i).getOptions() != null) {
-
-                                    Set<OptionEntryEntity> options = newList.get(i).getOptions()
-                                                                            .stream().map(o -> conversionService.convert(o, OptionEntryEntity.class))
-                                                                            .collect(Collectors.toSet());
-
-                                    options.forEach(opt -> {
-                                        opt.setFormField(entity);
-                                        optionEntryRepository.save(opt);
-                                    });
-                                }
-                                formFieldRepository.save(entity);
+                                options.forEach(opt -> {
+                                    opt.setFormField(entity);
+                                    optionEntryRepository.save(opt);
+                                });
                             }
-                            else {
-                                oldEntriesList.get(i).setValue(newList.get(i).getValue());
-                                oldEntriesList.get(i).setShow(newList.get(i).getShow());
-                            }
+                            formFieldRepository.save(entity);
                         }
-                        updateResults(oldProjectTask, projectTask);
+                        else {
+                            findFormFieldEntity(oldEntriesList, formField.getId()).setValue(formField.getValue());
+                            findFormFieldEntity(oldEntriesList, formField.getId()).setShow(formField.getShow());
 
-                        oldProjectTask.setCompleted(projectTask.getCompleted());
-                        projectTaskRepository.save(oldProjectTask);
-                    });
-        }
+                        }
+                    }
+                    updateResults(oldProjectTask, projectTask);
+
+                    oldProjectTask.setCompleted(projectTask.getCompleted());
+                    projectTaskRepository.save(oldProjectTask);
+                });
+
 
     }
 

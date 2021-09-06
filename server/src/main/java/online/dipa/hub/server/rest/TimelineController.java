@@ -4,6 +4,8 @@ import java.util.List;
 
 import online.dipa.hub.api.model.*;
 
+import online.dipa.hub.services.IncrementService;
+import online.dipa.hub.services.SecurityService;
 import online.dipa.hub.services.TimelineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +27,12 @@ public class TimelineController implements TimelinesApi {
 
     @Autowired
     private TimelineService timelineService;
+
+    @Autowired
+    private IncrementService incrementService;
+
+    @Autowired
+    private SecurityService securityService;
 
     @Override
     public ResponseEntity<List<Timeline>> getTimelines() {
@@ -43,25 +52,33 @@ public class TimelineController implements TimelinesApi {
         return ResponseEntity.ok(timelines);
     }
 
+    @PreAuthorize("@securityService.isProjectMemberAndHasRole(#timelineId, {'PE','PL'})")
     @Override
     public ResponseEntity<Void> applyOperation(Long timelineId, InlineObject inlineObject) {
 
         switch (inlineObject.getOperation()) {
-            case MOVE_TIMELINE: timelineService.moveTimelineByDays(timelineId, inlineObject.getDays());
-                break;
-            case MOVE_TIMELINE_START: timelineService.moveTimelineStartByDays(timelineId, inlineObject.getDays());
-                break;
-            case MOVE_TIMELINE_END: timelineService.moveTimelineEndByDays(timelineId, inlineObject.getDays());
-                break;
-            case MOVE_MILESTONE: timelineService.moveMileStoneByDays(timelineId, inlineObject.getDays(), inlineObject.getMovedMilestoneId());
-                break;
-            default:
-                return ResponseEntity.notFound().build();
+        case MOVE_TIMELINE:
+            timelineService.moveTimelineByDays(timelineId, inlineObject.getDays());
+            break;
+        case MOVE_TIMELINE_START:
+            timelineService.moveTimelineStartByDays(timelineId, inlineObject.getDays());
+            break;
+        case MOVE_TIMELINE_END:
+            timelineService.moveTimelineEndByDays(timelineId, inlineObject.getDays());
+            break;
+        case MOVE_MILESTONE:
+            timelineService.moveMileStoneByDays(timelineId, inlineObject.getDays(), inlineObject.getMovedMilestoneId());
+            break;
+        default:
+            return ResponseEntity.notFound()
+                                 .build();
         }
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent()
+                             .build();
     }
 
+    @PreAuthorize("@securityService.isProjectMember(#timelineId)")
     @Override
     public ResponseEntity<Void> updateTimeline(final Long timelineId, Timeline timeline) {
 
@@ -69,6 +86,7 @@ public class TimelineController implements TimelinesApi {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("@securityService.isProjectMember(#timelineId)")
     @Override
     public ResponseEntity<Resource> getTimelineCalendar(final Long timelineId) {
 
