@@ -31,6 +31,7 @@
                 mat-stroked-button
                 color="primary"
                 (click)="updateTemplateStandard()"
+                [disabled]="!userHasProjectEditRights"
               >
                 Übernehmen
               </button>
@@ -54,6 +55,7 @@
                 mat-stroked-button
                 color="primary"
                 (click)="updateTemplateNonStandard()"
+                [disabled]="!userHasProjectEditRights"
               >
                 Übernehmen
               </button>

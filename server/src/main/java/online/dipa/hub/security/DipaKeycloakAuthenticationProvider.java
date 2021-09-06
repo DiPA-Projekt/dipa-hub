@@ -9,6 +9,7 @@ import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import online.dipa.hub.persistence.entities.UserEntity;
 import online.dipa.hub.persistence.repositories.UserRepository;
@@ -35,7 +36,9 @@ public class DipaKeycloakAuthenticationProvider extends KeycloakAuthenticationPr
         final List<GrantedAuthority> grantedAuthorities = new ArrayList<>(token.getAuthorities());
 
         grantedAuthorities.add(DipaGrantedAuthorities.TENANT_MEMBER);
-
+        user.getOrganisationRoles().forEach(r ->
+                grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_"
+                        + r.getAbbreviation())));
         return new DipaKeycloakAuthenticationToken(user.getId(), token.getAccount(), token.isInteractive(),
                 grantedAuthorities);
     }
