@@ -334,29 +334,24 @@ public class ProjectService {
 
     public List<FinalProjectTask> getFinalProjectTasks (final Long projectId) {
         List<FinalProjectTask> finalProjectTasks = new ArrayList<>();
-        List<Long> projectIds = userInformationService.getProjectIdList();
+        ProjectEntity project = projectRepository.getById(projectId);
 
-        if (projectIds.contains(projectId)) {
+        initializeProjectTasks(projectId);
 
-            ProjectEntity project = projectRepository.getById(projectId);
+        FinalProjectTaskTemplateEntity template = project.getFinalProjectTaskTemplate();
 
-            initializeProjectTasks(projectId);
+        if (project.getProjectSize() != null && !project.getProjectSize()
+                                                        .equals(Project.ProjectSizeEnum.BIG.toString()) && template != null) {
 
-            FinalProjectTaskTemplateEntity template = project.getFinalProjectTaskTemplate();
-
-            if (project.getProjectSize() != null && !project.getProjectSize()
-                                                            .equals(Project.ProjectSizeEnum.BIG.toString()) && template != null) {
-
-                finalProjectTasks.addAll(template.getFinalProjectTasks()
-                                                 .stream()
-                                                 .map(p -> conversionService.convert(p, FinalProjectTask.class))
-                                                 .filter(Objects::nonNull)
-                                                 .filter(task -> task.getProjectTask().getProjectPropertyQuestion() == null ||
-                                                         task.getProjectTask().getProjectPropertyQuestion().getSelected())
-                                                 //                                                     .sorted(Comparator.comparing(FinalProjectTask::getSortOrder))
-                                                 .collect(Collectors.toList()));
-            }
+            finalProjectTasks.addAll(template.getFinalProjectTasks()
+                                             .stream()
+                                             .map(p -> conversionService.convert(p, FinalProjectTask.class))
+                                             .filter(Objects::nonNull)
+                                             .filter(task -> task.getProjectTask().getProjectPropertyQuestion() == null ||
+                                                     task.getProjectTask().getProjectPropertyQuestion().getSelected())
+                                             .collect(Collectors.toList()));
         }
+
         return finalProjectTasks;
     }
 

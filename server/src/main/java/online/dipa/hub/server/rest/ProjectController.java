@@ -119,12 +119,14 @@ public class ProjectController implements ProjectApi {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("@securityService.isProjectMember(#timelineId)")
     @Override
     public ResponseEntity<List<FinalProjectTask>> getFinalProjectTasks(final Long timelineId) {
         List<FinalProjectTask> projectTasks =  projectService.getFinalProjectTasks(timelineId);
         return ResponseEntity.ok(projectTasks);
     }
 
+    @PreAuthorize("@securityService.isProjectMember(#timelineId)")
     @Override
     public ResponseEntity<Void> updateFinalProjectTasks(final Long timelineId, List<FinalProjectTask> finalProjectTasks) {
         projectService.updateFinalProjectTasks(finalProjectTasks);
