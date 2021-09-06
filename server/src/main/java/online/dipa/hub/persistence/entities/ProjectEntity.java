@@ -31,7 +31,7 @@ public class ProjectEntity extends BaseEntity {
     @NotNull
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private ProjectApproachEntity projectApproach;
-    
+
     @OneToOne(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private ProjectTaskTemplateEntity projectTaskTemplate;
@@ -43,6 +43,10 @@ public class ProjectEntity extends BaseEntity {
     @OneToOne(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private NonPermanentProjectTaskTemplateEntity nonPermanentProjectTaskTemplate;
+
+    @OneToOne(mappedBy = "project")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private FinalProjectTaskTemplateEntity finalProjectTaskTemplate;
 
     @OneToOne(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -63,7 +67,7 @@ public class ProjectEntity extends BaseEntity {
     @OneToMany(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<RecurringEventTypeEntity> recurringEventTypes;
-    
+
     @OneToMany(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<ProjectEventTemplateEntity> eventTemplates;
@@ -157,6 +161,14 @@ public class ProjectEntity extends BaseEntity {
         this.nonPermanentProjectTaskTemplate = nonPermanentProjectTaskTemplate;
     }
 
+    public FinalProjectTaskTemplateEntity getFinalProjectTaskTemplate() {
+        return finalProjectTaskTemplate;
+    }
+
+    public void setFinalProjectTaskTemplate(final FinalProjectTaskTemplateEntity finalProjectTaskTemplate) {
+        this.finalProjectTaskTemplate = finalProjectTaskTemplate;
+    }
+
     public PlanTemplateEntity getPlanTemplate() {
         return planTemplate;
     }
@@ -189,7 +201,7 @@ public class ProjectEntity extends BaseEntity {
     public void setProjectSize(final String projectSize) {
         this.projectSize = projectSize;
     }
-    
+
     public String getClient() {
         return client;
     }
@@ -213,7 +225,7 @@ public class ProjectEntity extends BaseEntity {
     public void setStartDate(final OffsetDateTime startDate) {
         this.startDate = startDate;
     }
-    
+
     public OffsetDateTime getEndDate() {
         return endDate;
     }
@@ -221,7 +233,7 @@ public class ProjectEntity extends BaseEntity {
     public void setEndDate(final OffsetDateTime endDate) {
         this.endDate = endDate;
     }
-    
+
     public void setArchived(final boolean archived) {
         this.archived = archived;
     }

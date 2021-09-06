@@ -13,23 +13,11 @@
           <mat-card class="card-container">
             <mat-card-content>{{ action.explanation }}</mat-card-content>
             <mat-card-actions>
-              <a
+              <app-external-link
                 *ngFor="let link of action.links"
-                href="{{ link.url }}"
-                target="_blank"
-                rel="noopener"
-                mat-button
-                color="primary"
-              >
-                {{ link.name }}
-                <mat-icon
-                  role="img"
-                  class="icon-small mat-icon notranslate material-icons mat-icon-no-color"
-                  aria-hidden="true"
-                  data-mat-icon-type="font"
-                  >open_in_new
-                </mat-icon>
-              </a>
+                [url]="link.url"
+                [title]="link.name"
+              ></app-external-link>
             </mat-card-actions>
           </mat-card>
         </div>

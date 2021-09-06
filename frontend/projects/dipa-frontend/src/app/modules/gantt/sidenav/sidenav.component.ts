@@ -97,7 +97,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
           },
           {
             name: 'Abschluss',
-            icon: 'outlined_flag',
+            icon: 'flag',
             route: `gantt/${this.selectedTimelineId}/project-checklist/end`,
           },
         ],

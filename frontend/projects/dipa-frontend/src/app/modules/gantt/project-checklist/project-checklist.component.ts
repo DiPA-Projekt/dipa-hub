@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/
 import { FormGroup } from '@angular/forms';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { Subscription } from 'rxjs';
-import { NonPermanentProjectTask, PermanentProjectTask, ProjectService } from 'dipa-api-client';
+import { NonPermanentProjectTask, PermanentProjectTask, FinalProjectTask, ProjectService } from 'dipa-api-client';
 import { MatVerticalStepper } from '@angular/material/stepper';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
@@ -20,7 +20,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 export class ProjectChecklistComponent implements OnChanges, OnDestroy {
   @Input() public timelineId: number;
   @Input() public checklistType: string;
-  @Input() public projectTasks: NonPermanentProjectTask[] | PermanentProjectTask[];
+  @Input() public projectTasks: NonPermanentProjectTask[] | PermanentProjectTask[] | FinalProjectTask[];
 
   public formGroup: FormGroup;
 
