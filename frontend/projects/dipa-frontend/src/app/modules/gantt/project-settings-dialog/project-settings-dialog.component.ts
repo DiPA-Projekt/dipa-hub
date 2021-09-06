@@ -221,6 +221,10 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
           value: project?.department,
           disabled: this.isNotEditable,
         }),
+        description: new FormControl({
+          value: project?.description,
+          disabled: this.isNotEditable,
+        }),
         archived: [project?.archived],
       });
       this.formGroupTimelineData = this.fb.group({
@@ -262,6 +266,7 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
       projectSize: new FormControl({ value: project?.projectSize }),
       client: new FormControl({ value: project?.client, disabled: true }),
       department: new FormControl({ value: project?.department, disabled: true }),
+      description: new FormControl({ value: project?.description, disabled: true }),
       archived: [project?.archived],
     });
 

@@ -59,6 +59,10 @@ Project:
       description: responsible department for this project
       type: string
       example: "II A 1"
+    description:
+      description: description text for this project eg. goals or special features
+      type: string
+      example: "Projekt mit dem Ziel..."
     archived:
       description: Flag if this project is archived.
       type: boolean

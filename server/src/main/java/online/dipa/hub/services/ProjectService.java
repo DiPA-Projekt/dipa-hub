@@ -158,6 +158,7 @@ public class ProjectService {
             projectEntity.setClient(project.getClient());
             projectEntity.setDepartment(project.getDepartment());
             projectEntity.setArchived(project.getArchived());
+            projectEntity.setDescription(project.getDescription());
 
             projectRepository.save(projectEntity);
 

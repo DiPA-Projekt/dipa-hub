@@ -80,19 +80,21 @@ public class ProjectEntity extends BaseEntity {
     private OffsetDateTime startDate;
     private OffsetDateTime endDate;
     private boolean archived;
+    private String description;
 
 
     public ProjectEntity() {
         super();
     }
 
-    public ProjectEntity(String name, String projectSize, String projectType, OffsetDateTime startDate, OffsetDateTime endDate, boolean archived) {
+    public ProjectEntity(String name, String projectSize, String projectType, OffsetDateTime startDate, OffsetDateTime endDate, boolean archived, String description) {
         this.name = name;
         this.projectSize = projectSize;
         this.projectType = projectType;
         this.startDate = startDate;
         this.endDate = endDate;
         this.archived = archived;
+        this.description = description;
     }
 
     public ProjectEntity(Project project) {
@@ -102,6 +104,7 @@ public class ProjectEntity extends BaseEntity {
         this.startDate = OffsetDateTime.of(project.getStart(),LocalTime.MIDNIGHT, ZoneOffset.UTC);
         this.endDate = OffsetDateTime.of(project.getEnd(), LocalTime.MIDNIGHT, ZoneOffset.UTC);
         this.archived = false;
+        this.description = project.getDescription();
     }
 
     public String getName() {
@@ -240,6 +243,14 @@ public class ProjectEntity extends BaseEntity {
 
     public boolean isArchived() {
         return archived;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(final String description) {
+        this.description = description;
     }
 
     public ProjectRoleTemplateEntity getProjectRoleTemplate() {
