@@ -223,6 +223,18 @@
                       />
                     </label>
                   </mat-form-field>
+
+                  <mat-form-field fxFlex="100%">
+                    <mat-label>Projektbeschreibung</mat-label>
+                    <label>
+                      <textarea
+                        matInput
+                        formControlName="description"
+                        (change)="onSubmitProjectData(formGroupProjectData)"
+                      >
+                      </textarea>
+                    </label>
+                  </mat-form-field>
                 </div>
               </form>
             </mat-expansion-panel>

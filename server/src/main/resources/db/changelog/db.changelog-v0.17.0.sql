@@ -31,3 +31,7 @@ CREATE TABLE final_project_task(
     REFERENCES project_task (id)
     ON DELETE CASCADE
 )
+
+-- changeset id:project_add_column_description
+ALTER TABLE project
+ADD description TEXT
