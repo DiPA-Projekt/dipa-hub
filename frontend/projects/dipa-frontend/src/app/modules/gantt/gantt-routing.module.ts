@@ -10,6 +10,7 @@ import { ProjectOrganizationComponent } from './project-organization/project-org
 import { ProjectEndComponent } from './project-end/project-end.component';
 import { ProjectControlComponent } from './project-control/project-control.component';
 import { ProjectQuickstartComponent } from './project-quickstart/project-quickstart.component';
+import { ProjectDashboardComponent } from './project-dashboard/project-dashboard.component';
 
 const routes: Routes = [
   {
@@ -30,7 +31,8 @@ const routes: Routes = [
       {
         path: 'project-checklist',
         children: [
-          { path: '', redirectTo: 'quickstart', pathMatch: 'full' },
+          { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+          { path: 'dashboard', component: ProjectDashboardComponent },
           { path: 'quickstart', component: ProjectQuickstartComponent },
           { path: 'control', component: ProjectControlComponent },
           { path: 'end', component: ProjectEndComponent },
