@@ -387,7 +387,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
 
   private getFilterObject<T>(fullObj: T[], key: string): string[] {
     const filterSet: string[] = [];
-    fullObj.filter((obj: T) => {
+    fullObj.forEach((obj: T) => {
       if (!filterSet.includes(obj[key])) {
         filterSet.push(obj[key]);
       }

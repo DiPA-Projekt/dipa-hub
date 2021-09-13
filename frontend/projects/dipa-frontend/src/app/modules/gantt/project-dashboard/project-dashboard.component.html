@@ -12,7 +12,7 @@
         <mat-card-content>
           <div fxLayout="row wrap" fxLayoutAlign="space-between">
             <div fxFlex="30%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="30%">
-              <table mat-table [dataSource]="projectDetailsDataSource">
+              <table mat-table [dataSource]="projectDetailsDataSource" aria-label="Projektdaten">
                 <ng-container matColumnDef="key">
                   <th mat-header-cell *matHeaderCellDef scope="col"></th>
                   <td mat-cell *matCellDef="let element">{{ element?.key }}</td>
@@ -66,7 +66,7 @@
         </mat-card-title>
         <mat-card-content>
           <div class="example-container">
-            <table mat-table [dataSource]="milestoneDataSource">
+            <table mat-table [dataSource]="milestoneDataSource" aria-label="Nächste Meilensteine">
               <ng-container matColumnDef="milestoneDate">
                 <th mat-header-cell *matHeaderCellDef scope="col">Datum</th>
                 <td mat-cell *matCellDef="let element">{{ element.milestoneDate }}</td>
@@ -110,7 +110,12 @@
                 >
               </ng-template>
               <div class="example-container">
-                <table mat-table [dataSource]="overdueEventDataSource" multiTemplateDataRows>
+                <table
+                  mat-table
+                  [dataSource]="overdueEventDataSource"
+                  multiTemplateDataRows
+                  aria-label="Überfällige Termine"
+                >
                   <ng-container matColumnDef="eventType">
                     <th mat-header-cell *matHeaderCellDef scope="col">
                       <mat-form-field
@@ -227,7 +232,7 @@
                 <span [matBadge]="eventDataSource.data.length" matBadgeOverlap="false">Offen</span>
               </ng-template>
               <div class="example-container">
-                <table mat-table [dataSource]="eventDataSource" multiTemplateDataRows>
+                <table mat-table [dataSource]="eventDataSource" multiTemplateDataRows aria-label="Nächste Termine">
                   <ng-container matColumnDef="eventType">
                     <th mat-header-cell *matHeaderCellDef scope="col">
                       <mat-form-field
@@ -356,7 +361,7 @@
         </mat-card-title>
         <mat-card-content>
           <div class="example-container">
-            <table mat-table [dataSource]="organisationDataSource">
+            <table mat-table [dataSource]="organisationDataSource" aria-label="Projektrollen">
               <ng-container matColumnDef="abbreviation">
                 <th mat-header-cell *matHeaderCellDef scope="col">Abkürzung</th>
                 <td mat-cell *matCellDef="let element">
