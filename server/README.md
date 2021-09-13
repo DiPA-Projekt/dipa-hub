@@ -42,7 +42,7 @@ Der Mandant wird aus der "niedrigsten" Subdomain des Requests ermittelt. Also z.
 
 ```
 <tenantid>.develop.dipa.online
-***REMOVED***velop.dipa.online
+itzbund.develop.dipa.online
 ba.develop.dipa.online
 ```
 

@@ -17,7 +17,7 @@ ExternalLink:
     url:
       description: Absolute url path to external page
       type: string
-      example: "https://***REMOVED***/secure/Dashboard.jspa"
+      example: "https://..."
     img:
       description: Path to preview image
       type: string

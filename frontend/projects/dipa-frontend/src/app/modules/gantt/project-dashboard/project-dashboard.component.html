@@ -1,0 +1,410 @@
+<div class="content-container">
+  <div fxLayout="row wrap" fxLayoutGap="16px grid">
+    <div fxFlex="100%">
+      <mat-card class="example-card">
+        <mat-card-title>
+          <div fxLayoutAlign="start center">
+            <mat-icon role="img" class="mat-icon" style="margin-right: 10px" aria-hidden="true">info</mat-icon>
+            {{ projectData?.name }}
+          </div>
+        </mat-card-title>
+        <mat-card-subtitle style="margin-left: 40px">{{ projectData?.akz }}</mat-card-subtitle>
+        <mat-card-content>
+          <div fxLayout="row wrap" fxLayoutAlign="space-between">
+            <div fxFlex="30%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="30%">
+              <table mat-table [dataSource]="projectDetailsDataSource" aria-label="Projektdaten">
+                <ng-container matColumnDef="key">
+                  <th mat-header-cell *matHeaderCellDef scope="col"></th>
+                  <td mat-cell *matCellDef="let element">{{ element?.key }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="value">
+                  <th mat-header-cell *matHeaderCellDef scope="col"></th>
+                  <td mat-cell *matCellDef="let element" style="font-weight: 500">{{ element?.value }}</td>
+                </ng-container>
+
+                <tr
+                  mat-row
+                  *matRowDef="let row; columns: projectDetailsDisplayedColumns"
+                  class="example-element-row"
+                  style="height: 30px"
+                ></tr>
+              </table>
+            </div>
+
+            <div fxFlex="60%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="60%">
+              <div fxLayout="row wrap" fxLayoutAlign="space-between center">
+                <div>{{ projectStartDate }}</div>
+                <div>{{ projectEndDate }}</div>
+              </div>
+              <section class="progress-bar-section" style="position: relative">
+                <mat-progress-bar mode="determinate" [value]="projectProgress">{{ projectProgress }}%</mat-progress-bar>
+                <div
+                  style="position: absolute; padding: 10px; color: white"
+                  [style.left.%]="math.max(0, projectProgress - 8)"
+                >
+                  {{ projectProgress }}%
+                </div>
+              </section>
+              noch {{ projectDaysLeft }} Tage verbleibend
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
+      <mat-card class="example-card">
+        <mat-card-title>
+          <div fxLayoutAlign="space-between center" (click)="onItemSelected(schedulesNavItem)">
+            <div fxLayoutAlign="space-between center">
+              <mat-icon role="img" class="mat-icon" style="margin-right: 10px" aria-hidden="true">tour</mat-icon>
+              Meilensteine
+            </div>
+            <mat-icon role="img" class="mat-icon" aria-hidden="true">open_in_new</mat-icon>
+          </div>
+        </mat-card-title>
+        <mat-card-content>
+          <div class="example-container">
+            <table mat-table [dataSource]="milestoneDataSource" aria-label="Nächste Meilensteine">
+              <ng-container matColumnDef="milestoneDate">
+                <th mat-header-cell *matHeaderCellDef scope="col">Datum</th>
+                <td mat-cell *matCellDef="let element">{{ element.milestoneDate }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef scope="col">Name</th>
+                <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="due">
+                <th mat-header-cell *matHeaderCellDef scope="col">Fällig in</th>
+                <td mat-cell *matCellDef="let element">{{ element.due }} Tagen</td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="milestoneDisplayedColumns; sticky: true"></tr>
+              <tr mat-row *matRowDef="let row; columns: milestoneDisplayedColumns" class="example-element-row"></tr>
+            </table>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
+      <mat-card class="example-card">
+        <mat-card-title>
+          <div fxLayoutAlign="space-between center" (click)="onItemSelected(schedulesNavItem)">
+            <div fxLayoutAlign="space-between center">
+              <mat-icon role="img" class="mat-icon" style="margin-right: 10px" aria-hidden="true">event_note</mat-icon>
+              Termine
+            </div>
+            <mat-icon role="img" class="mat-icon" aria-hidden="true">open_in_new</mat-icon>
+          </div>
+        </mat-card-title>
+        <mat-card-content>
+          <mat-tab-group>
+            <mat-tab *ngIf="overdueEventDataSource.data.length">
+              <ng-template mat-tab-label>
+                <span [matBadge]="overdueEventDataSource.data.length" matBadgeOverlap="false" matBadgeColor="warn"
+                  >Überfällig</span
+                >
+              </ng-template>
+              <div class="example-container">
+                <table
+                  mat-table
+                  [dataSource]="overdueEventDataSource"
+                  multiTemplateDataRows
+                  aria-label="Überfällige Termine"
+                >
+                  <ng-container matColumnDef="eventType">
+                    <th mat-header-cell *matHeaderCellDef scope="col">
+                      <mat-form-field
+                        floatLabel="never"
+                        class="noHint"
+                        *ngFor="let filter of filterSelectOverdueObj"
+                        style="width: 55px"
+                      >
+                        <mat-label>Filter</mat-label>
+                        <mat-select
+                          name="{{ filter.columnProp }}"
+                          [(ngModel)]="filter.modelValue"
+                          (selectionChange)="filterOverdueChange(filter, $event)"
+                          multiple
+                        >
+                          <mat-select-trigger style="text-align: center">
+                            {{ getSelectTrigger(filter.modelValue) }}
+                          </mat-select-trigger>
+                          <mat-option [value]="item" *ngFor="let item of filter.options">
+                            <div class="appointmentTypeIconWrapper" [ngSwitch]="item">
+                              <div class="appointmentTypeIcon" style="margin-left: 12px">
+                                <ng-container *ngSwitchCase="'TYPE_SINGLE_APPOINTMENT'">
+                                  <span class="circle" title="Einzeltermin">E</span>
+                                  Einzeltermin
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'TYPE_APPT_SERIES'">
+                                  <span class="circle bg-color-violett" title="Terminserie">S</span>
+                                  Terminserie
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'TYPE_RECURRING_EVENT'">
+                                  <span class="circle bg-color-brown" title="Wiederkehrender Termin">W</span>
+                                  Wiederkehrender Termin
+                                </ng-container>
+                              </div>
+                            </div>
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                      <div class="appointmentTypeIconWrapper" [ngSwitch]="element.eventType">
+                        <div class="appointmentTypeIcon" style="margin-left: 12px">
+                          <ng-container *ngSwitchCase="'TYPE_SINGLE_APPOINTMENT'">
+                            <span class="circle" title="Einzeltermin">E</span>
+                          </ng-container>
+                          <ng-container *ngSwitchCase="'TYPE_APPT_SERIES'">
+                            <span class="circle bg-color-violett" title="Terminserie">S</span>
+                          </ng-container>
+                          <ng-container *ngSwitchCase="'TYPE_RECURRING_EVENT'">
+                            <span class="circle bg-color-brown" title="Wiederkehrender Termin">W</span>
+                          </ng-container>
+                        </div>
+                      </div>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="eventDate">
+                    <th mat-header-cell *matHeaderCellDef scope="col">Datum</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.eventDate }}
+                      <div *ngIf="element.eventTime" style="font-size: 12px; color: #a0a0a0">
+                        {{ element.eventTime }}
+                      </div>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="title">
+                    <th mat-header-cell *matHeaderCellDef scope="col">Name</th>
+                    <td mat-cell *matCellDef="let element">{{ element.title }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="due">
+                    <th mat-header-cell *matHeaderCellDef scope="col">Fällig seit</th>
+                    <td mat-cell *matCellDef="let element">{{ -element.due }} Tagen</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="expandedDetail">
+                    <td mat-cell *matCellDef="let element" [attr.colspan]="overdueEventDisplayedColumns.length">
+                      <div
+                        class="example-element-detail"
+                        [@detailExpand]="element == expandedOverdueEventElement ? 'expanded' : 'collapsed'"
+                      >
+                        <div class="example-element-description">
+                          <div *ngIf="element.duration" class="example-element-duration">
+                            Dauer: {{ element.duration }} h
+                          </div>
+                          <div *ngIf="element.participants" class="example-element-participants">
+                            Teilnehmende:
+                            <mat-chip-list aria-label="Chip selection">
+                              <span>
+                                <mat-chip *ngFor="let chip of element.participants" class="smallChip">
+                                  {{ chip }}
+                                </mat-chip>
+                              </span>
+                            </mat-chip-list>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="overdueEventDisplayedColumns; sticky: true"></tr>
+                  <tr
+                    mat-row
+                    *matRowDef="let element; columns: overdueEventDisplayedColumns"
+                    class="example-element-row"
+                    [class.example-expanded-row]="expandedOverdueEventElement === element"
+                    (click)="expandedOverdueEventElement = expandedOverdueEventElement === element ? null : element"
+                  ></tr>
+                  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+                </table>
+              </div>
+            </mat-tab>
+
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <span [matBadge]="eventDataSource.data.length" matBadgeOverlap="false">Offen</span>
+              </ng-template>
+              <div class="example-container">
+                <table mat-table [dataSource]="eventDataSource" multiTemplateDataRows aria-label="Nächste Termine">
+                  <ng-container matColumnDef="eventType">
+                    <th mat-header-cell *matHeaderCellDef scope="col">
+                      <mat-form-field
+                        floatLabel="never"
+                        class="noHint"
+                        *ngFor="let filter of filterSelectObj"
+                        style="width: 55px"
+                      >
+                        <mat-label>Filter</mat-label>
+                        <mat-select
+                          name="{{ filter.columnProp }}"
+                          [(ngModel)]="filter.modelValue"
+                          (selectionChange)="filterChange(filter, $event)"
+                          multiple
+                        >
+                          <mat-select-trigger style="text-align: center">
+                            {{ getSelectTrigger(filter.modelValue) }}
+                          </mat-select-trigger>
+                          <mat-option [value]="item" *ngFor="let item of filter.options">
+                            <div class="appointmentTypeIconWrapper" [ngSwitch]="item">
+                              <div class="appointmentTypeIcon" style="margin-left: 12px">
+                                <ng-container *ngSwitchCase="'TYPE_SINGLE_APPOINTMENT'">
+                                  <span class="circle" title="Einzeltermin">E</span>
+                                  Einzeltermin
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'TYPE_APPT_SERIES'">
+                                  <span class="circle bg-color-violett" title="Terminserie">S</span>
+                                  Terminserie
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'TYPE_RECURRING_EVENT'">
+                                  <span class="circle bg-color-brown" title="Wiederkehrender Termin">W</span>
+                                  Wiederkehrender Termin
+                                </ng-container>
+                              </div>
+                            </div>
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                      <div class="appointmentTypeIconWrapper" [ngSwitch]="element.eventType">
+                        <div class="appointmentTypeIcon" style="margin-left: 12px">
+                          <ng-container *ngSwitchCase="'TYPE_SINGLE_APPOINTMENT'">
+                            <span class="circle" title="Einzeltermin">E</span>
+                          </ng-container>
+                          <ng-container *ngSwitchCase="'TYPE_APPT_SERIES'">
+                            <span class="circle bg-color-violett" title="Terminserie">S</span>
+                          </ng-container>
+                          <ng-container *ngSwitchCase="'TYPE_RECURRING_EVENT'">
+                            <span class="circle bg-color-brown" title="Wiederkehrender Termin">W</span>
+                          </ng-container>
+                        </div>
+                      </div>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="eventDate">
+                    <th mat-header-cell *matHeaderCellDef scope="col">Datum</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.eventDate }}
+                      <div *ngIf="element.eventTime" style="font-size: 12px; color: #a0a0a0">
+                        {{ element.eventTime }}
+                      </div>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="title">
+                    <th mat-header-cell *matHeaderCellDef scope="col">Name</th>
+                    <td mat-cell *matCellDef="let element">{{ element.title }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="due">
+                    <th mat-header-cell *matHeaderCellDef scope="col">Fällig in</th>
+                    <td mat-cell *matCellDef="let element">{{ element.due }} Tagen</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="expandedDetail">
+                    <td mat-cell *matCellDef="let element" [attr.colspan]="eventDisplayedColumns.length">
+                      <div
+                        class="example-element-detail"
+                        [@detailExpand]="element == expandedEventElement ? 'expanded' : 'collapsed'"
+                      >
+                        <div class="example-element-description">
+                          <div *ngIf="element.duration" class="example-element-duration">
+                            Dauer: {{ element.duration }} h
+                          </div>
+                          <div *ngIf="element.participants" class="example-element-participants">
+                            Teilnehmende:
+                            <mat-chip-list aria-label="Chip selection">
+                              <span>
+                                <mat-chip *ngFor="let chip of element.participants" class="smallChip">
+                                  {{ chip }}
+                                </mat-chip>
+                              </span>
+                            </mat-chip-list>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="eventDisplayedColumns; sticky: true"></tr>
+                  <tr
+                    mat-row
+                    *matRowDef="let element; columns: eventDisplayedColumns"
+                    class="example-element-row"
+                    [class.example-expanded-row]="expandedEventElement === element"
+                    (click)="expandedEventElement = expandedEventElement === element ? null : element"
+                  ></tr>
+                  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+                </table>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
+      <mat-card class="example-card">
+        <mat-card-title>
+          <div fxLayoutAlign="space-between center" (click)="onItemSelected(organisationNavItem)">
+            <div fxLayoutAlign="space-between center">
+              <mat-icon role="img" class="mat-icon" style="margin-right: 10px" aria-hidden="true">group</mat-icon>
+              Projektorganisation
+            </div>
+            <mat-icon role="img" class="mat-icon" aria-hidden="true">open_in_new</mat-icon>
+          </div>
+        </mat-card-title>
+        <mat-card-content>
+          <div class="example-container">
+            <table mat-table [dataSource]="organisationDataSource" aria-label="Projektrollen">
+              <ng-container matColumnDef="abbreviation">
+                <th mat-header-cell *matHeaderCellDef scope="col">Abkürzung</th>
+                <td mat-cell *matCellDef="let element">
+                  <span title="" class="circle" style="font-size: 12px">{{ element.abbreviation }}</span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="role">
+                <th mat-header-cell *matHeaderCellDef scope="col">Rolle</th>
+                <td mat-cell *matCellDef="let element">{{ element.role }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="user">
+                <th mat-header-cell *matHeaderCellDef scope="col">Benutzer</th>
+                <td mat-cell *matCellDef="let element">{{ element.username }}</td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="organisationDisplayedColumns; sticky: true"></tr>
+              <tr mat-row *matRowDef="let row; columns: organisationDisplayedColumns" class="example-element-row"></tr>
+            </table>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div fxFlex="100%">
+      <mat-card class="example-card">
+        <mat-card-title>
+          <div fxLayoutAlign="space-between center">
+            <div fxLayoutAlign="space-between center">
+              <mat-icon role="img" class="mat-icon" style="margin-right: 10px" aria-hidden="true">description</mat-icon>
+              Projektbeschreibung
+            </div>
+          </div>
+        </mat-card-title>
+        <mat-card-content>
+          <div
+            class="full-width"
+            style="max-height: 200px; overflow: auto"
+            [innerHTML]="projectData?.description"
+          ></div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

@@ -35,4 +35,14 @@ INSERT INTO final_project_task (title, icon, sort_order, final_project_task_temp
 DELETE FROM non_permanent_project_task
 WHERE title = 'Erledigungsanzeige erstellen und versenden'
 
+--changeset id:update-project-task-form-field-clear-url
+UPDATE project_task_form_field
+SET value = ''
+WHERE value LIKE '%***REMOVED***%'
+
+--changeset id:update-external_link-clear-url
+UPDATE external_link
+SET url = ''
+WHERE url LIKE '%***REMOVED***%'
+
 
