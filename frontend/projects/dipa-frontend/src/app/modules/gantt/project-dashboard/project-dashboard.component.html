@@ -14,10 +14,12 @@
             <div fxFlex="30%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="30%">
               <table mat-table [dataSource]="projectDetailsDataSource">
                 <ng-container matColumnDef="key">
+                  <th mat-header-cell *matHeaderCellDef scope="col"></th>
                   <td mat-cell *matCellDef="let element">{{ element?.key }}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="value">
+                  <th mat-header-cell *matHeaderCellDef scope="col"></th>
                   <td mat-cell *matCellDef="let element" style="font-weight: 500">{{ element?.value }}</td>
                 </ng-container>
 
@@ -66,17 +68,17 @@
           <div class="example-container">
             <table mat-table [dataSource]="milestoneDataSource">
               <ng-container matColumnDef="milestoneDate">
-                <th mat-header-cell *matHeaderCellDef>Datum</th>
+                <th mat-header-cell *matHeaderCellDef scope="col">Datum</th>
                 <td mat-cell *matCellDef="let element">{{ element.milestoneDate }}</td>
               </ng-container>
 
               <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <th mat-header-cell *matHeaderCellDef scope="col">Name</th>
                 <td mat-cell *matCellDef="let element">{{ element.name }}</td>
               </ng-container>
 
               <ng-container matColumnDef="due">
-                <th mat-header-cell *matHeaderCellDef>Fällig in</th>
+                <th mat-header-cell *matHeaderCellDef scope="col">Fällig in</th>
                 <td mat-cell *matCellDef="let element">{{ element.due }} Tagen</td>
               </ng-container>
 
@@ -110,7 +112,7 @@
               <div class="example-container">
                 <table mat-table [dataSource]="overdueEventDataSource" multiTemplateDataRows>
                   <ng-container matColumnDef="eventType">
-                    <th mat-header-cell *matHeaderCellDef>
+                    <th mat-header-cell *matHeaderCellDef scope="col">
                       <mat-form-field
                         floatLabel="never"
                         class="noHint"
@@ -165,7 +167,7 @@
                     </td>
                   </ng-container>
                   <ng-container matColumnDef="eventDate">
-                    <th mat-header-cell *matHeaderCellDef>Datum</th>
+                    <th mat-header-cell *matHeaderCellDef scope="col">Datum</th>
                     <td mat-cell *matCellDef="let element">
                       {{ element.eventDate }}
                       <div *ngIf="element.eventTime" style="font-size: 12px; color: #a0a0a0">
@@ -174,11 +176,11 @@
                     </td>
                   </ng-container>
                   <ng-container matColumnDef="title">
-                    <th mat-header-cell *matHeaderCellDef>Name</th>
+                    <th mat-header-cell *matHeaderCellDef scope="col">Name</th>
                     <td mat-cell *matCellDef="let element">{{ element.title }}</td>
                   </ng-container>
                   <ng-container matColumnDef="due">
-                    <th mat-header-cell *matHeaderCellDef>Fällig seit</th>
+                    <th mat-header-cell *matHeaderCellDef scope="col">Fällig seit</th>
                     <td mat-cell *matCellDef="let element">{{ -element.due }} Tagen</td>
                   </ng-container>
 
@@ -227,7 +229,7 @@
               <div class="example-container">
                 <table mat-table [dataSource]="eventDataSource" multiTemplateDataRows>
                   <ng-container matColumnDef="eventType">
-                    <th mat-header-cell *matHeaderCellDef>
+                    <th mat-header-cell *matHeaderCellDef scope="col">
                       <mat-form-field
                         floatLabel="never"
                         class="noHint"
@@ -282,7 +284,7 @@
                     </td>
                   </ng-container>
                   <ng-container matColumnDef="eventDate">
-                    <th mat-header-cell *matHeaderCellDef>Datum</th>
+                    <th mat-header-cell *matHeaderCellDef scope="col">Datum</th>
                     <td mat-cell *matCellDef="let element">
                       {{ element.eventDate }}
                       <div *ngIf="element.eventTime" style="font-size: 12px; color: #a0a0a0">
@@ -291,11 +293,11 @@
                     </td>
                   </ng-container>
                   <ng-container matColumnDef="title">
-                    <th mat-header-cell *matHeaderCellDef>Name</th>
+                    <th mat-header-cell *matHeaderCellDef scope="col">Name</th>
                     <td mat-cell *matCellDef="let element">{{ element.title }}</td>
                   </ng-container>
                   <ng-container matColumnDef="due">
-                    <th mat-header-cell *matHeaderCellDef>Fällig in</th>
+                    <th mat-header-cell *matHeaderCellDef scope="col">Fällig in</th>
                     <td mat-cell *matCellDef="let element">{{ element.due }} Tagen</td>
                   </ng-container>
 
@@ -356,19 +358,19 @@
           <div class="example-container">
             <table mat-table [dataSource]="organisationDataSource">
               <ng-container matColumnDef="abbreviation">
-                <th mat-header-cell *matHeaderCellDef>Abkürzung</th>
+                <th mat-header-cell *matHeaderCellDef scope="col">Abkürzung</th>
                 <td mat-cell *matCellDef="let element">
                   <span title="" class="circle" style="font-size: 12px">{{ element.abbreviation }}</span>
                 </td>
               </ng-container>
 
               <ng-container matColumnDef="role">
-                <th mat-header-cell *matHeaderCellDef>Rolle</th>
+                <th mat-header-cell *matHeaderCellDef scope="col">Rolle</th>
                 <td mat-cell *matCellDef="let element">{{ element.role }}</td>
               </ng-container>
 
               <ng-container matColumnDef="user">
-                <th mat-header-cell *matHeaderCellDef>Benutzer</th>
+                <th mat-header-cell *matHeaderCellDef scope="col">Benutzer</th>
                 <td mat-cell *matCellDef="let element">{{ element.username }}</td>
               </ng-container>
 

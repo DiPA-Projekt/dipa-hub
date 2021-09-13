@@ -194,17 +194,6 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
     ];
   }
 
-  private static getEventTypeAbbreviation(value: string): string {
-    switch (value) {
-      case 'TYPE_SINGLE_APPOINTMENT':
-        return 'E';
-      case 'TYPE_APPT_SERIES':
-        return 'S';
-      case 'TYPE_RECURRING_EVENT':
-        return 'W';
-    }
-  }
-
   public ngOnInit(): void {
     this.paramsSubscription = this.activatedRoute.parent.parent.params.subscribe((params: Params) => {
       this.selectedTimelineId = parseInt(params.id, 10);
@@ -324,7 +313,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
     if (!modelValue) {
       return '';
     }
-    return modelValue.map((value) => ProjectDashboardComponent.getEventTypeAbbreviation(value)).join(', ');
+    return modelValue.map((value) => Utils.getEventTypeAbbreviation(value)).join(', ');
   }
 
   public filterAllOverdueAppointments(appointments: EventEntry[]): EventEntry[] {
@@ -385,7 +374,6 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
               const searchCol = data[col] as string;
               if (searchCol.toString().indexOf(searchTerm) !== -1) {
                 found = true;
-                return;
               }
             });
           }
