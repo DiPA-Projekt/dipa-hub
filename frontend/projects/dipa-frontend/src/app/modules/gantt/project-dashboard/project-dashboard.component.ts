@@ -163,7 +163,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
   public projectDaysLeft;
 
   private paramsSubscription: Subscription;
-  private projectSubscription: Subscription;
+  private projectDataSubscription: Subscription;
   private dataSubscription: Subscription;
 
   public constructor(
@@ -199,7 +199,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
       this.selectedTimelineId = parseInt(params.id, 10);
 
       this.timelineDataService.setProjectData(this.selectedTimelineId);
-      this.projectSubscription = this.timelineDataService.getProjectData().subscribe((data: Project) => {
+      this.projectDataSubscription = this.timelineDataService.getProjectData().subscribe((data: Project) => {
         this.projectData = { akz: data?.akz, name: data?.name, description: data?.description };
 
         const keyValues: KeyValuePair[] = [];
@@ -231,7 +231,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this.paramsSubscription?.unsubscribe();
     this.dataSubscription?.unsubscribe();
-    this.projectSubscription?.unsubscribe();
+    this.projectDataSubscription?.unsubscribe();
   }
 
   public setData(): void {
