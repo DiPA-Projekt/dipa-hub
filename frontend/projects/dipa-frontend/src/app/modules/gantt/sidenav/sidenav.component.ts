@@ -86,6 +86,11 @@ export class SidenavComponent implements OnInit, OnDestroy {
         route: `gantt/${this.selectedTimelineId}/project-checklist`,
         children: [
           {
+            name: 'Projektübersicht',
+            icon: 'dashboard',
+            route: `gantt/${this.selectedTimelineId}/project-checklist/dashboard`,
+          },
+          {
             name: 'Schnellstart Projektmanagement (Planung)',
             icon: 'play_arrow',
             route: `gantt/${this.selectedTimelineId}/project-checklist/quickstart`,
@@ -97,7 +102,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
           },
           {
             name: 'Abschluss',
-            icon: 'outlined_flag',
+            icon: 'flag',
             route: `gantt/${this.selectedTimelineId}/project-checklist/end`,
           },
         ],

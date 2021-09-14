@@ -1,0 +1,27 @@
+FinalProjectTask:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the task
+      type: integer
+      format: int64
+      example: 2
+    title:
+      description: The title of the task
+      type: string
+      example: "Übergabe TLM-->PL"
+    icon:
+      description: icon of the task
+      type: string
+      example: "shopping_cart"
+    sortOrder:
+      description: Sort order of the task
+      type: integer
+      format: int64
+      example: 2
+    projectTask:
+      description: Project task
+      type: object
+      $ref: "../models/projectTask.yml#/ProjectTask"
+  required:
+    - id

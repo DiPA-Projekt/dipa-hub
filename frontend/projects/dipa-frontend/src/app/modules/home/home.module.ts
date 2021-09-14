@@ -7,9 +7,10 @@ import { MaterialModule } from '../../material/material.module';
 import { ProjectTourComponent } from './project-tour/project-tour.component';
 import { LinksComponent } from './links/links.component';
 import { GanttModule } from '../gantt/gantt.module';
+import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
   declarations: [HomeComponent, ProjectTourComponent, LinksComponent],
-  imports: [CommonModule, MaterialModule, HomeRoutingModule, GanttModule],
+  imports: [CommonModule, MaterialModule, HomeRoutingModule, GanttModule, SharedModule],
 })
 export class HomeModule {}

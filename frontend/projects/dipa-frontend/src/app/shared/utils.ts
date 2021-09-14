@@ -13,4 +13,20 @@ export default class Utils {
     dateAtMidnight.setHours(0, 0, 0, 0);
     return dateAtMidnight;
   }
+
+  public static isValidUrl(urlString: string): boolean {
+    const regex = /(https?)\:\/\/(www.)+[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,6}(\/\S*)?/;
+    return regex.test(urlString);
+  }
+
+  public static getEventTypeAbbreviation(value: string): string {
+    switch (value) {
+      case 'TYPE_SINGLE_APPOINTMENT':
+        return 'E';
+      case 'TYPE_APPT_SERIES':
+        return 'S';
+      case 'TYPE_RECURRING_EVENT':
+        return 'W';
+    }
+  }
 }

@@ -144,7 +144,7 @@ export class ChartHeaderComponent implements OnInit, OnDestroy {
       next: () => {
         this.timelineDataService.setTimelines();
         this.timelineDataService.setProjectData(this.timelineData.id);
-        this.router.navigate([`/gantt/${this.timelineData.id}/project-checklist/quickstart`]);
+        this.router.navigate([`/gantt/${this.timelineData.id}/project-checklist/dashboard`]);
       },
       error: null,
       complete: () => void 0,

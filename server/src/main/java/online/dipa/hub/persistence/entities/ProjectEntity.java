@@ -31,7 +31,7 @@ public class ProjectEntity extends BaseEntity {
     @NotNull
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private ProjectApproachEntity projectApproach;
-    
+
     @OneToOne(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private ProjectTaskTemplateEntity projectTaskTemplate;
@@ -43,6 +43,10 @@ public class ProjectEntity extends BaseEntity {
     @OneToOne(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private NonPermanentProjectTaskTemplateEntity nonPermanentProjectTaskTemplate;
+
+    @OneToOne(mappedBy = "project")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private FinalProjectTaskTemplateEntity finalProjectTaskTemplate;
 
     @OneToOne(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -63,7 +67,7 @@ public class ProjectEntity extends BaseEntity {
     @OneToMany(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<RecurringEventTypeEntity> recurringEventTypes;
-    
+
     @OneToMany(mappedBy = "project")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<ProjectEventTemplateEntity> eventTemplates;
@@ -76,19 +80,21 @@ public class ProjectEntity extends BaseEntity {
     private OffsetDateTime startDate;
     private OffsetDateTime endDate;
     private boolean archived;
+    private String description;
 
 
     public ProjectEntity() {
         super();
     }
 
-    public ProjectEntity(String name, String projectSize, String projectType, OffsetDateTime startDate, OffsetDateTime endDate, boolean archived) {
+    public ProjectEntity(String name, String projectSize, String projectType, OffsetDateTime startDate, OffsetDateTime endDate, boolean archived, String description) {
         this.name = name;
         this.projectSize = projectSize;
         this.projectType = projectType;
         this.startDate = startDate;
         this.endDate = endDate;
         this.archived = archived;
+        this.description = description;
     }
 
     public ProjectEntity(Project project) {
@@ -98,6 +104,7 @@ public class ProjectEntity extends BaseEntity {
         this.startDate = OffsetDateTime.of(project.getStart(),LocalTime.MIDNIGHT, ZoneOffset.UTC);
         this.endDate = OffsetDateTime.of(project.getEnd(), LocalTime.MIDNIGHT, ZoneOffset.UTC);
         this.archived = false;
+        this.description = project.getDescription();
     }
 
     public String getName() {
@@ -157,6 +164,14 @@ public class ProjectEntity extends BaseEntity {
         this.nonPermanentProjectTaskTemplate = nonPermanentProjectTaskTemplate;
     }
 
+    public FinalProjectTaskTemplateEntity getFinalProjectTaskTemplate() {
+        return finalProjectTaskTemplate;
+    }
+
+    public void setFinalProjectTaskTemplate(final FinalProjectTaskTemplateEntity finalProjectTaskTemplate) {
+        this.finalProjectTaskTemplate = finalProjectTaskTemplate;
+    }
+
     public PlanTemplateEntity getPlanTemplate() {
         return planTemplate;
     }
@@ -189,7 +204,7 @@ public class ProjectEntity extends BaseEntity {
     public void setProjectSize(final String projectSize) {
         this.projectSize = projectSize;
     }
-    
+
     public String getClient() {
         return client;
     }
@@ -213,7 +228,7 @@ public class ProjectEntity extends BaseEntity {
     public void setStartDate(final OffsetDateTime startDate) {
         this.startDate = startDate;
     }
-    
+
     public OffsetDateTime getEndDate() {
         return endDate;
     }
@@ -221,13 +236,21 @@ public class ProjectEntity extends BaseEntity {
     public void setEndDate(final OffsetDateTime endDate) {
         this.endDate = endDate;
     }
-    
+
     public void setArchived(final boolean archived) {
         this.archived = archived;
     }
 
     public boolean isArchived() {
         return archived;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(final String description) {
+        this.description = description;
     }
 
     public ProjectRoleTemplateEntity getProjectRoleTemplate() {

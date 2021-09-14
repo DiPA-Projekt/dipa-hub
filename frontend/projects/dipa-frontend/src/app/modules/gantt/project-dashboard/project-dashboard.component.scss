@@ -1,0 +1,73 @@
+.progress-bar-section {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  height: 30px;
+}
+
+.mat-progress-bar {
+  height: 24px;
+  border-radius: 5px;
+}
+
+table {
+  width: 100%;
+}
+
+tr.example-detail-row {
+  height: 0;
+}
+
+tr.example-element-row:not(.example-expanded-row):hover {
+  background: whitesmoke;
+}
+
+tr.example-element-row:not(.example-expanded-row):active {
+  background: #efefef;
+}
+
+.example-element-row td {
+  border-bottom-width: 0;
+}
+
+.example-element-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.example-element-description {
+  padding: 16px;
+}
+
+mat-card-title {
+  border-radius: 5px;
+  padding: 5px;
+}
+
+mat-card-title:hover {
+  background: rgba(0,0,0,0.1);
+  cursor: pointer;
+}
+
+.circle {
+  line-height: 24px;
+  text-align: center;
+  border-radius: 50%;
+  height: 24px;
+  width: 24px;
+  background-color: #3f51b5;
+  color: #fff;
+  display: inline-block;
+}
+
+.bg-color-violett {
+  background-color: #800080;
+}
+
+.bg-color-brown {
+  background-color: #8b4513;
+}
+
+.noHint {
+  margin-bottom: -1.25em;
+}

@@ -34,9 +34,9 @@
          CurrentTenantContextHolder.setTenantId("itzbund");
      }
 
-     private void saveProject(String name, boolean archived) {
+     private void saveProject(String name, boolean archived, String description) {
          ProjectEntity project = new ProjectEntity(name,
-                 "SMALL", "internes Projekt",OffsetDateTime.now(), OffsetDateTime.now().plusDays(30), archived);
+                 "SMALL", "internes Projekt",OffsetDateTime.now(), OffsetDateTime.now().plusDays(30), archived, description);
          projectApproachRepository.findById(2L).ifPresent(project::setProjectApproach);
          projectRepository.save(project);
          projectsId.add(project.getId());
@@ -46,9 +46,9 @@
      public void setUp() {
          projectRepository.deleteAll();
 
-         saveProject("testProject1", false);
-         saveProject("testProject2", true);
-         saveProject("testProject3", true);
+         saveProject("testProject1", false, "Beschreibung 1");
+         saveProject("testProject2", true, "Beschreibung 2");
+         saveProject("testProject3", true, "Beschreibung 3");
      }
 
      @Nested
