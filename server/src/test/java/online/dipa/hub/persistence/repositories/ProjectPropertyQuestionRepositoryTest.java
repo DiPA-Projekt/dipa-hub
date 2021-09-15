@@ -25,7 +25,7 @@ class ProjectPropertyQuestionRepositoryTest {
 
     @BeforeAll
     static void setUpContext() {
-        CurrentTenantContextHolder.setTenantId("itzbund");
+        CurrentTenantContextHolder.setTenantId("weit");
     }
 
     @Nested
@@ -34,35 +34,35 @@ class ProjectPropertyQuestionRepositoryTest {
         @Test
         void should_return_when_question_exists() {
             // GIVEN
-            final ProjectPropertyQuestionTemplateEntity template = projectPropertyQuestionTemplateRepository
-                    .findByMaster().get();
+            final ProjectPropertyQuestionTemplateEntity template = projectPropertyQuestionTemplateRepository.findByMaster()
+                                                                                                            .get();
             final int sortOrder = 2;
 
             // WHEN
-            final Optional<ProjectPropertyQuestionEntity> propertyQuestion = projectPropertyQuestionRepository
-                    .findByTemplateAndSortOrder(template, sortOrder);
+            final Optional<ProjectPropertyQuestionEntity> propertyQuestion = projectPropertyQuestionRepository.findByTemplateAndSortOrder(
+                    template, sortOrder);
 
             // THEN
-            then(propertyQuestion)
-                    .isNotEmpty().get()
-                    .returns(sortOrder, ProjectPropertyQuestionEntity::getSortOrder)
-                    .returns("Arbeitest du mit weiteren Projektteammitgliedern zusammen?", ProjectPropertyQuestionEntity::getQuestion);
+            then(propertyQuestion).isNotEmpty()
+                                  .get()
+                                  .returns(sortOrder, ProjectPropertyQuestionEntity::getSortOrder)
+                                  .returns("Arbeitest du mit weiteren Projektteammitgliedern zusammen?",
+                                          ProjectPropertyQuestionEntity::getQuestion);
         }
 
         @Test
         void should_not_return_when_question_not_exists() {
             // GIVEN
-            final ProjectPropertyQuestionTemplateEntity template = projectPropertyQuestionTemplateRepository
-                    .findByMaster().get();
+            final ProjectPropertyQuestionTemplateEntity template = projectPropertyQuestionTemplateRepository.findByMaster()
+                                                                                                            .get();
             final int sortOrder = 100;
 
             // WHEN
-            final Optional<ProjectPropertyQuestionEntity> propertyQuestion = projectPropertyQuestionRepository
-                    .findByTemplateAndSortOrder(template, sortOrder);
+            final Optional<ProjectPropertyQuestionEntity> propertyQuestion = projectPropertyQuestionRepository.findByTemplateAndSortOrder(
+                    template, sortOrder);
 
             // THEN
-            then(propertyQuestion)
-                    .isEmpty();
+            then(propertyQuestion).isEmpty();
         }
 
     }

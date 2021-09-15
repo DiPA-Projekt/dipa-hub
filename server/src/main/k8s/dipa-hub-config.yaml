@@ -7,8 +7,8 @@ data:
     dipa:
       tenants:
         dataSources:
-          - tenantId: itzbund
-            url: jdbc:postgresql://dipa-db-itzbund-@k8s.release.track@:5432/dipa
+          - tenantId: weit
+            url: jdbc:postgresql://dipa-db-weit-@k8s.release.track@:5432/dipa
             username: dipa
             password: dipasecret
             platform: postgres

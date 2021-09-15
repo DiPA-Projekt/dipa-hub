@@ -3,7 +3,6 @@ package online.dipa.hub.persistence.repositories;
 import static org.assertj.core.api.BDDAssertions.then;
 
 import java.util.Optional;
-import java.util.TimeZone;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
@@ -22,7 +21,7 @@ class UserRepositoryTest {
 
     @BeforeAll
     static void setUpContext() {
-        CurrentTenantContextHolder.setTenantId("itzbund");
+        CurrentTenantContextHolder.setTenantId("weit");
     }
 
     @Nested
