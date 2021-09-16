@@ -269,7 +269,7 @@ public class ProjectService {
 
         ProjectTaskTemplateEntity template = project.getProjectTaskTemplate();
         if (project.getProjectSize() != null && !project.getProjectSize()
-                    .equals(Project.ProjectSizeEnum.BIG.toString()) && template != null) {
+                                                        .equals(Project.ProjectSizeEnum.BIG.toString()) && template != null) {
 
             projectTasks.addAll(template.getProjectTasks()
                                         .stream()
@@ -295,13 +295,13 @@ public class ProjectService {
                                                         .equals(Project.ProjectSizeEnum.BIG.toString()) && template != null) {
 
             permanentProjectTasks.addAll(template.getPermanentProjectTasks()
-                                        .stream()
-                                        .map(p -> conversionService.convert(p, PermanentProjectTask.class))
-                                        .filter(Objects::nonNull)
-                                        .filter(task -> task.getProjectTask().getProjectPropertyQuestion() == null ||
-                                                task.getProjectTask().getProjectPropertyQuestion().getSelected())
-                                        .sorted(Comparator.comparing(PermanentProjectTask::getSortOrder))
-                                        .collect(Collectors.toList()));
+                                                 .stream()
+                                                 .map(p -> conversionService.convert(p, PermanentProjectTask.class))
+                                                 .filter(Objects::nonNull)
+                                                 .filter(task -> task.getProjectTask().getProjectPropertyQuestion() == null ||
+                                                         task.getProjectTask().getProjectPropertyQuestion().getSelected())
+                                                 .sorted(Comparator.comparing(PermanentProjectTask::getSortOrder))
+                                                 .collect(Collectors.toList()));
         }
 
         return permanentProjectTasks;
@@ -320,13 +320,13 @@ public class ProjectService {
                 && template != null) {
 
             nonPermanentProjectTasks.addAll(template.getNonPermanentProjectTasks()
-                                                 .stream()
-                                                 .map(p -> conversionService.convert(p, NonPermanentProjectTask.class))
-                                                 .filter(Objects::nonNull)
-                                                 .filter(task -> task.getProjectTask().getProjectPropertyQuestion() == null ||
-                                                         task.getProjectTask().getProjectPropertyQuestion().getSelected())
-                                                 .sorted(Comparator.comparing(NonPermanentProjectTask::getSortOrder))
-                                                 .collect(Collectors.toList()));
+                                                    .stream()
+                                                    .map(p -> conversionService.convert(p, NonPermanentProjectTask.class))
+                                                    .filter(Objects::nonNull)
+                                                    .filter(task -> task.getProjectTask().getProjectPropertyQuestion() == null ||
+                                                            task.getProjectTask().getProjectPropertyQuestion().getSelected())
+                                                    .sorted(Comparator.comparing(NonPermanentProjectTask::getSortOrder))
+                                                    .collect(Collectors.toList()));
         }
 
         return nonPermanentProjectTasks;
@@ -449,6 +449,14 @@ public class ProjectService {
         }
     }
 
+    /**
+     * create permanent, non-permanent and final project tasks
+     * @param projectTaskTemp
+     * @param newProjectTask
+     * @param permanentProjectTaskTemp
+     * @param nonPermanentProjectTaskTemp
+     * @param finalProjectTaskTemp
+     */
     public void createPermanentProjectTasks (ProjectTaskEntity projectTaskTemp, ProjectTaskEntity newProjectTask,
             PermanentProjectTaskTemplateEntity permanentProjectTaskTemp, NonPermanentProjectTaskTemplateEntity nonPermanentProjectTaskTemp,
             FinalProjectTaskTemplateEntity finalProjectTaskTemp) {
@@ -498,6 +506,11 @@ public class ProjectService {
         return propertyQuestionTemplate;
     }
 
+    /**
+     * create new results for new project task
+     * @param oldProjectTask
+     * @param newProjectTask
+     */
     private void createNewResults(ProjectTaskEntity oldProjectTask, ProjectTaskEntity newProjectTask) {
         for (ResultEntity result: oldProjectTask.getResults()) {
 
@@ -552,8 +565,8 @@ public class ProjectService {
                             if (entity.getOptions() != null) {
 
                                 Set<OptionEntryEntity> options = formField.getOptions()
-                                                                        .stream().map(o -> conversionService.convert(o, OptionEntryEntity.class))
-                                                                        .collect(Collectors.toSet());
+                                                                          .stream().map(o -> conversionService.convert(o, OptionEntryEntity.class))
+                                                                          .collect(Collectors.toSet());
 
                                 options.forEach(opt -> {
                                     opt.setFormField(entity);
@@ -665,6 +678,12 @@ public class ProjectService {
         }
     }
 
+    /**
+     * this method generates all recurring events at the first time called.
+     * Serie appointments are created only when a new result of type TYPE_APPT_SERIES is added.
+     * @param projectId
+     * @return
+     */
     public List<ProjectEventTemplate> getEvents (final Long projectId) {
         ProjectEntity project = projectRepository.getById(projectId);
         if (project.getEventTemplates() == null ||
@@ -876,6 +895,10 @@ public class ProjectService {
         return  rrule;
     }
 
+    /**
+     * create new project event template and new serie appointments
+     * @param result
+     */
     public void createSerieAppointments (ResultEntity result) {
         ProjectEntity project = result.getProjectTask().getProjectTaskTemplate()
                                       .getProject();
@@ -888,6 +911,10 @@ public class ProjectService {
         createEventTemplates(project, null, result);
     }
 
+    /**
+     * delete old serie appointments from project event template and create new ones
+     * @param result
+     */
     public void updateSerieAppointments(ResultEntity result) {
         RecurringEventPatternEntity recurringEventPattern = result.getRecurringEventPattern();
         convertFormFieldsToRecurringPattern(result, recurringEventPattern);
@@ -900,6 +927,11 @@ public class ProjectService {
                 result.getProjectEventTemplate(), null));
     }
 
+    /**
+     * Event pattern is generated based on the result's fields.
+     * @param result
+     * @param recurringEventPattern
+     */
     private void convertFormFieldsToRecurringPattern (ResultEntity result,
             RecurringEventPatternEntity recurringEventPattern) {
         recurringEventPattern.setTitle(filterFormFieldsFromResult(result, "serie"));
