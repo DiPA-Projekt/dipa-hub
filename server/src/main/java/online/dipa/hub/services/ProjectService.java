@@ -129,7 +129,7 @@ public class ProjectService {
     @Autowired
     private RecurringEventPatternRepository recurringEventPatternRepository;
 
-    private static final String ITZBUND_TENANT = "itzbund";
+    private static final String WEIT_TENANT = "weit";
     private static final String PROJECT_SIZE_SMALL = "SMALL";
     private static final String PROJECT_SIZE_MEDIUM = "MEDIUM";
     private static final String TYPE_RECURRING_EVENT = "TYPE_RECURRING_EVENT";
@@ -387,7 +387,7 @@ public class ProjectService {
         ProjectEntity project = projectRepository.getById(projectId);
         final String tenantId = CurrentTenantContextHolder.getTenantId();
 
-        if (tenantId.equals(ITZBUND_TENANT) && project.getProjectSize() != null &&
+        if (tenantId.equals(WEIT_TENANT) && project.getProjectSize() != null &&
                 (project.getProjectSize().equals(PROJECT_SIZE_SMALL) || project.getProjectSize().equals(PROJECT_SIZE_MEDIUM))
                 && project.getProjectTaskTemplate() == null) {
             ProjectTaskTemplateEntity projectTaskTemplate = projectTaskTemplateRepository.findByMaster().orElse(null);
