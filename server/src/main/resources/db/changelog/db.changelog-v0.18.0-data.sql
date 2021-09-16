@@ -170,7 +170,7 @@ UPDATE project_task_form_field
 SET value = 'Projekt-Arbeitsbereich'
 WHERE value = 'eAkte'
 
--- changeset id:delete-project-task-form-field_SharePoint context:itzbund
+--changeset id:delete-project-task-form-field_SharePoint context:itzbund
 WITH sharepoints AS (
     SELECT DISTINCT result_id
     FROM project_task_form_field
