@@ -287,25 +287,13 @@ export class ResultsFormComponent implements OnInit {
     resultsArray.push(
       this.fb.group({
         value: '',
-        key: 'department',
-        label: 'Referat',
+        key: 'organizationalUnit',
+        label: 'Organisationseinheit',
         required: false,
         sortOrder: 2,
         controlType: 'TEXTBOX',
         type: 'TEXT',
-        show: selectedValues.includes('formFields.department'),
-      })
-    );
-    resultsArray.push(
-      this.fb.group({
-        value: '',
-        key: 'taskArea',
-        label: 'Aufgabenbereich',
-        required: false,
-        sortOrder: 3,
-        controlType: 'TEXTBOX',
-        type: 'TEXT',
-        show: selectedValues.includes('formFields.taskArea'),
+        show: selectedValues.includes('formFields.organizationalUnit'),
       })
     );
     resultsArray.push(
@@ -314,7 +302,7 @@ export class ResultsFormComponent implements OnInit {
         key: 'note',
         label: 'Notizen',
         required: false,
-        sortOrder: 4,
+        sortOrder: 3,
         controlType: 'TEXTAREA',
         show: selectedValues.includes('formFields.note'),
       })
@@ -325,7 +313,7 @@ export class ResultsFormComponent implements OnInit {
         key: 'status',
         label: 'Status',
         required: false,
-        sortOrder: 5,
+        sortOrder: 4,
         controlType: 'DROPDOWN',
         show: selectedValues.includes('formFields.status'),
         options: this.getStatusOptions([
@@ -371,25 +359,13 @@ export class ResultsFormComponent implements OnInit {
     resultsArray.push(
       this.fb.group({
         value: '',
-        key: 'department',
-        label: 'Referat',
+        key: 'organizationalUnit',
+        label: 'Organisationseinheit',
         required: false,
         sortOrder: 3,
         controlType: 'TEXTBOX',
         type: 'TEXT',
-        show: selectedValues.includes('formFields.department'),
-      })
-    );
-    resultsArray.push(
-      this.fb.group({
-        value: '',
-        key: 'taskArea',
-        label: 'Aufgabenbereich',
-        required: false,
-        sortOrder: 4,
-        controlType: 'TEXTBOX',
-        type: 'TEXT',
-        show: selectedValues.includes('formFields.taskArea'),
+        show: selectedValues.includes('formFields.organizationalUnit'),
       })
     );
     resultsArray.push(
@@ -398,7 +374,7 @@ export class ResultsFormComponent implements OnInit {
         key: 'note',
         label: 'Notizen',
         required: false,
-        sortOrder: 5,
+        sortOrder: 4,
         controlType: 'TEXTAREA',
         show: selectedValues.includes('formFields.note'),
       })
@@ -409,7 +385,7 @@ export class ResultsFormComponent implements OnInit {
         key: 'status',
         label: 'Status',
         required: false,
-        sortOrder: 6,
+        sortOrder: 5,
         controlType: 'DROPDOWN',
         show: selectedValues.includes('formFields.status'),
         options: this.getStatusOptions([
@@ -762,37 +738,25 @@ export class ResultsFormComponent implements OnInit {
     resultsArray.push(
       this.fb.group({
         value: '',
-        key: 'colleage',
-        label: 'Teamkollege',
+        key: 'teamMember',
+        label: 'Teammitglied',
         required: false,
         sortOrder: 1,
         controlType: 'TEXTBOX',
         type: 'TEXT',
-        show: selectedValues.includes('formFields.colleage'),
+        show: selectedValues.includes('formFields.teamMember'),
       })
     );
     resultsArray.push(
       this.fb.group({
         value: '',
-        key: 'department',
-        label: 'Referat',
+        key: 'organizationalUnit',
+        label: 'Organisationseinheit',
         required: false,
         sortOrder: 2,
         controlType: 'TEXTBOX',
         type: 'TEXT',
-        show: selectedValues.includes('formFields.department'),
-      })
-    );
-    resultsArray.push(
-      this.fb.group({
-        value: '',
-        key: 'taskArea',
-        label: 'Aufgabenbereich',
-        required: false,
-        sortOrder: 3,
-        controlType: 'TEXTBOX',
-        type: 'TEXT',
-        show: selectedValues.includes('formFields.taskArea'),
+        show: selectedValues.includes('formFields.organizationalUnit'),
       })
     );
     resultsArray.push(
@@ -801,7 +765,7 @@ export class ResultsFormComponent implements OnInit {
         key: 'PT',
         label: 'Personentage (PT)',
         required: false,
-        sortOrder: 4,
+        sortOrder: 3,
         controlType: 'TEXTBOX',
         type: 'NUMBER',
         show: selectedValues.includes('formFields.PT'),
@@ -813,7 +777,7 @@ export class ResultsFormComponent implements OnInit {
         key: 'note',
         label: 'Notizen',
         required: false,
-        sortOrder: 5,
+        sortOrder: 4,
         controlType: 'TEXTAREA',
         show: selectedValues.includes('formFields.note'),
       })
@@ -824,7 +788,7 @@ export class ResultsFormComponent implements OnInit {
         key: 'status',
         label: 'Status',
         required: false,
-        sortOrder: 6,
+        sortOrder: 5,
         controlType: 'DROPDOWN',
         show: selectedValues.includes('formFields.status'),
         options: this.getStatusOptions([
