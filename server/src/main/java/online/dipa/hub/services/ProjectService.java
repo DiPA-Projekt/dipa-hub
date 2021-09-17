@@ -896,7 +896,7 @@ public class ProjectService {
     }
 
     /**
-     * create new project event template and new serie appointments
+     * create new project event template and a new serie of appointments
      * @param result
      */
     public void createSerieAppointments (ResultEntity result) {
@@ -912,7 +912,7 @@ public class ProjectService {
     }
 
     /**
-     * delete old serie appointments from project event template and create new ones
+     * delete an old serie of appointments from project event template and create new template and events
      * @param result
      */
     public void updateSerieAppointments(ResultEntity result) {

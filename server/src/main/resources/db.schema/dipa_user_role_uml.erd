@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<diagram version="1" name="dipa_user_role_uml.erd">
+	<entities>
+		<data-source id="postgres-jdbc-17bbf723f10-61bff1713d9c53f3">
+			<entity id="1" name="organisation_role" fq-name="public.organisation_role" order="0" x="29" y="287">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="2" name="user_organisation_role_connection" fq-name="public.user_organisation_role_connection" order="1" x="5" y="57">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="3" name="app_user" fq-name="public.app_user" order="2" x="327" y="32">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="4" name="user_project_role_connection" fq-name="public.user_project_role_connection" order="3" x="593" y="49">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="5" name="project_role" fq-name="public.project_role" order="4" x="571" y="241">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="6" name="project_role_template" fq-name="public.project_role_template" order="5" x="618" y="560">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="7" name="project" fq-name="public.project" order="6" x="227" y="475">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="8" name="project_approach" fq-name="public.project_approach" order="7" x="573" y="777">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+		</data-source>
+	</entities>
+	<notes>
+		<note id="9" order="8" x="795" y="15" w="100" h="50">ManyToMany Connection</note>
+		<note id="10" order="9" x="189" y="12" w="100" h="50">ManyToMany Connection
+</note>
+		<note id="11" order="10" x="781" y="667" w="115" h="109">Project role template depends on project&#39;s approach </note>
+	</notes>
+	<relations>
+		<relation name="FKUserOrganisationRoleIdConnection" fq-name="public.user_organisation_role_connection.&quot;FKUserOrganisationRoleIdConnection&quot;" type="fk" pk-ref="1" fk-ref="2"/>
+		<relation name="FKOrganisationRoleUserIdConnection" fq-name="public.user_organisation_role_connection.&quot;FKOrganisationRoleUserIdConnection&quot;" type="fk" pk-ref="3" fk-ref="2"/>
+		<relation name="FKUserIdProjectRoleConnection" fq-name="public.user_project_role_connection.&quot;FKUserIdProjectRoleConnection&quot;" type="fk" pk-ref="3" fk-ref="4"/>
+		<relation name="FKProjectRoleUserIdConnection" fq-name="public.user_project_role_connection.&quot;FKProjectRoleUserIdConnection&quot;" type="fk" pk-ref="5" fk-ref="4"/>
+		<relation name="FKprojectRoleTemplate" fq-name="public.project_role.&quot;FKprojectRoleTemplate&quot;" type="fk" pk-ref="6" fk-ref="5"/>
+		<relation name="FKProjectRoleTemplateIdprojectApproach" fq-name="public.project_approach.&quot;FKProjectRoleTemplateIdprojectApproach&quot;" type="fk" pk-ref="6" fk-ref="8"/>
+		<relation name="FKprojectIdProjectRole" fq-name="public.project_role_template.&quot;FKprojectIdProjectRole&quot;" type="fk" pk-ref="7" fk-ref="6"/>
+		<relation name="FKprojectApproachIdProject" fq-name="public.project.&quot;FKprojectApproachIdProject&quot;" type="fk" pk-ref="8" fk-ref="7"/>
+	</relations>
+</diagram>
