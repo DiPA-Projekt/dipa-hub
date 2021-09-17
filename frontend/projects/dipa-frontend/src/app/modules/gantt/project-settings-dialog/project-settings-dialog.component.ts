@@ -193,6 +193,12 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
       });
   }
 
+  public saveProjectName(event: FocusEvent): void {
+    const h2Element = event.target as HTMLElement;
+    this.formGroupProjectData.get('name').setValue(h2Element.innerText);
+    this.onSubmitProjectData(this.formGroupProjectData);
+  }
+
   private setReactiveForm(project: Project, timeline: Timeline): void {
     this.authenticationService.getProjectRoles().then((roles) => {
       this.userHasProjectEditRights =
