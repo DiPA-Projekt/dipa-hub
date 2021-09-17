@@ -4,19 +4,21 @@ import { Observable, Subscription } from 'rxjs';
 import { Project, ProjectService, PermanentProjectTask } from 'dipa-api-client';
 import { switchMap } from 'rxjs/operators';
 import { TimelineDataService } from '../../../shared/timelineDataService';
+import ProjectSizeEnum = Project.ProjectSizeEnum;
 
 @Component({
   selector: 'app-project-control',
   templateUrl: './project-control.component.html',
 })
 export class ProjectControlComponent implements OnInit, OnDestroy {
-  public project: Project;
   public projectTasks: PermanentProjectTask[];
-
   public selectedTimelineId: number;
-  public projectDataSubscription: Subscription;
+
   public timelineIdSubscription: Subscription;
+  public projectDataSubscription: Subscription;
   public projectTasksSubscription: Subscription;
+
+  private projectSize: ProjectSizeEnum;
 
   public constructor(
     public activatedRoute: ActivatedRoute,
@@ -43,7 +45,10 @@ export class ProjectControlComponent implements OnInit, OnDestroy {
 
     this.projectDataSubscription = this.timelineDataService.getProjectData().subscribe({
       next: (data: Project) => {
-        this.project = data;
+        if (data != null && this.projectSize !== data.projectSize) {
+          this.projectSize = data.projectSize;
+          this.reloadProjectTasks();
+        }
       },
       error: null,
       complete: () => void 0,

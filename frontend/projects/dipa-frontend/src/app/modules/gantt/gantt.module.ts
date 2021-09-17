@@ -7,7 +7,6 @@ import { AngularResizedEventModule } from 'angular-resize-event';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../../shared/shared.module';
 import { NavMenuListItemComponent } from '../../shared/nav-menu-list-item/nav-menu-list-item.component';
-import { ProjectDataComponent } from './project-data/project-data.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { TemplatesComponent } from './timeline/templates-view/templates/templates.component';
 import { TemplatesViewComponent } from './timeline/templates-view/templates-view.component';
@@ -38,7 +37,6 @@ import { ProjectDashboardComponent } from './project-dashboard/project-dashboard
   declarations: [
     GanttComponent,
     NavMenuListItemComponent,
-    ProjectDataComponent,
     SidenavComponent,
     TemplatesComponent,
     TemplatesViewComponent,
