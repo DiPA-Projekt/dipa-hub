@@ -19,7 +19,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-project-type-softwareneuentwicklung
       author: becker
-      context: itzbund
+      context: weit
       changes:
         - insert:
             tableName: project_type
@@ -222,7 +222,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-milestones-softwareneuentwicklung
       author: becker
-      context: itzbund
+      context: weit
       changes:
         - insert:
             tableName: milestone_template

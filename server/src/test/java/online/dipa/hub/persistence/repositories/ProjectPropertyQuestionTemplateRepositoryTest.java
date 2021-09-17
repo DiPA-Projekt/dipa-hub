@@ -24,16 +24,15 @@ class ProjectPropertyQuestionTemplateRepositoryTest {
         @Test
         void should_return_when_template_exists() {
             // GIVEN
-            CurrentTenantContextHolder.setTenantId("itzbund");
+            CurrentTenantContextHolder.setTenantId("weit");
 
             // WHEN
-            final Optional<ProjectPropertyQuestionTemplateEntity> projectPropertyQuestionTemplate =
-                    projectPropertyQuestionTemplateRepository.findByMaster();
+            final Optional<ProjectPropertyQuestionTemplateEntity> projectPropertyQuestionTemplate = projectPropertyQuestionTemplateRepository.findByMaster();
 
             // THEN
-            then(projectPropertyQuestionTemplate)
-                    .isNotEmpty().get()
-                    .returns(null, ProjectPropertyQuestionTemplateEntity::getProject);
+            then(projectPropertyQuestionTemplate).isNotEmpty()
+                                                 .get()
+                                                 .returns(null, ProjectPropertyQuestionTemplateEntity::getProject);
         }
 
         @Test
@@ -42,12 +41,10 @@ class ProjectPropertyQuestionTemplateRepositoryTest {
             CurrentTenantContextHolder.setTenantId("ba");
 
             // WHEN
-            final Optional<ProjectPropertyQuestionTemplateEntity> projectPropertyQuestionTemplate =
-                    projectPropertyQuestionTemplateRepository.findByMaster();
+            final Optional<ProjectPropertyQuestionTemplateEntity> projectPropertyQuestionTemplate = projectPropertyQuestionTemplateRepository.findByMaster();
 
             // THEN
-            then(projectPropertyQuestionTemplate)
-                    .isEmpty();
+            then(projectPropertyQuestionTemplate).isEmpty();
         }
 
     }

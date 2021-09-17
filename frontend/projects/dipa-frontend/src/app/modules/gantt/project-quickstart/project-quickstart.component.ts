@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-import { ProjectService, NonPermanentProjectTask } from 'dipa-api-client';
+import { ProjectService, NonPermanentProjectTask, Project } from 'dipa-api-client';
 import { switchMap } from 'rxjs/operators';
 import { TimelineDataService } from '../../../shared/timelineDataService';
+import ProjectSizeEnum = Project.ProjectSizeEnum;
 
 @Component({
   selector: 'app-project-quickstart',
@@ -11,10 +12,13 @@ import { TimelineDataService } from '../../../shared/timelineDataService';
 })
 export class ProjectQuickstartComponent implements OnInit, OnDestroy {
   public projectTasks: NonPermanentProjectTask[];
-
   public selectedTimelineId: number;
+
   public timelineIdSubscription: Subscription;
+  public projectDataSubscription: Subscription;
   public projectTasksSubscription: Subscription;
+
+  private projectSize: ProjectSizeEnum;
 
   public constructor(
     public activatedRoute: ActivatedRoute,
@@ -38,10 +42,22 @@ export class ProjectQuickstartComponent implements OnInit, OnDestroy {
         error: null,
         complete: () => void 0,
       });
+
+    this.projectDataSubscription = this.timelineDataService.getProjectData().subscribe({
+      next: (data: Project) => {
+        if (data != null && this.projectSize !== data.projectSize) {
+          this.projectSize = data.projectSize;
+          this.reloadProjectTasks();
+        }
+      },
+      error: null,
+      complete: () => void 0,
+    });
   }
 
   public ngOnDestroy(): void {
     this.timelineIdSubscription?.unsubscribe();
+    this.projectDataSubscription?.unsubscribe();
     this.projectTasksSubscription?.unsubscribe();
   }
 

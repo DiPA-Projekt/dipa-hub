@@ -20,12 +20,12 @@ jobs:
     # If the PR is coming from a fork (pull_request_target), ensure it's opened by "dependabot[bot]".
     # Otherwise, clone it normally.
     if: |
-        (github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]') ||
-        (github.event_name != 'pull_request_target' && github.actor != 'dependabot[bot]')
+      (github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]') ||
+      (github.event_name != 'pull_request_target' && github.actor != 'dependabot[bot]')
     # Service containers to run with `runner-job`
     services:
       # Label used to access the service container
-      db-itzbund:
+      db-weit:
         # Docker Hub image
         image: postgres:13.2
         # Provide the password for postgres

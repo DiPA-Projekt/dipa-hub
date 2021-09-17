@@ -1,21 +1,21 @@
 --liquibase formatted sql
 
--- changeset id:migration-insert-into-project-question-template context:itzbund
+-- changeset id:migration-insert-into-project-question-template context:weit
 INSERT INTO project_property_question_template (name, project_id, master)
 SELECT CONCAT('Property Question ', name), project_id, master
 FROM project_task_template
 
---changeset id:insert-project-question-1 context:itzbund
+--changeset id:insert-project-question-1 context:weit
 INSERT INTO project_property_question (question, description, selected, sort_order, project_property_question_template_id)
 SELECT 'Werden externe DL benötigt?','Auswirkung auf AeDL und Arbeitsmittel für Externe bestellen', true, 1, id
 FROM project_property_question_template
 
---changeset id:insert-project-question-2 context:itzbund
+--changeset id:insert-project-question-2 context:weit
 INSERT INTO project_property_question (question, description, selected, sort_order, project_property_question_template_id)
 SELECT 'Arbeitest du mit weiteren Projektteammitgliedern zusammen?','Auswirkung auf Team zusammenstellen und Terminserien', true, 2, id
 FROM project_property_question_template
 
---changeset id:migration-project-task-project-property-question-1-connection-master context:itzbund
+--changeset id:migration-project-task-project-property-question-1-connection-master context:weit
 UPDATE project_task
 SET project_property_question_id =
 CASE WHEN sort_order = 8 OR sort_order = 9 OR sort_order = 10 THEN
@@ -27,7 +27,7 @@ WHERE project_task.project_task_template_id = task_template.id AND property.sort
 ELSE project_property_question_id
 END
 
---changeset id:migration-project-task-project-property-question-1-connection context:itzbund
+--changeset id:migration-project-task-project-property-question-1-connection context:weit
 UPDATE project_task
 SET project_property_question_id =
 CASE WHEN (sort_order = 8 OR sort_order = 9 OR sort_order = 10) AND project_property_question_id IS null THEN
@@ -39,7 +39,7 @@ WHERE project_task.project_task_template_id = task_template.id AND property.sort
 ELSE project_property_question_id
 END
 
---changeset id:migration-project-task-project-property-question-2-connection-master context:itzbund
+--changeset id:migration-project-task-project-property-question-2-connection-master context:weit
 UPDATE project_task
 SET project_property_question_id =
 CASE WHEN sort_order = 3 OR sort_order = 4 THEN
@@ -51,7 +51,7 @@ WHERE project_task.project_task_template_id = task_template.id AND property.sort
 ELSE project_property_question_id
 END
 
---changeset id:migration-project-task-project-property-question-2-connection context:itzbund
+--changeset id:migration-project-task-project-property-question-2-connection context:weit
 UPDATE project_task
 SET project_property_question_id =
 CASE WHEN (sort_order = 3 OR sort_order = 4) AND project_property_question_id IS null THEN
@@ -64,12 +64,12 @@ ELSE project_property_question_id
 END
 
 
--- changeset id:update-column-task-number-project-task context:itzbund
+-- changeset id:update-column-task-number-project-task context:weit
 UPDATE project_task
 SET task_number = sort_order
 WHERE project_task_template_id = 1
 
--- changeset id:migration-column-task-number-project-task context:itzbund
+-- changeset id:migration-column-task-number-project-task context:weit
 UPDATE project_task as task1
 SET task_number = task2.task_number
 FROM (SELECT *
@@ -77,7 +77,7 @@ FROM (SELECT *
 	  WHERE project_task_template_id = 1) as task2
 WHERE task1.title = task2.title
 
--- changeset id:migration-column-title-project-task context:itzbund
+-- changeset id:migration-column-title-project-task context:weit
 UPDATE project_task
 SET title_permanent_task =
 CASE WHEN task_number = 13 THEN 'Eskalationen durchführen'
@@ -85,7 +85,7 @@ CASE WHEN task_number = 13 THEN 'Eskalationen durchführen'
     ELSE title_permanent_task
 END
 
--- changeset id:migration-column-explanation-project-task context:itzbund
+-- changeset id:migration-column-explanation-project-task context:weit
 UPDATE project_task
 SET explanation =
 CASE WHEN task_number = 13 THEN 'Nicht selbst lösbare Probleme werden mit dem Projekteigner oder höheren Instanzen geklärt'
@@ -93,17 +93,17 @@ CASE WHEN task_number = 13 THEN 'Nicht selbst lösbare Probleme werden mit dem P
     ELSE explanation
 END
 
--- changeset id:migration-insert-into-permanent_project_task_template context:itzbund
+-- changeset id:migration-insert-into-permanent_project_task_template context:weit
 INSERT INTO permanent_project_task_template (name, project_id, master)
 SELECT CONCAT('Permanent ', name), project_id, master
 FROM public.project_task_template
 
--- changeset id:migration-insert-into-non-permanent_project_task_template context:itzbund
+-- changeset id:migration-insert-into-non-permanent_project_task_template context:weit
 INSERT INTO non_permanent_project_task_template (name, project_id, master)
 SELECT CONCAT('Non Permanent ', name), project_id, master
 FROM public.project_task_template
 
--- changeset id:migration-permanent-project-task-master context:itzbund
+-- changeset id:migration-permanent-project-task-master context:weit
 INSERT INTO permanent_project_task (title, icon, sort_order, is_additional_task, permanent_project_task_template_id, project_task_id)
     select title_permanent_task, icon, sort_order,
     CASE WHEN task_number = 13 OR task_number= 14 then true else false end,
@@ -116,7 +116,7 @@ INSERT INTO permanent_project_task (title, icon, sort_order, is_additional_task,
     WHERE task_template.project_id IS null AND (is_permanent_task = true OR task_number= 13 OR task_number= 14)
 	ORDER BY project_task_template_id
 
--- changeset id:migration-permanent-project-task context:itzbund
+-- changeset id:migration-permanent-project-task context:weit
 INSERT INTO permanent_project_task (title, icon, sort_order, is_additional_task, permanent_project_task_template_id, project_task_id)
     select title_permanent_task, icon, sort_order,
     CASE WHEN task_number = 13 OR task_number= 14 then true else false end,
@@ -131,7 +131,7 @@ INSERT INTO permanent_project_task (title, icon, sort_order, is_additional_task,
     WHERE task_template.project_id IS NOT null AND (is_permanent_task = true OR task_number= 13 OR task_number= 14)
 	ORDER BY project_task_template_id
 
--- changeset id:migration-permanent-project-task-set-new-sort-order context:itzbund
+-- changeset id:migration-permanent-project-task-set-new-sort-order context:weit
 UPDATE permanent_project_task
 SET sort_order = CASE
 				WHEN sort_order = 3 THEN 1
@@ -145,7 +145,7 @@ SET sort_order = CASE
 				WHEN sort_order = 12 THEN 9
 				ELSE -1 END
 
--- changeset id:migration-non-permanent-project-task-master context:itzbund
+-- changeset id:migration-non-permanent-project-task-master context:weit
 INSERT INTO non_permanent_project_task (title, sort_order, non_permanent_project_task_template_id, project_task_id)
     select title, sort_order,
 	(SELECT id
@@ -157,7 +157,7 @@ INSERT INTO non_permanent_project_task (title, sort_order, non_permanent_project
     WHERE task_template.project_id IS null AND task_number != 13 AND task_number != 14
 	ORDER BY project_task_template_id
 
--- changeset id:migration-non-permanent-project-task context:itzbund
+-- changeset id:migration-non-permanent-project-task context:weit
 INSERT INTO non_permanent_project_task (title, sort_order, non_permanent_project_task_template_id, project_task_id)
     select title, sort_order,
 	(SELECT non_permanent_task_template.id
@@ -171,7 +171,7 @@ INSERT INTO non_permanent_project_task (title, sort_order, non_permanent_project
     WHERE task_template.project_id IS NOT null AND task_number != 13 AND task_number != 14
 	ORDER BY project_task_template_id
 
--- changeset id:migration-non-permanent-project-task-set-new-sort-order context:itzbund
+-- changeset id:migration-non-permanent-project-task-set-new-sort-order context:weit
 UPDATE non_permanent_project_task
 SET sort_order = CASE
 				WHEN sort_order = 15 THEN 13
@@ -184,12 +184,12 @@ DROP COLUMN IF EXISTS is_permanent_task,
 DROP COLUMN IF EXISTS title_permanent_task,
 DROP COLUMN IF EXISTS icon
 
--- changeset id:set-icon-for-escalation-permanent-project-task context:itzbund
+-- changeset id:set-icon-for-escalation-permanent-project-task context:weit
 UPDATE permanent_project_task
 SET icon = 'campaign'
 WHERE title='Eskalationen durchführen'
 
--- changeset id:set-icon-for-change-request-permanent-project-task context:itzbund
+-- changeset id:set-icon-for-change-request-permanent-project-task context:weit
 UPDATE permanent_project_task
 SET icon = 'repeat'
 WHERE title='Auftragsänderung (Change Request) erstellen'

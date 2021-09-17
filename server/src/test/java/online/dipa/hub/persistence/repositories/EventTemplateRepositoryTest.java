@@ -1,6 +1,7 @@
 package online.dipa.hub.persistence.repositories;
 
 import static org.assertj.core.api.Assertions.*;
+
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,8 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import online.dipa.hub.persistence.entities.ProjectEventTemplateEntity;
 import online.dipa.hub.persistence.entities.ProjectEntity;
+import online.dipa.hub.persistence.entities.ProjectEventTemplateEntity;
 import online.dipa.hub.persistence.entities.RecurringEventTypeEntity;
 import online.dipa.hub.services.ProjectService;
 import online.dipa.hub.tenancy.CurrentTenantContextHolder;
@@ -40,12 +41,13 @@ public class EventTemplateRepositoryTest {
 
     @BeforeAll
     static void setUpContext() {
-        CurrentTenantContextHolder.setTenantId("itzbund");
+        CurrentTenantContextHolder.setTenantId("weit");
     }
 
     @BeforeEach
     void setUp() {
-        OffsetDateTime today = OffsetDateTime.now().withDayOfMonth(6);
+        final OffsetDateTime today = OffsetDateTime.now()
+                                                   .withDayOfMonth(6);
         testProject = new ProjectEntity();
         testProject.setName("Test Project");
         testProject.setProjectApproach(projectApproachRepository.getById(2L));
@@ -66,15 +68,20 @@ public class EventTemplateRepositoryTest {
         @Test
         void should_return_event_templates_by_recurring_event_type() {
             // GIVEN
-            RecurringEventTypeEntity recurringEventType = testProject.getRecurringEventTypes().stream().findFirst().get();
+            final RecurringEventTypeEntity recurringEventType = testProject.getRecurringEventTypes()
+                                                                           .stream()
+                                                                           .findFirst()
+                                                                           .get();
 
             // WHEN
-            final Collection<ProjectEventTemplateEntity> eventTemplates = eventTemplateRepository.findByRecurringEventType(recurringEventType);
+            final Collection<ProjectEventTemplateEntity> eventTemplates = eventTemplateRepository.findByRecurringEventType(
+                    recurringEventType);
 
             // THEN
-            assertThat(eventTemplates).isNotEmpty().hasSize(1);
-            assertThat(new ArrayList<>(eventTemplates).get(0))
-                    .returns("TYPE_RECURRING_EVENT", ProjectEventTemplateEntity::getEventType);
+            assertThat(eventTemplates).isNotEmpty()
+                                      .hasSize(1);
+            assertThat(new ArrayList<>(eventTemplates).get(0)).returns("TYPE_RECURRING_EVENT",
+                    ProjectEventTemplateEntity::getEventType);
         }
 
     }

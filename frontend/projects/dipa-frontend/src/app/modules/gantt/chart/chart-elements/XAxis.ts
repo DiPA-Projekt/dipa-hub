@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import { ScaleTime } from 'd3-scale';
+import Utils from '../../../../shared/utils';
 
 export class XAxis {
   public formatDate: (date: Date) => string;
@@ -13,7 +14,6 @@ export class XAxis {
 
   private height = 28;
 
-  private dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
   private today = new Date();
 
   public constructor(svg: d3.Selection<any, any, any, any>, chartElement: HTMLElement, xScale: ScaleTime<any, any>) {
@@ -222,7 +222,7 @@ export class XAxis {
       .style('top', `${y + 15}px`)
       .style('left', `${x + 10}px`)
       .style('display', 'block')
-      .html('Heute: ' + `${new Date().toLocaleDateString('de-DE', this.dateOptions)}<br>`)
+      .html('Heute: ' + `${Utils.getGermanFormattedDateString(this.today)}<br>`)
       .transition()
       .duration(300)
       .style('opacity', 1);

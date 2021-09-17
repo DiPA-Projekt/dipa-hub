@@ -21,6 +21,8 @@ import { registerLocaleData, DatePipe } from '@angular/common';
 import localeDe from '@angular/common/locales/de';
 import localeDeExtra from '@angular/common/locales/extra/de';
 import { FlexModule } from '@angular/flex-layout';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { getGermanPaginatorIntl } from './shared/paginator.translate';
 
 registerLocaleData(localeDe, 'de-DE', localeDeExtra);
 @NgModule({
@@ -51,7 +53,13 @@ registerLocaleData(localeDe, 'de-DE', localeDeExtra);
     }),
     FlexModule,
   ],
-  providers: [NavService, TimelineDataService, DatePipe, { provide: LOCALE_ID, useValue: 'de-DE' }],
+  providers: [
+    NavService,
+    TimelineDataService,
+    DatePipe,
+    { provide: LOCALE_ID, useValue: 'de-DE' },
+    { provide: MatPaginatorIntl, useValue: getGermanPaginatorIntl() },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {

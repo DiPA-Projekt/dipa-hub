@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: dipa-db-itzbund-@k8s.release.track@
+  name: dipa-db-weit-@k8s.release.track@
   labels:
     app: dipa-hub
     track: @k8s.release.track@
-    tenant: itzbund
+    tenant: weit
 spec:
   type: NodePort
   ports:
@@ -13,23 +13,23 @@ spec:
   selector:
     app: dipa-hub
     tier: db
-    tenant: itzbund
+    tenant: weit
     track: @k8s.release.track@
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dipa-db-itzbund-@k8s.release.track@
+  name: dipa-db-weit-@k8s.release.track@
   labels:
     app: dipa-hub
     track: @k8s.release.track@
-    tenant: itzbund
+    tenant: weit
 spec:
   selector:
     matchLabels:
       app: dipa-hub
       tier: db
-      tenant: itzbund
+      tenant: weit
       track: @k8s.release.track@
   strategy:
     type: Recreate
@@ -38,11 +38,11 @@ spec:
       labels:
         app: dipa-hub
         tier: db
-        tenant: itzbund
+        tenant: weit
         track: @k8s.release.track@
     spec:
       containers:
-        - name: dipa-db-itzbund
+        - name: dipa-db-weit
           image: postgres:13.2
           imagePullPolicy: "IfNotPresent"
           ports:
@@ -60,7 +60,7 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: postgresdb
-              subPath: itzbund
+              subPath: weit
       volumes:
         - name: postgresdb
           persistentVolumeClaim:
