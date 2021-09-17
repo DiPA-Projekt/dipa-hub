@@ -1,31 +1,31 @@
 databaseChangeLog:
   - changeSet:
-        id:  renameTable-projectType-to-operationType
-        author: nguyen
-        changes:
-        -  renameTable:
+      id: renameTable-projectType-to-operationType
+      author: nguyen
+      changes:
+        - renameTable:
             newTableName: operation_type
             oldTableName: project_type
   - changeSet:
-        id: rename-column-projectApproach-table-projectType-to-operationType
-        author: nguyen
-        changes:
-            - renameColumn:
-                catalogName: cat
-                columnData: BIGINT
-                newColumnName: operation_type_id
-                oldColumnName: project_type_id
-                tableName: project_approach
+      id: rename-column-projectApproach-table-projectType-to-operationType
+      author: nguyen
+      changes:
+        - renameColumn:
+            catalogName: cat
+            columnData: BIGINT
+            newColumnName: operation_type_id
+            oldColumnName: project_type_id
+            tableName: project_approach
   - changeSet:
-        id: rename-column-planTemplate-table-projectType-to-operationType
-        author: nguyen
-        changes:
-            - renameColumn:
-                catalogName: cat
-                columnData: BIGINT
-                newColumnName: operation_type_id
-                oldColumnName: project_type_id
-                tableName: plan_template
+      id: rename-column-planTemplate-table-projectType-to-operationType
+      author: nguyen
+      changes:
+        - renameColumn:
+            catalogName: cat
+            columnData: BIGINT
+            newColumnName: operation_type_id
+            oldColumnName: project_type_id
+            tableName: plan_template
   - changeSet:
       id: update-project-projectType-internes
       author: nguyen
@@ -51,7 +51,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-external-link-jira
       author: bock
-      context: itzbund
+      context: weit
       changes:
         - insert:
             tableName: external_link
@@ -80,7 +80,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-external-link-pm-bib
       author: bock
-      context: itzbund
+      context: weit
       changes:
         - insert:
             tableName: external_link
@@ -227,7 +227,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-plan-template-swe-iterative-non-standard-1
       author: nguyen
-      context: itzbund
+      context: weit
       changes:
         - insert:
             tableName: plan_template
@@ -253,7 +253,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-milestones-swe-iterative-non-standard-1
       author: nguyen
-      context: itzbund
+      context: weit
       changes:
         - insert:
             tableName: milestone_template
@@ -333,7 +333,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-plan-template-swe-iterative-non-standard-2
       author: nguyen
-      context: itzbund
+      context: weit
       changes:
         - insert:
             tableName: plan_template
@@ -359,7 +359,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-milestones-swe-iterativ-non-standard-2
       author: nguyen
-      context: itzbund
+      context: weit
       changes:
         - insert:
             tableName: milestone_template
@@ -481,10 +481,10 @@ databaseChangeLog:
               - column:
                   name: plan_template_id
                   value: 8
-  - changeSet:        
+  - changeSet:
       id: insert-file-phb-an-project-agil
       author: bock
-      context: itzbund
+      context: weit
       changes:
         - insert:
             tableName: download_file
@@ -504,7 +504,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-file-phb-intern-project-agil
       author: bock
-      context: itzbund
+      context: weit
       changes:
         - insert:
             tableName: download_file
@@ -524,7 +524,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-file-phb-an-project-increment
       author: bock
-      context: itzbund
+      context: weit
       changes:
         - insert:
             tableName: download_file
@@ -544,7 +544,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-file-phb-intern-project-increment
       author: bock
-      context: itzbund
+      context: weit
       changes:
         - insert:
             tableName: download_file
@@ -564,7 +564,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-file-risk-list
       author: bock
-      context: itzbund
+      context: weit
       changes:
         - insert:
             tableName: download_file

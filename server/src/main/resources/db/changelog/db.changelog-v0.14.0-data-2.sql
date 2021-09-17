@@ -5,17 +5,17 @@ ALTER TABLE project_task_result
 ADD COLUMN sort_order BIGINT
 DEFAULT 1
 
--- changeset id:update-column-sort-order-project-task-result-2 context:itzbund
+-- changeset id:update-column-sort-order-project-task-result-2 context:weit
 UPDATE project_task_result
 SET sort_order = 2
 WHERE id = 2
 
--- changeset id:update-column-sort-order-project-task-result-6 context:itzbund
+-- changeset id:update-column-sort-order-project-task-result-6 context:weit
 UPDATE project_task_result
 SET sort_order = 2
 WHERE id = 8
 
--- changeset id:create-function context:itzbund
+-- changeset id:create-function context:weit
 CREATE OR REPLACE FUNCTION createProjectTask(projectName varchar, projectId integer)
 RETURNS void AS '
 declare
@@ -109,11 +109,11 @@ BEGIN
 END;
 ' LANGUAGE plpgsql;
 
--- changeset id:execute-function-feldberg context:itzbund
+-- changeset id:execute-function-feldberg context:weit
 SELECT createProjectTask('Projekt Aufgaben Vorlage Feldberg'::varchar, 3)
 
--- changeset id:execute-function-zugspitze context:itzbund
+-- changeset id:execute-function-zugspitze context:weit
 SELECT createProjectTask('Projekt Aufgaben Vorlage Zugspitze'::varchar, 4)
 
--- changeset id:execute-function-Bergsteigerausrüstung context:itzbund
+-- changeset id:execute-function-Bergsteigerausrüstung context:weit
 SELECT createProjectTask('Projekt Aufgaben Vorlage Bergsteigerausrüstung'::varchar, 5)
