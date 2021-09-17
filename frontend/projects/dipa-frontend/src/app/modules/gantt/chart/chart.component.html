@@ -19,7 +19,7 @@
             />
           </mat-form-field>
           <p style="font-weight: 200; font-size: small; text-align: center; color: grey">
-            Fällig am {{ getDate(selectedMilestoneDataMenu.date) }}
+            Fällig am {{ utils.getGermanFormattedDateString(selectedMilestoneDataMenu.date) }}
           </p>
           <button
             *ngIf="modifiable && incrementsData.length === 0 && milestoneData.length > 1"

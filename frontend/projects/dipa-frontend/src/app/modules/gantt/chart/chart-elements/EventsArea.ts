@@ -4,6 +4,7 @@ import { Timeline } from 'dipa-api-client';
 import { IChartElement } from './IChartElement';
 
 import { ScaleTime } from 'd3-scale';
+import Utils from '../../../../shared/utils';
 
 interface SvgParse {
   translateX: number;
@@ -32,8 +33,6 @@ export class EventsArea implements IChartElement {
   data: EventEntry[];
 
   animationDuration: number;
-
-  dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
 
   elementHeight = 20;
   elementMargin = 8;
@@ -288,7 +287,7 @@ export class EventsArea implements IChartElement {
   public tooltipContent(data: [string, EventEntry[]]): any {
     const entryList = data[1];
 
-    let tooltip = `Fällig: ${new Date(entryList[0].dateTime).toLocaleDateString('de-DE', this.dateOptions)}<br>`;
+    let tooltip = `Fällig: ${Utils.getGermanFormattedDateString(entryList[0].dateTime)}<br>`;
 
     entryList.forEach((entry) => {
       tooltip += `- ${entry.title}<br>`;

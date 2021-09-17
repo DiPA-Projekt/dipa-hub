@@ -7,8 +7,6 @@ export interface IChartElement {
   readonly xScale: ScaleTime<any, any>;
   data: any[];
 
-  dateOptions: any;
-
   animationDuration: number;
 
   draw(offset): void;

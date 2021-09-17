@@ -6,6 +6,7 @@ import { IChartElement } from './IChartElement';
 
 import ProjectTypeEnum = Timeline.ProjectTypeEnum;
 import { ScaleTime } from 'd3-scale';
+import Utils from '../../../../shared/utils';
 
 interface SvgParse {
   translateX: number;
@@ -23,8 +24,6 @@ export class MilestonesArea implements IChartElement {
   data: Milestone[];
 
   animationDuration: number;
-
-  dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
 
   elementHeight = 20;
   elementMargin = 8;
@@ -327,8 +326,7 @@ export class MilestonesArea implements IChartElement {
   }
 
   public tooltipContent(data: Milestone): any {
-    let tooltip =
-      `${data.name}<br>` + `Fällig: ${new Date(data.date).toLocaleDateString('de-DE', this.dateOptions)}<br>`;
+    let tooltip = `${data.name}<br>` + `Fällig: ${Utils.getGermanFormattedDateString(data.date)}<br>`;
     // alle Meilensteine der agilen Softwareentwicklung im ITZBund
     if (
       this.timelineData.projectApproachId === 2 &&

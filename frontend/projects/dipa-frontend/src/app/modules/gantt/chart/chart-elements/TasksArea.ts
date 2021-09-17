@@ -3,6 +3,7 @@ import { parseSvg } from 'd3-interpolate/src/transform/parse';
 import { IChartElement } from './IChartElement';
 import { ScaleTime } from 'd3-scale';
 import { Task } from 'dipa-api-client';
+import Utils from '../../../../shared/utils';
 
 interface SvgParse {
   translateX: number;
@@ -20,8 +21,6 @@ export class TasksArea implements IChartElement {
   data: Task[];
 
   animationDuration: number;
-
-  dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
 
   elementHeight = 20;
   elementMargin = 8;
@@ -346,8 +345,8 @@ export class TasksArea implements IChartElement {
       .style('display', 'block')
       .html(
         `${d.name}<br>` +
-          `${new Date(d.start).toLocaleDateString('de-DE', this.dateOptions)}` +
-          ` - ${new Date(d.end).toLocaleDateString('de-DE', this.dateOptions)}<br>`
+          `${Utils.getGermanFormattedDateString(d.start)}` +
+          ` - ${Utils.getGermanFormattedDateString(d.end)}<br>`
       )
       .transition()
       .style('display', 'block')
