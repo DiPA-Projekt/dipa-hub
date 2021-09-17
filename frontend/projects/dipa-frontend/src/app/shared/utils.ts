@@ -1,4 +1,9 @@
 export default class Utils {
+  public static getGermanFormattedDateString(input: string | Date): string {
+    const dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
+    return new Date(input).toLocaleDateString('de-DE', dateOptions);
+  }
+
   public static parseGermanDate(input: string): Date | null {
     const parts = input?.match(/(\d+)/g);
     if (!parts) {

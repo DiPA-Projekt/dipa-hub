@@ -46,6 +46,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AuthenticationService } from '../../../authentication.service';
 import { EventsArea } from './chart-elements/EventsArea';
 import { TimelineDataService } from '../../../shared/timelineDataService';
+import Utils from '../../../shared/utils';
 
 interface EventEntry {
   id: number;
@@ -85,6 +86,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild('chart')
   chartFigure: ElementRef;
   chartElement: HTMLElement = this.elementRef.nativeElement as HTMLElement;
+
+  public utils = Utils;
 
   periodStartDate: Date;
   periodEndDate: Date;
@@ -246,12 +249,6 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     this.timelineSubscription?.unsubscribe();
     this.timelineStartSubscription?.unsubscribe();
     this.timelineEndSubscription?.unsubscribe();
-  }
-
-  getDate(date: string): any {
-    const dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
-
-    return new Date(date).toLocaleDateString('de-DE', dateOptions);
   }
 
   changeStatus(event: MatRadioChange): void {
@@ -701,7 +698,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  private rearrangeLabels(timeout: number) {
+  private rearrangeLabels(timeout: number): void {
     clearTimeout(this.arrangeLabelTimeout);
     this.arrangeLabelTimeout = setTimeout(() => {
       this.milestoneViewItem.arrangeLabels();
@@ -865,7 +862,7 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
     this.eventViewItem.setData(eventData);
   }
 
-  private setSubscriptions() {
+  private setSubscriptions(): void {
     this.periodStartDateSubscription = this.ganttControlsService.getPeriodStartDate().subscribe((data) => {
       if (this.periodStartDate !== data) {
         this.periodStartDate = data;

@@ -34,8 +34,11 @@
 
             <div fxFlex="60%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="60%">
               <div fxLayout="row wrap" fxLayoutAlign="space-between center">
-                <div>{{ projectStartDate }}</div>
-                <div>{{ projectEndDate }}</div>
+                <div>
+                  {{ utils.getGermanFormattedDateString(projectStartDate) }}
+                  <span *ngIf="futureStartInDays > 0">(startet in {{ futureStartInDays }} Tagen)</span>
+                </div>
+                <div>{{ utils.getGermanFormattedDateString(projectEndDate) }}</div>
               </div>
               <section class="progress-bar-section" style="position: relative">
                 <mat-progress-bar mode="determinate" [value]="projectProgress">{{ projectProgress }}%</mat-progress-bar>
@@ -105,7 +108,11 @@
           <mat-tab-group>
             <mat-tab *ngIf="overdueEventDataSource.data.length">
               <ng-template mat-tab-label>
-                <span [matBadge]="overdueEventDataSource.data.length" matBadgeOverlap="false" matBadgeColor="warn"
+                <span
+                  [matBadge]="overdueEventDataSource.data.length"
+                  matBadgeSize="small"
+                  matBadgeOverlap="false"
+                  matBadgeColor="warn"
                   >Überfällig</span
                 >
               </ng-template>
@@ -229,7 +236,7 @@
 
             <mat-tab>
               <ng-template mat-tab-label>
-                <span [matBadge]="eventDataSource.data.length" matBadgeOverlap="false">Offen</span>
+                <span [matBadge]="eventDataSource.data.length" matBadgeSize="small" matBadgeOverlap="false">Offen</span>
               </ng-template>
               <div class="example-container">
                 <table mat-table [dataSource]="eventDataSource" multiTemplateDataRows aria-label="Nächste Termine">
@@ -341,6 +348,13 @@
                   ></tr>
                   <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
                 </table>
+                <mat-paginator
+                  [pageSizeOptions]="[5]"
+                  hidePageSize
+                  showFirstLastButtons
+                  aria-label="Select page of periodic elements"
+                >
+                </mat-paginator>
               </div>
             </mat-tab>
           </mat-tab-group>
