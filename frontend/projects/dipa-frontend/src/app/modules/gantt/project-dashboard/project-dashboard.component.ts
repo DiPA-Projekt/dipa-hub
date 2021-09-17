@@ -366,11 +366,8 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   private getFilterPredicate<T>(): (data: T, filter: string) => boolean {
     return (data: T, filter: string): boolean => {
       const searchTerms = JSON.parse(filter) as { [key: string]: string[] };
-      let isFilterSet = false;
       for (const col in searchTerms) {
-        if (searchTerms[col].toString() !== '') {
-          isFilterSet = true;
-        } else {
+        if (searchTerms[col].toString() === '') {
           delete searchTerms[col];
         }
       }
