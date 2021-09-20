@@ -1,11 +1,4 @@
-<a
-  *ngIf="checkValidUrl(url); else invalidUrl"
-  href="{{ url }}"
-  target="_blank"
-  rel="noopener"
-  mat-button
-  color="primary"
->
+<a appInvalidLinkCheck [href]="url" target="_blank" rel="noopener" mat-button color="primary">
   {{ title }}
   <mat-icon
     role="img"
@@ -15,15 +8,3 @@
     >open_in_new
   </mat-icon>
 </a>
-<ng-template #invalidUrl>
-  <a mat-button color="primary" (click)="openInvalidUrlModal(title)">
-    {{ title }}
-    <mat-icon
-      role="img"
-      class="icon-small mat-icon notranslate material-icons mat-icon-no-color"
-      aria-hidden="true"
-      data-mat-icon-type="font"
-      >open_in_new
-    </mat-icon>
-  </a>
-</ng-template>
