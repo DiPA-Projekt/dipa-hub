@@ -1,13 +1,28 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavItem } from '../../../nav-item';
-import { ExternalLinksService, Timeline, Project, TimelinesService, ProjectService } from 'dipa-api-client';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import {
+  ExternalLinksService,
+  Timeline,
+  Project,
+  TimelinesService,
+  OperationTypesService,
+  ProjectApproachesService,
+  OperationType,
+  ProjectApproach,
+} from 'dipa-api-client';
+import { ActivatedRoute, Params } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { AuthenticationService } from '../../../authentication.service';
 import { TimelineDataService } from '../../../shared/timelineDataService';
 import { ProjectSettingsDialogComponent } from '../project-settings-dialog/project-settings-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { switchMap } from 'rxjs/operators';
+import { MatTableDataSource } from '@angular/material/table';
+
+interface KeyValuePair {
+  key: string;
+  value: string;
+}
 
 @Component({
   selector: 'app-sidenav',
@@ -21,16 +36,24 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   public selectedTimelineId: number;
 
+  public operationTypesList: Array<OperationType> = [];
+  public projectApproachesList: Array<ProjectApproach> = [];
+
   public project: Project;
 
   public navMenuItems: NavItem[] = [];
   public favoriteLinkItems: NavItem[] = [];
   public roles: string;
 
+  public projectDetailsDisplayedColumns = ['key', 'value'];
+  public projectDetailsDataSource = new MatTableDataSource();
+
   private favoriteLinksSubscription: Subscription;
   private rolesSubscription: Subscription;
   private timelineDataSubscription: Subscription;
   private paramsSubscription: Subscription;
+  private operationTypesSubscription: Subscription;
+  private projectApproachesSubscription: Subscription;
 
   public constructor(
     public dialog: MatDialog,
@@ -39,8 +62,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private externalLinksService: ExternalLinksService,
     private activatedRoute: ActivatedRoute,
     private timelineDataService: TimelineDataService,
-    private projectService: ProjectService,
-    private router: Router
+    private operationTypesService: OperationTypesService,
+    private projectApproachesService: ProjectApproachesService
   ) {}
 
   public ngOnInit(): void {
@@ -48,6 +71,14 @@ export class SidenavComponent implements OnInit, OnDestroy {
       this.selectedTimelineId = parseInt(params.id, 10);
       this.timelineDataService.setTimelines();
       this.timelineDataService.setRoles(this.selectedTimelineId);
+    });
+
+    this.operationTypesSubscription = this.operationTypesService.getOperationTypes().subscribe((data) => {
+      this.operationTypesList = data;
+    });
+
+    this.projectApproachesSubscription = this.projectApproachesService.getProjectApproaches().subscribe((data) => {
+      this.projectApproachesList = data;
     });
 
     this.timelineDataSubscription = this.timelineDataService
@@ -64,6 +95,17 @@ export class SidenavComponent implements OnInit, OnDestroy {
       )
       .subscribe((data: Project) => {
         this.project = data;
+
+        const keyValues: KeyValuePair[] = [];
+        keyValues.push({ key: 'Eigene Rolle', value: this.roles });
+        keyValues.push({ key: 'Projektnummer', value: this.project?.akz || '-' });
+        keyValues.push({ key: 'Projektart', value: this.timeline?.projectType || '-' });
+        keyValues.push({
+          key: 'Vorgehensweise',
+          value: this.getProjectApproach(this.timeline?.projectApproachId)?.name || '-',
+        });
+
+        this.projectDetailsDataSource.data = keyValues;
       });
 
     this.rolesSubscription = this.timelineDataService.getRoles().subscribe((data) => {
@@ -76,6 +118,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.paramsSubscription?.unsubscribe();
     this.timelineDataSubscription?.unsubscribe();
     this.rolesSubscription?.unsubscribe();
+    this.operationTypesSubscription?.unsubscribe();
+    this.projectApproachesSubscription?.unsubscribe();
   }
 
   public setSideNavMenu(): void {
@@ -157,5 +201,13 @@ export class SidenavComponent implements OnInit, OnDestroy {
       height: '80vh',
       width: '80vw',
     });
+  }
+
+  public getOperationType(operationTypeId: number): OperationType {
+    return this.operationTypesList.filter((operationType) => operationType.id === operationTypeId)[0];
+  }
+
+  public getProjectApproach(projectApproachTypeId: number): ProjectApproach {
+    return this.projectApproachesList.filter((projectApproach) => projectApproach.id === projectApproachTypeId)[0];
   }
 }

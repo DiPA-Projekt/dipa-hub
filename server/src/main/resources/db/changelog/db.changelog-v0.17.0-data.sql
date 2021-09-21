@@ -1,11 +1,11 @@
 --liquibase formatted sql
 
--- changeset id:migration-insert-into-final_project_task_template context:itzbund
+-- changeset id:migration-insert-into-final_project_task_template context:weit
 INSERT INTO final_project_task_template (name, project_id, master)
 SELECT CONCAT('Final ', name), project_id, master
 FROM public.project_task_template
 
--- changeset id:migration-final-project-tasks-master context:itzbund
+-- changeset id:migration-final-project-tasks-master context:weit
 INSERT INTO final_project_task (title, icon, sort_order, final_project_task_template_id, project_task_id)
     select title, icon, 1,
 	(SELECT id
@@ -17,7 +17,7 @@ INSERT INTO final_project_task (title, icon, sort_order, final_project_task_temp
     WHERE title = 'Erledigungsanzeige erstellen und versenden'
     AND master = true
 
--- changeset id:migration-final-project-tasks context:itzbund
+-- changeset id:migration-final-project-tasks context:weit
 INSERT INTO final_project_task (title, icon, sort_order, final_project_task_template_id, project_task_id)
  select title, icon, 1,
 	(SELECT final_template.id
@@ -31,7 +31,7 @@ INSERT INTO final_project_task (title, icon, sort_order, final_project_task_temp
     ON task.non_permanent_project_task_template_id = template.id
     WHERE master = false AND title = 'Erledigungsanzeige erstellen und versenden'
 
---changeset id:delete-final-project-task-from-non-permanent-table context:itzbund
+--changeset id:delete-final-project-task-from-non-permanent-table context:weit
 DELETE FROM non_permanent_project_task
 WHERE title = 'Erledigungsanzeige erstellen und versenden'
 

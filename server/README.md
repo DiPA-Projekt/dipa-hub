@@ -22,7 +22,7 @@ wie folgt spezifisch für einen oder mehrere Mandanten ausgeführt werden:
 - changeSet:
   id: insert-milestones-softwareneuentwicklung
   author: becker
-  context: itzbund
+  context:weit
   changes:
     ...
 ```  

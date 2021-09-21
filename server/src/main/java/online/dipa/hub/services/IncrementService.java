@@ -94,6 +94,12 @@ public class IncrementService {
         milestoneService.getIncrementMilestones(currentProject.getId(), 0);
     }
 
+    /**
+     * returns list of increments
+     * @param timelineId
+     * @param incrementCount
+     * @return
+     */
     private Set<IncrementEntity> loadIncrementsTemplate(final Long timelineId, final int incrementCount) {
         
         ProjectEntity currentProject = timelineService.getProject(timelineId);

@@ -1,6 +1,7 @@
 import * as d3 from 'd3';
 import { ScaleTime } from 'd3-scale';
 import { Timeline } from 'dipa-api-client';
+import Utils from '../../../../shared/utils';
 
 export class ProjectDuration {
   svg: d3.Selection<any, any, any, any>;
@@ -9,8 +10,6 @@ export class ProjectDuration {
 
   svgBbox: DOMRect;
   projectGroup: d3.Selection<any, any, any, any>;
-
-  dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
 
   elementColor: string;
 
@@ -255,7 +254,7 @@ export class ProjectDuration {
 
     this.startDateText
       .append('tspan')
-      .text(this.projectStartDate.toLocaleDateString('de-DE', this.dateOptions))
+      .text(Utils.getGermanFormattedDateString(this.projectStartDate))
       .attr('class', 'projectStartDate')
       .attr('dx', this.dx);
 
@@ -273,7 +272,7 @@ export class ProjectDuration {
 
     this.endDateText
       .append('tspan')
-      .text(this.projectEndDate.toLocaleDateString('de-DE', this.dateOptions))
+      .text(Utils.getGermanFormattedDateString(this.projectEndDate))
       .attr('class', 'projectEndDate')
       .attr('dx', this.dx);
 
@@ -407,18 +406,14 @@ export class ProjectDuration {
     const projectStartDateOutsideViewBox = this.xScale(this.projectStartDate) < 0;
     this.startDateText.select('tspan.triangleLeft').attr('fill', projectStartDateOutsideViewBox ? null : 'none');
 
-    this.startDateText
-      .select('tspan.projectStartDate')
-      .text(this.projectStartDate.toLocaleDateString('de-DE', this.dateOptions));
+    this.startDateText.select('tspan.projectStartDate').text(Utils.getGermanFormattedDateString(this.projectStartDate));
   }
 
   private redrawProjectEndDate(x: number, animationDuration: number): void {
     // project end date
     this.endDateText.transition().ease(d3.easeLinear).duration(animationDuration).attr('x', x);
 
-    this.endDateText
-      .select('tspan.projectEndDate')
-      .text(this.projectEndDate.toLocaleDateString('de-DE', this.dateOptions));
+    this.endDateText.select('tspan.projectEndDate').text(Utils.getGermanFormattedDateString(this.projectEndDate));
 
     const projectEndDateOutsideViewBox = this.xScale(this.projectEndDate) > this.xScale.range()[1];
     this.endDateText.select('tspan.triangleRight').attr('fill', projectEndDateOutsideViewBox ? null : 'none');

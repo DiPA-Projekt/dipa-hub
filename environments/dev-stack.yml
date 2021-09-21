@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
 
-  db-itzbund:
+  db-weit:
     environment:
       POSTGRES_USER: 'dipa'
       POSTGRES_PASSWORD: 'dipasecret'

@@ -1,3 +1,20 @@
+.mat-expansion-panel-header {
+  padding: 0 12px;
+}
+
+::ng-deep .mat-expansion-panel-body {
+  padding: 0 12px 12px !important;
+}
+
+.mat-column-key, .mat-column-value {
+  padding: 0 3px !important
+}
+
+.expansion-panel-title {
+  font-size: 20px;
+  font-weight: 500;
+}
+
 .sidenav-header {
   padding: 5px 15px;
 }
@@ -7,6 +24,7 @@
 }
 
 .mat-card-subtitle {
+  font-size: 12px;
   margin-bottom: 0;
 }
 
@@ -14,7 +32,12 @@
   text-overflow: ellipsis;
   line-height: 1.2;
   overflow: hidden;
-  width: 220px;
+  width: 100%;
+  margin-bottom: 0;
+}
+
+::ng-deep .mat-content {
+  padding: 0 3px;
 }
 
 .project-info {
@@ -25,4 +48,16 @@
   border-radius: 50%;
   min-width: 36px;
   padding: 0;
+}
+
+table {
+  width: 100%;
+}
+
+tr.example-element-row:hover {
+  background: whitesmoke;
+}
+
+.example-element-row td {
+  border-bottom-width: 0;
 }

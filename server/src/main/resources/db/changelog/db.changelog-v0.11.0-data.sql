@@ -1,28 +1,28 @@
 --liquibase formatted sql
 
---changeset id:insert-project-approach-swe-small-project context:itzbund
+--changeset id:insert-project-approach-swe-small-project context:weit
 INSERT INTO project_approach (id, name, iterative, operation_type_id)
 VALUES (7, 'VMXT ITZBund Kleinprojekte', false, 2)
 
---changeset id:insert-template-swe-small-project context:itzbund
+--changeset id:insert-template-swe-small-project context:weit
 INSERT INTO plan_template (id, name) VALUES (15, 'VMXT ITZBund Kleinprojekte Template')
 
---changeset id:insert-connection-template-swe-small-project context:itzbund
+--changeset id:insert-connection-template-swe-small-project context:weit
 INSERT INTO project_approach_plan_template_connection (project_approach_id, plan_template_id) VALUES (7, 15)
 
---changeset id:milestones-template-swe-small-project-Projekteinrichtung context:itzbund dbms:h2
+--changeset id:milestones-template-swe-small-project-Projekteinrichtung context:weit dbms:h2
 INSERT INTO milestone_template (name, date_offset, date, plan_template_id)
 VALUES ('Projekteinrichtung', 14, Now() + 14, 15)
 
---changeset id:milestones-template-swe-small-project-Projekteinrichtung context:itzbund dbms:postgresql
+--changeset id:milestones-template-swe-small-project-Projekteinrichtung context:weit dbms:postgresql
 INSERT INTO milestone_template (name, date_offset, date, plan_template_id)
 VALUES ('Projekteinrichtung', 14,NOW() + 14 * INTERVAL '1 day', 15)
 
---changeset id:milestones-template-swe-small-project-Projektabschluss context:itzbund dbms:h2
+--changeset id:milestones-template-swe-small-project-Projektabschluss context:weit dbms:h2
 INSERT INTO milestone_template (name, date_offset, date, plan_template_id)
 VALUES ('Projektabschluss', 180, Now() + 180, 15)
 
---changeset id:milestones-template-swe-small-project-Projektabschluss context:itzbund dbms:postgresql
+--changeset id:milestones-template-swe-small-project-Projektabschluss context:weit dbms:postgresql
 INSERT INTO milestone_template (name, date_offset, date, plan_template_id)
 VALUES ('Projektabschluss', 180, NOW() + 180 * INTERVAL '1 day', 15)
 
@@ -42,27 +42,27 @@ VALUES (2, 'Projektleiter', 'PL', 'WRITE', 1)
 INSERT INTO project_role (id, name, abbreviation, permission, project_role_template_id)
 VALUES (3, 'Projektteam', 'PT', 'WRITE', 1)
 
---changeset id:insert-project-role-agil-template context:itzbund
+--changeset id:insert-project-role-agil-template context:weit
 INSERT INTO project_role_template (id, name)
 VALUES (2, 'Project roles agile')
 
---changeset id:insert-project-role-agil-sc context:itzbund
+--changeset id:insert-project-role-agil-sc context:weit
 INSERT INTO project_role (id, name, abbreviation, permission, project_role_template_id)
 VALUES (4, 'Lenkungsausschuss', 'LA', 'READ', 2)
 
---changeset id:insert-project-role-agil-pm context:itzbund
+--changeset id:insert-project-role-agil-pm context:weit
 INSERT INTO project_role (id, name, abbreviation, permission, project_role_template_id)
 VALUES (5, 'Projektleiter', 'PL', 'WRITE', 2)
 
---changeset id:insert-project-role-agil-team context:itzbund
+--changeset id:insert-project-role-agil-team context:weit
 INSERT INTO project_role (id, name, abbreviation, permission, project_role_template_id)
 VALUES (6, 'Entwicklungsteam', 'ET', 'WRITE', 2)
 
---changeset id:insert-project-role-agil-scrum-master context:itzbund
+--changeset id:insert-project-role-agil-scrum-master context:weit
 INSERT INTO project_role (id, name, abbreviation, permission, project_role_template_id)
 VALUES (7, 'Scrum Master', 'SM', 'WRITE', 2)
 
---changeset id:insert-project-role-agil-po context:itzbund
+--changeset id:insert-project-role-agil-po context:weit
 INSERT INTO project_role (id, name, abbreviation, permission, project_role_template_id)
 VALUES (8, 'Product Owner', 'PO', 'WRITE', 2)
 
@@ -86,27 +86,27 @@ VALUES (4, 'Project roles Cisco Router Nürnberg', 2)
 INSERT INTO project_role (name, abbreviation, permission, project_role_template_id)
 SELECT name, abbreviation, permission, 4 FROM project_role WHERE project_role_template_id = 1
 
---changeset id:insert-project-role-template-Feldberg context:itzbund
+--changeset id:insert-project-role-template-Feldberg context:weit
 INSERT INTO project_role_template (id, name, project_id)
 VALUES (5, 'Project roles Feldberg', 3)
 
---changeset id:insert-project-role-Feldberg context:itzbund
+--changeset id:insert-project-role-Feldberg context:weit
 INSERT INTO project_role (name, abbreviation, permission, project_role_template_id)
 SELECT name, abbreviation, permission, 5 FROM project_role WHERE project_role_template_id = 2
 
---changeset id:insert-project-role-template-Zugspitze context:itzbund
+--changeset id:insert-project-role-template-Zugspitze context:weit
 INSERT INTO project_role_template (id, name, project_id)
 VALUES (6, 'Project roles Zugspitze', 4)
 
---changeset id:insert-project-role-Zugspitze context:itzbund
+--changeset id:insert-project-role-Zugspitze context:weit
 INSERT INTO project_role (name, abbreviation, permission, project_role_template_id)
 SELECT name, abbreviation, permission, 6 FROM project_role WHERE project_role_template_id = 1
 
---changeset id:insert-project-role-template-Bergsteigerausrüstung context:itzbund
+--changeset id:insert-project-role-template-Bergsteigerausrüstung context:weit
 INSERT INTO project_role_template (id, name, project_id)
 VALUES (7, 'Project roles Bergsteigerausrüstung', 5)
 
---changeset id:insert-project-role-Bergsteigerausrüstung context:itzbund
+--changeset id:insert-project-role-Bergsteigerausrüstung context:weit
 INSERT INTO project_role (name, abbreviation, permission, project_role_template_id)
 SELECT name, abbreviation, permission, 7 FROM project_role WHERE project_role_template_id = 1
 
@@ -122,7 +122,7 @@ SELECT name, abbreviation, permission, 8 FROM project_role WHERE project_role_te
 UPDATE project_approach
 SET project_role_template_id = 1
 
---changeset id:insert-project-approach-agile-project-role-template context:itzbund
+--changeset id:insert-project-approach-agile-project-role-template context:weit
 UPDATE project_approach
 SET project_role_template_id = 2
 WHERE id = 2
@@ -141,9 +141,9 @@ VALUES (3, 'DSB', 'DSB', 'READ')
 
 --changeset id:insert-user-Arne
 INSERT INTO app_user (id, name, tenant_id, keycloak_id)
-VALUES (1, 'Herr Arne', 'itzbund', '3b5b08d6-bc99-4d84-bb72-d09c42b0aff4')
+VALUES (1, 'Herr Arne', 'weit', '3b5b08d6-bc99-4d84-bb72-d09c42b0aff4')
 
---changeset id:insert-user-Arne-PMO-connection context:itzbund
+--changeset id:insert-user-Arne-PMO-connection context:weit
 INSERT INTO user_organisation_role_connection (user_id, organisation_role_id)
 VALUES (1, 1)
 
@@ -157,44 +157,44 @@ VALUES (2, 1)
 
 --changeset id:insert-user-Jana
 INSERT INTO app_user (id, name, tenant_id, keycloak_id)
-VALUES (3, 'Frau Jana', 'itzbund', 'f5cde284-a3c2-40b8-9aa6-631fa016e6ba')
+VALUES (3, 'Frau Jana', 'weit', 'f5cde284-a3c2-40b8-9aa6-631fa016e6ba')
 
---changeset id:insert-user-Jana-PE-Feldberg-connection context:itzbund
+--changeset id:insert-user-Jana-PE-Feldberg-connection context:weit
 UPDATE project
 SET user_id = 3
 WHERE id = 3
 
---changeset id:insert-user-Jana-PE-Bergsteigerausrüstung-connection context:itzbund
+--changeset id:insert-user-Jana-PE-Bergsteigerausrüstung-connection context:weit
 UPDATE project
 SET user_id = 3
 WHERE id = 5
 
 --changeset id:insert-user-Maria
 INSERT INTO app_user (id, name, tenant_id, keycloak_id)
-VALUES (4, 'Frau Maria', 'itzbund', '387add7c-ff8a-4206-a74e-78ccdf54bcad')
+VALUES (4, 'Frau Maria', 'weit', '387add7c-ff8a-4206-a74e-78ccdf54bcad')
 
---changeset id:insert-user-Maria-PE-Feldberg-LA context:itzbund
+--changeset id:insert-user-Maria-PE-Feldberg-LA context:weit
 INSERT INTO user_project_role_connection (user_id, project_role_id)
 VALUES (4, (SELECT id FROM project_role WHERE project_role_template_id = 5 AND abbreviation = 'LA'))
 
---changeset id:insert-user-Maria-PE-Zugspitze-PE context:itzbund
+--changeset id:insert-user-Maria-PE-Zugspitze-PE context:weit
 UPDATE project
 SET user_id = 4
 WHERE id = 4
 
 --changeset id:insert-user-Meyer
 INSERT INTO app_user (id, name, tenant_id, keycloak_id)
-VALUES (5, 'Herr Meyer', 'itzbund', 'bad74bcf-50f7-43f3-a81a-236c91b74458')
+VALUES (5, 'Herr Meyer', 'weit', 'bad74bcf-50f7-43f3-a81a-236c91b74458')
 
---changeset id:insert-user-Meyer-PE-Feldberg-PL context:itzbund
+--changeset id:insert-user-Meyer-PE-Feldberg-PL context:weit
 INSERT INTO user_project_role_connection (user_id, project_role_id)
 VALUES (5, (SELECT id FROM project_role WHERE project_role_template_id = 5 AND abbreviation = 'PL'))
 
 --changeset id:insert-user-Schulze
 INSERT INTO app_user (id, name, tenant_id, keycloak_id)
-VALUES (6, 'Herr Schulze', 'itzbund', 'c95b47da-17ae-4eb2-93b9-d93bfb7a2d9c')
+VALUES (6, 'Herr Schulze', 'weit', 'c95b47da-17ae-4eb2-93b9-d93bfb7a2d9c')
 
---changeset id:insert-user-Schulze-PE-Bergsteigerausrüstung-PL context:itzbund
+--changeset id:insert-user-Schulze-PE-Bergsteigerausrüstung-PL context:weit
 INSERT INTO user_project_role_connection (user_id, project_role_id)
 VALUES (6, (SELECT id FROM project_role WHERE project_role_template_id = 7 AND abbreviation = 'PL'))
 
@@ -233,55 +233,55 @@ VALUES (9, 'Frau Müller', 'ba', 'e8a4069f-5815-41a3-90a2-48cd6d32cb8d')
 INSERT INTO user_project_role_connection (user_id, project_role_id)
 VALUES (9, (SELECT id FROM project_role WHERE project_role_template_id = 4 AND abbreviation = 'PL'))
 
---changeset id:update_project_is_permanent-project_default_false context:itzbund
+--changeset id:update_project_is_permanent-project_default_false context:weit
 UPDATE project_task
 SET is_permanent_task = false
 WHERE true
 
---changeset id:update_project_is_permanent-project-task-03 context:itzbund
+--changeset id:update_project_is_permanent-project-task-03 context:weit
 UPDATE project_task
 SET is_permanent_task = true, title_permanent_task = 'Besetzungen in iSAR verwalten'
 WHERE id = 3
 
---changeset id:update_project_is_permanent-project-task-04 context:itzbund
+--changeset id:update_project_is_permanent-project-task-04 context:weit
 UPDATE project_task
 SET is_permanent_task = true, title_permanent_task = 'Regelmäßige Terminserien verwalten'
 WHERE id = 4
 
---changeset id:update_project_is_permanent-project-task-05 context:itzbund
+--changeset id:update_project_is_permanent-project-task-05 context:weit
 UPDATE project_task
 SET is_permanent_task = true, title_permanent_task = 'Termine verwalten'
 WHERE id = 5
 
---changeset id:update_project_is_permanent-project-task-06 context:itzbund
+--changeset id:update_project_is_permanent-project-task-06 context:weit
 UPDATE project_task
 SET is_permanent_task = true, title_permanent_task = 'Dokumentationsorte verwalten'
 WHERE id = 6
 
---changeset id:update_project_is_permanent-project-task-07 context:itzbund
+--changeset id:update_project_is_permanent-project-task-07 context:weit
 UPDATE project_task
 SET is_permanent_task = true, title_permanent_task = 'ELBE Einkaufswagen verwalten'
 WHERE id = 7
 
---changeset id:update_project_is_permanent-project-task-08 context:itzbund
+--changeset id:update_project_is_permanent-project-task-08 context:weit
 UPDATE project_task
 SET is_permanent_task = true, title_permanent_task = 'Monatliche Leistungsnachweise freigeben',
 explanation = 'Einrichtung der Verträge und der Externen zu diesen Verträgen und Erstellung der monatlichen Leistungsnachweise im Tool "AeDL"'
 WHERE id = 8
 
---changeset id:update_project_is_permanent-project-task-09 context:itzbund
+--changeset id:update_project_is_permanent-project-task-09 context:weit
 UPDATE project_task
 SET is_permanent_task = true, title_permanent_task = 'Trackingtabelle externe Dienstleistung pflegen'
 WHERE id = 9
 
---changeset id:update_project_is_permanent-project-task-11 context:itzbund
+--changeset id:update_project_is_permanent-project-task-11 context:weit
 UPDATE project_task
 SET is_permanent_task = true, title_permanent_task = 'Monatlichen Statusbericht erstellen und versenden',
 explanation = 'Erstellung des Statusberichtes für den vorangegangenen Berichtsmonat in iSAR und Freigabe dessen durch den Projekteigner bis zum 10. Tag des Kalendermonats',
 sort_order = 12
 WHERE id = 11
 
---changeset id:update_project_is_permanent-project-task-12 context:itzbund
+--changeset id:update_project_is_permanent-project-task-12 context:weit
 UPDATE project_task
 SET is_permanent_task = true, title_permanent_task = 'Risiken managen',
 sort_order = 11

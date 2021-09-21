@@ -1,5 +1,15 @@
-<mat-sidenav-container class="mat-sidenav-container" autosize hasBackdrop="false">
-  <mat-sidenav mode="side" opened="true" class="sidenav">
+<div class="sidenavToggleMenuBar">
+  <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
+</div>
+<mat-sidenav-container class="mat-sidenav-container" autosize [hasBackdrop]="mobileQuery.matches">
+  <mat-sidenav
+    #snav
+    [mode]="mobileQuery.matches ? 'over' : 'side'"
+    [fixedInViewport]="mobileQuery.matches"
+    fixedTopGap="56"
+    opened="true"
+    class="sidenav"
+  >
     <app-sidenav></app-sidenav>
   </mat-sidenav>
   <mat-sidenav-content>

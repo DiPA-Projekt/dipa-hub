@@ -92,7 +92,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-project-approach-softwareneuentwicklung-agil
       author: nguyen
-      context: itzbund
+      context: weit
       changes:
         - insert:
             tableName: project_approach
@@ -112,7 +112,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-project-approach-softwareneuentwicklung-iterativ
       author: nguyen
-      context: itzbund
+      context: weit
       changes:
         - insert:
             tableName: project_approach
@@ -168,7 +168,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-master-plan-template-softwareneuentwicklung
       author: nguyen
-      context: itzbund
+      context: weit
       changes:
         - insert:
             tableName: plan_template
@@ -185,7 +185,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-plan-template-softwareneuentwicklung-agil
       author: nguyen
-      context: itzbund
+      context: weit
       changes:
         - insert:
             tableName: plan_template
@@ -205,7 +205,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-plan-template-softwareneuentwicklung-iterative
       author: nguyen
-      context: itzbund
+      context: weit
       changes:
         - insert:
             tableName: plan_template
@@ -270,7 +270,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-milestones-softwareneuentwicklung-iterative
       author: nguyen
-      context: itzbund
+      context: weit
       changes:
         - insert:
             tableName: milestone_template

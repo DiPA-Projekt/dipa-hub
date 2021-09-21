@@ -36,7 +36,37 @@
   </div>
   <div mat-dialog-content fxLayout="row nowrap">
     <div fxFlex="50%" style="overflow: hidden auto; padding: 0 16px">
-      <h2 class="mat-card-title">{{ data.project.name }}</h2>
+      <form [formGroup]="formGroupProjectData">
+        <div class="contenteditable-container">
+          <h1
+            matRipple
+            class="mat-card-title"
+            [attr.contenteditable]="!isNotEditable"
+            (blur)="saveProjectName($event)"
+            (keydown.enter)="$event.abort()"
+            (keyup.enter)="$event.target.blur()"
+          >
+            {{ data.project.name }}
+          </h1>
+        </div>
+        <div>
+          <mat-form-field fxFlex="100%">
+            <mat-label>Projektbeschreibung</mat-label>
+            <label>
+              <textarea
+                matInput
+                formControlName="description"
+                [disabled]="isNotEditable"
+                (change)="onSubmitProjectData(formGroupProjectData)"
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="3"
+                cdkAutosizeMaxRows="10"
+              >
+              </textarea>
+            </label>
+          </mat-form-field>
+        </div>
+      </form>
       <div>
         <mat-selection-list color="primary" (selectionChange)="selectionChange($event.options)">
           <mat-list-option
@@ -221,18 +251,6 @@
                         formControlName="department"
                         (change)="onSubmitProjectData(formGroupProjectData)"
                       />
-                    </label>
-                  </mat-form-field>
-
-                  <mat-form-field fxFlex="100%">
-                    <mat-label>Projektbeschreibung</mat-label>
-                    <label>
-                      <textarea
-                        matInput
-                        formControlName="description"
-                        (change)="onSubmitProjectData(formGroupProjectData)"
-                      >
-                      </textarea>
                     </label>
                   </mat-form-field>
                 </div>
