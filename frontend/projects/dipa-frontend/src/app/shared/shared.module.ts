@@ -20,9 +20,10 @@ import { MatListModule } from '@angular/material/list';
 import { InvalidLinkDialogComponent } from './invalid-link-dialog/invalid-link-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ExternalLinkComponent } from './external-link/external-link.component';
+import { InvalidLinkCheckDirective } from './invalid-link-check.directive';
 
 @NgModule({
-  declarations: [InvalidLinkDialogComponent, ExternalLinkComponent],
+  declarations: [InvalidLinkDialogComponent, ExternalLinkComponent, InvalidLinkCheckDirective],
   imports: [
     MatCardModule,
     MatIconModule,
@@ -43,6 +44,6 @@ import { ExternalLinkComponent } from './external-link/external-link.component';
     MatListModule,
     MatDialogModule,
   ],
-  exports: [ExternalLinkComponent],
+  exports: [ExternalLinkComponent, InvalidLinkCheckDirective],
 })
 export class SharedModule {}

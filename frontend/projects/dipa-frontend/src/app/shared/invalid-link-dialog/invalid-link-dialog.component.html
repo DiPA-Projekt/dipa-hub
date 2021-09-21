@@ -1,6 +1,6 @@
-<h2 mat-dialog-title>{{ data.title }}</h2>
+<h2 mat-dialog-title>Platzhalter</h2>
 <mat-dialog-content class="mat-typography">
-  <h3>Platzhalter</h3>
+  <h3 *ngIf="data.title">{{ data.title }}</h3>
   <p>Hier könnte ein echter Link stehen.</p>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
