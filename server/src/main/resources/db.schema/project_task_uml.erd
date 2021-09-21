@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<diagram version="1" name="dipa_project_task_uml.erd">
+	<entities>
+		<data-source id="postgres-jdbc-17bbf723f10-61bff1713d9c53f3">
+			<entity id="1" name="final_project_task" fq-name="public.final_project_task" order="0" x="482" y="-25">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="2" name="final_project_task_template" fq-name="public.final_project_task_template" order="1" x="1048" y="9">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="3" name="project_task" fq-name="public.project_task" order="2" x="909" y="367">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="4" name="non_permanent_project_task_template" fq-name="public.non_permanent_project_task_template" order="3" x="968" y="181">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="5" name="non_permanent_project_task" fq-name="public.non_permanent_project_task" order="4" x="390" y="187">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="6" name="project_task_result" fq-name="public.project_task_result" order="5" x="522" y="386">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="7" name="project_task_form_field" fq-name="public.project_task_form_field" order="6" x="247" y="455">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="8" name="option_entry" fq-name="public.option_entry" order="7" x="12" y="538">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="9" name="project_task_template" fq-name="public.project_task_template" order="8" x="1358" y="302">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="10" name="project_property_question" fq-name="public.project_property_question" order="9" x="1261" y="452">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="11" name="project_property_question_template" fq-name="public.project_property_question_template" order="10" x="1596" y="446">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="12" name="project" fq-name="public.project" order="11" x="1872" y="227">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="13" name="permanent_project_task_template" fq-name="public.permanent_project_task_template" order="12" x="1209" y="720">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="14" name="permanent_project_task" fq-name="public.permanent_project_task" order="13" x="515" y="685">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+		</data-source>
+	</entities>
+	<notes>
+		<note id="15" order="14" x="671" y="528" w="235" h="96">A project task has project task form fields (entries) and results. Each result contains a list of project task form fields (form fields).</note>
+		<note id="16" order="15" x="1026" y="609" w="166" h="105">Each permanent project task, non permanent project task and final project task relates to a project task. </note>
+		<note id="17" order="16" x="1547" y="586" w="147" h="160">Some project tasks have relationship to project property question. Those properties decide whether
+the project task is avaiable or not</note>
+	</notes>
+	<relations>
+		<relation name="FKfinalProjectTaskTemplate" fq-name="public.final_project_task.&quot;FKfinalProjectTaskTemplate&quot;" type="fk" pk-ref="2" fk-ref="1"/>
+		<relation name="FKfinalProjectTaskProjectTask" fq-name="public.final_project_task.&quot;FKfinalProjectTaskProjectTask&quot;" type="fk" pk-ref="3" fk-ref="1"/>
+		<relation name="FKnonPermanentProjectTaskProjectTask" fq-name="public.non_permanent_project_task.&quot;FKnonPermanentProjectTaskProjectTask&quot;" type="fk" pk-ref="3" fk-ref="5"/>
+		<relation name="FKProjectTaskResultProjectTask" fq-name="public.project_task_result.&quot;FKProjectTaskResultProjectTask&quot;" type="fk" pk-ref="3" fk-ref="6"/>
+		<relation name="FKProjectTaskProjectTaskFormField" fq-name="public.project_task_form_field.&quot;FKProjectTaskProjectTaskFormField&quot;" type="fk" pk-ref="3" fk-ref="7"/>
+		<relation name="FKpermanentProjectTaskProjectTask" fq-name="public.permanent_project_task.&quot;FKpermanentProjectTaskProjectTask&quot;" type="fk" pk-ref="3" fk-ref="14"/>
+		<relation name="FKnonPermanentProjectTaskTemplate" fq-name="public.non_permanent_project_task.&quot;FKnonPermanentProjectTaskTemplate&quot;" type="fk" pk-ref="4" fk-ref="5"/>
+		<relation name="FKResultProjectTaskFormField" fq-name="public.project_task_form_field.&quot;FKResultProjectTaskFormField&quot;" type="fk" pk-ref="6" fk-ref="7"/>
+		<relation name="FKOptionEntryProjectTaskFormField" fq-name="public.option_entry.&quot;FKOptionEntryProjectTaskFormField&quot;" type="fk" pk-ref="7" fk-ref="8"/>
+		<relation name="FKprojectTaskTemplateId" fq-name="public.project_task.&quot;FKprojectTaskTemplateId&quot;" type="fk" pk-ref="9" fk-ref="3"/>
+		<relation name="FKprojectTaskPropertyQuestion" fq-name="public.project_task.&quot;FKprojectTaskPropertyQuestion&quot;" type="fk" pk-ref="10" fk-ref="3"/>
+		<relation name="FKprojectPropertyQuestionTemplate" fq-name="public.project_property_question.&quot;FKprojectPropertyQuestionTemplate&quot;" type="fk" pk-ref="11" fk-ref="10"/>
+		<relation name="FKfinalProjectTaskTemplateProject" fq-name="public.final_project_task_template.&quot;FKfinalProjectTaskTemplateProject&quot;" type="fk" pk-ref="12" fk-ref="2">
+			<bend type="abs" x="1469" y="91"/>
+			<bend type="abs" x="1553" y="94"/>
+		</relation>
+		<relation name="FKnonPermanentProjectTaskTemplateProject" fq-name="public.non_permanent_project_task_template.&quot;FKnonPermanentProjectTaskTemplateProject&quot;" type="fk" pk-ref="12" fk-ref="4">
+			<bend type="abs" x="1245" y="273"/>
+			<bend type="abs" x="1583" y="273"/>
+		</relation>
+		<relation name="FKprojectTaskTemplateProject" fq-name="public.project_task_template.&quot;FKprojectTaskTemplateProject&quot;" type="fk" pk-ref="12" fk-ref="9"/>
+		<relation name="FKprojectIdPropertyQuestionTemplate" fq-name="public.project_property_question_template.&quot;FKprojectIdPropertyQuestionTemplate&quot;" type="fk" pk-ref="12" fk-ref="11"/>
+		<relation name="FKpermanentProjectTaskTemplateProject" fq-name="public.permanent_project_task_template.&quot;FKpermanentProjectTaskTemplateProject&quot;" type="fk" pk-ref="12" fk-ref="13">
+			<bend type="abs" x="1620" y="785"/>
+			<bend type="abs" x="1742" y="758"/>
+		</relation>
+		<relation name="FKpermanentProjectTaskTemplate" fq-name="public.permanent_project_task.&quot;FKpermanentProjectTaskTemplate&quot;" type="fk" pk-ref="13" fk-ref="14"/>
+	</relations>
+</diagram>

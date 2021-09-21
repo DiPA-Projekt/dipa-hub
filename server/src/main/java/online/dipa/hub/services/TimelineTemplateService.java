@@ -179,6 +179,7 @@ public class TimelineTemplateService {
 
         if (currentProject.getProjectApproach().isIterative() && !template.getStandard()) {
 
+            // case 1: incremental templates, update the standard milestones to get start and end dates of increment's area
             standardTemplateMilestones = new ArrayList<>(Objects.requireNonNull(planTemplateRepository
                     .findByStandardAndProjectApproach(currentProject.getProjectApproach()).stream().findFirst()
                     .orElse(null)).getMilestones());
@@ -190,6 +191,7 @@ public class TimelineTemplateService {
             OffsetDateTime currentStartIncrement = standardTemplateMilestones.get(1).getDate();
             OffsetDateTime currentEndIncrement = standardTemplateMilestones.get(standardTemplateMilestones.size() - 2).getDate();
 
+            //  update the other template's milestones inside the founded range
             resultMilestones = updateMilestonesPosition(milestones, standardTemplateMilestones, currentStartIncrement, currentEndIncrement);
 
         }
@@ -202,6 +204,16 @@ public class TimelineTemplateService {
         return resultMilestones;
     }
 
+    /**
+     * the milestone's positions based on start and end date:
+     * 1. of the project
+     * 2. of the increment's area
+     * @param milestones
+     * @param standardTemplateMilestones
+     * @param currentStart
+     * @param currentEnd
+     * @return
+     */
     private List<MilestoneTemplateEntity> updateMilestonesPosition (List<MilestoneTemplateEntity> milestones, List<MilestoneTemplateEntity> standardTemplateMilestones,
             OffsetDateTime currentStart, OffsetDateTime currentEnd) {
 

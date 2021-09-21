@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<diagram version="1" name="dipa_plan_template_uml.erd">
+	<entities>
+		<data-source id="postgres-jdbc-17bbf723f10-61bff1713d9c53f3">
+			<entity id="1" name="plan_template" fq-name="public.plan_template" order="0" x="380" y="280">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="2" name="project" fq-name="public.project" order="1" x="723" y="113">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="3" name="milestone_template" fq-name="public.milestone_template" order="2" x="10" y="262">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="4" name="operation_type_plan_template_connection" fq-name="public.operation_type_plan_template_connection" order="3" x="20" y="20">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="5" name="project_approach_plan_template_connection" fq-name="public.project_approach_plan_template_connection" order="4" x="64" y="578">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="6" name="operation_type" fq-name="public.operation_type" order="5" x="1184" y="21">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="7" name="project_approach" fq-name="public.project_approach" order="6" x="949" y="560">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="8" name="increment" fq-name="public.&quot;increment&quot;" order="7" x="460" y="92">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+		</data-source>
+	</entities>
+	<notes>
+		<note id="9" order="8" x="571" y="427" w="141" h="122">Plan template contains milestones and depends on choosed project approach </note>
+	</notes>
+	<relations>
+		<relation name="FKmilestone" fq-name="public.milestone_template.&quot;FKmilestone&quot;" type="fk" pk-ref="1" fk-ref="3"/>
+		<relation name="FKplanTemplateIdOperationType" fq-name="public.operation_type_plan_template_connection.&quot;FKplanTemplateIdOperationType&quot;" type="fk" pk-ref="1" fk-ref="4"/>
+		<relation name="FKplanTemplateIdProjectApproach" fq-name="public.project_approach_plan_template_connection.&quot;FKplanTemplateIdProjectApproach&quot;" type="fk" pk-ref="1" fk-ref="5"/>
+		<relation name="FKprojectIdPlanTemplate" fq-name="public.plan_template.&quot;FKprojectIdPlanTemplate&quot;" type="fk" pk-ref="2" fk-ref="1"/>
+		<relation name="FKprojectIdIncrement" fq-name="public.&quot;increment&quot;.&quot;FKprojectIdIncrement&quot;" type="fk" pk-ref="2" fk-ref="8"/>
+		<relation name="FKoperationTypeIdConnection" fq-name="public.operation_type_plan_template_connection.&quot;FKoperationTypeIdConnection&quot;" type="fk" pk-ref="6" fk-ref="4">
+			<bend type="abs" x="359" y="73"/>
+			<bend type="abs" x="612" y="73"/>
+			<bend type="abs" x="885" y="73"/>
+		</relation>
+		<relation name="FKprojectTypeId" fq-name="public.project_approach.&quot;FKprojectTypeId&quot;" type="fk" pk-ref="6" fk-ref="7"/>
+		<relation name="FKprojectApproachIdProject" fq-name="public.project.&quot;FKprojectApproachIdProject&quot;" type="fk" pk-ref="7" fk-ref="2"/>
+		<relation name="FKprojectApproachIdConnection" fq-name="public.project_approach_plan_template_connection.&quot;FKprojectApproachIdConnection&quot;" type="fk" pk-ref="7" fk-ref="5"/>
+	</relations>
+</diagram>

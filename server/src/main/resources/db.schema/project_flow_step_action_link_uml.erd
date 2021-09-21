@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<diagram version="1" name="project_flow_step_action_link_uml.erd">
+	<entities>
+		<data-source id="postgres-jdbc-17bbf723f10-61bff1713d9c53f3">
+			<entity id="1" name="project_flow_step_action" fq-name="public.project_flow_step_action" order="0" x="31" y="45">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="2" name="external_link" fq-name="public.external_link" order="1" x="379" y="205">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="3" name="project_flow_step_action_link" fq-name="public.project_flow_step_action_link" order="2" x="42" y="239">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+			<entity id="4" name="project_flow_step" fq-name="public.project_flow_step" order="3" x="396" y="52">
+				<path name="public"/>
+				<path name="dipa"/>
+			</entity>
+		</data-source>
+	</entities>
+	<relations>
+		<relation name="FKactionId" fq-name="public.project_flow_step_action_link.&quot;FKactionId&quot;" type="fk" pk-ref="1" fk-ref="3"/>
+		<relation name="FKactionLinks" fq-name="public.project_flow_step_action_link.&quot;FKactionLinks&quot;" type="fk" pk-ref="2" fk-ref="3"/>
+		<relation name="FKstepId" fq-name="public.project_flow_step_action.&quot;FKstepId&quot;" type="fk" pk-ref="4" fk-ref="1"/>
+	</relations>
+</diagram>
