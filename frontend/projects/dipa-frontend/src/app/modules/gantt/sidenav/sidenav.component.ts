@@ -118,6 +118,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.paramsSubscription?.unsubscribe();
     this.timelineDataSubscription?.unsubscribe();
     this.rolesSubscription?.unsubscribe();
+    this.operationTypesSubscription?.unsubscribe();
+    this.projectApproachesSubscription?.unsubscribe();
   }
 
   public setSideNavMenu(): void {
