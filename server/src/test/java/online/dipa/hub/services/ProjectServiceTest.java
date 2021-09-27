@@ -312,7 +312,7 @@ class ProjectServiceTest {
 
             // THEN
             assertThat(permanentProjectTasks).isNotEmpty()
-                                             .hasSize(11);
+                                             .hasSize(10);
         }
 
         @Test
@@ -327,7 +327,7 @@ class ProjectServiceTest {
 
             // THEN
             assertThat(nonPermanentProjectTasks).isNotEmpty()
-                                                .hasSize(12);
+                                                .hasSize(10);
 
         }
 
