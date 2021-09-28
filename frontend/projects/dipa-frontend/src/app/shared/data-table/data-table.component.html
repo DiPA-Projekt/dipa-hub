@@ -1,0 +1,243 @@
+<div class="mat-elevation-z3" style="width: 50%; margin: 20px">
+  <table mat-table [dataSource]="tableDataSource" multiTemplateDataRows>
+    <ng-container matColumnDef="header">
+      <th mat-header-cell *matHeaderCellDef [attr.colspan]="displayedColumns.length" scope="col">
+        <div fxLayout="row nowrap" fxLayoutAlign="space-between center">
+          <mat-icon style="margin-right: 5px">{{ icon }}</mat-icon>
+          <div class="matCardContentHeaderTitle ellipsis full-width">{{ title }}</div>
+        </div>
+      </th>
+    </ng-container>
+
+    <ng-container matColumnDef="eventType">
+      <th mat-header-cell *matHeaderCellDef scope="col">
+        Typ
+        <button mat-button class="filterButton roundedButton" style="margin-right: 16px" [matMenuTriggerFor]="menu">
+          <mat-icon [fontSet]="filterValues.eventType ? 'material-icons' : 'material-icons-outlined'"
+            >filter_alt</mat-icon
+          >
+        </button>
+
+        <mat-menu #menu>
+          <div
+            mat-menu-item
+            fxLayout="row wrap"
+            fxLayoutAlign="space-between"
+            fxFlexAlign=""
+            appFilterItem
+            [disableRipple]="true"
+          >
+            <div style="font-size: 20px">Filter</div>
+            <div>
+              <button mat-button class="roundedButton" (click)="clearColumn('eventType')">
+                <mat-icon title="Zurücksetzen">restart_alt</mat-icon>
+              </button>
+            </div>
+          </div>
+          <mat-selection-list [(ngModel)]="filterValues.eventType" (ngModelChange)="applyFilter()" color="primary">
+            <mat-list-option
+              *ngFor="let option of getEventTypeOptions()"
+              [value]="option"
+              (click)="$event.stopPropagation()"
+              checkboxPosition="before"
+            >
+              <div class="appointmentTypeIconWrapper" [ngSwitch]="option">
+                <div class="appointmentTypeIcon">
+                  <ng-container *ngSwitchCase="'TYPE_SINGLE_APPOINTMENT'">
+                    <span class="circle" title="Einzeltermin">E</span>
+                    Einzeltermin
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'TYPE_APPT_SERIES'">
+                    <span class="circle bg-color-violett" title="Terminserie">S</span>
+                    Terminserie
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'TYPE_RECURRING_EVENT'">
+                    <span class="circle bg-color-brown" title="Wiederkehrender Termin">W</span>
+                    Wiederkehrender Termin
+                  </ng-container>
+                </div>
+              </div>
+            </mat-list-option>
+          </mat-selection-list>
+        </mat-menu>
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <div class="appointmentTypeIconWrapper" [ngSwitch]="element.eventType">
+          <div class="appointmentTypeIcon">
+            <ng-container *ngSwitchCase="'TYPE_SINGLE_APPOINTMENT'">
+              <span class="circle" title="Einzeltermin">E</span>
+            </ng-container>
+            <ng-container *ngSwitchCase="'TYPE_APPT_SERIES'">
+              <span class="circle bg-color-violett" title="Terminserie">S</span>
+            </ng-container>
+            <ng-container *ngSwitchCase="'TYPE_RECURRING_EVENT'">
+              <span class="circle bg-color-brown" title="Wiederkehrender Termin">W</span>
+            </ng-container>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="dateTime">
+      <th mat-header-cell *matHeaderCellDef scope="col">
+        Datum
+        <button mat-button class="filterButton roundedButton" style="margin-right: 16px" [matMenuTriggerFor]="menu">
+          <mat-icon [fontSet]="filterValues.dateTime ? 'material-icons' : 'material-icons-outlined'"
+            >filter_alt</mat-icon
+          >
+        </button>
+
+        <mat-menu #menu>
+          <div
+            mat-menu-item
+            fxLayout="row wrap"
+            fxLayoutAlign="space-between"
+            fxFlexAlign=""
+            appFilterItem
+            [disableRipple]="true"
+          >
+            <div style="font-size: 20px">Filter</div>
+            <div>
+              <button mat-button class="roundedButton" (click)="clearColumn('dateTime')">
+                <mat-icon title="Zurücksetzen">restart_alt</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <div mat-menu-item appFilterItem [disableRipple]="true">
+            <mat-form-field>
+              <mat-label>Start</mat-label>
+              <input
+                matInput
+                type="date"
+                [max]="apptEndDate"
+                (click)="$event.stopPropagation()"
+                (change)="onChangeAppointmentPeriodStart($event, 'dateTime')"
+                [(ngModel)]="apptStartDate"
+              />
+            </mat-form-field>
+          </div>
+          <div mat-menu-item [disableRipple]="true">
+            <mat-form-field>
+              <mat-label>Ende</mat-label>
+              <input
+                matInput
+                type="date"
+                [min]="apptStartDate"
+                (click)="$event.stopPropagation()"
+                (change)="onChangeAppointmentPeriodEnd($event, 'dateTime')"
+                [(ngModel)]="apptEndDate"
+              />
+            </mat-form-field>
+          </div>
+          <div style="margin: 10px 0">
+            <mat-divider></mat-divider>
+          </div>
+          <!--        (click)="$event.stopPropagation()"-->
+          <div mat-menu-item appFilterItem [disableRipple]="true">
+            <mat-form-field>
+              <mat-label>Vorlage</mat-label>
+              <mat-select [value]="periodTemplate" (selectionChange)="changePeriodTemplates($event.value, 'dateTime')">
+                <mat-option *ngFor="let period of schedulePeriods" [value]="period.key">
+                  {{ period.value }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </mat-menu>
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ utils.getGermanFormattedDateString(element.dateTime) }}
+        <div *ngIf="element.eventTime" style="font-size: 12px; color: #a0a0a0">
+          {{ element.eventTime }}
+        </div>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef scope="col">
+        Titel
+        <button mat-button class="filterButton roundedButton" style="margin-right: 16px" [matMenuTriggerFor]="menu">
+          <mat-icon [fontSet]="filterValues.title ? 'material-icons' : 'material-icons-outlined'">filter_alt</mat-icon>
+        </button>
+
+        <mat-menu #menu>
+          <div
+            mat-menu-item
+            fxLayout="row wrap"
+            fxLayoutAlign="space-between"
+            fxFlexAlign=""
+            appFilterItem
+            [disableRipple]="true"
+          >
+            <div style="font-size: 20px">Filter</div>
+            <div>
+              <button mat-button class="roundedButton" (click)="clearColumn('title')">
+                <mat-icon title="Zurücksetzen">restart_alt</mat-icon>
+              </button>
+            </div>
+          </div>
+          <div mat-menu-item appFilterItem [disableRipple]="true">
+            <mat-form-field>
+              <mat-label>Titel</mat-label>
+              <input matInput [(ngModel)]="filterValues.title" (keyup)="applyFilter()" />
+            </mat-form-field>
+          </div>
+        </mat-menu>
+      </th>
+      <td mat-cell *matCellDef="let element">{{ element.title }}</td>
+    </ng-container>
+    <ng-container matColumnDef="due">
+      <th mat-header-cell *matHeaderCellDef scope="col">Fällig in</th>
+      <td mat-cell *matCellDef="let element">{{ element.due }} Tagen</td>
+    </ng-container>
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef scope="col">Status</th>
+      <td mat-cell *matCellDef="let element">
+        <mat-form-field *ngIf="element.mandatory" floatLabel="never" class="noHint full-width">
+          <mat-label>Status</mat-label>
+          <mat-select [value]="element.status" (selectionChange)="changeStatus($event, element)" [disabled]="editable">
+            <mat-option value="OPEN"> offen </mat-option>
+            <mat-option value="CLOSED"> geschlossen </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef>
+        <button
+          #appointmentShowAllButton
+          mat-icon-button
+          aria-label="Zeige alle Termin in Zeitleiste"
+          (click)="masterToggle()"
+        >
+          <mat-icon>{{ isAllSelected ? 'visibility' : 'visibility_off' }}</mat-icon>
+        </button>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <button
+          #appointmentShowButton
+          mat-icon-button
+          aria-label="Zeige Termin in Zeitleiste"
+          (click)="changeVisibility(row)"
+        >
+          <mat-icon>{{ selection.isSelected(row) ? 'visibility' : 'visibility_off' }}</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row style="height: 36px" *matHeaderRowDef="['header']"></tr>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr
+      mat-row
+      *matRowDef="let element; columns: displayedColumns"
+      class="example-element-row"
+      [class.example-expanded-row]="tableElement === element"
+      (click)="tableElement = tableElement === element ? null : element"
+    ></tr>
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="5">Keine Termine mit aktueller Filterung.</td>
+    </tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons aria-label="Select page of periodic elements">
+  </mat-paginator>
+</div>
