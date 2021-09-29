@@ -172,7 +172,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
           this.appointmentsList = this.generateEventList(eventData, projectTaskData).sort(
             (b, a) => new Date(b.dateTime).getTime() - new Date(a.dateTime).getTime()
           );
-          // this.filteredEventList = [...this.appointmentsList];
+
           this.overdueEvents = this.filterAllOverdueAppointments(this.appointmentsList);
           this.openEventsInPeriod = this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
 
@@ -289,14 +289,6 @@ export class TimelineComponent implements OnInit, OnDestroy {
     }
   }
 
-  private setVisibility(entries: EventEntry[], visibility: boolean): void {
-    entries.forEach((event) => {
-      event.visibility = visibility;
-    });
-    // this triggers ngOnChanges in chart
-    this.filteredEventList = [...this.filteredEventList];
-  }
-
   public refreshOverdueData(rows: EventEntry[]): void {
     this.filteredOverdueEventList = rows;
     // this triggers ngOnChanges in chart
@@ -307,6 +299,14 @@ export class TimelineComponent implements OnInit, OnDestroy {
     this.filteredOpenEventList = rows;
     // this triggers ngOnChanges in chart
     this.filteredEventList = [...this.filteredOpenEventList, ...this.filteredOverdueEventList];
+  }
+
+  private setVisibility(entries: EventEntry[], visibility: boolean): void {
+    entries.forEach((event) => {
+      event.visibility = visibility;
+    });
+    // this triggers ngOnChanges in chart
+    this.filteredEventList = [...this.filteredEventList];
   }
 
   private generateEventList(eventData: ProjectEventTemplate[], projectTaskData: PermanentProjectTask[]): EventEntry[] {

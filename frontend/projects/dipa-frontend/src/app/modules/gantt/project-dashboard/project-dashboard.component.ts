@@ -285,13 +285,13 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       this.openEventsInPeriod = this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
 
       this.eventDataSource.data = this.openEventsInPeriod;
-      this.filterSelectObj.filter((o: ColumnFilter) => {
+      this.filterSelectObj = this.filterSelectObj.filter((o: ColumnFilter) => {
         o.options = this.getFilterObject(this.eventDataSource.data, o.columnProp);
         o.modelValue = this.getFilterObject(this.eventDataSource.data, o.columnProp);
       });
 
       this.overdueEventDataSource.data = this.overdueEvents;
-      this.filterSelectOverdueObj.filter((o: ColumnFilter) => {
+      this.filterSelectOverdueObj = this.filterSelectOverdueObj.filter((o: ColumnFilter) => {
         o.options = this.getFilterObject(this.overdueEventDataSource.data, o.columnProp);
         o.modelValue = this.getFilterObject(this.overdueEventDataSource.data, o.columnProp);
       });

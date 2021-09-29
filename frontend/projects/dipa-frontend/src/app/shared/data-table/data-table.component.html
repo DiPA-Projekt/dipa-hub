@@ -1,5 +1,5 @@
 <div class="mat-elevation-z3" style="width: 50%; margin: 20px">
-  <table mat-table [dataSource]="tableDataSource" multiTemplateDataRows>
+  <table mat-table [dataSource]="tableDataSource" multiTemplateDataRows aria-label="Eventdaten">
     <ng-container matColumnDef="header">
       <th mat-header-cell *matHeaderCellDef [attr.colspan]="displayedColumns.length" scope="col">
         <div fxLayout="row nowrap" fxLayoutAlign="space-between center">
@@ -132,7 +132,6 @@
           <div style="margin: 10px 0">
             <mat-divider></mat-divider>
           </div>
-          <!--        (click)="$event.stopPropagation()"-->
           <div mat-menu-item appFilterItem [disableRipple]="true">
             <mat-form-field>
               <mat-label>Vorlage</mat-label>
@@ -203,7 +202,7 @@
     </ng-container>
 
     <ng-container matColumnDef="select">
-      <th mat-header-cell *matHeaderCellDef>
+      <th mat-header-cell *matHeaderCellDef scope="col">
         <button
           #appointmentShowAllButton
           mat-icon-button

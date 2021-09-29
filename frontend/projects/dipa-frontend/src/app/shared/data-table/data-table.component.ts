@@ -2,7 +2,7 @@ import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChil
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSelectChange } from '@angular/material/select';
 import { SelectionModel } from '@angular/cdk/collections';
-import Utils, { FilterMode } from '../utils';
+import Utils from '../utils';
 import { MatPaginator } from '@angular/material/paginator';
 import { DatePipe } from '@angular/common';
 import { Timeline } from 'dipa-api-client';
@@ -26,6 +26,12 @@ interface EventEntry {
   visibility: boolean;
 }
 
+enum FILTER_MODE {
+  text,
+  date,
+  select,
+}
+
 @Component({
   selector: 'app-data-table',
   templateUrl: './data-table.component.html',
@@ -44,6 +50,8 @@ export class DataTableComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) public paginator: MatPaginator;
 
+  static FILTER_MODE = FILTER_MODE;
+
   public utils = Utils;
 
   public selection = new SelectionModel<EventEntry>(true, []);
@@ -59,9 +67,9 @@ export class DataTableComponent implements OnInit, AfterViewInit {
   public templateFor: string;
 
   public filterTypeList = [
-    { columnName: 'eventType', filterMode: FilterMode.select },
-    { columnName: 'dateTime', filterMode: FilterMode.date },
-    { columnName: 'title', filterMode: FilterMode.text },
+    { columnName: 'eventType', filterMode: FILTER_MODE.select },
+    { columnName: 'dateTime', filterMode: FILTER_MODE.date },
+    { columnName: 'title', filterMode: FILTER_MODE.text },
   ];
 
   public schedulePeriods = [
@@ -106,7 +114,7 @@ export class DataTableComponent implements OnInit, AfterViewInit {
     this.tableDataSource.filterPredicate = this.getFilterPredicate();
 
     this.tableDataSource.data = this.data;
-    this.filterSelectObj.filter((o: ColumnFilter) => {
+    this.filterSelectObj = this.filterSelectObj.filter((o: ColumnFilter) => {
       o.options = this.getFilterObject(this.tableDataSource.data, o.columnProp);
       o.modelValue = this.getFilterObject(this.tableDataSource.data, o.columnProp);
     });
@@ -262,7 +270,7 @@ export class DataTableComponent implements OnInit, AfterViewInit {
 
             const filterMode = this.filterTypeList.find((elem) => elem.columnName === col)?.filterMode;
             switch (filterMode) {
-              case FilterMode.text:
+              case FILTER_MODE.text:
                 searchCol = data[col] as string;
                 if (
                   searchCol != null &&
@@ -273,7 +281,7 @@ export class DataTableComponent implements OnInit, AfterViewInit {
                 }
                 allFound = allFound && found;
                 break;
-              case FilterMode.select:
+              case FILTER_MODE.select:
                 searchTerms[col].forEach((searchTerm) => {
                   searchCol = data[col] as string;
                   if (searchCol.toString().indexOf(searchTerm) !== -1) {
@@ -282,7 +290,7 @@ export class DataTableComponent implements OnInit, AfterViewInit {
                 });
                 allFound = allFound && found;
                 break;
-              case FilterMode.date:
+              case FILTER_MODE.date:
                 searchCol = data[col] as string;
 
                 const apptDate = Utils.createDateAtMidnight(searchCol);

@@ -1,9 +1,3 @@
-export enum FilterMode {
-  text,
-  date,
-  select,
-}
-
 export default class Utils {
   public static getGermanFormattedDateString(input: string | Date): string {
     const dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
