@@ -17,7 +17,6 @@
       <module name="dipa-client" target="11" />
       <module name="dipa-frontend" target="11" />
       <module name="dipa-hub" target="11" />
-      <module name="dipa-hub-new" target="11" />
       <module name="dipa-open-api" target="11" />
       <module name="dipa-server" target="11" />
       <module name="ecamp-frontend" target="11" />

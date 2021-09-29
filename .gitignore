@@ -200,3 +200,4 @@ buildNumber.properties
 /frontend/eslint-report.json
 /logs/
 /server/logs/
+/.idea/
