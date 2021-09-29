@@ -226,13 +226,7 @@
 
     <tr mat-header-row style="height: 36px" *matHeaderRowDef="['header']"></tr>
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-    <tr
-      mat-row
-      *matRowDef="let element; columns: displayedColumns"
-      class="example-element-row"
-      [class.example-expanded-row]="tableElement === element"
-      (click)="tableElement = tableElement === element ? null : element"
-    ></tr>
+    <tr mat-row *matRowDef="let element; columns: displayedColumns"></tr>
     <tr class="mat-row" *matNoDataRow>
       <td class="mat-cell" colspan="5">Keine Termine mit aktueller Filterung.</td>
     </tr>

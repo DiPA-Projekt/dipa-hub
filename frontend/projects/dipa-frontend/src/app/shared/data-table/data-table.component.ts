@@ -26,7 +26,7 @@ interface EventEntry {
   visibility: boolean;
 }
 
-enum FILTER_MODE {
+enum FilterMode {
   text,
   date,
   select,
@@ -38,6 +38,8 @@ enum FILTER_MODE {
   styleUrls: ['./data-table.component.scss'],
 })
 export class DataTableComponent implements OnInit, AfterViewInit {
+  public static filterMode = FilterMode;
+
   @Input() public title: string;
   @Input() public icon: string;
   @Input() public displayedColumns = [];
@@ -50,8 +52,6 @@ export class DataTableComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) public paginator: MatPaginator;
 
-  static FILTER_MODE = FILTER_MODE;
-
   public utils = Utils;
 
   public selection = new SelectionModel<EventEntry>(true, []);
@@ -59,17 +59,14 @@ export class DataTableComponent implements OnInit, AfterViewInit {
   public tableDataSource = new MatTableDataSource<EventEntry>();
 
   public filterValues: { [key: string]: string[] } = {};
-  public tableElement: any | null;
 
   public filterSelectObj: ColumnFilter[] = [];
   public filterNameObj: ColumnFilter[] = [];
 
-  public templateFor: string;
-
   public filterTypeList = [
-    { columnName: 'eventType', filterMode: FILTER_MODE.select },
-    { columnName: 'dateTime', filterMode: FILTER_MODE.date },
-    { columnName: 'title', filterMode: FILTER_MODE.text },
+    { columnName: 'eventType', filterMode: DataTableComponent.filterMode.select },
+    { columnName: 'dateTime', filterMode: DataTableComponent.filterMode.date },
+    { columnName: 'title', filterMode: DataTableComponent.filterMode.text },
   ];
 
   public schedulePeriods = [
@@ -202,10 +199,6 @@ export class DataTableComponent implements OnInit, AfterViewInit {
     this.setDateFilter(columnKey);
   }
 
-  public onFilterClick(templateFor: string): void {
-    this.templateFor = templateFor;
-  }
-
   public applyFilter(): void {
     this.tableDataSource.filter = JSON.stringify(this.filterValues);
     this.filterChanged.emit(this.tableDataSource.filteredData);
@@ -258,57 +251,56 @@ export class DataTableComponent implements OnInit, AfterViewInit {
           delete searchTerms[col];
         }
       }
-
-      let allFound = true;
-
-      const search = () => {
-        for (const col in searchTerms) {
-          if (searchTerms.hasOwnProperty(col)) {
-            let found = false;
-
-            let searchCol: string;
-
-            const filterMode = this.filterTypeList.find((elem) => elem.columnName === col)?.filterMode;
-            switch (filterMode) {
-              case FILTER_MODE.text:
-                searchCol = data[col] as string;
-                if (
-                  searchCol != null &&
-                  searchCol.toString().toLocaleLowerCase().indexOf(searchTerms[col].toString().toLocaleLowerCase()) !==
-                    -1
-                ) {
-                  found = true;
-                }
-                allFound = allFound && found;
-                break;
-              case FILTER_MODE.select:
-                searchTerms[col].forEach((searchTerm) => {
-                  searchCol = data[col] as string;
-                  if (searchCol.toString().indexOf(searchTerm) !== -1) {
-                    found = true;
-                  }
-                });
-                allFound = allFound && found;
-                break;
-              case FILTER_MODE.date:
-                searchCol = data[col] as string;
-
-                const apptDate = Utils.createDateAtMidnight(searchCol);
-                if (
-                  apptDate >= Utils.createDateAtMidnight(new Date(this.apptStartDate)) &&
-                  apptDate <= Utils.createDateAtMidnight(new Date(this.apptEndDate))
-                ) {
-                  found = true;
-                }
-                allFound = allFound && found;
-                break;
-            }
-          }
-        }
-        return allFound;
-      };
-      return search();
+      return this.filterAll(data, searchTerms);
     };
+  }
+
+  private filterAll<T>(data: T, searchTerms: { [key: string]: string[] }): boolean {
+    let allFound = true;
+
+    for (const col in searchTerms) {
+      if (searchTerms.hasOwnProperty(col)) {
+        let found = false;
+
+        let searchCol: string;
+
+        const filterMode = this.filterTypeList.find((elem) => elem.columnName === col)?.filterMode;
+        switch (filterMode) {
+          case DataTableComponent.filterMode.text:
+            searchCol = data[col] as string;
+            if (
+              searchCol != null &&
+              searchCol.toString().toLocaleLowerCase().indexOf(searchTerms[col].toString().toLocaleLowerCase()) !== -1
+            ) {
+              found = true;
+            }
+            allFound = allFound && found;
+            break;
+          case DataTableComponent.filterMode.select:
+            searchTerms[col].forEach((searchTerm) => {
+              searchCol = data[col] as string;
+              if (searchCol.toString().indexOf(searchTerm) !== -1) {
+                found = true;
+              }
+            });
+            allFound = allFound && found;
+            break;
+          case DataTableComponent.filterMode.date:
+            searchCol = data[col] as string;
+
+            const apptDate = Utils.createDateAtMidnight(searchCol);
+            if (
+              apptDate >= Utils.createDateAtMidnight(new Date(this.apptStartDate)) &&
+              apptDate <= Utils.createDateAtMidnight(new Date(this.apptEndDate))
+            ) {
+              found = true;
+            }
+            allFound = allFound && found;
+            break;
+        }
+      }
+    }
+    return allFound;
   }
 
   private getFilterObject<T>(fullObj: T[], key: string): string[] {
