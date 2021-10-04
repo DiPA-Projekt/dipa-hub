@@ -107,6 +107,6 @@ CREATE TABLE non_permanent_project_task(
     ON DELETE CASCADE
 )
 
--- changeset id:add-column-task-number-project-task context:itzbund
+-- changeset id:add-column-task-number-project-task context:weit
 ALTER TABLE project_task
 ADD COLUMN task_number BIGINT

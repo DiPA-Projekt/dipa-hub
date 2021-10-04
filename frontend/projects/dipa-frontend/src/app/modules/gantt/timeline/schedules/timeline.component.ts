@@ -29,11 +29,15 @@ interface EventEntry {
   seriesId: number;
   eventType: string; // TYPE_APPT_SERIES, TYPE_SINGLE_APPOINTMENT, TYPE_RECURRING_EVENT
   title: string;
+  eventDate: string;
+  eventTime: string;
+  due: number;
   dateTime: string;
   duration: number;
   status: string; // OPEN, DONE
   mandatory: boolean;
   visibility: boolean;
+  // participants: string;
 }
 
 @Component({
@@ -44,10 +48,13 @@ interface EventEntry {
 export class TimelineComponent implements OnInit, OnDestroy {
   @ViewChild('ganttChart', { static: true }) public chart: ChartComponent;
 
+  public today = Utils.createDateAtMidnight(new Date());
+
   public periodStartDate = new Date(2020, 0, 1);
   public periodEndDate = new Date(2020, 11, 31);
 
   public timelineData: Timeline[] = [];
+  public selectedTimeline: Timeline;
 
   public selectedTimelineId: number;
 
@@ -57,8 +64,14 @@ export class TimelineComponent implements OnInit, OnDestroy {
   public projectApproachesList: ProjectApproach[] = [];
   public appointmentsListProjectTasks: ProjectTask[] = [];
   public appointmentsList: EventEntry[] = [];
+
   public openEventsInPeriod: EventEntry[] = [];
   public overdueEvents: EventEntry[] = [];
+
+  public filteredEventList: EventEntry[] = [];
+  public filteredOpenEventList: EventEntry[] = [];
+  public filteredOverdueEventList: EventEntry[] = [];
+
   public vm$: Observable<any>;
 
   public appointmentVisibility = false;
@@ -149,6 +162,8 @@ export class TimelineComponent implements OnInit, OnDestroy {
         const periodStartDate = new Date(selectedTimeline.start);
         const periodEndDate = new Date(selectedTimeline.end);
 
+        this.selectedTimeline = selectedTimeline;
+
         // set default appointments list end to project end
         this.apptEndDate = this.datePipe.transform(periodEndDate, 'yyyy-MM-dd');
         this.openEventsInPeriod = this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
@@ -157,8 +172,14 @@ export class TimelineComponent implements OnInit, OnDestroy {
           this.appointmentsList = this.generateEventList(eventData, projectTaskData).sort(
             (b, a) => new Date(b.dateTime).getTime() - new Date(a.dateTime).getTime()
           );
+
           this.overdueEvents = this.filterAllOverdueAppointments(this.appointmentsList);
           this.openEventsInPeriod = this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
+
+          this.filteredOpenEventList = [...this.openEventsInPeriod];
+          this.filteredOverdueEventList = [...this.overdueEvents];
+
+          this.filteredEventList = [...this.filteredOpenEventList, ...this.filteredOverdueEventList];
         }
 
         return {
@@ -194,12 +215,12 @@ export class TimelineComponent implements OnInit, OnDestroy {
     }
   }
 
-  public changeStatus(value: string, entry: EventEntry): void {
+  public changeStatus(entry: EventEntry): void {
     if (entry.eventType === 'TYPE_SINGLE_APPOINTMENT') {
       this.appointmentsListProjectTasks.forEach((task: PermanentProjectTask) => {
         const foundResult = task.projectTask.results.find((result) => result.id === entry.id);
         if (foundResult) {
-          foundResult.formFields.find((field) => field.key === 'status').value = value;
+          foundResult.formFields.find((field) => field.key === 'status').value = entry.status;
           this.projectService.updateProjectTask(this.selectedTimelineId, task.projectTask).subscribe({
             next: null,
             error: null,
@@ -209,28 +230,12 @@ export class TimelineComponent implements OnInit, OnDestroy {
         }
       });
     } else {
-      const projectEvent: ProjectEvent = { id: entry.id, status: value as ProjectEvent.StatusEnum };
+      const projectEvent: ProjectEvent = { id: entry.id, status: entry.status as ProjectEvent.StatusEnum };
       this.projectService.updateProjectEvent(this.selectedTimelineId, projectEvent).subscribe({
         next: null,
         error: null,
         complete: () => void 0,
       });
-    }
-  }
-
-  public onChangeAppointmentPeriodStart(event: Event): void {
-    if ((event.target as HTMLInputElement).value !== null) {
-      this.apptStartDate = (event.target as HTMLInputElement).value;
-      this.periodTemplate = 'CUSTOM';
-      this.openEventsInPeriod = this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
-    }
-  }
-
-  public onChangeAppointmentPeriodEnd(event: Event): void {
-    if ((event.target as HTMLInputElement).value !== null) {
-      this.apptEndDate = (event.target as HTMLInputElement).value;
-      this.periodTemplate = 'CUSTOM';
-      this.openEventsInPeriod = this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
     }
   }
 
@@ -277,75 +282,31 @@ export class TimelineComponent implements OnInit, OnDestroy {
     return appointmentsInPeriod?.filter((appt) => appt.status !== 'CLOSED');
   }
 
-  public changePeriodTemplates(value: string): void {
-    this.apptStartDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
-
-    let now = new Date();
-    switch (value) {
-      case 'CUSTOM':
-        return;
-      case '1_WEEK':
-        now.setDate(now.getDate() + 7);
-        break;
-      case '2_WEEKS':
-        now.setDate(now.getDate() + 2 * 7);
-        break;
-      case '3_WEEKS':
-        now.setDate(now.getDate() + 3 * 7);
-        break;
-      case '4_WEEKS':
-        now.setDate(now.getDate() + 4 * 7);
-        break;
-      case '2_MONTHS':
-        now.setMonth(now.getMonth() + 2);
-        break;
-      case '3_MONTHS':
-        now.setMonth(now.getMonth() + 3);
-        break;
-      case '6_MONTHS':
-        now.setMonth(now.getMonth() + 6);
-        break;
-      case 'PROJECT':
-        const selectedTimeline = this.timelineData.find((c) => c.id === Number(this.selectedTimelineId));
-        now = new Date(selectedTimeline.end);
-        break;
+  public toggleVisibility(appts: EventEntry[]): void {
+    if (appts.length > 0) {
+      const visibility = appts[0].visibility;
+      this.setVisibility(appts, !visibility);
     }
-    this.apptEndDate = this.datePipe.transform(now, 'yyyy-MM-dd');
-
-    this.openEventsInPeriod = this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
   }
 
-  public isOverdueAppointment(eventDate: string): boolean {
-    return new Date(eventDate) < new Date();
+  public refreshOverdueData(rows: EventEntry[]): void {
+    this.filteredOverdueEventList = rows;
+    // this triggers ngOnChanges in chart
+    this.filteredEventList = [...this.filteredOpenEventList, ...this.filteredOverdueEventList];
   }
 
-  public toggleVisibility(appt: EventEntry): void {
-    let events;
-    if (appt.eventType === 'TYPE_RECURRING_EVENT' || appt.eventType === 'TYPE_APPT_SERIES') {
-      events = this.appointmentsList.filter((event: EventEntry) => event.seriesId === appt.seriesId);
-    } else {
-      events = [appt];
-    }
-    this.setVisibility(events, !appt.visibility);
-  }
-
-  public toggleOverdueVisibilityAll(): void {
-    this.overdueVisibility = !this.overdueVisibility;
-    this.setVisibility(this.overdueEvents, this.overdueVisibility);
-  }
-
-  public toggleAppointmentsVisibilityAll(): void {
-    this.appointmentVisibility = !this.appointmentVisibility;
-    this.setVisibility(this.openEventsInPeriod, this.appointmentVisibility);
+  public refreshOpenData(rows: EventEntry[]): void {
+    this.filteredOpenEventList = rows;
+    // this triggers ngOnChanges in chart
+    this.filteredEventList = [...this.filteredOpenEventList, ...this.filteredOverdueEventList];
   }
 
   private setVisibility(entries: EventEntry[], visibility: boolean): void {
     entries.forEach((event) => {
       event.visibility = visibility;
     });
-
     // this triggers ngOnChanges in chart
-    this.appointmentsList = [...this.appointmentsList];
+    this.filteredEventList = [...this.filteredEventList];
   }
 
   private generateEventList(eventData: ProjectEventTemplate[], projectTaskData: PermanentProjectTask[]): EventEntry[] {
@@ -358,7 +319,12 @@ export class TimelineComponent implements OnInit, OnDestroy {
           seriesId: eventTemplate.id,
           eventType: eventTemplate.eventType,
           title: event.title,
+          eventDate: Utils.getGermanFormattedDateString(event.dateTime),
+          eventTime: '',
           dateTime: this.datePipe.transform(event.dateTime, 'yyyy-MM-dd'),
+          due: Math.round(
+            (Utils.createDateAtMidnight(event.dateTime).getTime() - this.today.getTime()) / (1000 * 3600 * 24)
+          ),
           duration: event.duration,
           status: event.status,
           mandatory: eventTemplate.eventType === 'TYPE_RECURRING_EVENT' && event.status != null,
@@ -377,12 +343,17 @@ export class TimelineComponent implements OnInit, OnDestroy {
     });
 
     singleAppointmentResults.forEach((result: Result) => {
+      const eventDate = result.formFields.find((field) => field.key === 'date').value;
+
       eventList.push({
         id: result.id,
         seriesId: -1,
         eventType: result.resultType,
         title: result.formFields.find((field) => field.key === 'goal').value,
-        dateTime: this.datePipe.transform(result.formFields.find((field) => field.key === 'date').value, 'yyyy-MM-dd'),
+        eventDate: Utils.getGermanFormattedDateString(eventDate),
+        eventTime: '',
+        dateTime: this.datePipe.transform(eventDate, 'yyyy-MM-dd'),
+        due: Math.round((Utils.createDateAtMidnight(eventDate).getTime() - this.today.getTime()) / (1000 * 3600 * 24)),
         duration: 0,
         status: result.formFields.find((field) => field.key === 'status').value,
         mandatory: true,

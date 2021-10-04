@@ -1,29 +1,58 @@
-<ng-container *ngIf="timeline">
-  <div class="sidenav-header" fxLayout="row nowrap" style="justify-content: space-between">
-    <div>
-      <div class="mat-card-title">
-        {{ timeline.name }}
-        <span *ngIf="timeline.archived" style="font-size: 14px; color: rgba(0, 0, 0, 0.54)"> (archiviert) </span>
-      </div>
-      <div class="project-info">
-        <div class="mat-card-subtitle">
-          {{ timeline.projectType }}
+<div style="display: flex; flex-direction: column; height: 100%">
+  <mat-expansion-panel *ngIf="timeline" style="flex-shrink: 0; border-radius: 0">
+    <mat-expansion-panel-header style="padding-right: 12px; padding-left: 12px">
+      <div style="text-overflow: ellipsis; line-height: 1.1; overflow: hidden; width: 100%; white-space: nowrap">
+        <div class="mat-card-title" style="font-size: 20px">
+          {{ timeline.name }}
+          <span *ngIf="timeline.archived" style="font-size: 14px; color: rgba(0, 0, 0, 0.54)"> (archiviert) </span>
         </div>
-        <div class="mat-card-subtitle">
-          {{ roles }}
+        <div class="project-info">
+          <div class="mat-card-subtitle">
+            {{ getOperationType(timeline.operationTypeId)?.name }}
+          </div>
         </div>
       </div>
-    </div>
+      <div>
+        <button
+          mat-button
+          class="roundedButton"
+          (click)="$event.stopPropagation(); openProjectSettingsDialog(project, timeline)"
+        >
+          <mat-icon>settings</mat-icon>
+        </button>
+      </div>
+    </mat-expansion-panel-header>
     <div>
-      <button mat-button class="roundedButton" (click)="openProjectSettingsDialog(project, timeline)">
-        <mat-icon>settings</mat-icon>
-      </button>
+      <table mat-table [dataSource]="projectDetailsDataSource" aria-label="Projektdaten">
+        <ng-container matColumnDef="key">
+          <th mat-header-cell *matHeaderCellDef scope="col"></th>
+          <td mat-cell *matCellDef="let element">{{ element?.key }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="value">
+          <th mat-header-cell *matHeaderCellDef scope="col"></th>
+          <td mat-cell *matCellDef="let element" style="font-weight: 500">{{ element?.value }}</td>
+        </ng-container>
+
+        <tr
+          mat-row
+          *matRowDef="let row; columns: projectDetailsDisplayedColumns"
+          class="example-element-row"
+          style="height: 30px"
+        ></tr>
+      </table>
     </div>
+  </mat-expansion-panel>
+  <div style="flex-grow: 1; overflow: auto; flex-shrink: 1">
+    <mat-nav-list>
+      <app-nav-menu-list-item
+        style="overflow: hidden auto"
+        *ngFor="let item of navMenuItems"
+        [item]="item"
+      ></app-nav-menu-list-item>
+    </mat-nav-list>
+    <mat-nav-list class="favorite-links-list">
+      <app-nav-menu-list-item *ngFor="let item of favoriteLinkItems" [item]="item"></app-nav-menu-list-item>
+    </mat-nav-list>
   </div>
-</ng-container>
-<mat-nav-list>
-  <app-nav-menu-list-item *ngFor="let item of navMenuItems" [item]="item"></app-nav-menu-list-item>
-</mat-nav-list>
-<mat-nav-list class="favorite-links-list">
-  <app-nav-menu-list-item *ngFor="let item of favoriteLinkItems" [item]="item"></app-nav-menu-list-item>
-</mat-nav-list>
+</div>

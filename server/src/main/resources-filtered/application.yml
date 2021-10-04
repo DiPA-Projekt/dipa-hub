@@ -27,7 +27,7 @@ keycloak:
 dipa:
   tenants:
     dataSources:
-      - tenantId: itzbund
+      - tenantId: weit
         url: jdbc:postgresql://localhost:5432/dipa
         username: dipa
         password: dipasecret
@@ -37,23 +37,10 @@ dipa:
         username: dipa
         password: dipasecret
         platform: postgres
-#dipa:
-#  tenants:
-#    dataSources:
-#      - tenantId: itzbund
-#        url: jdbc:h2:mem:dipahub-itzbund
-#        platform: h2
-#      - tenantId: ba
-#        url: jdbc:h2:mem:dipahub-ba
-#        platform: h2
 
 logging:
   file:
     name: "./logs/dipa-logfile.log"
-  level:
-    org.springframework.cloud.kubernetes: DEBUG
-#    org.keycloak: DEBUG
-
 
 management:
   endpoint:

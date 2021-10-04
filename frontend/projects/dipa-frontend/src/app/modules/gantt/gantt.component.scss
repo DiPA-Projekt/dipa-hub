@@ -4,9 +4,9 @@
 
 .mat-sidenav-container {
   width: 100%;
-  height: calc(100vh - 84px);
+  height: calc(100vh - 104px);
   background-color: transparent;
-  margin-top: 15px;
+  margin-top: 5px;
 }
 
 mat-sidenav-content {
@@ -42,4 +42,8 @@ mat-sidenav-content {
 
 .mat-form-field-wrapper {
   padding-top: 1.25em;
+}
+
+.sidenavToggleMenuBar {
+  background: rgba(63, 81, 181, 0.15);
 }

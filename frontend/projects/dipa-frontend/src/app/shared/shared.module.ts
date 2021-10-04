@@ -14,15 +14,28 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { InvalidLinkDialogComponent } from './invalid-link-dialog/invalid-link-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ExternalLinkComponent } from './external-link/external-link.component';
+import { InvalidLinkCheckDirective } from './invalid-link-check.directive';
+import { DataTableComponent } from './data-table/data-table.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatMenuModule } from '@angular/material/menu';
+import { FilterItemDirective } from './data-table/filter-item.directive';
+import { FlexModule } from '@angular/flex-layout';
 
 @NgModule({
-  declarations: [InvalidLinkDialogComponent, ExternalLinkComponent],
+  declarations: [
+    InvalidLinkDialogComponent,
+    ExternalLinkComponent,
+    InvalidLinkCheckDirective,
+    FilterItemDirective,
+    DataTableComponent,
+  ],
   imports: [
     MatCardModule,
     MatIconModule,
@@ -42,7 +55,12 @@ import { ExternalLinkComponent } from './external-link/external-link.component';
     CommonModule,
     MatListModule,
     MatDialogModule,
+    MatCheckboxModule,
+    MatPaginatorModule,
+    MatMenuModule,
+    ReactiveFormsModule,
+    FlexModule,
   ],
-  exports: [ExternalLinkComponent],
+  exports: [ExternalLinkComponent, InvalidLinkCheckDirective, FilterItemDirective, DataTableComponent],
 })
 export class SharedModule {}

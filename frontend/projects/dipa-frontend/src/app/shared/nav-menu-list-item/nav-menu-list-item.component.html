@@ -1,15 +1,16 @@
 <a
   mat-list-item
   class="menu-list-item"
+  appInvalidLinkCheck
   [ngStyle]="{ 'padding-left': depth * 15 + 'px' }"
-  (click)="onItemSelected(item)"
+  (myClick)="onItemSelected(item)"
   [ngClass]="{ active: item.route ? router.isActive(item.route, true) : false, expanded: expanded }"
-  [attr.href]="item.file ? baseApiPath + item.file : null"
-  download
+  [href]="item.file ? baseApiPath + item.file : !item.route && !item.children ? item.url : null"
+  [download]="item.file"
 >
   <mat-icon class="routeIcon">{{ item.icon }}</mat-icon>
   <span class="full-width">{{ item.name }}</span>
-  <span class="d-flex" *ngIf="item.url">
+  <span class="d-flex" *ngIf="!item.route && !item.children">
     <mat-icon class="icon-small"> open_in_new </mat-icon>
   </span>
   <span class="d-flex" *ngIf="item.children && item.children.length">

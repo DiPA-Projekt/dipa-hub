@@ -1,4 +1,9 @@
 export default class Utils {
+  public static getGermanFormattedDateString(input: string | Date): string {
+    const dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
+    return new Date(input).toLocaleDateString('de-DE', dateOptions);
+  }
+
   public static parseGermanDate(input: string): Date | null {
     const parts = input?.match(/(\d+)/g);
     if (!parts) {
@@ -27,6 +32,17 @@ export default class Utils {
         return 'S';
       case 'TYPE_RECURRING_EVENT':
         return 'W';
+    }
+  }
+
+  public static getEventTypeColorClass(value: string): string {
+    switch (value) {
+      case 'TYPE_SINGLE_APPOINTMENT':
+        return '';
+      case 'TYPE_APPT_SERIES':
+        return 'bg-color-violett';
+      case 'TYPE_RECURRING_EVENT':
+        return 'bg-color-brown';
     }
   }
 }

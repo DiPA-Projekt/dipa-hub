@@ -1,91 +1,95 @@
- package online.dipa.hub.persistence.repositories;
+package online.dipa.hub.persistence.repositories;
 
- import java.time.OffsetDateTime;
- import java.util.ArrayList;
- import java.util.Collection;
- import java.util.List;
+import static org.assertj.core.api.Assertions.*;
 
- import static org.assertj.core.api.Assertions.*;
- import javax.transaction.Transactional;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
- import org.junit.jupiter.api.BeforeAll;
- import org.junit.jupiter.api.BeforeEach;
- import org.junit.jupiter.api.Nested;
- import org.junit.jupiter.api.Test;
- import org.springframework.beans.factory.annotation.Autowired;
- import org.springframework.boot.test.context.SpringBootTest;
- import online.dipa.hub.persistence.entities.ProjectEntity;
- import online.dipa.hub.tenancy.CurrentTenantContextHolder;
+import javax.transaction.Transactional;
 
- @SpringBootTest
- @Transactional
- class ProjectRepositoryTest {
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-     @Autowired
-     private ProjectRepository projectRepository;
+import online.dipa.hub.persistence.entities.ProjectEntity;
+import online.dipa.hub.tenancy.CurrentTenantContextHolder;
 
-     @Autowired
-     private ProjectApproachRepository projectApproachRepository;
+@SpringBootTest
+@Transactional
+class ProjectRepositoryTest {
 
-     List<Long> projectsId = new ArrayList<>();
+    @Autowired
+    private ProjectRepository projectRepository;
 
-     @BeforeAll
-     static void setUpContext() {
-         CurrentTenantContextHolder.setTenantId("itzbund");
-     }
+    @Autowired
+    private ProjectApproachRepository projectApproachRepository;
 
-     private void saveProject(String name, boolean archived, String description) {
-         ProjectEntity project = new ProjectEntity(name,
-                 "SMALL", "internes Projekt",OffsetDateTime.now(), OffsetDateTime.now().plusDays(30), archived, description);
-         projectApproachRepository.findById(2L).ifPresent(project::setProjectApproach);
-         projectRepository.save(project);
-         projectsId.add(project.getId());
-     }
+    List<Long> projectsId = new ArrayList<>();
 
-     @BeforeEach
-     public void setUp() {
-         projectRepository.deleteAll();
+    @BeforeAll
+    static void setUpContext() {
+        CurrentTenantContextHolder.setTenantId("weit");
+    }
 
-         saveProject("testProject1", false, "Beschreibung 1");
-         saveProject("testProject2", true, "Beschreibung 2");
-         saveProject("testProject3", true, "Beschreibung 3");
-     }
+    private void saveProject(final String name, final boolean archived, final String description) {
+        final ProjectEntity project = new ProjectEntity(name, "SMALL", "internes Projekt", OffsetDateTime.now(),
+                OffsetDateTime.now()
+                              .plusDays(30), archived, description);
+        projectApproachRepository.findById(2L)
+                                 .ifPresent(project::setProjectApproach);
+        projectRepository.save(project);
+        projectsId.add(project.getId());
+    }
 
-     @Nested
-     class FindByArchived {
+    @BeforeEach
+    public void setUp() {
+        projectRepository.deleteAll();
 
-         @Test
-         void should_return_archived_projects() {
-             // GIVEN
-             final boolean archived = true;
-             List<ProjectEntity> projects = new ArrayList<>();
-             projectRepository.findById(projectsId.get(1)).ifPresent(projects::add);
-             projectRepository.findById(projectsId.get(2)).ifPresent(projects::add);
+        saveProject("testProject1", false, "Beschreibung 1");
+        saveProject("testProject2", true, "Beschreibung 2");
+        saveProject("testProject3", true, "Beschreibung 3");
+    }
 
+    @Nested
+    class FindByArchived {
 
-             // WHEN
-             final Collection<ProjectEntity> archivedProjects = projectRepository.findByArchived(archived);
+        @Test
+        void should_return_archived_projects() {
+            // GIVEN
+            final boolean archived = true;
+            final List<ProjectEntity> projects = new ArrayList<>();
+            projectRepository.findById(projectsId.get(1))
+                             .ifPresent(projects::add);
+            projectRepository.findById(projectsId.get(2))
+                             .ifPresent(projects::add);
 
-             // THEN
-             assertThat(archivedProjects)
-                     .hasSize(2)
-                     .containsAll(projects);
-         }
+            // WHEN
+            final Collection<ProjectEntity> archivedProjects = projectRepository.findByArchived(archived);
 
-         @Test
-         void should_return_not_archived_projects() {
-             // GIVEN
-             final boolean archived = false;
+            // THEN
+            assertThat(archivedProjects).hasSize(2)
+                                        .containsAll(projects);
+        }
 
-             // WHEN
-             final Collection<ProjectEntity> archivedProjects = projectRepository.findByArchived(archived);
+        @Test
+        void should_return_not_archived_projects() {
+            // GIVEN
+            final boolean archived = false;
 
-             // THEN
-             assertThat(archivedProjects)
-                     .hasSize(1)
-                     .contains(projectRepository.findById(projectsId.get(0)).get());
-         }
+            // WHEN
+            final Collection<ProjectEntity> archivedProjects = projectRepository.findByArchived(archived);
 
-     }
+            // THEN
+            assertThat(archivedProjects).hasSize(1)
+                                        .contains(projectRepository.findById(projectsId.get(0))
+                                                                   .get());
+        }
 
- }
+    }
+
+}

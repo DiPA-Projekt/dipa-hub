@@ -21,7 +21,7 @@
         #ganttChart
         [timelineData]="vm.selectedTimeline"
         [milestoneData]="vm.milestoneData"
-        [eventData]="this.appointmentsList"
+        [eventData]="filteredEventList"
         [taskData]="vm.taskData"
         [incrementsData]="vm.incrementsData"
         id="gantt{{ vm.selectedTimeline.id }}"
@@ -36,209 +36,33 @@
 </div>
 
 <ng-container *ngIf="appointmentsList">
-  <mat-card *ngIf="overdueEvents.length > 0" class="appointments-card" style="background-color: rgba(255, 0, 0, 0.08)">
-    <mat-card-content>
-      <div class="matCardContentHeader" style="color: white; background-color: rgba(255, 0, 0, 0.8)">
-        <div fxLayout="row nowrap" fxLayoutAlign="space-between center">
-          <mat-icon style="margin-right: 5px">warning_amber</mat-icon>
-          <div class="matCardContentHeaderTitle ellipsis full-width">Überfällige Termine</div>
-          <button
-            #appointmentShowButton
-            mat-icon-button
-            aria-label="Zeige Termin in Zeitleiste"
-            (click)="toggleOverdueVisibilityAll()"
-          >
-            <mat-icon>{{ overdueVisibility ? 'visibility' : 'visibility_off' }}</mat-icon>
-          </button>
-        </div>
-      </div>
+  <ng-container *ngIf="vm$ | async as vmE">
+    <app-data-table
+      title="Überfällige Termine"
+      icon="warning_amber"
+      [data]="filteredOverdueEventList"
+      [displayedColumns]="['eventType', 'dateTime', 'title', 'status', 'select']"
+      [timelineData]="selectedTimeline"
+      [editable]="vmE.selectedTimeline.archived"
+      (statusChanged)="changeStatus($event)"
+      (visibilityChanged)="toggleVisibility($event)"
+      (filterChanged)="refreshOverdueData($event)"
+    >
+    </app-data-table>
+  </ng-container>
 
-      <ng-container *ngIf="vm$ | async as vmE">
-        <ng-container *ngFor="let appt of overdueEvents">
-          <div fxLayout="row nowrap" fxLayoutGap="6px grid" style="width: 100%; padding-bottom: 10px">
-            <div class="appointmentTypeIconWrapper" [ngSwitch]="appt.eventType">
-              <div class="appointmentTypeIcon">
-                <ng-container *ngSwitchCase="'TYPE_SINGLE_APPOINTMENT'">
-                  <span class="circle" title="Einzeltermin">E</span>
-                </ng-container>
-                <ng-container *ngSwitchCase="'TYPE_APPT_SERIES'">
-                  <span class="circle bg-color-violett" title="Terminserie">S</span>
-                </ng-container>
-                <ng-container *ngSwitchCase="'TYPE_RECURRING_EVENT'">
-                  <span class="circle bg-color-brown" title="Wiederkehrender Termin">W</span>
-                </ng-container>
-              </div>
-            </div>
-            <div fxLayout="row wrap" fxLayoutGap="12px grid" style="width: 100%; padding-bottom: 20px">
-              <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="33%">
-                <mat-form-field class="noHint full-width">
-                  <mat-label>Titel</mat-label>
-                  <input type="text" matInput [value]="appt.title" disabled />
-                </mat-form-field>
-              </div>
-              <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="33%">
-                <mat-form-field class="noHint full-width">
-                  <mat-label>Datum</mat-label>
-                  <input type="date" matInput [value]="appt.dateTime" disabled />
-                  <mat-icon
-                    *ngIf="isOverdueAppointment(appt.dateTime)"
-                    matSuffix
-                    style="color: rgba(255, 0, 0, 0.8)"
-                    title="Termin ist überfällig"
-                    >error</mat-icon
-                  >
-                </mat-form-field>
-              </div>
-              <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="33%">
-                <mat-form-field *ngIf="appt.mandatory" class="noHint full-width">
-                  <mat-label>Status</mat-label>
-                  <mat-select
-                    [value]="appt.status"
-                    (selectionChange)="changeStatus($event.value, appt)"
-                    [disabled]="vmE.selectedTimeline.archived"
-                  >
-                    <mat-option value="OPEN"> offen </mat-option>
-                    <mat-option value="CLOSED"> geschlossen </mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>
-            </div>
-            <div class="appointmentTypeIcon">
-              <button
-                #appointmentShowButton
-                mat-icon-button
-                aria-label="Zeige Termin in Zeitleiste"
-                (click)="toggleVisibility(appt)"
-              >
-                <mat-icon>{{ appt.visibility ? 'visibility' : 'visibility_off' }}</mat-icon>
-              </button>
-            </div>
-          </div>
-        </ng-container>
-      </ng-container>
-    </mat-card-content>
-  </mat-card>
-  <mat-card class="appointments-card">
-    <mat-card-content>
-      <div class="matCardContentHeader">
-        <div fxLayout="row nowrap" fxLayoutAlign="space-between center">
-          <mat-icon style="margin-right: 5px">event_note</mat-icon>
-          <div class="matCardContentHeaderTitle ellipsis full-width">Offene Termine</div>
-          <button
-            #appointmentShowButton
-            mat-icon-button
-            aria-label="Zeige Termin in Zeitleiste"
-            (click)="toggleAppointmentsVisibilityAll()"
-          >
-            <mat-icon>{{ appointmentVisibility ? 'visibility' : 'visibility_off' }}</mat-icon>
-          </button>
-        </div>
-        <div fxLayout="row wrap" fxLayoutGap="10px grid">
-          <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
-            <mat-form-field class="noHint full-width" fxFlex="50%">
-              <mat-label>Start Datum</mat-label>
-              <input
-                matInput
-                placeholder="Start date"
-                [value]="apptStartDate"
-                [max]="apptEndDate"
-                (change)="onChangeAppointmentPeriodStart($event)"
-                type="date"
-              />
-            </mat-form-field>
-            <mat-form-field class="noHint full-width" fxFlex="50%">
-              <mat-label>End Datum</mat-label>
-              <input
-                matInput
-                placeholder="End date"
-                [value]="apptEndDate"
-                [min]="apptStartDate"
-                (change)="onChangeAppointmentPeriodEnd($event)"
-                type="date"
-              />
-            </mat-form-field>
-          </div>
-          <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
-            <mat-form-field class="noHint full-width">
-              <mat-label>Zeitraum</mat-label>
-              <mat-select [value]="periodTemplate" (selectionChange)="changePeriodTemplates($event.value)">
-                <mat-option *ngFor="let period of schedulePeriods" [value]="period.key">
-                  {{ period.value }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-        </div>
-      </div>
-
-      <ng-container *ngIf="vm$ | async as vmE">
-        <ng-container *ngIf="openEventsInPeriod.length > 0; else noAppointments">
-          <ng-container *ngFor="let appt of openEventsInPeriod">
-            <div fxLayout="row nowrap" fxLayoutGap="6px grid" style="width: 100%; padding-bottom: 10px">
-              <div class="appointmentTypeIconWrapper" [ngSwitch]="appt.eventType">
-                <div class="appointmentTypeIcon">
-                  <ng-container *ngSwitchCase="'TYPE_SINGLE_APPOINTMENT'">
-                    <span class="circle" title="Einzeltermin">E</span>
-                  </ng-container>
-                  <ng-container *ngSwitchCase="'TYPE_APPT_SERIES'">
-                    <span class="circle bg-color-violett" title="Terminserie">S</span>
-                  </ng-container>
-                  <ng-container *ngSwitchCase="'TYPE_RECURRING_EVENT'">
-                    <span class="circle bg-color-brown" title="Wiederkehrender Termin">W</span>
-                  </ng-container>
-                </div>
-              </div>
-              <div fxLayout="row wrap" fxLayoutGap="12px grid" style="width: 100%; padding-bottom: 20px">
-                <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="33%">
-                  <mat-form-field class="noHint full-width">
-                    <mat-label>Titel</mat-label>
-                    <input type="text" matInput [value]="appt.title" disabled />
-                  </mat-form-field>
-                </div>
-                <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="33%">
-                  <mat-form-field class="noHint full-width">
-                    <mat-label>Datum</mat-label>
-                    <input type="date" matInput [value]="appt.dateTime" disabled />
-                    <mat-icon
-                      *ngIf="isOverdueAppointment(appt.dateTime)"
-                      matSuffix
-                      style="color: rgba(255, 0, 0, 0.8)"
-                      title="Termin ist überfällig"
-                      >error</mat-icon
-                    >
-                  </mat-form-field>
-                </div>
-                <div fxFlex="33%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="33%">
-                  <mat-form-field *ngIf="appt.mandatory" class="noHint full-width">
-                    <mat-label>Status</mat-label>
-                    <mat-select
-                      [value]="appt.status"
-                      (selectionChange)="changeStatus($event.value, appt)"
-                      [disabled]="vmE.selectedTimeline.archived"
-                    >
-                      <mat-option value="OPEN"> offen </mat-option>
-                      <mat-option value="CLOSED"> geschlossen </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-              </div>
-              <div class="appointmentTypeIcon">
-                <button
-                  #appointmentShowButton
-                  mat-icon-button
-                  aria-label="Zeige Termin in Zeitleiste"
-                  (click)="toggleVisibility(appt)"
-                >
-                  <mat-icon>{{ appt.visibility ? 'visibility' : 'visibility_off' }}</mat-icon>
-                </button>
-              </div>
-            </div>
-          </ng-container>
-        </ng-container>
-      </ng-container>
-      <ng-template #noAppointments>
-        <p>Keine Termine im gewählten Zeitraum offen.</p>
-      </ng-template>
-    </mat-card-content>
-  </mat-card>
+  <ng-container *ngIf="vm$ | async as vmE">
+    <app-data-table
+      title="Offene Termine"
+      icon="event_note"
+      [data]="filteredOpenEventList"
+      [displayedColumns]="['eventType', 'dateTime', 'title', 'status', 'select']"
+      [timelineData]="selectedTimeline"
+      [editable]="vmE.selectedTimeline.archived"
+      (statusChanged)="changeStatus($event)"
+      (visibilityChanged)="toggleVisibility($event)"
+      (filterChanged)="refreshOpenData($event)"
+    >
+    </app-data-table>
+  </ng-container>
 </ng-container>

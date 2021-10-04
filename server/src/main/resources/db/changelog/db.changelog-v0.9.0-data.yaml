@@ -2,7 +2,7 @@ databaseChangeLog:
   - changeSet:
       id: update-external-link-it-planung-itr4web
       author: bock
-      context: itzbund
+      context: weit
       changes:
         - update:
             tableName: external_link
@@ -48,7 +48,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-user-group-3
       author: nguyen
-      context: itzbund
+      context: weit
       changes:
         - insert:
             tableName: user_group
@@ -65,7 +65,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-user-group-4
       author: nguyen
-      context: itzbund
+      context: weit
       changes:
         - insert:
             tableName: user_group
@@ -82,7 +82,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-user-group-5
       author: nguyen
-      context: itzbund
+      context: weit
       changes:
         - insert:
             tableName: user_group
@@ -118,7 +118,7 @@ databaseChangeLog:
 
   - changeSet:
       id: update-project-task-01-title
-      context: itzbund
+      context: weit
       author: bock
       changes:
         - update:
@@ -133,7 +133,7 @@ databaseChangeLog:
             where: id=1 OR id=18
   - changeSet:
       id: update-project-task-02-title
-      context: itzbund
+      context: weit
       author: bock
       changes:
         - update:
@@ -148,7 +148,7 @@ databaseChangeLog:
             where: id=2 OR id=19
   - changeSet:
       id: update-project-task-03-title
-      context: itzbund
+      context: weit
       author: bock
       changes:
         - update:
@@ -163,7 +163,7 @@ databaseChangeLog:
             where: id=3 OR id=20
   - changeSet:
       id: update-project-task-05-title
-      context: itzbund
+      context: weit
       author: bock
       changes:
         - update:
@@ -175,7 +175,7 @@ databaseChangeLog:
             where: id=5 OR id=22
   - changeSet:
       id: update-project-task-06-explanation
-      context: itzbund
+      context: weit
       author: bock
       changes:
         - update:
@@ -187,7 +187,7 @@ databaseChangeLog:
             where: id=6
   - changeSet:
       id: update-project-task-08-title
-      context: itzbund
+      context: weit
       author: bock
       changes:
         - update:
@@ -202,7 +202,7 @@ databaseChangeLog:
             where: id=8 OR id=25
   - changeSet:
       id: update-project-task-09-title
-      context: itzbund
+      context: weit
       author: bock
       changes:
         - update:
@@ -217,7 +217,7 @@ databaseChangeLog:
             where: id=9 OR id=26
   - changeSet:
       id: update-project-task-10-title
-      context: itzbund
+      context: weit
       author: bock
       changes:
         - update:
@@ -232,7 +232,7 @@ databaseChangeLog:
             where: id=10 OR id=27
   - changeSet:
       id: update-project-task-11-title
-      context: itzbund
+      context: weit
       author: bock
       changes:
         - update:
@@ -247,7 +247,7 @@ databaseChangeLog:
             where: id=11 OR id=28
   - changeSet:
       id: update-project-task-12-title
-      context: itzbund
+      context: weit
       author: bock
       changes:
         - update:
@@ -262,7 +262,7 @@ databaseChangeLog:
             where: id=12 OR id=29
   - changeSet:
       id: update-project-task-13-title
-      context: itzbund
+      context: weit
       author: bock
       changes:
         - update:
@@ -277,7 +277,7 @@ databaseChangeLog:
             where: id=13 OR id=30
   - changeSet:
       id: update-project-task-14-title
-      context: itzbund
+      context: weit
       author: bock
       changes:
         - update:

@@ -63,7 +63,7 @@ public class MilestoneService {
         Map<IncrementEntity, List<MilestoneTemplateEntity>> hashmapIncrementMilestones = mapMilestonesIncrement(timelineId, addedIncrementCount);
     
         for (Map.Entry<IncrementEntity, List<MilestoneTemplateEntity>> entry : hashmapIncrementMilestones.entrySet()) {
-            
+            // case 1: delete a increment or update increment's duration
             OffsetDateTime firstDatePeriod = Objects.requireNonNull(entry.getValue()
                                                                          .stream()
                                                                          .min(Comparator.comparing(
@@ -95,7 +95,7 @@ public class MilestoneService {
 
             }
         }
-
+        // case 2: add a new increment => create new milestones for this increment
         if (addedIncrementCount > 0) {
             createMilestonesNewIncrement(timelineId);
         }

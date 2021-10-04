@@ -18,9 +18,9 @@ import { FilesService } from 'dipa-api-client';
   ],
 })
 export class NavMenuListItemComponent implements OnInit {
-  @HostBinding('attr.aria-expanded') ariaExpanded;
-  @Input() item: NavItem;
-  @Input() depth: number;
+  @Input() public item: NavItem;
+  @Input() public depth: number;
+  @HostBinding('attr.aria-expanded') private ariaExpanded;
 
   public expanded: boolean;
   public baseApiPath: string;
@@ -32,8 +32,7 @@ export class NavMenuListItemComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.expanded =
-      this.item.children?.filter((child) => this.router.isActive(child.route, true)).length > 0 ? true : false;
+    this.expanded = this.item.children?.filter((child) => this.router.isActive(child.route, true)).length > 0;
 
     this.ariaExpanded = this.expanded;
     this.baseApiPath = this.fileService.configuration.basePath;
