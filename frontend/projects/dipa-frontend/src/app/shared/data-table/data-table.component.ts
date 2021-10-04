@@ -260,47 +260,43 @@ export class DataTableComponent implements OnInit, AfterViewInit {
 
     for (const col in searchTerms) {
       if (searchTerms.hasOwnProperty(col)) {
-        let found = false;
-
-        let searchCol: string;
-
         const filterMode = this.filterTypeList.find((elem) => elem.columnName === col)?.filterMode;
-        switch (filterMode) {
-          case DataTableComponent.filterMode.text:
-            searchCol = data[col] as string;
-            if (
-              searchCol != null &&
-              searchCol.toString().toLocaleLowerCase().indexOf(searchTerms[col].toString().toLocaleLowerCase()) !== -1
-            ) {
-              found = true;
-            }
-            allFound = allFound && found;
-            break;
-          case DataTableComponent.filterMode.select:
-            searchTerms[col].forEach((searchTerm) => {
-              searchCol = data[col] as string;
-              if (searchCol.toString().indexOf(searchTerm) !== -1) {
-                found = true;
-              }
-            });
-            allFound = allFound && found;
-            break;
-          case DataTableComponent.filterMode.date:
-            searchCol = data[col] as string;
-
-            const apptDate = Utils.createDateAtMidnight(searchCol);
-            if (
-              apptDate >= Utils.createDateAtMidnight(new Date(this.apptStartDate)) &&
-              apptDate <= Utils.createDateAtMidnight(new Date(this.apptEndDate))
-            ) {
-              found = true;
-            }
-            allFound = allFound && found;
-            break;
-        }
+        allFound = allFound && this.filterColumn(filterMode, data[col], searchTerms[col]);
       }
     }
     return allFound;
+  }
+
+  private filterColumn(filterMode, searchCol: string, searchTerms: string[]): boolean {
+    let found = false;
+
+    switch (filterMode) {
+      case DataTableComponent.filterMode.text:
+        if (
+          searchCol != null &&
+          searchCol.toString().toLocaleLowerCase().indexOf(searchTerms.toString().toLocaleLowerCase()) !== -1
+        ) {
+          found = true;
+        }
+        break;
+      case DataTableComponent.filterMode.select:
+        searchTerms.forEach((searchTerm) => {
+          if (searchCol.toString().indexOf(searchTerm) !== -1) {
+            found = true;
+          }
+        });
+        break;
+      case DataTableComponent.filterMode.date:
+        const apptDate = Utils.createDateAtMidnight(searchCol);
+        if (
+          apptDate >= Utils.createDateAtMidnight(new Date(this.apptStartDate)) &&
+          apptDate <= Utils.createDateAtMidnight(new Date(this.apptEndDate))
+        ) {
+          found = true;
+        }
+        break;
+    }
+    return found;
   }
 
   private getFilterObject<T>(fullObj: T[], key: string): string[] {
