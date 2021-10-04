@@ -34,4 +34,15 @@ export default class Utils {
         return 'W';
     }
   }
+
+  public static getEventTypeColorClass(value: string): string {
+    switch (value) {
+      case 'TYPE_SINGLE_APPOINTMENT':
+        return '';
+      case 'TYPE_APPT_SERIES':
+        return 'bg-color-violett';
+      case 'TYPE_RECURRING_EVENT':
+        return 'bg-color-brown';
+    }
+  }
 }

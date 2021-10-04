@@ -1,0 +1,69 @@
+
+.circle {
+  line-height: 24px;
+  text-align: center;
+  border-radius: 50%;
+  height: 24px;
+  width: 24px;
+  background-color: #3f51b5;
+  color: #fff;
+  display: inline-block;
+}
+
+.bg-color-violett {
+  background-color: #800080;
+}
+
+.bg-color-brown {
+  background-color: #8b4513;
+}
+
+table {
+  width: 100%;
+}
+
+tr.example-element-row:not(.example-expanded-row):hover {
+  background: whitesmoke;
+}
+
+td[class^='mat-column-'], td[class*=' mat-column-'],
+th[class^='mat-column-'], th[class*=' mat-column-']{
+  padding: 0 3px !important
+}
+
+td.mat-column-eventType, th.mat-column-eventType {
+  text-align: center;
+}
+
+td.mat-column-status {
+  max-width: 75px;
+}
+
+th[class^='mat-column-'], th[class*=' mat-column-']{
+  white-space: nowrap;
+}
+
+th.mat-column-header {
+  font-size: 20px;
+  border-bottom: 0 !important;
+}
+
+.roundedButton {
+  border-radius: 50%;
+  min-width: 36px;
+  padding: 0;
+}
+
+.filterButton {
+  padding: 0 3px;
+}
+
+.mat-menu-item:hover:not([disabled])
+{
+  background: transparent;
+  cursor: inherit;
+}
+
+.mat-menu-item .mat-icon {
+  margin-right: 0;
+}
