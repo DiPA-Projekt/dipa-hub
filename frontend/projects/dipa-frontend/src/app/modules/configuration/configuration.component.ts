@@ -18,12 +18,12 @@ export class ConfigurationComponent implements OnInit {
       {
         name: 'Zeitplankonfiguration',
         icon: 'date_range',
-        route: 'configurations/schedules',
+        route: 'configuration/schedules',
       },
       {
         name: 'Wiederkehrende Aufgaben',
         icon: 'change_circle',
-        route: 'configurations/recurring_events',
+        route: 'configuration/recurring_events',
       },
     ];
   }
