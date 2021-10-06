@@ -27,6 +27,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatMenuModule } from '@angular/material/menu';
 import { FilterItemDirective } from './data-table/filter-item.directive';
 import { FlexModule } from '@angular/flex-layout';
+import { MaterialQuillEditorComponent } from './material-quill-editor/material-quill-editor.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { FlexModule } from '@angular/flex-layout';
     InvalidLinkCheckDirective,
     FilterItemDirective,
     DataTableComponent,
+    MaterialQuillEditorComponent,
   ],
   imports: [
     MatCardModule,
@@ -61,6 +63,12 @@ import { FlexModule } from '@angular/flex-layout';
     ReactiveFormsModule,
     FlexModule,
   ],
-  exports: [ExternalLinkComponent, InvalidLinkCheckDirective, FilterItemDirective, DataTableComponent],
+  exports: [
+    ExternalLinkComponent,
+    InvalidLinkCheckDirective,
+    FilterItemDirective,
+    DataTableComponent,
+    MaterialQuillEditorComponent,
+  ],
 })
 export class SharedModule {}
