@@ -25,7 +25,7 @@ const routes: Routes = [
         data: { organisationRoles: ['PMO'] },
       },
       {
-        path: 'configurations',
+        path: 'configuration',
         loadChildren: () => import('./modules/configuration/configuration.module').then((m) => m.ConfigurationModule),
         canActivate: [AuthGuard],
         data: { organisationRoles: ['PMO'] },
