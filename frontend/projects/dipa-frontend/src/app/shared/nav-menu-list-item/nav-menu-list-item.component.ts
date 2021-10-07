@@ -57,4 +57,21 @@ export class NavMenuListItemComponent implements OnInit {
       this.expanded = !this.expanded;
     }
   }
+
+  public auxClick(event: MouseEvent): void {
+    if (event.button === 1) {
+      event.preventDefault();
+      const a = event.currentTarget as HTMLLinkElement;
+      const newTab = window.open(a.href, '_blank');
+      newTab.focus();
+    }
+  }
+
+  public routerLink(url: string): string[] {
+    if (!url) {
+      return null;
+    }
+    const splittedUrl = url?.split('/') || [];
+    return ['/', ...splittedUrl];
+  }
 }

@@ -1,7 +1,7 @@
 <mat-menu menu="matMenu">
   <ng-container *ngIf="timelineData">
     <div *ngFor="let timeline of timelineData">
-      <button mat-menu-item [routerLink]="['/gantt/', timeline.id, 'project-checklist']">{{ timeline.name }}</button>
+      <a mat-menu-item (auxclick)="auxClick($event)" [routerLink]="routerLink(timeline.id)">{{ timeline.name }}</a>
     </div>
     <div *ngIf="timelineData.length === 0">
       <button mat-menu-item disabled>keine Projekte</button>

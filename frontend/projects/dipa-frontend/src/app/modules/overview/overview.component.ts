@@ -7,13 +7,13 @@ import { NavItem } from '../../nav-item';
   styleUrls: ['./overview.component.scss'],
 })
 export class OverviewComponent implements OnInit {
-  navMenuItems: NavItem[] = [];
+  public navMenuItems: NavItem[] = [];
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.setSideNavMenu();
   }
 
-  setSideNavMenu(): void {
+  private setSideNavMenu(): void {
     this.navMenuItems = [
       {
         name: 'Aktive Projekte',
