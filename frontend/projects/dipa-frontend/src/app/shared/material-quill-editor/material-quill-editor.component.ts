@@ -17,7 +17,7 @@ import { MatFormFieldControl } from '@angular/material/form-field';
 import { Subject } from 'rxjs';
 import { FocusMonitor } from '@angular/cdk/a11y';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import Quill from 'quill';
+import Quill, { Delta } from 'quill';
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
 
 @Component({
@@ -41,11 +41,11 @@ export class MaterialQuillEditorComponent
 {
   private static nextId = 0;
 
-  @HostBinding() id = `material-quill-editor-input-${MaterialQuillEditorComponent.nextId++}`;
-  @HostBinding('attr.aria-describedby') describedBy = '';
+  @HostBinding() public id = `material-quill-editor-input-${MaterialQuillEditorComponent.nextId++}`;
+  @HostBinding('attr.aria-describedby') public describedBy = '';
 
-  @ViewChild('container', { read: ElementRef, static: true }) container: ElementRef;
-  @Output() changed: EventEmitter<any> = new EventEmitter();
+  @ViewChild('container', { read: ElementRef, static: true }) public container: ElementRef;
+  @Output() public changed: EventEmitter<any> = new EventEmitter();
 
   public ngControl: FormControlDirective;
 
@@ -60,7 +60,7 @@ export class MaterialQuillEditorComponent
   public errorState = false;
   public controlType: 'material-quill-editor';
 
-  private editorValue: any;
+  private editorValue: Delta;
   private touched: boolean;
 
   public constructor(public elRef: ElementRef, public injector: Injector, fm: FocusMonitor) {
@@ -93,7 +93,7 @@ export class MaterialQuillEditorComponent
       },
       theme: 'snow',
     });
-    this.editor.on('editor-change', (eventName, ...args) => {
+    this.editor.on('editor-change', () => {
       this.onChange(this.getValue());
     });
 
@@ -115,9 +115,9 @@ export class MaterialQuillEditorComponent
     }
   }
 
-  public onChange = (delta: any) => {};
+  public onChange = (delta: any): void => {};
 
-  public onTouched = () => {
+  public onTouched = (): void => {
     this.touched = true;
   };
 
@@ -133,10 +133,10 @@ export class MaterialQuillEditorComponent
     this.onTouched = fn;
   }
 
-  public get value(): any {
+  public get value(): Delta {
     return this.editorValue;
   }
-  public set value(value: any) {
+  public set value(value: Delta) {
     this.editorValue = value;
     this.editor.setContents(this.editorValue);
     this.onChange(value);
@@ -191,11 +191,11 @@ export class MaterialQuillEditorComponent
     }
   }
 
-  private getValue(): any | undefined {
+  private getValue(): string {
     if (!this.editor) {
       return undefined;
     }
-    const delta: any = this.editor.getContents();
+    const delta = this.editor.getContents();
 
     const converter = new QuillDeltaToHtmlConverter(delta.ops, {});
     return converter.convert();
