@@ -6,11 +6,9 @@ import {
   ProjectApproachesService,
   ProjectService,
   PropertyQuestion,
-  RecurringEventPattern,
   RecurringEventType,
-  UserService,
 } from 'dipa-api-client';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { MatDialogRef } from '@angular/material/dialog';
 import { AuthenticationService } from '../../../authentication.service';
@@ -56,9 +54,7 @@ export class RecurringEventDialogComponent implements OnInit, OnDestroy {
     private projectApproachesService: ProjectApproachesService,
     private projectService: ProjectService,
     private timelineDataService: TimelineDataService
-  ) // private userService: UserService,
-  // private fb: FormBuilder
-  {}
+  ) {}
 
   public ngOnInit(): void {
     this.dataSubscription = this.projectService
