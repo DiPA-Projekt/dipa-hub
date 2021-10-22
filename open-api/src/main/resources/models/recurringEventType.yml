@@ -1,0 +1,32 @@
+RecurringEventType:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the recurring event type
+      type: integer
+      format: int64
+      example: 1
+    title:
+      description: Title of the recurring event type
+      type: string
+      example: Monatliche Leistungsnachweise freigeben
+    description:
+      description: Short description text for the recurring event type
+      type: string
+      example: Monatliche Leistungsnachweise freigeben
+    mandatory:
+      description: Is the status of recurring event mandatory?
+      type: boolean
+      example: true
+    recurringEventPattern:
+      description: Recurring Event Pattern
+      type: object
+      $ref: "../models/recurringEventPattern.yml#/RecurringEventPattern"
+    projectPropertyQuestionId:
+      description: Unique identifier of the dependent property question
+      type: integer
+      format: int64
+      example: 1
+  required:
+    - id
+    - title

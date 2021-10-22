@@ -22,7 +22,7 @@
           required
         />
         <span matSuffix> . Tag</span>
-        <mat-error *ngIf="formField.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>
+        <!--        <mat-error *ngIf="formField.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>-->
       </mat-form-field>
     </span>
 
@@ -31,7 +31,7 @@
         <mat-label>jedes</mat-label>
         <input matInput class="right" type="number" min="1" [(ngModel)]="interval" (change)="changedData()" required />
         <span matSuffix> . Monats</span>
-        <mat-error *ngIf="formField.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>
+        <!--        <mat-error *ngIf="formField.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>-->
       </mat-form-field>
     </span>
   </span>
@@ -44,7 +44,7 @@
         <mat-label>Alle</mat-label>
         <input matInput class="right" type="number" min="1" [(ngModel)]="interval" (change)="changedData()" required />
         <span matSuffix> Wochen</span>
-        <mat-error *ngIf="formField.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>
+        <!--        <mat-error *ngIf="formField.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>-->
       </mat-form-field>
     </span>
     <span fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="50%" fxFlex.md="50%" fxFlex.lg="50%" style="white-space: nowrap">
@@ -59,7 +59,7 @@
           <mat-option value="SA">Sa</mat-option>
           <mat-option value="SU">So</mat-option>
         </mat-select>
-        <mat-error *ngIf="formField.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>
+        <!--        <mat-error *ngIf="formField.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>-->
       </mat-form-field>
     </span>
   </span>

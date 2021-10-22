@@ -131,6 +131,11 @@ export class ResultsFormComponent implements OnInit {
       .reduce((acc, val) => acc + val, 0);
   }
 
+  public changed($event: string, formField: FormGroup): void {
+    formField.get('value').setValue($event);
+    this.dataChanged.emit();
+  }
+
   private getFilteredFormControls(filterOptions: { key: string; value: string }): FormGroup[] {
     const result: FormGroup[] = [];
     for (const resultControl of this.resultsArray.controls) {

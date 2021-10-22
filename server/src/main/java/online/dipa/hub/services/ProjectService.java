@@ -15,6 +15,7 @@ import online.dipa.hub.api.model.ProjectRole;
 import online.dipa.hub.api.model.ProjectTask;
 
 import online.dipa.hub.api.model.PropertyQuestion;
+import online.dipa.hub.api.model.RecurringEventType;
 import online.dipa.hub.api.model.Result;
 import online.dipa.hub.api.model.Timeline;
 import online.dipa.hub.api.model.User;
@@ -218,6 +219,20 @@ public class ProjectService {
                                              .collect(Collectors.toList())
             );
         }
+
+        return propertyQuestions;
+    }
+
+    public List<PropertyQuestion> getAllProjectPropertyQuestions() {
+        List<PropertyQuestion> propertyQuestions = new ArrayList<>();
+
+        projectPropertyQuestionTemplateRepository.findByMaster().ifPresent(temp ->
+                propertyQuestions.addAll(temp.getProjectPropertyQuestions()
+                                 .stream()
+                                 .map(p -> conversionService.convert(p, PropertyQuestion.class))
+                                 .collect(Collectors.toList())
+                )
+        );
 
         return propertyQuestions;
     }
@@ -698,7 +713,17 @@ public class ProjectService {
                       .filter(t -> !t.getProjectEvents().isEmpty())
                       .map(p -> conversionService.convert(p, ProjectEventTemplate.class))
                       .collect(Collectors.toList());
+    }
 
+    public List<RecurringEventType> getRecurringEventTypes() {
+        return recurringEventTypeRepository.findByMaster()
+                                           .stream()
+                                           .map(p -> conversionService.convert(p, RecurringEventType.class))
+                                           .sorted(Comparator.comparing(
+                                                   recurringEventType -> recurringEventType != null ?
+                                                           recurringEventType.getTitle().toLowerCase() :
+                                                           null))
+                                           .collect(Collectors.toList());
     }
 
     public void createRecurringEventTypes(final ProjectEntity project) {
@@ -957,6 +982,57 @@ public class ProjectService {
     public void updateProjectEvent (final ProjectEvent projectEvent) {
         eventRepository.findById(projectEvent.getId()).ifPresent(e -> e.setStatus(projectEvent.getStatus().toString()));
 
+    }
+
+    public void updateRecurringEventType (final RecurringEventType recurringEventType) {
+        recurringEventTypeRepository.findByMaster();
+
+        recurringEventTypeRepository.findById(getId(recurringEventType)).ifPresent(e -> {
+            e.setTitle(recurringEventType.getTitle());
+            e.setMandatory(recurringEventType.getMandatory());
+
+            projectPropertyQuestionRepository.findById(recurringEventType.getProjectPropertyQuestionId())
+                                             .ifPresent(e::setProjectPropertyQuestion);
+
+            RecurringEventPatternEntity pattern = e.getRecurringEventPattern();
+            pattern.setRulePattern(recurringEventType.getRecurringEventPattern().getRulePattern());
+            recurringEventPatternRepository.save(pattern);
+
+            recurringEventTypeRepository.save(e);
+        });
+    }
+
+    public void createRecurringEventType(final RecurringEventType recurringEventType) {
+        RecurringEventTypeEntity newRecurringEventType = new RecurringEventTypeEntity();
+
+        projectPropertyQuestionRepository.findById(recurringEventType.getProjectPropertyQuestionId())
+                                         .ifPresent(newRecurringEventType::setProjectPropertyQuestion);
+
+
+        newRecurringEventType.setTitle(recurringEventType.getTitle());
+        newRecurringEventType.setMandatory(recurringEventType.getMandatory());
+        newRecurringEventType.setMaster(true);
+
+        recurringEventTypeRepository.save(newRecurringEventType);
+
+
+        RecurringEventPatternEntity newPattern = new RecurringEventPatternEntity();
+        newPattern.setRulePattern(recurringEventType.getRecurringEventPattern().getRulePattern());
+
+        newPattern.setRecurringEventType(newRecurringEventType);
+        recurringEventPatternRepository.save(newPattern);
+
+        newRecurringEventType.setRecurringEventPattern(newPattern);
+    }
+
+    public void deleteRecurringEventType(final Long recurringEventTypeId) {
+        var recurringEventType = recurringEventTypeRepository.getById(recurringEventTypeId);
+
+        recurringEventTypeRepository.delete(recurringEventType);
+    }
+
+    private Long getId(RecurringEventType recurringEventType) {
+        return recurringEventType.getId();
     }
 
     public List<ProjectRole> getProjectRoles (final Long projectId) {

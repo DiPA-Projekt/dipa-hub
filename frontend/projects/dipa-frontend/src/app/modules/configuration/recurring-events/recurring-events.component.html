@@ -1,1 +1,52 @@
-<p>recurring-events works!</p>
+<div class="content-container">
+  <div fxLayout="row wrap" fxLayoutGap="16px grid">
+    <div
+      fxFlex="25%"
+      fxFlex.xs="100%"
+      fxFlex.sm="100%"
+      fxFlex.md="50%"
+      fxFlex.lg="33%"
+      *ngFor="let result of recurringEventTypes; let i = index"
+    >
+      <mat-card class="example-card">
+        <mat-card-content>
+          <app-recurring-event-form [result]="result" (formValueChanged)="updateData($event)">
+          </app-recurring-event-form>
+        </mat-card-content>
+        <mat-card-actions *ngIf="result?.id">
+          <button
+            mat-button
+            type="button"
+            class="roundedButton"
+            (click)="deleteRecurringEvent(result.id)"
+            title="Eintrag entfernen"
+            aria-label="Eintrag entfernen"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button
+            mat-button
+            type="button"
+            class="roundedButton"
+            (click)="publishRecurringEvent(result.id)"
+            title="Änderungen ausspielen"
+            aria-label="Änderungen ausspielen"
+          >
+            <mat-icon>published_with_changes</mat-icon>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+
+  <div class="fab-bottom-right">
+    <button
+      mat-mini-fab
+      color="primary"
+      aria-label="Wiederkehrende Aufgabe hinzufügen"
+      (click)="openRecurringEventDialog()"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+<ng-form>
+  <form [formGroup]="formGroup">
+    <p>
+      <mat-form-field class="full-width">
+        <mat-label>Titel</mat-label>
+        <input matInput type="text" formControlName="title" (change)="formValueChanged.emit(formGroup)" required />
+      </mat-form-field>
+
+      <app-rrule
+        [rruleString]="formGroup.get(['recurringEventPattern', 'rulePattern']).value"
+        (dataChanged)="rruleChanged($event)"
+      ></app-rrule>
+
+      <mat-form-field floatLabel="always" appearance="none" class="full-width">
+        <mat-slide-toggle
+          color="primary"
+          labelPosition="before"
+          #tooltip="matTooltip"
+          matTooltip="Ja: Der Status muss explizit auf “erledigt” gesetzt werden, damit die Aufgabe nicht als “überfällig” angezeigt wird."
+          formControlName="mandatory"
+          (change)="formValueChanged.emit(formGroup)"
+          >Überfälligkeit</mat-slide-toggle
+        >
+        <textarea matInput hidden></textarea>
+      </mat-form-field>
+
+      <mat-form-field class="full-width">
+        <mat-label>Abhängigkeit</mat-label>
+
+        <mat-select (selectionChange)="formValueChanged.emit(formGroup)" formControlName="projectPropertyQuestionId">
+          <mat-option value="-1">keine Abhängigkeit</mat-option>
+          <mat-option *ngFor="let opt of propertyQuestions" [value]="opt.id">
+            {{ opt.question }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </p>
+  </form>
+</ng-form>

@@ -1,0 +1,22 @@
+<div style="display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; max-height: 100%">
+  <div mat-dialog-title>
+    <div style="display: flex; justify-content: space-between">
+      <div>Wiederkehrende Aufgabe anlegen</div>
+      <div>
+        <button mat-button class="roundedButton" (click)="onCloseClick()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div mat-dialog-content>
+    <app-recurring-event-form
+      [result]="defaultRecurringEventType"
+      (formSubmitted)="onSubmit($event)"
+    ></app-recurring-event-form>
+  </div>
+  <div mat-dialog-actions class="justify-content-end">
+    <button mat-raised-button color="primary" (click)="submitForm()" type="submit">Anlegen</button>
+    <button mat-button (click)="onCloseClick()">Abbrechen</button>
+  </div>
+</div>

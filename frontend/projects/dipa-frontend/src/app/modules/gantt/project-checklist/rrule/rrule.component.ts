@@ -7,8 +7,8 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['./rrule.component.scss'],
 })
 export class RruleComponent implements OnInit {
-  @Input() public formField: FormGroup;
-  @Output() public dataChanged = new EventEmitter();
+  // @Input() public formField: FormGroup;
+  @Output() public dataChanged = new EventEmitter<string>();
   @Input() private rruleString: string;
 
   public frequency = 'MONTHLY';
@@ -21,8 +21,8 @@ export class RruleComponent implements OnInit {
   }
 
   public changedData(): void {
-    this.formField.get('value').setValue(this.getRruleString());
-    this.dataChanged.emit();
+    // this.formField.get('value').setValue(this.getRruleString());
+    this.dataChanged.emit(this.getRruleString());
   }
 
   public getRruleString(): string {

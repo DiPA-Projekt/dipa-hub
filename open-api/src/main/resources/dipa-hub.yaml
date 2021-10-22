@@ -18,6 +18,12 @@ paths:
     $ref: "paths/status.yml"
   /projects:
     $ref: "paths/projects.yml"
+  /projects/projectPropertyQuestions:
+    $ref: "paths/allProjectPropertyQuestions.yml"
+  /projects/{recurringEventTypeId}/deleteRecurringEventType:
+    $ref: "paths/deleteRecurringEventType.yml"
+  /projects/recurringEventTypes:
+    $ref: "paths/recurringEventTypes.yml"
   /projects/{timelineId}/deleteProject:
     $ref: "paths/deleteProject.yml"
   /projects/{timelineId}/projectRoles:

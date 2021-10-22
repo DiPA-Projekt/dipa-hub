@@ -24,7 +24,6 @@ public class RecurringEventTypeEntity extends BaseEntity {
     private boolean mandatory;
     private boolean master;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     private ProjectEntity project;
 

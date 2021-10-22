@@ -2,6 +2,7 @@ package online.dipa.hub.server.rest;
 
 import online.dipa.hub.api.model.*;
 import online.dipa.hub.api.rest.ProjectApi;
+import online.dipa.hub.persistence.entities.ProjectEntity;
 import online.dipa.hub.services.ProjectService;
 import online.dipa.hub.services.SecurityService;
 
@@ -99,6 +100,12 @@ public class ProjectController implements ProjectApi {
         return ResponseEntity.ok(projectService.getProjectPropertyQuestions(projectId));
     }
 
+    @PreAuthorize("hasRole('ROLE_PMO')")
+    @Override
+    public ResponseEntity<List<PropertyQuestion>> getAllProjectPropertyQuestions() {
+        return ResponseEntity.ok(projectService.getAllProjectPropertyQuestions());
+    }
+
     @PreAuthorize("@securityService.isProjectMemberAndHasRole(#projectId, {'PE','PL'})")
     @Override
     public ResponseEntity<Void> updateProjectPropertyQuestion(final Long projectId, final PropertyQuestion propertyQuestion) {
@@ -130,6 +137,34 @@ public class ProjectController implements ProjectApi {
     @Override
     public ResponseEntity<Void> updateFinalProjectTasks(final Long timelineId, List<FinalProjectTask> finalProjectTasks) {
         projectService.updateFinalProjectTasks(finalProjectTasks);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasRole('ROLE_PMO')")
+    @Override
+    public ResponseEntity<List<RecurringEventType>> getRecurringEventTypes() {
+        List<RecurringEventType> recurringEventTypes =  projectService.getRecurringEventTypes();
+        return ResponseEntity.ok(recurringEventTypes);
+    }
+
+    @PreAuthorize("hasRole('ROLE_PMO')")
+    @Override
+    public ResponseEntity<Void> updateRecurringEventType(final RecurringEventType recurringEventType) {
+        projectService.updateRecurringEventType(recurringEventType);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasRole('ROLE_PMO')")
+    @Override
+    public ResponseEntity<Void> deleteRecurringEventType(final Long recurringEventTypeId) {
+        projectService.deleteRecurringEventType(recurringEventTypeId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasRole('ROLE_PMO')")
+    @Override
+    public ResponseEntity<Void> createRecurringEventType(final RecurringEventType recurringEventType) {
+        projectService.createRecurringEventType(recurringEventType);
         return ResponseEntity.noContent().build();
     }
 

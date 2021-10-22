@@ -105,8 +105,7 @@
                       </ng-container>
                       <ng-container *ngSwitchCase="'RRULE'">
                         <app-rrule
-                          [formField]="formField"
-                          (dataChanged)="dataChanged.emit()"
+                          (dataChanged)="changed($event, formField)"
                           [rruleString]="formField.get('value')?.value"
                         ></app-rrule>
                       </ng-container>

@@ -62,7 +62,7 @@ import { ProjectDashboardComponent } from './project-dashboard/project-dashboard
     RruleComponent,
     ProjectDashboardComponent,
   ],
-  exports: [ChartComponent, FilesComponent, NavMenuListItemComponent],
+  exports: [ChartComponent, FilesComponent, NavMenuListItemComponent, ResultsFormComponent, RruleComponent],
   imports: [
     AngularResizedEventModule,
     CommonModule,

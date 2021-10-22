@@ -1,0 +1,11 @@
+delete:
+  tags:
+    - project
+  summary: Delete a Recurring Event Type
+  description: Delete a Recurring Event Type
+  operationId: deleteRecurringEventType
+  parameters:
+    - $ref: "./params/recurringEventTypeIdParam.yml#/recurringEventTypeIdParam"
+  responses:
+    204:
+      description: The Recurring Event Type was successfully deleted.
