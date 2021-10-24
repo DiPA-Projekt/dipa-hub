@@ -4,7 +4,6 @@ import { NavService } from '../../nav.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Router } from '@angular/router';
 import { FilesService } from 'dipa-api-client';
-import { AuthenticationService } from '../../authentication.service';
 import { HttpResponse } from '@angular/common/http';
 
 @Component({
