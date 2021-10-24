@@ -18,12 +18,14 @@ export class HomeComponent implements OnInit {
       {
         name: 'Eine Reise durchs Projekt',
         icon: 'explore',
-        route: 'home/tour',
+        url: 'home/tour',
+        isRoute: true,
       },
       {
         name: 'Nützliche Links',
         icon: 'bookmarks',
-        route: 'home/links',
+        url: 'home/links',
+        isRoute: true,
       },
     ];
   }

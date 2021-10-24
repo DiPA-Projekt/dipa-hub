@@ -18,7 +18,8 @@ export class SchedulesComponent implements OnInit {
       {
         name: 'Zeitplankonfigurationen',
         icon: 'date_range',
-        route: 'schedules/configuration',
+        url: 'schedules/configuration',
+        isRoute: true,
       },
     ];
   }

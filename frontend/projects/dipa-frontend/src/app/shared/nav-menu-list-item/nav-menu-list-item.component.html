@@ -2,21 +2,17 @@
   mat-list-item
   appInvalidLinkCheck
   class="menu-list-item"
-  [isExternalLink]="!item.route && !item.children"
+  [isExternalLink]="!item.isRoute && !item.children"
   [ngStyle]="{ 'padding-left': depth * 15 + 'px' }"
   (auxclick)="auxClick($event)"
   (myClick)="onItemSelected(item)"
-  [ngClass]="{ active: item.route ? router.isActive(item.route, true) : false, expanded: expanded }"
-  [routerLink]="routerLink(item.route)"
+  [ngClass]="{ active: item.isRoute ? router.isActive(item.url, true) : false, expanded: expanded }"
+  [routerLink]="routerLink(item)"
+  [href]="!item.isRoute && !item.isFile ? item.url : null"
 >
-  <!--
-    TODO: reinsert
-    [href]="item.file ? baseApiPath + item.file : item.url"
-    [download]="false && item.file"
-  -->
   <mat-icon class="routeIcon">{{ item.icon }}</mat-icon>
   <span class="full-width">{{ item.name }}</span>
-  <span class="d-flex" *ngIf="!item.route && !item.children">
+  <span class="d-flex" *ngIf="!item.isRoute && !item.children">
     <mat-icon class="icon-small"> open_in_new </mat-icon>
   </span>
   <span class="d-flex" *ngIf="item.children && item.children.length">

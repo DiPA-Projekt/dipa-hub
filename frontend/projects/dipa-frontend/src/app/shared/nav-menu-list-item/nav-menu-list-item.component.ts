@@ -4,6 +4,8 @@ import { NavService } from '../../nav.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Router } from '@angular/router';
 import { FilesService } from 'dipa-api-client';
+import { AuthenticationService } from '../../authentication.service';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-nav-menu-list-item',
@@ -25,21 +27,21 @@ export class NavMenuListItemComponent implements OnInit {
   public expanded: boolean;
   public baseApiPath: string;
 
-  public constructor(public navService: NavService, private fileService: FilesService, public router: Router) {
+  public constructor(public navService: NavService, public router: Router, private filesService: FilesService) {
     if (this.depth === undefined) {
       this.depth = 0;
     }
   }
 
   public ngOnInit(): void {
-    this.expanded = this.item.children?.filter((child) => this.router.isActive(child.route, true)).length > 0;
+    this.expanded = this.item.children?.filter((child) => this.router.isActive(child.url, true)).length > 0;
 
     this.ariaExpanded = this.expanded;
-    this.baseApiPath = this.fileService.configuration.basePath;
+    this.baseApiPath = this.filesService.configuration.basePath;
 
     this.navService.currentUrl.subscribe((url: string) => {
-      if (this.item.route && url) {
-        this.expanded = url.indexOf(`/${this.item.route}`) === 0;
+      if (this.item.isRoute && url) {
+        this.expanded = url.indexOf(`/${this.item.url}`) === 0;
         this.ariaExpanded = this.expanded;
       }
     });
@@ -47,15 +49,44 @@ export class NavMenuListItemComponent implements OnInit {
 
   public onItemSelected(item: NavItem): void {
     if (!item.children || !item.children.length) {
-      if (item.route) {
-        void this.router.navigate([item.route]);
+      if (item.isRoute) {
+        void this.router.navigate([item.url]);
+      } else if (item.isFile) {
+        this.getDownloadFile(item);
       } else if (item.url) {
-        window.open(item.url, '_blank');
+        window.open('/' + item.url, '_blank');
       }
     }
     if (item.children && item.children.length) {
       this.expanded = !this.expanded;
     }
+  }
+
+  public getDownloadFile(item: NavItem): void {
+    this.filesService.getFile(item.id, 'response').subscribe((response: HttpResponse<Blob>) => {
+      let filename;
+
+      const contentDisposition = response.headers.get('Content-Disposition');
+      if (contentDisposition) {
+        const fileNameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+        const matches = fileNameRegex.exec(contentDisposition);
+        if (matches != null && matches[1]) {
+          filename = matches[1].replace(/['"]/g, '');
+        }
+      }
+
+      const dataType = 'arraybuffer';
+      const binaryData = [response.body];
+      // use a temporary link with document-attribute for naming file
+      const downloadLink = document.createElement('a');
+      downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: dataType }));
+      if (filename) {
+        downloadLink.setAttribute('download', filename);
+      }
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      downloadLink.remove();
+    });
   }
 
   public auxClick(event: MouseEvent): void {
@@ -67,11 +98,11 @@ export class NavMenuListItemComponent implements OnInit {
     }
   }
 
-  public routerLink(url: string): string[] {
-    if (!url) {
+  public routerLink(item: NavItem): string[] {
+    if (!item.isRoute) {
       return null;
     }
-    const splittedUrl = url?.split('/') || [];
+    const splittedUrl = item.url?.split('/') || [];
     return ['/', ...splittedUrl];
   }
 }

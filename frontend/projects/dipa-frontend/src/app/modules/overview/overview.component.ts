@@ -18,12 +18,14 @@ export class OverviewComponent implements OnInit {
       {
         name: 'Aktive Projekte',
         icon: 'library_books',
-        route: 'overview/projects',
+        url: 'overview/projects',
+        isRoute: true,
       },
       {
         name: 'Archivierte Projekte',
         icon: 'inventory',
-        route: 'overview/archivedProjects',
+        url: 'overview/archivedProjects',
+        isRoute: true,
       },
     ];
   }
