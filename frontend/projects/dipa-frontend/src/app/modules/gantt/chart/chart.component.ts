@@ -238,8 +238,8 @@ export class ChartComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.periodStartDateSubscription.unsubscribe();
-    this.periodEndDateSubscription.unsubscribe();
+    this.periodStartDateSubscription?.unsubscribe();
+    this.periodEndDateSubscription?.unsubscribe();
 
     this.milestoneSubscription?.unsubscribe();
     this.taskSubscription?.unsubscribe();

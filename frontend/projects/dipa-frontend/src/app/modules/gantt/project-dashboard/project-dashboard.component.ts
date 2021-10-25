@@ -216,12 +216,14 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy, AfterViewIn
       this.organisationNavItem = {
         name: 'Unsere Projektorganisation',
         icon: 'person_add_alt_1',
-        route: `gantt/${this.selectedTimelineId}/project-organization`,
+        url: `gantt/${this.selectedTimelineId}/project-organization`,
+        isRoute: true,
       };
       this.schedulesNavItem = {
         name: 'Unsere Termine',
         icon: 'event_note',
-        route: `gantt/${this.selectedTimelineId}/timeline/schedules`,
+        url: `gantt/${this.selectedTimelineId}/timeline/schedules`,
+        isRoute: true,
       };
 
       this.eventDataSource.filterPredicate = this.getFilterPredicate();
@@ -303,8 +305,8 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   public onItemSelected(item: NavItem): void {
-    if (item.route) {
-      void this.router.navigate([item.route]);
+    if (item.isRoute) {
+      void this.router.navigate([item.url]);
     }
   }
 
