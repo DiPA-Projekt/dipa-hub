@@ -387,8 +387,7 @@ public class ProjectService {
         ProjectEntity project = projectRepository.getById(projectId);
         final String tenantId = CurrentTenantContextHolder.getTenantId();
 
-        if (// tenantId.equals(WEIT_TENANT) &&
-                project.getProjectSize() != null &&
+        if (tenantId.equals(WEIT_TENANT) && project.getProjectSize() != null &&
                 (project.getProjectSize().equals(PROJECT_SIZE_SMALL) || project.getProjectSize().equals(PROJECT_SIZE_MEDIUM))
                 && project.getProjectTaskTemplate() == null) {
             ProjectTaskTemplateEntity projectTaskTemplate = projectTaskTemplateRepository.findByMaster().orElse(null);
