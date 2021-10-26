@@ -13,9 +13,9 @@
         <mat-icon>supervisor_account</mat-icon>
         Projektübersicht
       </a>
-      <a *ngIf="isUserInOrganisationRoles('PMO')" mat-button [routerLink]="'/schedules/configuration'">
+      <a *ngIf="isUserInOrganisationRoles('PMO')" mat-button [routerLink]="'/configuration/schedules'">
         <mat-icon>date_range</mat-icon>
-        Zeitplankonfiguration
+        Organisationsweite Konfiguration
       </a>
       <a mat-raised-button (click)="openProjectDialog()">
         <mat-icon>add_circle</mat-icon>

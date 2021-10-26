@@ -25,8 +25,8 @@ const routes: Routes = [
         data: { organisationRoles: ['PMO'] },
       },
       {
-        path: 'schedules',
-        loadChildren: () => import('./modules/schedules/schedules.module').then((m) => m.SchedulesModule),
+        path: 'configuration',
+        loadChildren: () => import('./modules/configuration/configuration.module').then((m) => m.ConfigurationModule),
         canActivate: [AuthGuard],
         data: { organisationRoles: ['PMO'] },
       },
