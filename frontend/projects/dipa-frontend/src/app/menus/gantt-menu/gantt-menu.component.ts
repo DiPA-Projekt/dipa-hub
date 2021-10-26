@@ -3,7 +3,8 @@ import { MatMenu } from '@angular/material/menu';
 import { Timeline, User, UserService } from 'dipa-api-client';
 import { Subscription, Observable } from 'rxjs';
 import { TimelineDataService } from '../../shared/timelineDataService';
-import { switchMap } from 'rxjs/operators';
+import { filter, switchMap } from 'rxjs/operators';
+import { NavigationStart, Router } from '@angular/router';
 
 @Component({
   selector: 'app-gantt-menu',
@@ -15,11 +16,34 @@ export class GanttMenuComponent implements OnInit, OnDestroy {
 
   public timelineData: Timeline[];
 
+  public url: string;
+
   private timelinesSubscription: Subscription;
   private timelines: Timeline[];
-  public constructor(private userService: UserService, private timelineDataService: TimelineDataService) {}
+
+  private urlSubscription: Subscription;
+
+  public constructor(
+    private userService: UserService,
+    private timelineDataService: TimelineDataService,
+    private router: Router
+  ) {}
+
+  private static getUrl(pathname: string): string {
+    const regexp = /gantt\/\d\/(?<path>.*)/;
+    const groups = regexp.exec(pathname)?.groups;
+    return groups?.path;
+  }
 
   public ngOnInit(): void {
+    this.url = GanttMenuComponent.getUrl(window.location.pathname);
+
+    this.urlSubscription = this.router.events
+      .pipe(filter((e) => e instanceof NavigationStart))
+      .subscribe((data: NavigationStart) => {
+        this.url = GanttMenuComponent.getUrl(data.url);
+      });
+
     this.timelinesSubscription = this.timelineDataService
       .getTimelines()
       .pipe(
@@ -45,6 +69,21 @@ export class GanttMenuComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
+    this.urlSubscription?.unsubscribe();
     this.timelinesSubscription?.unsubscribe();
+  }
+
+  public auxClick(event: MouseEvent): void {
+    if (event.button === 1) {
+      event.preventDefault();
+      const a = event.target as HTMLLinkElement;
+      const newTab = window.open(a.href, '_blank');
+      newTab.focus();
+    }
+  }
+
+  public routerLink(id: number): string[] {
+    const splittedUrl = this.url?.split('/') || ['project-checklist'];
+    return ['/gantt/', id.toString(), ...splittedUrl];
   }
 }

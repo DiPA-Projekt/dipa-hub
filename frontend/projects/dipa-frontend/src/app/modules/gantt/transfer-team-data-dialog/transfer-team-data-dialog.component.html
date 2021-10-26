@@ -1,0 +1,22 @@
+<div style="display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; max-height: 100%">
+  <div mat-dialog-title>
+    <div style="display: flex; justify-content: space-between">
+      <div>Besetzung versenden</div>
+      <div>
+        <button mat-button class="roundedButton" (click)="onCloseClick()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div mat-dialog-content>
+    Die Ressourcen-Daten würden mit entsprechendem Adapter an das Zielsystem übertragen werden.
+  </div>
+  <div mat-dialog-actions class="justify-content-end">
+    <button mat-raised-button color="primary" type="submit" (click)="onSubmit()" cdkFocusInitial>
+      <mat-icon>send</mat-icon>
+      Daten übertragen
+    </button>
+    <button mat-button (click)="onCloseClick()">Abbrechen</button>
+  </div>
+</div>

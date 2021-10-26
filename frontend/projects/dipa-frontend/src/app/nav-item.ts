@@ -3,8 +3,8 @@ export interface NavItem {
   name: string;
   disabled?: boolean;
   icon: string;
-  route?: string;
+  isRoute?: boolean;
   url?: string;
-  file?: string;
+  isFile?: boolean;
   children?: NavItem[];
 }
