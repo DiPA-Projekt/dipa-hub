@@ -1,7 +1,7 @@
 <div class="content-container">
   <div fxLayout="row wrap" fxLayoutGap="12px grid">
-    <div fxFlex="100%">
-      <mat-card class="example-card" style="margin-top: 5px">
+    <div fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
+      <mat-card class="example-card" style="margin-top: 1px">
         <mat-card-title>
           <div fxLayoutAlign="start center">
             <mat-icon role="img" class="mat-icon" style="margin-right: 10px" aria-hidden="true">info</mat-icon>
@@ -11,7 +11,7 @@
         <mat-card-subtitle style="margin-left: 40px">{{ projectData?.akz }}</mat-card-subtitle>
         <mat-card-content>
           <div fxLayout="row wrap" fxLayoutAlign="space-between">
-            <div fxFlex="30%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="30%">
+            <div fxFlex="100%">
               <table mat-table [dataSource]="projectDetailsDataSource" aria-label="Projektdaten">
                 <ng-container matColumnDef="key">
                   <th mat-header-cell *matHeaderCellDef scope="col"></th>
@@ -31,8 +31,11 @@
                 ></tr>
               </table>
             </div>
-
-            <div fxFlex="60%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="60%">
+            <div fxFlex="100%" style="padding: 5px">
+              <mat-divider style="position: relative"></mat-divider>
+              <div fxLayout="row">
+                <div style="line-height: 30px">Laufzeit</div>
+              </div>
               <div fxLayout="row wrap" fxLayoutAlign="space-between center">
                 <div>
                   {{ utils.getGermanFormattedDateString(projectStartDate) }}
@@ -57,7 +60,46 @@
     </div>
 
     <div fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
-      <mat-card class="example-card">
+      <mat-card class="example-card" style="margin-top: 1px">
+        <mat-card-title>
+          <div fxLayoutAlign="space-between center" (click)="onItemSelected(organisationNavItem)">
+            <div fxLayoutAlign="space-between center">
+              <mat-icon role="img" class="mat-icon" style="margin-right: 10px" aria-hidden="true">group</mat-icon>
+              Projektorganisation (Auszug)
+            </div>
+            <mat-icon role="img" class="mat-icon" aria-hidden="true">open_in_new</mat-icon>
+          </div>
+        </mat-card-title>
+        <mat-card-content>
+          <div class="example-container">
+            <table mat-table [dataSource]="organisationDataSource" aria-label="Projektrollen">
+              <ng-container matColumnDef="abbreviation">
+                <th mat-header-cell *matHeaderCellDef scope="col">Abkürzung</th>
+                <td mat-cell *matCellDef="let element">
+                  <span title="" class="circle" style="font-size: 12px">{{ element.abbreviation }}</span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="role">
+                <th mat-header-cell *matHeaderCellDef scope="col">Rolle</th>
+                <td mat-cell *matCellDef="let element">{{ element.role }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="user">
+                <th mat-header-cell *matHeaderCellDef scope="col">Benutzer</th>
+                <td mat-cell *matCellDef="let element">{{ element.username }}</td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="organisationDisplayedColumns; sticky: true"></tr>
+              <tr mat-row *matRowDef="let row; columns: organisationDisplayedColumns" class="example-element-row"></tr>
+            </table>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
+      <mat-card class="example-card" style="margin-top: 1px">
         <mat-card-title>
           <div fxLayoutAlign="space-between center" (click)="onItemSelected(schedulesNavItem)">
             <div fxLayoutAlign="space-between center">
@@ -94,7 +136,7 @@
     </div>
 
     <div fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
-      <mat-card class="example-card">
+      <mat-card class="example-card" style="margin-top: 1px">
         <mat-card-title>
           <div fxLayoutAlign="space-between center" (click)="onItemSelected(schedulesNavItem)">
             <div fxLayoutAlign="space-between center">
@@ -363,46 +405,7 @@
     </div>
 
     <div fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="100%" fxFlex.lg="50%">
-      <mat-card class="example-card">
-        <mat-card-title>
-          <div fxLayoutAlign="space-between center" (click)="onItemSelected(organisationNavItem)">
-            <div fxLayoutAlign="space-between center">
-              <mat-icon role="img" class="mat-icon" style="margin-right: 10px" aria-hidden="true">group</mat-icon>
-              Projektorganisation (Auszug)
-            </div>
-            <mat-icon role="img" class="mat-icon" aria-hidden="true">open_in_new</mat-icon>
-          </div>
-        </mat-card-title>
-        <mat-card-content>
-          <div class="example-container">
-            <table mat-table [dataSource]="organisationDataSource" aria-label="Projektrollen">
-              <ng-container matColumnDef="abbreviation">
-                <th mat-header-cell *matHeaderCellDef scope="col">Abkürzung</th>
-                <td mat-cell *matCellDef="let element">
-                  <span title="" class="circle" style="font-size: 12px">{{ element.abbreviation }}</span>
-                </td>
-              </ng-container>
-
-              <ng-container matColumnDef="role">
-                <th mat-header-cell *matHeaderCellDef scope="col">Rolle</th>
-                <td mat-cell *matCellDef="let element">{{ element.role }}</td>
-              </ng-container>
-
-              <ng-container matColumnDef="user">
-                <th mat-header-cell *matHeaderCellDef scope="col">Benutzer</th>
-                <td mat-cell *matCellDef="let element">{{ element.username }}</td>
-              </ng-container>
-
-              <tr mat-header-row *matHeaderRowDef="organisationDisplayedColumns; sticky: true"></tr>
-              <tr mat-row *matRowDef="let row; columns: organisationDisplayedColumns" class="example-element-row"></tr>
-            </table>
-          </div>
-        </mat-card-content>
-      </mat-card>
-    </div>
-
-    <div fxFlex="100%">
-      <mat-card class="example-card">
+      <mat-card class="example-card" style="margin-top: 1px">
         <mat-card-title>
           <div fxLayoutAlign="space-between center">
             <div fxLayoutAlign="space-between center">
@@ -412,11 +415,9 @@
           </div>
         </mat-card-title>
         <mat-card-content>
-          <div
-            class="full-width"
-            style="max-height: 200px; overflow: auto"
-            [innerHTML]="projectData?.description"
-          ></div>
+          <quill-view-html
+            [content]="projectData?.description ? projectData.description : 'Keine Beschreibung vorhanden.'"
+          ></quill-view-html>
         </mat-card-content>
       </mat-card>
     </div>

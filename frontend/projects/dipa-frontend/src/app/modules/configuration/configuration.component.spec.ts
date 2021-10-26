@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SchedulesComponent } from './schedules.component';
+import { ConfigurationComponent } from './configuration.component';
 import { MatSidenav, MatSidenavContainer, MatSidenavContent, MatSidenavModule } from '@angular/material/sidenav';
 import { NavMenuListItemComponent } from '../../shared/nav-menu-list-item/nav-menu-list-item.component';
 import { MatNavList } from '@angular/material/list';
@@ -11,13 +11,13 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MatIcon } from '@angular/material/icon';
 
 describe('SchedulesComponent', () => {
-  let component: SchedulesComponent;
-  let fixture: ComponentFixture<SchedulesComponent>;
+  let component: ConfigurationComponent;
+  let fixture: ComponentFixture<ConfigurationComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [
-        SchedulesComponent,
+        ConfigurationComponent,
         MatSidenavContainer,
         MatSidenav,
         MatSidenavContent,
@@ -31,7 +31,7 @@ describe('SchedulesComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SchedulesComponent);
+    fixture = TestBed.createComponent(ConfigurationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -50,20 +50,12 @@
           </h1>
         </div>
         <div>
-          <mat-form-field fxFlex="100%">
+          <mat-form-field fxFlex="100%" floatLabel="always">
             <mat-label>Projektbeschreibung</mat-label>
-            <label>
-              <textarea
-                matInput
-                formControlName="description"
-                [disabled]="isNotEditable"
-                (change)="onSubmitProjectData(formGroupProjectData)"
-                cdkTextareaAutosize
-                cdkAutosizeMinRows="3"
-                cdkAutosizeMaxRows="20"
-              >
-              </textarea>
-            </label>
+            <app-material-quill-editor
+              [formControl]="formGroupDescription"
+              (changed)="editorValueChanged(formGroupProjectData)"
+            ></app-material-quill-editor>
           </mat-form-field>
         </div>
       </form>

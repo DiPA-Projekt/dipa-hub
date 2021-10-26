@@ -333,7 +333,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy, AfterViewIn
     }
 
     const appointmentsInPeriod = appointments.filter((appt) => {
-      if (appt.eventDate == null) {
+      if (appt.dateTime == null) {
         return false;
       }
 
