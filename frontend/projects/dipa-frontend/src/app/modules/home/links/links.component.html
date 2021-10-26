@@ -1,14 +1,21 @@
-<div class="container">
+<div class="content-container">
   <section *ngFor="let item of externalLinkGroups | keyvalue: returnZero">
-    <div class="row">
-      <div class="col-12">
+    <div fxLayout="row wrap" fxLayoutGap="15px grid">
+      <div fxFlex="100%">
         <h2>
           {{ item.key }}
         </h2>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-6 my-2" *ngFor="let link of item.value">
+    <div fxLayout="row wrap" fxLayoutGap="15px grid">
+      <div
+        fxFlex="50%"
+        fxFlex.xs="100%"
+        fxFlex.sm="100%"
+        fxFlex.md="50%"
+        fxFlex.lg="50%"
+        *ngFor="let link of item.value"
+      >
         <mat-card class="card-container">
           <mat-card-header>
             <div mat-card-avatar>

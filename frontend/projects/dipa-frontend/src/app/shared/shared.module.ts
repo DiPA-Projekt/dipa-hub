@@ -28,6 +28,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { FilterItemDirective } from './data-table/filter-item.directive';
 import { FlexModule } from '@angular/flex-layout';
 import { MaterialQuillEditorComponent } from './material-quill-editor/material-quill-editor.component';
+import { DownloadLinkComponent } from './download-link/download-link.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { MaterialQuillEditorComponent } from './material-quill-editor/material-q
     FilterItemDirective,
     DataTableComponent,
     MaterialQuillEditorComponent,
+    DownloadLinkComponent,
   ],
   imports: [
     MatCardModule,
@@ -69,6 +71,7 @@ import { MaterialQuillEditorComponent } from './material-quill-editor/material-q
     FilterItemDirective,
     DataTableComponent,
     MaterialQuillEditorComponent,
+    DownloadLinkComponent,
   ],
 })
 export class SharedModule {}
