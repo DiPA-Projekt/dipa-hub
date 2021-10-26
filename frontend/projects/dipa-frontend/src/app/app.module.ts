@@ -23,6 +23,7 @@ import localeDeExtra from '@angular/common/locales/extra/de';
 import { FlexModule } from '@angular/flex-layout';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { getGermanPaginatorIntl } from './shared/paginator.translate';
+import { QuillModule } from 'ngx-quill';
 
 registerLocaleData(localeDe, 'de-DE', localeDeExtra);
 @NgModule({
@@ -36,6 +37,7 @@ registerLocaleData(localeDe, 'de-DE', localeDeExtra);
   ],
   imports: [
     BrowserModule,
+    QuillModule.forRoot(),
     HttpClientModule,
     MaterialModule,
     AppRoutingModule,

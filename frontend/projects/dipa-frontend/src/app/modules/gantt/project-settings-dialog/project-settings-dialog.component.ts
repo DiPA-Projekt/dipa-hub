@@ -125,6 +125,10 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
     });
   }
 
+  public editorValueChanged(form: FormGroup): void {
+    this.onSubmitProjectData(form);
+  }
+
   public onSubmitTimelineData(form: FormGroup): void {
     // this.timelineData.projectType = event.value as ProjectTypeEnum;
 
@@ -197,6 +201,10 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
     const h2Element = event.target as HTMLElement;
     this.formGroupProjectData.get('name').setValue(h2Element.innerText);
     this.onSubmitProjectData(this.formGroupProjectData);
+  }
+
+  public get formGroupDescription(): FormControl {
+    return this.formGroupProjectData.get('description') as FormControl;
   }
 
   private setReactiveForm(project: Project, timeline: Timeline): void {

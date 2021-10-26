@@ -32,6 +32,7 @@ import { DeleteProjectDialogComponent } from './chart/chart-header/delete-projec
 import { ProjectSettingsDialogComponent } from './project-settings-dialog/project-settings-dialog.component';
 import { RruleComponent } from './project-checklist/rrule/rrule.component';
 import { ProjectDashboardComponent } from './project-dashboard/project-dashboard.component';
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
   declarations: [
@@ -72,6 +73,7 @@ import { ProjectDashboardComponent } from './project-dashboard/project-dashboard
     ReactiveFormsModule,
     SharedModule,
     FlexModule,
+    QuillModule,
   ],
 })
 export class GanttModule {}
