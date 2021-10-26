@@ -8,28 +8,28 @@ import { Subscription } from 'rxjs';
   templateUrl: './files.component.html',
 })
 export class FilesComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() timelineId: number;
-  @Input() milestoneId: number;
+  @Input() private timelineId: number;
+  @Input() private milestoneId: number;
 
-  fileItems: NavItem[] = [];
+  public fileItems: NavItem[] = [];
 
-  downloadFilesSubscription: Subscription;
+  private downloadFilesSubscription: Subscription;
 
-  constructor(private milestonesService: MilestonesService) {}
+  public constructor(private milestonesService: MilestonesService) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.setFileList();
   }
 
-  ngOnChanges(): void {
+  public ngOnChanges(): void {
     this.setFileList();
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.downloadFilesSubscription?.unsubscribe();
   }
 
-  setFileList(): void {
+  private setFileList(): void {
     this.downloadFilesSubscription = this.milestonesService
       .getFilesForMilestone(this.timelineId, this.milestoneId)
       .subscribe((data) => {
@@ -37,7 +37,8 @@ export class FilesComponent implements OnInit, OnChanges, OnDestroy {
           id: x.id,
           name: x.name,
           icon: 'description',
-          file: `/downloadFile/${x.id}`,
+          url: `downloadFile/${x.id}`,
+          isFile: true,
         }));
       });
   }

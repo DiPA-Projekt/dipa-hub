@@ -9,12 +9,13 @@ import { MatDialog } from '@angular/material/dialog';
 export class InvalidLinkCheckDirective {
   @Output() public myClick: EventEmitter<any> = new EventEmitter();
   @Input() private href: string;
+  @Input() private isExternalLink;
 
   public constructor(public dialog: MatDialog) {}
 
   @HostListener('click', ['$event'])
   private clickHandler(e: MouseEvent): void {
-    if (this.href !== null) {
+    if (this.isExternalLink && this.href !== null) {
       if (!this.checkValidUrl(this.href)) {
         e.preventDefault();
         this.openInvalidUrlModal(this.href);

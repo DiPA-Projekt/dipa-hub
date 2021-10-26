@@ -4,6 +4,9 @@ import { OptionEntry, Result, TimelinesService } from 'dipa-api-client';
 import ResultTypeEnum = Result.ResultTypeEnum;
 import { AppointmentSeriesValidator } from './appt-series-validator';
 import { DatePipe } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import { TransferTeamDataDialogComponent } from '../../transfer-team-data-dialog/transfer-team-data-dialog.component';
+import { AuthenticationService } from '../../../../authentication.service';
 
 interface SelectOption {
   value: string;
@@ -29,6 +32,8 @@ export class ResultsFormComponent implements OnInit {
   @Output() public showSelectionChanged = new EventEmitter();
   @Output() public dataChanged = new EventEmitter();
 
+  public userHasProjectEditRights = false;
+
   public formFieldGroups: SelectOptionGroup[] = [];
 
   public currentResultType: ResultTypeEnum;
@@ -39,6 +44,8 @@ export class ResultsFormComponent implements OnInit {
   public apptEndDate: string;
 
   public constructor(
+    public dialog: MatDialog,
+    private authenticationService: AuthenticationService,
     public formGroupDirective: FormGroupDirective,
     private fb: FormBuilder,
     private timelineService: TimelinesService,
@@ -57,6 +64,13 @@ export class ResultsFormComponent implements OnInit {
         this.apptEndDate = this.datePipe.transform(new Date(selectedTimeline.end), 'yyyy-MM-dd');
       });
     }
+
+    this.authenticationService.getProjectRoles().then((roles) => {
+      this.userHasProjectEditRights =
+        roles.filter(
+          (d) => d.projectId === this.selectedTimelineId && (d.abbreviation === 'PL' || d.abbreviation === 'PE')
+        ).length > 0;
+    });
 
     this.initSelectedFields();
   }
@@ -134,6 +148,13 @@ export class ResultsFormComponent implements OnInit {
   public changed($event: string, formField: FormGroup): void {
     formField.get('value').setValue($event);
     this.dataChanged.emit();
+  }
+
+  public openTransferTeamDataDialog(): void {
+    this.dialog.open(TransferTeamDataDialogComponent, {
+      data: { result: null },
+      width: '600px',
+    });
   }
 
   private getFilteredFormControls(filterOptions: { key: string; value: string }): FormGroup[] {
