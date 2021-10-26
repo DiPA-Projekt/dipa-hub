@@ -33,6 +33,7 @@ import { ProjectSettingsDialogComponent } from './project-settings-dialog/projec
 import { RruleComponent } from './project-checklist/rrule/rrule.component';
 import { ProjectDashboardComponent } from './project-dashboard/project-dashboard.component';
 import { QuillModule } from 'ngx-quill';
+import { TransferTeamDataDialogComponent } from './transfer-team-data-dialog/transfer-team-data-dialog.component';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import { QuillModule } from 'ngx-quill';
     ProjectSettingsDialogComponent,
     RruleComponent,
     ProjectDashboardComponent,
+    TransferTeamDataDialogComponent,
   ],
   exports: [ChartComponent, FilesComponent, NavMenuListItemComponent],
   imports: [
