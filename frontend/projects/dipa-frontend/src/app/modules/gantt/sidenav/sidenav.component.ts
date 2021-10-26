@@ -127,56 +127,66 @@ export class SidenavComponent implements OnInit, OnDestroy {
       {
         name: 'Unsere Reise durchs Projekt',
         icon: 'directions_walk',
-        route: `gantt/${this.selectedTimelineId}/project-checklist`,
+        url: `gantt/${this.selectedTimelineId}/project-checklist`,
+        isRoute: true,
         children: [
           {
             name: 'Projektübersicht',
             icon: 'dashboard',
-            route: `gantt/${this.selectedTimelineId}/project-checklist/dashboard`,
+            url: `gantt/${this.selectedTimelineId}/project-checklist/dashboard`,
+            isRoute: true,
           },
           {
             name: 'Schnellstart Projektmanagement (Planung)',
             icon: 'play_arrow',
-            route: `gantt/${this.selectedTimelineId}/project-checklist/quickstart`,
+            url: `gantt/${this.selectedTimelineId}/project-checklist/quickstart`,
+            isRoute: true,
           },
           {
             name: 'Umsetzung und Steuerung',
             icon: 'build',
-            route: `gantt/${this.selectedTimelineId}/project-checklist/control`,
+            url: `gantt/${this.selectedTimelineId}/project-checklist/control`,
+            isRoute: true,
           },
           {
             name: 'Abschluss',
             icon: 'flag',
-            route: `gantt/${this.selectedTimelineId}/project-checklist/end`,
+            url: `gantt/${this.selectedTimelineId}/project-checklist/end`,
+            isRoute: true,
           },
         ],
       },
       {
         name: 'Unser Zeitplan',
         icon: 'calendar_today',
-        route: `gantt/${this.selectedTimelineId}/timeline`,
+        url: `gantt/${this.selectedTimelineId}/timeline`,
+        isRoute: true,
         children: [
           {
             name: 'Unsere Aufgaben',
             icon: 'list_alt',
-            route: `gantt/${this.selectedTimelineId}/timeline/tasks`,
+            url: `gantt/${this.selectedTimelineId}/timeline/tasks`,
+            isRoute: true,
           },
           {
             name: 'Unsere Termine',
             icon: 'event_note',
-            route: `gantt/${this.selectedTimelineId}/timeline/schedules`,
+            url: `gantt/${this.selectedTimelineId}/timeline/schedules`,
+            isRoute: true,
           },
           {
             name: 'Stöbern & Vergleichen',
             icon: 'find_replace',
-            route: `gantt/${this.selectedTimelineId}/timeline/templates`,
+            url: `gantt/${this.selectedTimelineId}/timeline/templates`,
+            isRoute: true,
           },
         ],
       },
       {
         name: 'Unsere Projektorganisation',
         icon: 'person_add_alt_1',
-        route: `gantt/${this.selectedTimelineId}/project-organization`,
+        url: `gantt/${this.selectedTimelineId}/project-organization`,
+        isRoute: true,
       },
     ];
 

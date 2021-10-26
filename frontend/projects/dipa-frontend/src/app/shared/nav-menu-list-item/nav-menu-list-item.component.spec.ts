@@ -24,7 +24,8 @@ describe('NavMenuListItemComponent', () => {
     component.item = {
       name: 'Zeitplan',
       icon: 'event_note',
-      route: 'gantt',
+      url: 'gantt',
+      isRoute: true,
     };
     fixture.detectChanges();
   });

@@ -7,23 +7,25 @@ import { NavItem } from '../../nav-item';
   styleUrls: ['./overview.component.scss'],
 })
 export class OverviewComponent implements OnInit {
-  navMenuItems: NavItem[] = [];
+  public navMenuItems: NavItem[] = [];
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.setSideNavMenu();
   }
 
-  setSideNavMenu(): void {
+  private setSideNavMenu(): void {
     this.navMenuItems = [
       {
         name: 'Aktive Projekte',
         icon: 'library_books',
-        route: 'overview/projects',
+        url: 'overview/projects',
+        isRoute: true,
       },
       {
         name: 'Archivierte Projekte',
         icon: 'inventory',
-        route: 'overview/archivedProjects',
+        url: 'overview/archivedProjects',
+        isRoute: true,
       },
     ];
   }
