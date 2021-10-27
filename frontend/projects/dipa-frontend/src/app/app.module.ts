@@ -20,7 +20,7 @@ import { TimelineDataService } from '../app/shared/timelineDataService';
 import { registerLocaleData, DatePipe } from '@angular/common';
 import localeDe from '@angular/common/locales/de';
 import localeDeExtra from '@angular/common/locales/extra/de';
-import { FlexModule } from '@angular/flex-layout';
+import { ExtendedModule, FlexModule } from '@angular/flex-layout';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { getGermanPaginatorIntl } from './shared/paginator.translate';
 import { QuillModule } from 'ngx-quill';
@@ -54,6 +54,7 @@ registerLocaleData(localeDe, 'de-DE', localeDeExtra);
       },
     }),
     FlexModule,
+    ExtendedModule,
   ],
   providers: [
     NavService,

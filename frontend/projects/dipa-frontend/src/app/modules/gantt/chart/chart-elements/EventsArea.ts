@@ -63,7 +63,7 @@ export class EventsArea implements IChartElement {
   ) {
     this.svg = svg;
     this.xScale = xScale;
-    this.data = data;
+    this.data = data || [];
     this.modifiable = modifiable;
     this.showMenu = showMenu;
     this.eventsAreaId = eventsAreaId;
@@ -88,7 +88,7 @@ export class EventsArea implements IChartElement {
   }
 
   setData(data: EventEntry[]): void {
-    this.data = data;
+    this.data = data || [];
     const dataGroup = this.svg.select(`g#eventsArea${this.eventsAreaId}.event-data-group`);
     dataGroup.selectAll('g.eventEntry').data(
       d3.group(
