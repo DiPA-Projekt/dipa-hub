@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home.component';
 import { ProjectTourComponent } from './project-tour/project-tour.component';
 import { LinksComponent } from './links/links.component';
+import { ProductTemplatesComponent } from './product-templates/product-templates.component';
 
 const routes: Routes = [
   {
@@ -12,6 +13,7 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'tour', pathMatch: 'full' },
       { path: 'tour', component: ProjectTourComponent },
+      { path: 'product-templates', component: ProductTemplatesComponent },
       { path: 'links', component: LinksComponent },
     ],
   },

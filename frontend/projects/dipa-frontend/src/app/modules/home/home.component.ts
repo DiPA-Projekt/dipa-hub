@@ -22,6 +22,12 @@ export class HomeComponent implements OnInit {
         isRoute: true,
       },
       {
+        name: 'Produktvorlagen',
+        icon: 'content_copy',
+        url: 'home/product-templates',
+        isRoute: true,
+      },
+      {
         name: 'Nützliche Links',
         icon: 'bookmarks',
         url: 'home/links',
