@@ -3,23 +3,50 @@
     <img class="logo" src="assets/img/dipa-logo-weiss.svg" alt="DiPA" />
     <span class="menu-spacer"></span>
     <div>
-      <a mat-button [routerLink]="'/home/tour'"><mat-icon>home</mat-icon>Home</a>
-      <a mat-button [matMenuTriggerFor]="ganttMenu.menu">
-        <mat-icon>bar_chart</mat-icon>Meine Projekte
-        <app-gantt-menu #ganttMenu="gantMenuComponent"></app-gantt-menu>
-        <mat-icon>arrow_drop_down</mat-icon>
+      <a routerLinkActive="activeButton" mat-button [routerLink]="'/home'" title="Home">
+        <mat-icon>home</mat-icon>
+        <span fxHide.lt-md class="buttonMenuText">Home</span>
       </a>
-      <a *ngIf="isUserInOrganisationRoles('PMO') || hasProjectRoles()" mat-button [routerLink]="'/overview/projects'">
-        <mat-icon>supervisor_account</mat-icon>
-        Projektübersicht
+      <a routerLinkActive="activeButton" mat-button [routerLink]="'/gantt'" title="Meine Projekte">
+        <span
+          class="mat-button-wrapper"
+          (click)="$event.stopPropagation(); $event.preventDefault()"
+          [matMenuTriggerFor]="ganttMenu.menu"
+        >
+          <mat-icon>topic</mat-icon>
+          <span fxHide.lt-md class="buttonMenuText">Meine Projekte</span>
+          <app-gantt-menu #ganttMenu="gantMenuComponent"></app-gantt-menu>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </span>
       </a>
-      <a *ngIf="isUserInOrganisationRoles('PMO')" mat-button [routerLink]="'/configuration/schedules'">
-        <mat-icon>date_range</mat-icon>
-        Organisationsweite Konfiguration
+      <a
+        *ngIf="isUserInOrganisationRoles('PMO') || hasProjectRoles()"
+        routerLinkActive="activeButton"
+        mat-button
+        [routerLink]="'/overview'"
+        title="Projektübersicht"
+      >
+        <mat-icon>view_list</mat-icon>
+        <span fxHide.lt-md class="buttonMenuText">Projektübersicht</span>
       </a>
-      <a mat-raised-button (click)="openProjectDialog()">
+      <a
+        *ngIf="isUserInOrganisationRoles('PMO')"
+        routerLinkActive="activeButton"
+        mat-button
+        [routerLink]="'/configuration'"
+        title="Organisationsweite Konfiguration"
+      >
+        <mat-icon>engineering</mat-icon>
+        <span fxHide.lt-md class="buttonMenuText">Organisationsweite Konfiguration</span>
+      </a>
+      <a
+        style="margin-left: 10px; border-color: white; border-width: 2px"
+        mat-stroked-button
+        (click)="openProjectDialog()"
+        title="Projekt anlegen"
+      >
         <mat-icon>add_circle</mat-icon>
-        Projekt anlegen
+        <span fxHide.lt-md class="buttonMenuText">Projekt anlegen</span>
       </a>
     </div>
     <span class="full-width-spacer"></span>

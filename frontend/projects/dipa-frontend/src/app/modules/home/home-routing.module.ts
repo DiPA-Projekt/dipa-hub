@@ -10,6 +10,7 @@ const routes: Routes = [
     path: '',
     component: HomeComponent,
     children: [
+      { path: '', redirectTo: 'tour', pathMatch: 'full' },
       { path: 'tour', component: ProjectTourComponent },
       { path: 'links', component: LinksComponent },
     ],

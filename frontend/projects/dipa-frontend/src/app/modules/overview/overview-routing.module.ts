@@ -10,6 +10,7 @@ const routes: Routes = [
     path: '',
     component: OverviewComponent,
     children: [
+      { path: '', redirectTo: 'projects', pathMatch: 'full' },
       { path: 'projects', component: ProjectsComponent },
       { path: 'archivedProjects', component: ArchivedProjectsComponent },
     ],
