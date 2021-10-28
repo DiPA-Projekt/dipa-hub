@@ -10,6 +10,7 @@ const routes: Routes = [
     path: '',
     component: ConfigurationComponent,
     children: [
+      { path: '', redirectTo: 'recurring_events', pathMatch: 'full' },
       { path: 'schedules', component: SchedulesComponent },
       { path: 'recurring_events', component: RecurringEventsComponent },
     ],

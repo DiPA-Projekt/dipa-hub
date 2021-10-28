@@ -1,15 +1,22 @@
-<div class="container">
+<div class="content-container">
   <section *ngFor="let item of projectFlowItems">
-    <div class="row">
-      <div class="col-12">
+    <div fxLayout="row wrap" fxLayoutGap="15px grid">
+      <div fxFlex="100%">
         <h2>
           {{ item.name }}
         </h2>
       </div>
     </div>
-    <div class="row">
-      <ng-container *ngIf="item.actions.length > 0; else noItems">
-        <div class="col-md-6 my-2" *ngFor="let action of item.actions">
+    <div fxLayout="row wrap" fxLayoutGap="15px grid">
+      <ng-container *ngIf="item.actions?.length > 0; else noItems">
+        <div
+          fxFlex="50%"
+          fxFlex.xs="100%"
+          fxFlex.sm="100%"
+          fxFlex.md="50%"
+          fxFlex.lg="50%"
+          *ngFor="let action of item.actions"
+        >
           <mat-card class="card-container">
             <mat-card-content>{{ action.explanation }}</mat-card-content>
             <mat-card-actions>
@@ -23,7 +30,7 @@
         </div>
       </ng-container>
       <ng-template #noItems>
-        <div class="col-md-6 my-2">
+        <div fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="50%" fxFlex.lg="50%">
           <mat-card class="card-container">
             <mat-card-content>Das Reiseziel ist noch unbekannt.</mat-card-content>
           </mat-card>
