@@ -168,4 +168,10 @@ public class ProjectController implements ProjectApi {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ROLE_PMO')")
+    @Override
+    public ResponseEntity<Void> publishRecurringEventType(final Long recurringEventTypeId) {
+        projectService.publishRecurringEventType(recurringEventTypeId);
+        return ResponseEntity.noContent().build();
+    }
 }

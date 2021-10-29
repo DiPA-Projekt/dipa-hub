@@ -13,6 +13,8 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import online.dipa.hub.api.model.RecurringEventType;
+
 @Entity
 @Table(name = "recurring_event_type")
 @Cacheable
@@ -23,6 +25,10 @@ public class RecurringEventTypeEntity extends BaseEntity {
     private String description;
     private boolean mandatory;
     private boolean master;
+    private boolean published;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private RecurringEventTypeEntity masterRecurringEventType;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private ProjectEntity project;
@@ -71,6 +77,22 @@ public class RecurringEventTypeEntity extends BaseEntity {
 
     public void setMandatory(final boolean mandatory) {
         this.mandatory = mandatory;
+    }
+
+    public boolean isPublished() {
+        return published;
+    }
+
+    public void setPublished(final boolean published) {
+        this.published = published;
+    }
+
+    public RecurringEventTypeEntity getMasterRecurringEventType() {
+        return this.masterRecurringEventType;
+    }
+
+    public void setRecurringEventType(final RecurringEventTypeEntity masterRecurringEventType) {
+        this.masterRecurringEventType = masterRecurringEventType;
     }
 
     public boolean isMaster() {

@@ -21,6 +21,7 @@ public class RecurringEventTypeEntityToRecurringEventTypeConverter implements Co
                             .mandatory(templateEntity.isMandatory())
                             .title(templateEntity.getTitle())
                             .description(templateEntity.getDescription())
+                            .published(templateEntity.isPublished())
                             .recurringEventPattern(recurringEventPatternEntityToRecurringEventPatternConverter
                                     .convert(templateEntity.getRecurringEventPattern()));
 
@@ -28,6 +29,12 @@ public class RecurringEventTypeEntityToRecurringEventTypeConverter implements Co
 
         if (projectPropertyQuestionEntity != null) {
             recurringEventType.projectPropertyQuestionId(projectPropertyQuestionEntity.getId());
+        }
+
+        RecurringEventTypeEntity masterRecurringEventTypeEntity = templateEntity.getMasterRecurringEventType();
+
+        if (masterRecurringEventTypeEntity != null) {
+            recurringEventType.masterRecurringEventTypeId(masterRecurringEventTypeEntity.getId());
         }
 
         return recurringEventType;

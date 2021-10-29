@@ -28,6 +28,7 @@
             mat-button
             type="button"
             class="roundedButton"
+            [disabled]="result.published"
             (click)="publishRecurringEvent(result.id)"
             title="Änderungen ausspielen"
             aria-label="Änderungen ausspielen"

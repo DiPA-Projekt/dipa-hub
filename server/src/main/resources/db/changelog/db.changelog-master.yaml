@@ -111,5 +111,8 @@ databaseChangeLog:
       file: db.changelog-v0.19.0-data.sql
       relativeToChangelogFile: true
   - include:
+      file: db.changelog-v0.20.0.sql
+      relativeToChangelogFile: true
+  - include:
       file: db.changelog-v0.20.0-data.sql
       relativeToChangelogFile: true

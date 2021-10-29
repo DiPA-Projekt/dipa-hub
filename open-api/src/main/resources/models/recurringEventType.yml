@@ -18,12 +18,21 @@ RecurringEventType:
       description: Is the status of recurring event mandatory?
       type: boolean
       example: true
+    published:
+      description: Is the recurring event published in all projects?
+      type: boolean
+      example: true
     recurringEventPattern:
       description: Recurring Event Pattern
       type: object
       $ref: "../models/recurringEventPattern.yml#/RecurringEventPattern"
     projectPropertyQuestionId:
       description: Unique identifier of the dependent property question
+      type: integer
+      format: int64
+      example: 1
+    masterRecurringEventTypeId:
+      description: Unique identifier of the master recurring event type
       type: integer
       format: int64
       example: 1

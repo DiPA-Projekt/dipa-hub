@@ -40,7 +40,11 @@ export class RecurringEventsComponent implements OnInit, OnDestroy {
   }
 
   public deleteRecurringEvent(id: number): void {
-    if (confirm('Wollen Sie diesen Eintrag wirklich löschen. Die Aufgabe wird aus allen Projekten entfernt!')) {
+    if (
+      confirm(
+        'Wollen Sie diesen Eintrag wirklich löschen? Sämtliche Termine dieser Aufgabe werden aus den Projekten entfernt!'
+      )
+    ) {
       this.projectService.deleteRecurringEventType(id).subscribe({
         next: () => {
           this.onDelete.emit();
@@ -53,7 +57,21 @@ export class RecurringEventsComponent implements OnInit, OnDestroy {
   }
 
   public publishRecurringEvent(id: number): void {
-    console.log('publishRecurringEvent', id);
+    if (
+      confirm(
+        'Wollen Sie diesen Eintrag wirklich ausspielen? Die zugehörigen Termine werden in allen Projekten neu generiert!'
+      )
+    ) {
+      this.projectService.publishRecurringEventType(id).subscribe({
+        next: () => {
+          // this.onDelete.emit();
+          console.log('publishRecurringEvent', id);
+          this.timelineDataService.setRecurringEvents();
+        },
+        error: null,
+        complete: () => void 0,
+      });
+    }
   }
 
   public updateData(form: FormGroup): void {

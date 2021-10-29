@@ -22,6 +22,8 @@ paths:
     $ref: "paths/allProjectPropertyQuestions.yml"
   /projects/{recurringEventTypeId}/deleteRecurringEventType:
     $ref: "paths/deleteRecurringEventType.yml"
+  /projects/{recurringEventTypeId}/publishRecurringEventType:
+    $ref: "paths/publishRecurringEventType.yml"
   /projects/recurringEventTypes:
     $ref: "paths/recurringEventTypes.yml"
   /projects/{timelineId}/deleteProject:

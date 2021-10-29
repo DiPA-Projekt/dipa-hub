@@ -985,14 +985,15 @@ public class ProjectService {
     }
 
     public void updateRecurringEventType (final RecurringEventType recurringEventType) {
-        recurringEventTypeRepository.findByMaster();
-
         recurringEventTypeRepository.findById(getId(recurringEventType)).ifPresent(e -> {
             e.setTitle(recurringEventType.getTitle());
             e.setMandatory(recurringEventType.getMandatory());
+            e.setPublished(false);
 
-            projectPropertyQuestionRepository.findById(recurringEventType.getProjectPropertyQuestionId())
-                                             .ifPresent(e::setProjectPropertyQuestion);
+            if (recurringEventType.getProjectPropertyQuestionId() != null) {
+                projectPropertyQuestionRepository.findById(recurringEventType.getProjectPropertyQuestionId())
+                                                 .ifPresent(e::setProjectPropertyQuestion);
+            }
 
             RecurringEventPatternEntity pattern = e.getRecurringEventPattern();
             pattern.setRulePattern(recurringEventType.getRecurringEventPattern().getRulePattern());
@@ -1031,6 +1032,42 @@ public class ProjectService {
         recurringEventTypeRepository.delete(recurringEventType);
     }
 
+    public void publishRecurringEventType (final Long recurringEventTypeId) {
+        var masterRecurringEventType = recurringEventTypeRepository.getById(recurringEventTypeId);
+
+        // get all recurringEventTypes with masterId = recurringEventTypeId
+        Collection<RecurringEventTypeEntity> recurringEventTypes = recurringEventTypeRepository.findByMasterRecurringEventType(masterRecurringEventType);
+        for (RecurringEventTypeEntity recurringEventType: recurringEventTypes) {
+            // for each recurringEventType save masterRecurringEventType values
+            recurringEventType.setTitle(masterRecurringEventType.getTitle());
+            recurringEventType.setMandatory(masterRecurringEventType.isMandatory());
+            recurringEventType.getRecurringEventPattern()
+                              .setRulePattern(masterRecurringEventType.getRecurringEventPattern().getRulePattern());
+            recurringEventType.setProjectPropertyQuestion(masterRecurringEventType.getProjectPropertyQuestion());
+
+            // recalculate events
+            updateRecurringEventTypeEntityEvents(recurringEventType);
+        }
+        masterRecurringEventType.setPublished(true);
+    }
+
+    public void updateRecurringEventTypeEntityEvents(RecurringEventTypeEntity recurringEventType) {
+        RecurringEventPatternEntity recurringEventPattern = recurringEventType.getRecurringEventPattern();
+
+        ProjectEventTemplateEntity projectEventTemplateEntity = recurringEventType.getProjectEventTemplate();
+
+        if (projectEventTemplateEntity != null) {
+            List<ProjectEventEntity> events = new ArrayList<>(projectEventTemplateEntity.getProjectEvents());
+            recurringEventType.getProjectEventTemplate()
+                              .getProjectEvents()
+                              .removeAll(events);
+            eventRepository.deleteAll(events);
+            recurringEventType.setProjectEventTemplate(
+                    createEventsForEventTemplate(recurringEventPattern, recurringEventType.getTitle(),
+                            recurringEventType.getProjectEventTemplate(), null));
+        }
+    }
+
     private Long getId(RecurringEventType recurringEventType) {
         return recurringEventType.getId();
     }
@@ -1040,7 +1077,6 @@ public class ProjectService {
 
         return project.getProjectRoleTemplate().getProjectRoles().stream().map(r -> conversionService.convert(r, ProjectRole.class))
                       .collect(Collectors.toList());
-
     }
 
     public List<User> getProjectUsers (final Long projectId) {
@@ -1049,7 +1085,6 @@ public class ProjectService {
 
         return userRepository.findByProject(project)
                              .stream().map(user -> conversionService.convert(user, User.class)).collect(Collectors.toList());
-
     }
 
     private ResultEntity findResultEntity (List<ResultEntity> results, Long id) {
