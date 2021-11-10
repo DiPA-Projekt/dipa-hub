@@ -14,7 +14,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { AngularResizedEventModule } from 'angular-resize-event';
+import { AngularResizeEventModule } from 'angular-resize-event';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { SharedModule } from '../../shared/shared.module';
@@ -40,7 +40,7 @@ import { ArchivedProjectsComponent } from './archived-projects/archived-projects
     MatButtonToggleModule,
     MatInputModule,
     MatSelectModule,
-    AngularResizedEventModule,
+    AngularResizeEventModule,
     MatButtonModule,
     GanttModule,
   ],
