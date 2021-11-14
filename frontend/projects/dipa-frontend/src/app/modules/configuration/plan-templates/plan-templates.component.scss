@@ -1,0 +1,33 @@
+table {
+  width: 100%;
+}
+
+.mat-row.hovered {
+  background: #eee;
+}
+
+.mat-row.highlighted {
+  background: rgba(63, 81, 181, 0.15);
+}
+
+.example-element-row td {
+  border-bottom-width: 0;
+  padding: 0 5px !important;
+}
+
+td[class^='mat-column-'], td[class*=' mat-column-'],
+th[class^='mat-column-'], th[class*=' mat-column-']{
+  padding: 0 3px !important
+}
+
+td.mat-column-index, th.mat-column-index,
+td.mat-column-actions, th.mat-column-actions {
+  text-align: center;
+}
+
+.roundedButton {
+  border-radius: 50%;
+  margin-top: 1px;
+  min-width: 36px;
+  padding: 0;
+}

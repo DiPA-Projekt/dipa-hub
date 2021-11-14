@@ -1,0 +1,39 @@
+get:
+  tags:
+    - configuration
+  summary: Milestone Template List for Plan Template
+  description: Retrieves the list of Milestone Templates in a Plan Template.
+  operationId: getMilestoneTemplates
+  parameters:
+    - $ref: "./params/planTemplateIdParam.yml#/planTemplateIdParam"
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../models/milestoneTemplate.yml#/MilestoneTemplate"
+post:
+  tags:
+    - configuration
+  summary: Create a new Milestone Template
+  description: Create a new Milestone Template
+  operationId: createMilestoneTemplate
+  parameters:
+    - $ref: "./params/planTemplateIdParam.yml#/planTemplateIdParam"
+  requestBody:
+    description: Milestone Template's data as requestBody
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../models/milestoneTemplate.yml#/MilestoneTemplate"
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "../models/milestoneTemplate.yml#/MilestoneTemplate"

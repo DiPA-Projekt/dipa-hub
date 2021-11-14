@@ -1,0 +1,37 @@
+PlanTemplate:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the plan template
+      type: integer
+      format: int64
+      example: 2
+    name:
+      description: The name of the plan template
+      type: string
+      example: "Software Entwicklung inkrementell"
+    milestoneTemplates:
+      description: The plan template milestones
+      type: array
+      items:
+        $ref: "../models/milestoneTemplate.yml#/MilestoneTemplate"
+    tasks:
+      description: The plan template tasks
+      type: array
+      items:
+        $ref: "../models/task.yml#/Task"
+    projectApproaches:
+      description: The plan template project approaches
+      type: array
+      items:
+        $ref: "../models/projectApproach.yml#/ProjectApproach"
+    standard:
+      description: Flag if this plan template is standard.
+      type: boolean
+      example: false
+    default:
+      description: Flag if this plan template is default.
+      type: boolean
+      example: false
+  required:
+    - id

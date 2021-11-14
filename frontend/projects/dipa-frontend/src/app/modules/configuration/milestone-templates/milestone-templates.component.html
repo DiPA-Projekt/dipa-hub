@@ -1,0 +1,60 @@
+<div class="">
+  <table mat-table [dataSource]="tableDataSource" multiTemplateDataRows aria-label="Meilenstein-Template-Daten">
+    <ng-container matColumnDef="header">
+      <th mat-header-cell *matHeaderCellDef [attr.colspan]="displayedColumns.length" scope="col">
+        <div fxLayout="row nowrap" fxLayoutAlign="space-between center"></div>
+      </th>
+    </ng-container>
+    <ng-container matColumnDef="index">
+      <th mat-header-cell *matHeaderCellDef scope="col"></th>
+      <td mat-cell *matCellDef="let element; let i = renderIndex">{{ i + 1 }}</td>
+    </ng-container>
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef scope="col">Meilenstein</th>
+      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef scope="col">
+        <button mat-button class="roundedButton" (click)="openMilestoneTemplateDialog(this.planTemplate)">
+          <mat-icon>add_circle</mat-icon>
+        </button>
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <button
+          mat-button
+          type="button"
+          class="roundedButton"
+          (click)="deleteMilestoneTemplate(element.id)"
+          title="Eintrag entfernen"
+          aria-label="Eintrag entfernen"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="dateOffset">
+      <th mat-header-cell *matHeaderCellDef scope="col">Tage seit Projektbeginn</th>
+      <td mat-cell *matCellDef="let element" style="text-align: right">{{ element.dateOffset }}</td>
+    </ng-container>
+    <ng-container matColumnDef="dateDiff">
+      <th mat-header-cell *matHeaderCellDef scope="col">Abstand zum vorherigen Meilenstein</th>
+      <td mat-cell *matCellDef="let element; let i = renderIndex" style="text-align: right">
+        {{ tableDataSource.data[i].dateOffset - tableDataSource.data[i - 1]?.dateOffset }}
+      </td>
+    </ng-container>
+    <tr mat-header-row style="height: 36px" *matHeaderRowDef="['header']"></tr>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr
+      mat-row
+      *matRowDef="let element; columns: displayedColumns"
+      class="example-element-row"
+      (click)="selection.toggle(element)"
+      [ngClass]="{ hovered: element.hovered, highlighted: selection.isSelected(element) }"
+      (mouseover)="element.hovered = true"
+      (mouseout)="element.hovered = false"
+    ></tr>
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="5">Keine Termine mit aktueller Filterung.</td>
+    </tr>
+  </table>
+</div>

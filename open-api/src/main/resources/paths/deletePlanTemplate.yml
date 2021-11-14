@@ -1,0 +1,11 @@
+delete:
+  tags:
+    - configuration
+  summary: Delete a plan template
+  description: Delete a plan template
+  operationId: deletePlanTemplate
+  parameters:
+    - $ref: "./params/planTemplateIdParam.yml#/planTemplateIdParam"
+  responses:
+    204:
+      description: The plan template was successfully deleted.

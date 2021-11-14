@@ -27,10 +27,6 @@ public class OperationTypeEntity extends BaseEntity {
     @Basic(optional = false)
     private boolean defaultType;
 
-    @ManyToMany(mappedBy = "operationTypes", cascade = { ALL })
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<PlanTemplateEntity> planTemplate = new HashSet<>();
-
     @OneToMany(mappedBy = "operationType", cascade = { ALL })
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<ProjectApproachEntity> projectApproach = new HashSet<>();
@@ -57,13 +53,5 @@ public class OperationTypeEntity extends BaseEntity {
 
     public void setProjectApproach(final Set<ProjectApproachEntity> projectApproach) {
         this.projectApproach = projectApproach;
-    }
-    
-    public Set<PlanTemplateEntity> getPlanTemplate() {
-        return planTemplate;
-    }
-
-    public void setPlanTemplate(final Set<PlanTemplateEntity> planTemplate) {
-        this.planTemplate = planTemplate;
     }
 }
