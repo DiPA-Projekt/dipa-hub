@@ -5,6 +5,7 @@ import {
   PlanTemplate,
   ProjectApproach,
   ProjectApproachesService,
+  ConfigurationService,
 } from 'dipa-api-client';
 import { forkJoin, Subscription } from 'rxjs';
 import { ConfigurationDataService } from '../../../shared/configurationDataService';
@@ -13,7 +14,6 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { PlanTemplateDialogComponent } from '../plan-template-dialog/plan-template-dialog.component';
-import { ConfigurationService } from 'dipa-api-client';
 
 @Component({
   selector: 'app-plan-templates',

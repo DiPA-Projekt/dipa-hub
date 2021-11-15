@@ -1,11 +1,10 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { MilestoneTemplate } from 'dipa-api-client';
+import { MilestoneTemplate, ConfigurationService, PlanTemplate } from 'dipa-api-client';
 import { MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MilestoneTemplateDialogComponent } from '../milestone-template-dialog/milestone-template-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfigurationDataService } from '../../../shared/configurationDataService';
-import { ConfigurationService, PlanTemplate } from 'dipa-api-client';
 import { Subscription } from 'rxjs';
 
 @Component({
