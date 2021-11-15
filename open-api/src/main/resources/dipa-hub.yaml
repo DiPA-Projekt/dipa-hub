@@ -6,6 +6,14 @@ servers:
   - url: http://localhost:9080/api/v1
     description: Development
 paths:
+  /configuration/milestoneTemplates/{id}/deleteMilestoneTemplate:
+    $ref: "paths/deleteMilestoneTemplate.yml"
+  /configuration/planTemplates:
+    $ref: "paths/planTemplates.yml"
+  /configuration/planTemplates/{planTemplateId}/deletePlanTemplate:
+    $ref: "paths/deletePlanTemplate.yml"
+  /configuration/planTemplates/{planTemplateId}/milestoneTemplates:
+    $ref: "paths/milestoneTemplates.yml"
   /downloadFile/{fileId}:
     $ref: "paths/downloadFile.yml"
   /externalLinks:

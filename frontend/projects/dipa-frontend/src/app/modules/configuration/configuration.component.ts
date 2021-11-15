@@ -27,6 +27,12 @@ export class ConfigurationComponent implements OnInit {
         url: 'configuration/recurring_events',
         isRoute: true,
       },
+      {
+        name: 'Meilensteinpläne',
+        icon: 'snippet_folder',
+        url: 'configuration/plan_templates',
+        isRoute: true,
+      },
     ];
   }
 }

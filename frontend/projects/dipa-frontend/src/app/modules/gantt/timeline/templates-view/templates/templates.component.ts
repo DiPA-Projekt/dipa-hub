@@ -274,8 +274,8 @@ export class TemplatesComponent implements OnInit, OnChanges, OnDestroy {
 
   onResized(event: ResizedEvent): void {
     // only resize if width was changed, height is not relevant here
-    if (event.newWidth !== this.viewBoxWidth && this.svg != null) {
-      this.resizeChart(event.newWidth);
+    if (event.newRect.width !== this.viewBoxWidth && this.svg != null) {
+      this.resizeChart(event.newRect.width);
       this.rearrangeMilestoneLabels(0);
     }
   }

@@ -1,0 +1,104 @@
+<div class="content-container">
+  <div fxLayout="row wrap" fxLayoutGap="12px grid">
+    <div fxFlex="50%">
+      <table
+        mat-table
+        [dataSource]="tableDataSource"
+        (contentChanged)="contentChanged()"
+        multiTemplateDataRows
+        aria-label="Eventdaten"
+      >
+        <ng-container matColumnDef="header">
+          <th mat-header-cell *matHeaderCellDef [attr.colspan]="displayedColumns.length" scope="col">
+            <div fxLayout="row nowrap" fxLayoutAlign="space-between center"></div>
+          </th>
+        </ng-container>
+        <ng-container matColumnDef="index">
+          <th mat-header-cell *matHeaderCellDef scope="col"></th>
+          <td mat-cell *matCellDef="let element; let i = renderIndex">
+            {{ i + 1 + paginator?.pageIndex * paginator?.pageSize }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef scope="col">Meilensteinplan</th>
+          <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef scope="col">
+            <button mat-button class="roundedButton" (click)="openPlanTemplateDialog()">
+              <mat-icon>add_circle</mat-icon>
+            </button>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <button
+              mat-button
+              type="button"
+              class="roundedButton"
+              (click)="deletePlanTemplate(element.id)"
+              title="Eintrag entfernen"
+              aria-label="Eintrag entfernen"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="operationType">
+          <th mat-header-cell *matHeaderCellDef scope="col">Vorhabensart</th>
+          <td mat-cell *matCellDef="let element">
+            <mat-form-field floatLabel="never" class="noHint full-width">
+              <mat-label>Vorhabensart</mat-label>
+              <mat-select
+                (click)="$event.stopPropagation(); $event.preventDefault()"
+                [(value)]="element.projectApproaches[0].operationTypeId"
+                disabled="true"
+              >
+                <mat-option *ngFor="let operationType of operationTypesList" [value]="operationType.id">
+                  {{ operationType.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="projectApproach">
+          <th mat-header-cell *matHeaderCellDef scope="col">Vorgehensweise</th>
+          <td mat-cell *matCellDef="let element">
+            <mat-form-field floatLabel="never" class="noHint full-width">
+              <mat-label>Vorgehensweise</mat-label>
+              <mat-select
+                (click)="$event.stopPropagation(); $event.preventDefault()"
+                [value]="element.projectApproaches[0].id"
+                disabled="true"
+              >
+                <mat-option *ngFor="let projectApproach of projectApproachesList" [value]="projectApproach.id">
+                  {{ projectApproach.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+        </ng-container>
+        <tr mat-header-row style="height: 36px" *matHeaderRowDef="['header']"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr
+          mat-row
+          *matRowDef="let element; columns: displayedColumns"
+          class="example-element-row"
+          (click)="toggleSelectedRow(element)"
+          [ngClass]="{ hovered: element.hovered, highlighted: selection.isSelected(element) }"
+          (mouseover)="element.hovered = true"
+          (mouseout)="element.hovered = false"
+        ></tr>
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="5">Keine Termine mit aktueller Filterung.</td>
+        </tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[10, 20]" showFirstLastButtons aria-label="Select page of periodic elements">
+      </mat-paginator>
+    </div>
+    <div fxFlex="50%">
+      <app-milestone-templates
+        *ngIf="selection.selected[0]"
+        [planTemplate]="selection.selected[0]"
+      ></app-milestone-templates>
+    </div>
+  </div>
+</div>
