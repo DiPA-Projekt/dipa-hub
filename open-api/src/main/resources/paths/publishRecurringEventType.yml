@@ -1,6 +1,6 @@
 put:
   tags:
-    - project
+    - configuration
   summary: Publish a Recurring Event Type
   description: Publish a Recurring Event Type
   operationId: publishRecurringEventType

@@ -14,6 +14,12 @@ paths:
     $ref: "paths/deletePlanTemplate.yml"
   /configuration/planTemplates/{planTemplateId}/milestoneTemplates:
     $ref: "paths/milestoneTemplates.yml"
+  /configuration/{recurringEventTypeId}/deleteRecurringEventType:
+    $ref: "paths/deleteRecurringEventType.yml"
+  /configuration/{recurringEventTypeId}/publishRecurringEventType:
+    $ref: "paths/publishRecurringEventType.yml"
+  /configuration/recurringEventTypes:
+    $ref: "paths/recurringEventTypes.yml"
   /downloadFile/{fileId}:
     $ref: "paths/downloadFile.yml"
   /externalLinks:
@@ -28,12 +34,6 @@ paths:
     $ref: "paths/projects.yml"
   /projects/projectPropertyQuestions:
     $ref: "paths/allProjectPropertyQuestions.yml"
-  /projects/{recurringEventTypeId}/deleteRecurringEventType:
-    $ref: "paths/deleteRecurringEventType.yml"
-  /projects/{recurringEventTypeId}/publishRecurringEventType:
-    $ref: "paths/publishRecurringEventType.yml"
-  /projects/recurringEventTypes:
-    $ref: "paths/recurringEventTypes.yml"
   /projects/{timelineId}/deleteProject:
     $ref: "paths/deleteProject.yml"
   /projects/{timelineId}/projectRoles:

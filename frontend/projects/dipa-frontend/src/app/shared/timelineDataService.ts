@@ -25,7 +25,6 @@ export class TimelineDataService {
   public permanentProjectTasks: BehaviorSubject<PermanentProjectTask[]> = new BehaviorSubject<PermanentProjectTask[]>(
     null
   );
-  public recurringEvents: BehaviorSubject<RecurringEventType[]> = new BehaviorSubject<RecurringEventType[]>(null);
 
   public constructor(
     private timelinesService: TimelinesService,
@@ -33,7 +32,6 @@ export class TimelineDataService {
     private projectService: ProjectService
   ) {
     this.setTimelines();
-    this.setRecurringEvents();
   }
 
   public getTimelines(): Observable<Timeline[]> {
@@ -98,15 +96,5 @@ export class TimelineDataService {
     projectRoles.sort((a) => (a.permission === 'WRITE' ? -1 : 1));
     projectRoles.map((role) => role.abbreviation).forEach((role) => projectRolesString.push(role));
     return projectRolesString.join(', ');
-  }
-
-  public getRecurringEvents(): Observable<RecurringEventType[]> {
-    return this.recurringEvents;
-  }
-
-  public setRecurringEvents(): void {
-    this.projectService.getRecurringEventTypes().subscribe((data: RecurringEventType[]) => {
-      this.recurringEvents.next(data);
-    });
   }
 }

@@ -4,13 +4,11 @@
       <mat-form-field class="full-width">
         <mat-label>Titel</mat-label>
         <input matInput type="text" formControlName="title" (change)="formValueChanged.emit(formGroup)" required />
+        <mat-error *ngIf="!formGroup.get('title').valid">Bitte Feld ausfüllen.</mat-error>
       </mat-form-field>
-
-      <app-rrule
-        [rruleString]="formGroup.get(['recurringEventPattern', 'rulePattern']).value"
-        (dataChanged)="rruleChanged($event)"
-      ></app-rrule>
-
+      <ng-container formGroupName="recurringEventPattern">
+        <app-rrule formControlName="rulePattern" (dataChanged)="rruleChanged($event)" required></app-rrule>
+      </ng-container>
       <mat-form-field floatLabel="always" appearance="none" class="full-width">
         <mat-slide-toggle
           color="primary"

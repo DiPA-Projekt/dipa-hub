@@ -1,6 +1,6 @@
 get:
   tags:
-    - project
+    - configuration
   summary: Recurring Event Types List
   description: Retrieves the list of Recurring Event Types.
   operationId: getRecurringEventTypes
@@ -15,7 +15,7 @@ get:
               $ref: "../models/recurringEventType.yml#/RecurringEventType"
 patch:
   tags:
-    - project
+    - configuration
   summary: Update Recurring Event Type
   description: Update Recurring Event Type
   operationId: updateRecurringEventType
@@ -31,7 +31,7 @@ patch:
         description: The operation was applied successfully.
 post:
   tags:
-    - project
+    - configuration
   summary: Create a new recurring event type
   description: Create a new recurring event type
   operationId: createRecurringEventType

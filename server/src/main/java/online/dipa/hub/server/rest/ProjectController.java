@@ -139,39 +139,4 @@ public class ProjectController implements ProjectApi {
         projectService.updateFinalProjectTasks(finalProjectTasks);
         return ResponseEntity.noContent().build();
     }
-
-    @PreAuthorize("hasRole('ROLE_PMO')")
-    @Override
-    public ResponseEntity<List<RecurringEventType>> getRecurringEventTypes() {
-        List<RecurringEventType> recurringEventTypes =  projectService.getRecurringEventTypes();
-        return ResponseEntity.ok(recurringEventTypes);
-    }
-
-    @PreAuthorize("hasRole('ROLE_PMO')")
-    @Override
-    public ResponseEntity<Void> updateRecurringEventType(final RecurringEventType recurringEventType) {
-        projectService.updateRecurringEventType(recurringEventType);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PreAuthorize("hasRole('ROLE_PMO')")
-    @Override
-    public ResponseEntity<Void> deleteRecurringEventType(final Long recurringEventTypeId) {
-        projectService.deleteRecurringEventType(recurringEventTypeId);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PreAuthorize("hasRole('ROLE_PMO')")
-    @Override
-    public ResponseEntity<Void> createRecurringEventType(final RecurringEventType recurringEventType) {
-        projectService.createRecurringEventType(recurringEventType);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PreAuthorize("hasRole('ROLE_PMO')")
-    @Override
-    public ResponseEntity<Void> publishRecurringEventType(final Long recurringEventTypeId) {
-        projectService.publishRecurringEventType(recurringEventTypeId);
-        return ResponseEntity.noContent().build();
-    }
 }

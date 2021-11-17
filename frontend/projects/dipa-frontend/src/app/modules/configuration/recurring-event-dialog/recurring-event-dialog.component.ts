@@ -7,13 +7,14 @@ import {
   ProjectService,
   PropertyQuestion,
   RecurringEventType,
+  ConfigurationService,
 } from 'dipa-api-client';
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { MatDialogRef } from '@angular/material/dialog';
 import { AuthenticationService } from '../../../authentication.service';
 import { RecurringEventFormComponent } from '../recurring-event-form/recurring-event-form.component';
-import { TimelineDataService } from '../../../shared/timelineDataService';
+import { ConfigurationDataService } from '../../../shared/configurationDataService';
 
 @Component({
   selector: 'app-recurring-event-dialog',
@@ -53,7 +54,8 @@ export class RecurringEventDialogComponent implements OnInit, OnDestroy {
     private operationTypesService: OperationTypesService,
     private projectApproachesService: ProjectApproachesService,
     private projectService: ProjectService,
-    private timelineDataService: TimelineDataService
+    private configurationService: ConfigurationService,
+    private configurationDataService: ConfigurationDataService
   ) {}
 
   public ngOnInit(): void {
@@ -61,7 +63,6 @@ export class RecurringEventDialogComponent implements OnInit, OnDestroy {
       .getAllProjectPropertyQuestions()
       .subscribe((data: PropertyQuestion[]) => {
         this.propertyQuestions = data;
-        // this.setReactiveForm();
       });
   }
 
@@ -71,11 +72,11 @@ export class RecurringEventDialogComponent implements OnInit, OnDestroy {
   }
 
   public onSubmit(recurringEventType: RecurringEventType): void {
-    this.createRecurringEventTypeSubscription = this.projectService
+    this.createRecurringEventTypeSubscription = this.configurationService
       .createRecurringEventType(recurringEventType)
       .subscribe({
         next: (data: any) => {
-          this.timelineDataService.setRecurringEvents();
+          this.configurationDataService.setRecurringEvents();
         },
         error: null,
         complete: () => {
@@ -91,44 +92,4 @@ export class RecurringEventDialogComponent implements OnInit, OnDestroy {
   public submitForm(): void {
     this.childComponent.submitForm();
   }
-
-  // private setReactiveForm(): void {
-  //   console.log('setReactiveForm');
-  //   // this.formGroup = this.fb.group(
-  //   //   {
-  //   //     id: null,
-  //   //     title: new FormControl(null, { validators: [Validators.required.bind(this)] }),
-  //   //     description: 'Description',
-  //   //     recurringEventPattern: this.getPatternForm(null),
-  //   //     mandatory: new FormControl(null, {
-  //   //         validators: [Validators.required.bind(this)]
-  //   //     }),
-  //   //     projectPropertyQuestionId: null,
-  //   //   }
-  //   // );
-  // }
-  //
-  // private updateFormValues(): void {
-  //   // this.operationTypeId = this.itzBundSoftwareDevelopmentId;
-  //
-  //   this.formGroup.setValue({
-  //     id: -1,
-  //     title: '',
-  //     description: 'Test',
-  //     recurringEventPattern: this.getPatternForm(null),
-  //     mandatory: '',
-  //     projectPropertyQuestionId: '',
-  //   });
-  // }
-  //
-  // private getPatternForm(pattern: RecurringEventPattern): FormGroup {
-  //   return this.fb.group({
-  //     id: pattern?.id || -1,
-  //     rulePattern: pattern?.rulePattern,
-  //     startDate: pattern?.startDate,
-  //     endDate: pattern?.endDate,
-  //     duration: pattern?.duration,
-  //     recurringEventTypeId: pattern?.recurringEventTypeId,
-  //   });
-  // }
 }

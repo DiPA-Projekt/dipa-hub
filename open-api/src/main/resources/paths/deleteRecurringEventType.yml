@@ -1,6 +1,6 @@
 delete:
   tags:
-    - project
+    - configuration
   summary: Delete a Recurring Event Type
   description: Delete a Recurring Event Type
   operationId: deleteRecurringEventType
