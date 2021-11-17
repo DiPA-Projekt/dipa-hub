@@ -19,7 +19,6 @@ import { ConfigurationDataService } from '../../../shared/configurationDataServi
 @Component({
   selector: 'app-recurring-event-dialog',
   templateUrl: './recurring-event-dialog.component.html',
-  styleUrls: ['./recurring-event-dialog.component.scss'],
 })
 export class RecurringEventDialogComponent implements OnInit, OnDestroy {
   @ViewChild(RecurringEventFormComponent) childComponent: RecurringEventFormComponent;

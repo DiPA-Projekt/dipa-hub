@@ -8,12 +8,9 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import online.dipa.hub.api.model.RecurringEventType;
 
 @Entity
 @Table(name = "recurring_event_type")

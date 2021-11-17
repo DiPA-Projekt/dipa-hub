@@ -34,7 +34,9 @@ export class RruleComponent implements OnInit, ControlValueAccessor {
     this.setReactiveForm();
   }
 
-  public onChange = (rruleString: any): void => {};
+  public onChange = (rruleString: any): void => {
+    // This is intentional
+  };
 
   public onTouched = (): void => {
     this.touched = true;

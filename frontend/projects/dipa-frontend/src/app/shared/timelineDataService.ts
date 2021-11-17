@@ -8,7 +8,6 @@ import {
   Project,
   NonPermanentProjectTask,
   PermanentProjectTask,
-  RecurringEventType,
 } from 'dipa-api-client';
 import { BehaviorSubject, Observable } from 'rxjs';
 
