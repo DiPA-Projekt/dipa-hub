@@ -38,8 +38,10 @@ export class RecurringEventFormComponent implements OnInit, OnDestroy {
   }
 
   public rruleChanged($event: string): void {
-    this.formGroup.get(['recurringEventPattern', 'rulePattern']).setValue($event);
-    this.formValueChanged.emit(this.formGroup);
+    if (this.formGroup.get(['recurringEventPattern', 'rulePattern']).value !== $event) {
+      this.formGroup.get(['recurringEventPattern', 'rulePattern']).setValue($event);
+      this.formValueChanged.emit(this.formGroup);
+    }
   }
 
   public submitForm(): void {

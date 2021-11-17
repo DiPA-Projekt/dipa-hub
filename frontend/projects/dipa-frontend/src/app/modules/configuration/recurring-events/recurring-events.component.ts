@@ -1,10 +1,11 @@
-import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { RecurringEventType, ConfigurationService } from 'dipa-api-client';
 import { Subscription } from 'rxjs';
 import { RecurringEventDialogComponent } from '../recurring-event-dialog/recurring-event-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { FormGroup } from '@angular/forms';
 import { ConfigurationDataService } from '../../../shared/configurationDataService';
+import { RecurringEventFormComponent } from '../recurring-event-form/recurring-event-form.component';
 
 @Component({
   selector: 'app-recurring-events',
@@ -12,6 +13,8 @@ import { ConfigurationDataService } from '../../../shared/configurationDataServi
   styleUrls: ['./recurring-events.component.scss'],
 })
 export class RecurringEventsComponent implements OnInit, OnDestroy {
+  @ViewChild(RecurringEventFormComponent) public formComponent: RecurringEventFormComponent;
+
   public onDelete = new EventEmitter();
   public recurringEventTypes: RecurringEventType[];
 

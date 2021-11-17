@@ -7,7 +7,12 @@
         <mat-error *ngIf="!formGroup.get('title').valid">Bitte Feld ausfüllen.</mat-error>
       </mat-form-field>
       <ng-container formGroupName="recurringEventPattern">
-        <app-rrule formControlName="rulePattern" (dataChanged)="rruleChanged($event)" required></app-rrule>
+        <app-rrule
+          formControlName="rulePattern"
+          (change)="formValueChanged.emit(formGroup)"
+          (dataChanged)="rruleChanged($event)"
+          required
+        ></app-rrule>
       </ng-container>
       <mat-form-field floatLabel="always" appearance="none" class="full-width">
         <mat-slide-toggle

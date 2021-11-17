@@ -10,7 +10,7 @@ import { NavService } from '../../nav.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatIcon } from '@angular/material/icon';
 
-describe('SchedulesComponent', () => {
+describe('ConfigurationComponent', () => {
   let component: ConfigurationComponent;
   let fixture: ComponentFixture<ConfigurationComponent>;
 

@@ -10,7 +10,7 @@
     >
       <mat-card class="example-card">
         <mat-card-content>
-          <app-recurring-event-form [result]="result" (formValueChanged)="updateData($event)">
+          <app-recurring-event-form #formComponent [result]="result" (formValueChanged)="updateData($event)">
           </app-recurring-event-form>
         </mat-card-content>
         <mat-card-actions *ngIf="result?.id">
@@ -28,7 +28,7 @@
             mat-button
             type="button"
             class="roundedButton"
-            [disabled]="result.published"
+            [disabled]="!formComponent.formGroup.valid || result.published"
             (click)="publishRecurringEvent(result.id)"
             title="Änderungen ausspielen"
             aria-label="Änderungen ausspielen"

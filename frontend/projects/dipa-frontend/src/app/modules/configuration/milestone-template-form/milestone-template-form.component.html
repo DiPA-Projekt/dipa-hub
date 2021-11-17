@@ -14,7 +14,7 @@
         <mat-error *ngIf="!formGroup.get('name').valid">Bitte Feld ausfüllen.</mat-error>
       </mat-form-field>
       <mat-form-field fxFlex="100%">
-        <mat-label>Offset</mat-label>
+        <mat-label>Tage seit Projektbeginn</mat-label>
         <input matInput type="text" formControlName="dateOffset" (change)="formValueChanged.emit(formGroup)" required />
         <mat-error *ngIf="!formGroup.get('dateOffset').valid">Bitte Feld ausfüllen.</mat-error>
       </mat-form-field>

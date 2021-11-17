@@ -146,8 +146,10 @@ export class ResultsFormComponent implements OnInit {
   }
 
   public rruleChanged($event: string, formField: FormGroup): void {
-    formField.get('value').setValue($event);
-    this.dataChanged.emit();
+    if (formField.get('value').value !== $event) {
+      formField.get('value').setValue($event);
+      this.dataChanged.emit();
+    }
   }
 
   public openTransferTeamDataDialog(): void {
