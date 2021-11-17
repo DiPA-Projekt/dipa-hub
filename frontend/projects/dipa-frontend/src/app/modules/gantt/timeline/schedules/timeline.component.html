@@ -37,32 +37,36 @@
 
 <ng-container *ngIf="appointmentsList">
   <ng-container *ngIf="vm$ | async as vmE">
-    <app-data-table
-      title="Überfällige Termine"
-      icon="warning_amber"
-      [data]="filteredOverdueEventList"
-      [displayedColumns]="['eventType', 'dateTime', 'title', 'status', 'select']"
-      [timelineData]="selectedTimeline"
-      [editable]="vmE.selectedTimeline.archived"
-      (statusChanged)="changeStatus($event)"
-      (visibilityChanged)="toggleVisibility($event)"
-      (filterChanged)="refreshOverdueData($event)"
-    >
-    </app-data-table>
+    <div class="mat-elevation-z3" style="width: 50%; margin: 20px">
+      <app-data-table
+        title="Überfällige Termine"
+        icon="warning_amber"
+        [data]="filteredOverdueEventList"
+        [displayedColumns]="['eventType', 'dateTime', 'title', 'status', 'select']"
+        [timelineData]="selectedTimeline"
+        [editable]="vmE.selectedTimeline.archived"
+        (statusChanged)="changeStatus($event)"
+        (visibilityChanged)="toggleVisibility($event)"
+        (filterChanged)="refreshOverdueData($event)"
+      >
+      </app-data-table>
+    </div>
   </ng-container>
 
   <ng-container *ngIf="vm$ | async as vmE">
-    <app-data-table
-      title="Offene Termine"
-      icon="event_note"
-      [data]="filteredOpenEventList"
-      [displayedColumns]="['eventType', 'dateTime', 'title', 'status', 'select']"
-      [timelineData]="selectedTimeline"
-      [editable]="vmE.selectedTimeline.archived"
-      (statusChanged)="changeStatus($event)"
-      (visibilityChanged)="toggleVisibility($event)"
-      (filterChanged)="refreshOpenData($event)"
-    >
-    </app-data-table>
+    <div class="mat-elevation-z3" style="width: 50%; margin: 20px">
+      <app-data-table
+        title="Offene Termine"
+        icon="event_note"
+        [data]="filteredOpenEventList"
+        [displayedColumns]="['eventType', 'dateTime', 'title', 'status', 'select']"
+        [timelineData]="selectedTimeline"
+        [editable]="vmE.selectedTimeline.archived"
+        (statusChanged)="changeStatus($event)"
+        (visibilityChanged)="toggleVisibility($event)"
+        (filterChanged)="refreshOpenData($event)"
+      >
+      </app-data-table>
+    </div>
   </ng-container>
 </ng-container>
