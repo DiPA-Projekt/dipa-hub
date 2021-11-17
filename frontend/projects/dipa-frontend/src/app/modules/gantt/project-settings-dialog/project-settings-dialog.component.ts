@@ -18,7 +18,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuthenticationService } from '../../../authentication.service';
 import { TimelineDataService } from '../../../shared/timelineDataService';
 import { Router } from '@angular/router';
-import { DatePipe } from '@angular/common';
 import ProjectTypeEnum = Project.ProjectTypeEnum;
 import { MatListOption } from '@angular/material/list';
 
@@ -82,8 +81,7 @@ export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private timelineDataService: TimelineDataService,
     private fb: FormBuilder,
-    private router: Router,
-    private datePipe: DatePipe
+    private router: Router
   ) {}
 
   public ngOnInit(): void {

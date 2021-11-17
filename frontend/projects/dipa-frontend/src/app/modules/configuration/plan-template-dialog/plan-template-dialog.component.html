@@ -1,0 +1,19 @@
+<div style="display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; max-height: 100%">
+  <div mat-dialog-title>
+    <div style="display: flex; justify-content: space-between">
+      <div>Meilensteinplan anlegen</div>
+      <div>
+        <button mat-button class="roundedButton" (click)="onCloseClick()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div mat-dialog-content>
+    <app-plan-template-form [result]="defaultPlanTemplate" (formSubmitted)="onSubmit($event)"></app-plan-template-form>
+  </div>
+  <div mat-dialog-actions class="justify-content-end">
+    <button mat-raised-button color="primary" (click)="submitForm()" type="submit">Anlegen</button>
+    <button mat-button (click)="onCloseClick()">Abbrechen</button>
+  </div>
+</div>

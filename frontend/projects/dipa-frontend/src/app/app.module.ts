@@ -16,7 +16,8 @@ import { ProfileSettingsMenuComponent } from './menus/profile-settings-menu/prof
 import { ProjectDialogComponent } from './modules/gantt/project-dialog/project-dialog.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserUnauthorizedComponent } from './modules/user-unauthorized/user-unauthorized.component';
-import { TimelineDataService } from '../app/shared/timelineDataService';
+import { TimelineDataService } from './shared/timelineDataService';
+import { ConfigurationDataService } from './shared/configurationDataService';
 import { registerLocaleData, DatePipe } from '@angular/common';
 import localeDe from '@angular/common/locales/de';
 import localeDeExtra from '@angular/common/locales/extra/de';
@@ -59,6 +60,7 @@ registerLocaleData(localeDe, 'de-DE', localeDeExtra);
   providers: [
     NavService,
     TimelineDataService,
+    ConfigurationDataService,
     DatePipe,
     { provide: LOCALE_ID, useValue: 'de-DE' },
     { provide: MatPaginatorIntl, useValue: getGermanPaginatorIntl() },

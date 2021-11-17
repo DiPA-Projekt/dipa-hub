@@ -1,0 +1,28 @@
+table {
+  width: 100%;
+}
+
+.mat-row.hovered {
+  background: #eee;
+}
+
+.example-element-row td {
+  border-bottom-width: 0;
+  padding: 0 5px !important;
+}
+
+td[class^='mat-column-'], td[class*=' mat-column-'],
+th[class^='mat-column-'], th[class*=' mat-column-']{
+  padding: 0 3px !important
+}
+
+td.mat-column-index, th.mat-column-index {
+  text-align: center;
+}
+
+.roundedButton {
+  border-radius: 50%;
+  margin-top: 1px;
+  min-width: 36px;
+  padding: 0;
+}

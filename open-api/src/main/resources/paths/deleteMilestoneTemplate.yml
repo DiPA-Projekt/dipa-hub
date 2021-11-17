@@ -1,0 +1,11 @@
+delete:
+  tags:
+    - configuration
+  summary: Delete a milestone template
+  description: Delete a milestone template
+  operationId: deleteMilestoneTemplate
+  parameters:
+    - $ref: "./params/idParam.yml#/idParam"
+  responses:
+    204:
+      description: The milestone template was successfully deleted.
