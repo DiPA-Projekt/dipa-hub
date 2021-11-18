@@ -204,6 +204,15 @@ export class DataTableComponent implements OnInit, AfterViewInit {
     this.filterChanged.emit(this.tableDataSource.filteredData);
   }
 
+  public clearColumn(columnKey: string): void {
+    this.filterValues[columnKey] = [];
+
+    if (columnKey === 'dateTime') {
+      this.resetDateFilter();
+    }
+    this.applyFilter();
+  }
+
   public onChangeAppointmentPeriodStart(event: Event, columnKey: string): void {
     if ((event.target as HTMLInputElement).value !== null) {
       this.apptStartDate = (event.target as HTMLInputElement).value;
