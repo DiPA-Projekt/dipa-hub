@@ -145,6 +145,13 @@ export class ResultsFormComponent implements OnInit {
       .reduce((acc, val) => acc + val, 0);
   }
 
+  public rruleChanged($event: string, formField: FormGroup): void {
+    if (formField.get('value').value !== $event) {
+      formField.get('value').setValue($event);
+      this.dataChanged.emit();
+    }
+  }
+
   public openTransferTeamDataDialog(): void {
     this.dialog.open(TransferTeamDataDialogComponent, {
       data: { result: null },

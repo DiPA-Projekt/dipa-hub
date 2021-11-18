@@ -66,6 +66,14 @@ VALUES ('Mitteilung nach § 134 GWB', 321, 16)
 INSERT INTO milestone_template (name, date_offset, plan_template_id)
 VALUES ('Vertragsbeginn', 350, 16)
 
+--changeset id:update-recurring_event_type-master_recurring_event_type_id context:weit
+UPDATE recurring_event_type AS a
+SET master_recurring_event_type_id=(
+    SELECT id FROM recurring_event_type AS b
+    WHERE a.title=b.title AND b.master=true
+)
+WHERE a.master=false
+
 --changeset id:update-project_approach-remove-ITZBund-from-name context:weit
 UPDATE project_approach AS a
 SET name=replace(name, 'ITZBund ', '')

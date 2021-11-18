@@ -18,4 +18,8 @@ public interface RecurringEventTypeRepository extends JpaRepository<RecurringEve
     @Query("from RecurringEventTypeEntity t where t.master = true")
     Collection<RecurringEventTypeEntity> findByMaster();
 
+    @QueryHints(value = { @QueryHint(name = HINT_CACHEABLE, value = "true") })
+    @Query("from RecurringEventTypeEntity t where t.masterRecurringEventType = :master")
+    Collection<RecurringEventTypeEntity> findByMasterRecurringEventType(RecurringEventTypeEntity master);
+
 }

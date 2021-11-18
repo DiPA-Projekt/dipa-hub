@@ -1,15 +1,26 @@
 package online.dipa.hub.server.rest;
 
-import online.dipa.hub.api.model.*;
-import online.dipa.hub.api.rest.ProjectApi;
-import online.dipa.hub.services.ProjectService;
-import online.dipa.hub.services.SecurityService;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import online.dipa.hub.api.model.FinalProjectTask;
+import online.dipa.hub.api.model.NonPermanentProjectTask;
+import online.dipa.hub.api.model.PermanentProjectTask;
+import online.dipa.hub.api.model.Project;
+import online.dipa.hub.api.model.ProjectEvent;
+import online.dipa.hub.api.model.ProjectEventTemplate;
+import online.dipa.hub.api.model.ProjectRole;
+import online.dipa.hub.api.model.ProjectTask;
+import online.dipa.hub.api.model.ProjectWithUser;
+import online.dipa.hub.api.model.PropertyQuestion;
+import online.dipa.hub.api.model.Timeline;
+import online.dipa.hub.api.model.User;
+import online.dipa.hub.api.rest.ProjectApi;
+import online.dipa.hub.services.ProjectService;
+import online.dipa.hub.services.SecurityService;
 
 @RestApiController
 public class ProjectController implements ProjectApi {
@@ -99,6 +110,12 @@ public class ProjectController implements ProjectApi {
         return ResponseEntity.ok(projectService.getProjectPropertyQuestions(projectId));
     }
 
+    @PreAuthorize("hasRole('ROLE_PMO')")
+    @Override
+    public ResponseEntity<List<PropertyQuestion>> getAllProjectPropertyQuestions() {
+        return ResponseEntity.ok(projectService.getAllProjectPropertyQuestions());
+    }
+
     @PreAuthorize("@securityService.isProjectMemberAndHasRole(#projectId, {'PE','PL'})")
     @Override
     public ResponseEntity<Void> updateProjectPropertyQuestion(final Long projectId, final PropertyQuestion propertyQuestion) {
@@ -132,5 +149,4 @@ public class ProjectController implements ProjectApi {
         projectService.updateFinalProjectTasks(finalProjectTasks);
         return ResponseEntity.noContent().build();
     }
-
 }

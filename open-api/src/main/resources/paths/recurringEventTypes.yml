@@ -1,0 +1,47 @@
+get:
+  tags:
+    - configuration
+  summary: Recurring Event Types List
+  description: Retrieves the list of Recurring Event Types.
+  operationId: getRecurringEventTypes
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../models/recurringEventType.yml#/RecurringEventType"
+patch:
+  tags:
+    - configuration
+  summary: Update Recurring Event Type
+  description: Update Recurring Event Type
+  operationId: updateRecurringEventType
+  requestBody:
+    description: Recurring Event Type as requestBody
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../models/recurringEventType.yml#/RecurringEventType"
+    responses:
+      204:
+        description: The operation was applied successfully.
+post:
+  tags:
+    - configuration
+  summary: Create a new recurring event type
+  description: Create a new recurring event type
+  operationId: createRecurringEventType
+  requestBody:
+    description: recurring event type's data as requestBody
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../models/recurringEventType.yml#/RecurringEventType"
+  responses:
+    204:
+      description: The update was applied successfully.

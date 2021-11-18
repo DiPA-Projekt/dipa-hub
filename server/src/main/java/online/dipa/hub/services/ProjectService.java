@@ -222,6 +222,20 @@ public class ProjectService {
         return propertyQuestions;
     }
 
+    public List<PropertyQuestion> getAllProjectPropertyQuestions() {
+        List<PropertyQuestion> propertyQuestions = new ArrayList<>();
+
+        projectPropertyQuestionTemplateRepository.findByMaster().ifPresent(temp ->
+                propertyQuestions.addAll(temp.getProjectPropertyQuestions()
+                                 .stream()
+                                 .map(p -> conversionService.convert(p, PropertyQuestion.class))
+                                 .collect(Collectors.toList())
+                )
+        );
+
+        return propertyQuestions;
+    }
+
     public void updateProjectPropertyQuestion(final PropertyQuestion propertyQuestion) {
         projectPropertyQuestionRepository.findById(propertyQuestion.getId())
                                          .ifPresent(pQuestion -> {
@@ -698,7 +712,6 @@ public class ProjectService {
                       .filter(t -> !t.getProjectEvents().isEmpty())
                       .map(p -> conversionService.convert(p, ProjectEventTemplate.class))
                       .collect(Collectors.toList());
-
     }
 
     public void createRecurringEventTypes(final ProjectEntity project) {
@@ -964,7 +977,6 @@ public class ProjectService {
 
         return project.getProjectRoleTemplate().getProjectRoles().stream().map(r -> conversionService.convert(r, ProjectRole.class))
                       .collect(Collectors.toList());
-
     }
 
     public List<User> getProjectUsers (final Long projectId) {
@@ -973,7 +985,6 @@ public class ProjectService {
 
         return userRepository.findByProject(project)
                              .stream().map(user -> conversionService.convert(user, User.class)).collect(Collectors.toList());
-
     }
 
     private ResultEntity findResultEntity (List<ResultEntity> results, Long id) {

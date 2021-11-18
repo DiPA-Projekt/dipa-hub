@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ConfigurationService, MilestoneTemplate, PlanTemplate } from 'dipa-api-client';
+import { ConfigurationService, MilestoneTemplate, PlanTemplate, RecurringEventType } from 'dipa-api-client';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
@@ -8,9 +8,11 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class ConfigurationDataService {
   public milestoneTemplates: BehaviorSubject<MilestoneTemplate[]> = new BehaviorSubject<MilestoneTemplate[]>(null);
   public planTemplates: BehaviorSubject<PlanTemplate[]> = new BehaviorSubject<PlanTemplate[]>(null);
+  public recurringEvents: BehaviorSubject<RecurringEventType[]> = new BehaviorSubject<RecurringEventType[]>(null);
 
   public constructor(private configurationService: ConfigurationService) {
     this.setPlanTemplates();
+    this.setRecurringEvents();
   }
 
   public getMilestoneTemplates(): Observable<MilestoneTemplate[]> {
@@ -30,6 +32,16 @@ export class ConfigurationDataService {
   public setPlanTemplates(): void {
     this.configurationService.getPlanTemplates().subscribe((data: PlanTemplate[]) => {
       this.planTemplates.next(data);
+    });
+  }
+
+  public getRecurringEvents(): Observable<RecurringEventType[]> {
+    return this.recurringEvents;
+  }
+
+  public setRecurringEvents(): void {
+    this.configurationService.getRecurringEventTypes().subscribe((data: RecurringEventType[]) => {
+      this.recurringEvents.next(data);
     });
   }
 }

@@ -16,12 +16,6 @@ export class ConfigurationComponent implements OnInit {
   private setSideNavMenu(): void {
     this.navMenuItems = [
       {
-        name: 'Zeitplankonfiguration',
-        icon: 'date_range',
-        url: 'configuration/schedules',
-        isRoute: true,
-      },
-      {
         name: 'Wiederkehrende Aufgaben',
         icon: 'change_circle',
         url: 'configuration/recurring_events',
