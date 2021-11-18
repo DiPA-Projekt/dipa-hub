@@ -1,66 +1,109 @@
-<mat-form-field class="full-width">
-  <mat-label>Frequenz</mat-label>
-  <mat-select [(value)]="frequency" (selectionChange)="changedData()">
-    <mat-option value="MONTHLY"> Monatlich </mat-option>
-    <mat-option value="WEEKLY"> Wöchentlich </mat-option>
-  </mat-select>
-</mat-form-field>
+<ng-form>
+  <form [formGroup]="rruleFormGroup">
+    <mat-form-field class="full-width">
+      <mat-label>Frequenz</mat-label>
+      <mat-select formControlName="frequency" [(ngModel)]="pattern.frequency" (openedChange)="openedChange($event)">
+        <mat-option value="MONTHLY"> Monatlich </mat-option>
+        <mat-option value="WEEKLY"> Wöchentlich </mat-option>
+      </mat-select>
+    </mat-form-field>
 
-<ng-container *ngIf="frequency === 'MONTHLY'">
-  <span fxLayout="row wrap" fxLayoutGap="16px grid">
-    <span fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="50%" fxFlex.lg="50%" style="white-space: nowrap">
-      <mat-form-field class="full-width">
-        <mat-label>Am</mat-label>
-        <input
-          matInput
-          class="right"
-          type="number"
-          min="1"
-          max="31"
-          [(ngModel)]="byMonthDay"
-          (change)="changedData()"
-          required
-        />
-        <span matSuffix> . Tag</span>
-        <mat-error *ngIf="formField.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>
-      </mat-form-field>
-    </span>
+    <ng-container *ngIf="pattern.frequency === 'MONTHLY'">
+      <span fxLayout="row wrap" fxLayoutGap="16px grid">
+        <span
+          fxFlex="50%"
+          fxFlex.xs="100%"
+          fxFlex.sm="100%"
+          fxFlex.md="50%"
+          fxFlex.lg="50%"
+          style="white-space: nowrap"
+        >
+          <mat-form-field class="full-width">
+            <mat-label>Am</mat-label>
+            <input
+              formControlName="byMonthDay"
+              matInput
+              class="right"
+              type="number"
+              min="1"
+              max="31"
+              [(ngModel)]="pattern.byMonthDay"
+              (change)="changedData()"
+              required
+            />
+            <span matSuffix> . Tag</span>
+            <mat-error *ngIf="!rruleFormGroup.get('byMonthDay').valid">Bitte Feld ausfüllen.</mat-error>
+          </mat-form-field>
+        </span>
 
-    <span fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="50%" fxFlex.lg="50%" style="white-space: nowrap">
-      <mat-form-field class="full-width">
-        <mat-label>jedes</mat-label>
-        <input matInput class="right" type="number" min="1" [(ngModel)]="interval" (change)="changedData()" required />
-        <span matSuffix> . Monats</span>
-        <mat-error *ngIf="formField.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>
-      </mat-form-field>
-    </span>
-  </span>
-</ng-container>
+        <span
+          fxFlex="50%"
+          fxFlex.xs="100%"
+          fxFlex.sm="100%"
+          fxFlex.md="50%"
+          fxFlex.lg="50%"
+          style="white-space: nowrap"
+        >
+          <mat-form-field class="full-width">
+            <mat-label>jedes</mat-label>
+            <input
+              formControlName="interval"
+              matInput
+              class="right"
+              type="number"
+              min="1"
+              [(ngModel)]="pattern.interval"
+              (change)="changedData()"
+              required
+            />
+            <span matSuffix> . Monats</span>
+            <mat-error *ngIf="!rruleFormGroup.get('interval').valid">Bitte Feld ausfüllen.</mat-error>
+          </mat-form-field>
+        </span>
+      </span>
+    </ng-container>
 
-<ng-container *ngIf="frequency === 'WEEKLY'">
-  <span fxLayout="row wrap" fxLayoutGap="16px grid">
-    <span fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="50%" fxFlex.md="50%" fxFlex.lg="50%" style="white-space: nowrap">
-      <mat-form-field class="full-width">
-        <mat-label>Alle</mat-label>
-        <input matInput class="right" type="number" min="1" [(ngModel)]="interval" (change)="changedData()" required />
-        <span matSuffix> Wochen</span>
-        <mat-error *ngIf="formField.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>
-      </mat-form-field>
-    </span>
-    <span fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="50%" fxFlex.md="50%" fxFlex.lg="50%" style="white-space: nowrap">
-      <mat-form-field class="full-width">
-        <mat-label>am</mat-label>
-        <mat-select [(value)]="byDay" multiple (selectionChange)="changedData()" required>
-          <mat-option value="MO">Mo</mat-option>
-          <mat-option value="TU">Di</mat-option>
-          <mat-option value="WE">Mi</mat-option>
-          <mat-option value="TH">Do</mat-option>
-          <mat-option value="FR">Fr</mat-option>
-          <mat-option value="SA">Sa</mat-option>
-          <mat-option value="SU">So</mat-option>
-        </mat-select>
-        <mat-error *ngIf="formField.get('value').hasError('required')"> Bitte Feld ausfüllen </mat-error>
-      </mat-form-field>
-    </span>
-  </span>
-</ng-container>
+    <ng-container *ngIf="pattern.frequency === 'WEEKLY'">
+      <span fxLayout="row wrap" fxLayoutGap="16px grid">
+        <span fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="50%" fxFlex.md="50%" fxFlex.lg="50%" style="white-space: nowrap">
+          <mat-form-field class="full-width">
+            <mat-label>Alle</mat-label>
+            <input
+              formControlName="interval"
+              matInput
+              class="right"
+              type="number"
+              min="1"
+              [(ngModel)]="pattern.interval"
+              (change)="changedData()"
+              required
+            />
+            <span matSuffix> Wochen</span>
+            <mat-error *ngIf="!rruleFormGroup.get('interval').valid">Bitte Feld ausfüllen.</mat-error>
+          </mat-form-field>
+        </span>
+        <span fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="50%" fxFlex.md="50%" fxFlex.lg="50%" style="white-space: nowrap">
+          <mat-form-field class="full-width">
+            <mat-label>am</mat-label>
+            <mat-select
+              formControlName="byDay"
+              [(ngModel)]="pattern.byDay"
+              multiple
+              (openedChange)="openedChange($event)"
+              required
+            >
+              <mat-option value="MO">Mo</mat-option>
+              <mat-option value="TU">Di</mat-option>
+              <mat-option value="WE">Mi</mat-option>
+              <mat-option value="TH">Do</mat-option>
+              <mat-option value="FR">Fr</mat-option>
+              <mat-option value="SA">Sa</mat-option>
+              <mat-option value="SU">So</mat-option>
+            </mat-select>
+            <mat-error *ngIf="!rruleFormGroup.get('byDay').valid">Bitte Feld ausfüllen.</mat-error>
+          </mat-form-field>
+        </span>
+      </span>
+    </ng-container>
+  </form>
+</ng-form>

@@ -1,0 +1,8 @@
+recurringEventTypeIdParam:
+  in: path
+  name: recurringEventTypeId
+  required: true
+  schema:
+    type: integer
+    format: int64
+  description: Numeric ID of the recurring event type id.

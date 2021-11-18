@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import online.dipa.hub.api.model.MilestoneTemplate;
 import online.dipa.hub.api.model.PlanTemplate;
+import online.dipa.hub.api.model.RecurringEventType;
 import online.dipa.hub.api.rest.ConfigurationApi;
 import online.dipa.hub.services.ConfigurationService;
 
@@ -56,6 +57,41 @@ public class ConfigurationController implements ConfigurationApi {
     @Override
     public ResponseEntity<Void> deletePlanTemplate(final Long planTemplateId) {
         configurationService.deletePlanTemplate(planTemplateId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasRole('ROLE_PMO')")
+    @Override
+    public ResponseEntity<List<RecurringEventType>> getRecurringEventTypes() {
+        List<RecurringEventType> recurringEventTypes =  configurationService.getRecurringEventTypes();
+        return ResponseEntity.ok(recurringEventTypes);
+    }
+
+    @PreAuthorize("hasRole('ROLE_PMO')")
+    @Override
+    public ResponseEntity<Void> updateRecurringEventType(final RecurringEventType recurringEventType) {
+        configurationService.updateRecurringEventType(recurringEventType);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasRole('ROLE_PMO')")
+    @Override
+    public ResponseEntity<Void> deleteRecurringEventType(final Long recurringEventTypeId) {
+        configurationService.deleteRecurringEventType(recurringEventTypeId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasRole('ROLE_PMO')")
+    @Override
+    public ResponseEntity<Void> createRecurringEventType(final RecurringEventType recurringEventType) {
+        configurationService.createRecurringEventType(recurringEventType);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasRole('ROLE_PMO')")
+    @Override
+    public ResponseEntity<Void> publishRecurringEventType(final Long recurringEventTypeId) {
+        configurationService.publishRecurringEventType(recurringEventTypeId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,0 +1,11 @@
+put:
+  tags:
+    - configuration
+  summary: Publish a Recurring Event Type
+  description: Publish a Recurring Event Type
+  operationId: publishRecurringEventType
+  parameters:
+    - $ref: "./params/recurringEventTypeIdParam.yml#/recurringEventTypeIdParam"
+  responses:
+    204:
+      description: The Recurring Event Type was successfully published.

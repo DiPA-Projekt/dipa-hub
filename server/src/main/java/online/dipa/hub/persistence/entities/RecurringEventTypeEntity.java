@@ -8,7 +8,6 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -23,8 +22,11 @@ public class RecurringEventTypeEntity extends BaseEntity {
     private String description;
     private boolean mandatory;
     private boolean master;
+    private boolean published;
 
-    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER)
+    private RecurringEventTypeEntity masterRecurringEventType;
+
     @ManyToOne(fetch = FetchType.EAGER)
     private ProjectEntity project;
 
@@ -72,6 +74,22 @@ public class RecurringEventTypeEntity extends BaseEntity {
 
     public void setMandatory(final boolean mandatory) {
         this.mandatory = mandatory;
+    }
+
+    public boolean isPublished() {
+        return published;
+    }
+
+    public void setPublished(final boolean published) {
+        this.published = published;
+    }
+
+    public RecurringEventTypeEntity getMasterRecurringEventType() {
+        return this.masterRecurringEventType;
+    }
+
+    public void setRecurringEventType(final RecurringEventTypeEntity masterRecurringEventType) {
+        this.masterRecurringEventType = masterRecurringEventType;
     }
 
     public boolean isMaster() {

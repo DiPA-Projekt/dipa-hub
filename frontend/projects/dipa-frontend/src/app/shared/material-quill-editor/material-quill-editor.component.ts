@@ -115,7 +115,9 @@ export class MaterialQuillEditorComponent
     }
   }
 
-  public onChange = (delta: any): void => {};
+  public onChange = (delta: any): void => {
+    // This is intentional
+  };
 
   public onTouched = (): void => {
     this.touched = true;

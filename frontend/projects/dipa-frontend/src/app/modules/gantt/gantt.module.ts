@@ -65,7 +65,7 @@ import { TransferTeamDataDialogComponent } from './transfer-team-data-dialog/tra
     ProjectDashboardComponent,
     TransferTeamDataDialogComponent,
   ],
-  exports: [ChartComponent, FilesComponent, NavMenuListItemComponent],
+  exports: [ChartComponent, FilesComponent, NavMenuListItemComponent, ResultsFormComponent, RruleComponent],
   imports: [
     AngularResizeEventModule,
     CommonModule,
