@@ -11,7 +11,7 @@
           cdkFocusInitial
           required
         />
-        <mat-error *ngIf="!formGroup.get('name').valid">Bitte Feld ausfüllen.</mat-error>
+        <mat-error *ngIf="formGroup.get('name').hasError('required')">Bitte Feld ausfüllen.</mat-error>
       </mat-form-field>
 
       <ng-container formArrayName="projectApproaches">
@@ -29,9 +29,9 @@
                   {{ operationType.name }}
                 </mat-option>
               </mat-select>
-              <mat-error *ngIf="projectApproachItem.get('operationTypeId').hasError('required')"
-                >Bitte Feld ausfüllen.</mat-error
-              >
+              <mat-error *ngIf="projectApproachItem.get('operationTypeId').hasError('required')">
+                Bitte Feld ausfüllen.
+              </mat-error>
             </mat-form-field>
 
             <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%">
@@ -46,7 +46,9 @@
                   {{ projectApproach.name }}
                 </mat-option>
               </mat-select>
-              <mat-error *ngIf="!formGroup.get(['projectApproaches', 0, 'id']).valid">Bitte Feld ausfüllen.</mat-error>
+              <mat-error *ngIf="formGroup.get(['projectApproaches', 0, 'id']).hasError('required')">
+                Bitte Feld ausfüllen.
+              </mat-error>
             </mat-form-field>
           </ng-container>
         </ng-container>

@@ -18,6 +18,7 @@ import { Router } from '@angular/router';
 import { forkJoin, Subscription } from 'rxjs';
 import { TimelineDataService } from '../../../shared/timelineDataService';
 import { DatePipe } from '@angular/common';
+import { MatSelectChange } from '@angular/material/select';
 
 interface ProjectSize {
   value: string;
@@ -107,6 +108,7 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
   }
 
   public onSubmit(formGroup: FormGroup): void {
+    formGroup.markAllAsTouched();
     if (formGroup.valid) {
       this.createProjectSubscription = this.projectService
         .createProject({
@@ -128,6 +130,10 @@ export class ProjectDialogComponent implements OnInit, OnDestroy {
 
   public displayProjectSize(size: string): string {
     return this.sizes.find((x: ProjectSize) => x.value === size)?.display;
+  }
+
+  public changeOperationType(event: MatSelectChange): void {
+    this.formGroup.get(['projectApproachId']).setValue(null);
   }
 
   public filterProjectApproaches(operationTypeId: number): Array<ProjectApproach> {

@@ -65,3 +65,19 @@ VALUES ('Mitteilung nach § 134 GWB', 321, 16)
 --changeset id:milestones-template-ba-lifecycle-Vertragsbeginn context:weit dbms:postgresql
 INSERT INTO milestone_template (name, date_offset, plan_template_id)
 VALUES ('Vertragsbeginn', 350, 16)
+
+--changeset id:update-project_approach-remove-ITZBund-from-name context:weit
+UPDATE project_approach AS a
+SET name=replace(name, 'ITZBund ', '')
+
+--changeset id:update-plan_template-remove-ITZBund-from-name context:weit
+UPDATE plan_template AS a
+SET name=replace(name, 'ITZBund ', '')
+
+--changeset id:update-project_approach-remove-BA-from-name context:weit
+UPDATE project_approach AS a
+SET name=replace(name, 'BA Lifecycle', 'Lifecycle')
+
+--changeset id:update-plan_template-remove-BA-from-name context:weit
+UPDATE plan_template AS a
+SET name=replace(name, 'BA Lifecycle', 'Lifecycle')

@@ -57,6 +57,7 @@ export class PlanTemplateFormComponent implements OnInit, OnDestroy {
   }
 
   public onSubmit(form: FormGroup): void {
+    form.markAllAsTouched();
     if (form.valid) {
       this.formSubmitted.emit(form.value);
     }
