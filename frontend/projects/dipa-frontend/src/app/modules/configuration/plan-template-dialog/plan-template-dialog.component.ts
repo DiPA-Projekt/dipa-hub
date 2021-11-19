@@ -22,9 +22,9 @@ export class PlanTemplateDialogComponent implements OnDestroy {
     name: '',
     projectApproaches: [
       {
-        id: 8,
-        name: 'BA Lifecycle',
-        operationTypeId: 3,
+        id: null,
+        name: '',
+        operationTypeId: null,
       },
     ],
     milestoneTemplates: [],
