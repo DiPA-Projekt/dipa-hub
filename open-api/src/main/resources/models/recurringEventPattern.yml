@@ -1,0 +1,36 @@
+RecurringEventPattern:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the recurring event type
+      type: integer
+      format: int64
+      example: 1
+    rulePattern:
+      description: rule pattern
+      type: string
+      example: FREQ=MONTHLY;BYMONTHDAY=10;INTERVAL=1
+    startDate:
+      description: StartDate
+      type: date
+      example: 2021-09-21
+    endDate:
+      description: EndDate
+      type: date
+      example: 2023-09-25
+#    startTime:
+#      description: StartTime
+#      type: time
+#      example: 08:00:00
+    duration:
+      description: Duration
+      type: integer
+      example: 1
+    recurringEventTypeId:
+      description: Unique identifier of the dependent recurring event type
+      type: integer
+      format: int64
+      example: 1
+  required:
+    - id
+    - rulePattern

@@ -1,0 +1,18 @@
+MilestoneTemplate:
+  type: object
+  properties:
+    id:
+      description: Unique identifier of the milestone template
+      type: integer
+      format: int64
+      example: 2
+    name:
+      description: The name of the milestone template
+      type: string
+      example: "Projektstart"
+    dateOffset:
+      description: The date offset of the milestone
+      type: integer
+      format: int32
+      example: 120
+

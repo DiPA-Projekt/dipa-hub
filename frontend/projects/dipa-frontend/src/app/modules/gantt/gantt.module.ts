@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { GanttRoutingModule } from './gantt-routing.module';
 import { GanttComponent } from './gantt.component';
-import { AngularResizedEventModule } from 'angular-resize-event';
+import { AngularResizeEventModule } from 'angular-resize-event';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../../shared/shared.module';
 import { NavMenuListItemComponent } from '../../shared/nav-menu-list-item/nav-menu-list-item.component';
@@ -65,9 +65,9 @@ import { TransferTeamDataDialogComponent } from './transfer-team-data-dialog/tra
     ProjectDashboardComponent,
     TransferTeamDataDialogComponent,
   ],
-  exports: [ChartComponent, FilesComponent, NavMenuListItemComponent],
+  exports: [ChartComponent, FilesComponent, NavMenuListItemComponent, ResultsFormComponent, RruleComponent],
   imports: [
-    AngularResizedEventModule,
+    AngularResizeEventModule,
     CommonModule,
     FormsModule,
     GanttRoutingModule,

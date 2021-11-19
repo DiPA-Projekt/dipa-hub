@@ -2,6 +2,7 @@ package online.dipa.hub.persistence.repositories;
 
 import static org.hibernate.jpa.QueryHints.HINT_CACHEABLE;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import javax.persistence.QueryHint;
@@ -24,5 +25,10 @@ public interface PlanTemplateRepository extends JpaRepository<PlanTemplateEntity
     @Query("from PlanTemplateEntity as template join template.projectApproaches as approach " +
             "where template.defaultTemplate = true and approach = :projectApproach")
     Optional<PlanTemplateEntity> findByDefaultAndProjectApproach(ProjectApproachEntity projectApproach);
+
+    @QueryHints(value = { @QueryHint(name = HINT_CACHEABLE, value = "true") })
+    @Query("from PlanTemplateEntity as template " +
+            "where template.project is null")
+    Collection<PlanTemplateEntity> findByMaster();
 
 }

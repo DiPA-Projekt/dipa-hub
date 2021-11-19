@@ -6,6 +6,20 @@ servers:
   - url: http://localhost:9080/api/v1
     description: Development
 paths:
+  /configuration/milestoneTemplates/{id}/deleteMilestoneTemplate:
+    $ref: "paths/deleteMilestoneTemplate.yml"
+  /configuration/planTemplates:
+    $ref: "paths/planTemplates.yml"
+  /configuration/planTemplates/{planTemplateId}/deletePlanTemplate:
+    $ref: "paths/deletePlanTemplate.yml"
+  /configuration/planTemplates/{planTemplateId}/milestoneTemplates:
+    $ref: "paths/milestoneTemplates.yml"
+  /configuration/{recurringEventTypeId}/deleteRecurringEventType:
+    $ref: "paths/deleteRecurringEventType.yml"
+  /configuration/{recurringEventTypeId}/publishRecurringEventType:
+    $ref: "paths/publishRecurringEventType.yml"
+  /configuration/recurringEventTypes:
+    $ref: "paths/recurringEventTypes.yml"
   /downloadFile/{fileId}:
     $ref: "paths/downloadFile.yml"
   /externalLinks:
@@ -18,6 +32,8 @@ paths:
     $ref: "paths/status.yml"
   /projects:
     $ref: "paths/projects.yml"
+  /projects/projectPropertyQuestions:
+    $ref: "paths/allProjectPropertyQuestions.yml"
   /projects/{timelineId}/deleteProject:
     $ref: "paths/deleteProject.yml"
   /projects/{timelineId}/projectRoles:

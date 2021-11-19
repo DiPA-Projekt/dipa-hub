@@ -105,9 +105,10 @@
                       </ng-container>
                       <ng-container *ngSwitchCase="'RRULE'">
                         <app-rrule
-                          [formField]="formField"
-                          (dataChanged)="dataChanged.emit()"
-                          [rruleString]="formField.get('value')?.value"
+                          formControlName="value"
+                          (dataChanged)="rruleChanged($event, formField)"
+                          (change)="dataChanged.emit()"
+                          required
                         ></app-rrule>
                       </ng-container>
                       <ng-container *ngSwitchCase="'DROPDOWN'">

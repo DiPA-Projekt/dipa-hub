@@ -1,0 +1,15 @@
+get:
+  tags:
+    - project
+  summary: Project Property Question List
+  description: Retrieves the list of Project Property Questions.
+  operationId: getAllProjectPropertyQuestions
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../models/projectPropertyQuestion.yml#/PropertyQuestion"

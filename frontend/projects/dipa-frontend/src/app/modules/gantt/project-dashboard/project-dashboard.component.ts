@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { forkJoin, Subscription } from 'rxjs';
+import { forkJoin, Observable, Subscription } from 'rxjs';
 import { NavItem } from '../../../nav-item';
 import { MatSelectChange } from '@angular/material/select';
 import {
@@ -25,6 +25,7 @@ import Utils from '../../../shared/utils';
 import { TimelineDataService } from '../../../shared/timelineDataService';
 import { DatePipe } from '@angular/common';
 import { MatPaginator } from '@angular/material/paginator';
+import { map } from 'rxjs/operators';
 
 interface ProjectSize {
   value: string;
@@ -163,9 +164,10 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   public projectDaysLeft;
   public futureStartInDays: number;
 
+  public vm$: Observable<any>;
+
   private paramsSubscription: Subscription;
   private projectDataSubscription: Subscription;
-  private dataSubscription: Subscription;
 
   public constructor(
     public router: Router,
@@ -233,7 +235,6 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy, AfterViewIn
 
   public ngOnDestroy(): void {
     this.paramsSubscription?.unsubscribe();
-    this.dataSubscription?.unsubscribe();
     this.projectDataSubscription?.unsubscribe();
   }
 
@@ -242,62 +243,69 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   public setData(): void {
-    this.dataSubscription = forkJoin([
+    this.vm$ = forkJoin([
       this.timelinesService.getTimelines(),
       this.userService.getUsers(),
       this.milestonesService.getMilestonesForTimeline(this.selectedTimelineId),
       this.projectService.getEvents(this.selectedTimelineId),
       this.projectService.getPermanentProjectTasks(this.selectedTimelineId),
       this.projectService.getProjectRoles(this.selectedTimelineId),
-    ]).subscribe(([timelineData, allUsers, milestoneData, eventData, projectTaskData, projectRoles]) => {
-      this.timelineData = timelineData;
-      this.allUsers = allUsers;
+    ]).pipe(
+      map(([timelineData, allUsers, milestoneData, eventData, projectTaskData, projectRoles]) => {
+        this.timelineData = timelineData;
+        this.allUsers = allUsers;
 
-      const selectedTimeline = this.timelineData.find((c) => c.id === Number(this.selectedTimelineId));
+        const selectedTimeline = this.timelineData.find((c) => c.id === Number(this.selectedTimelineId));
 
-      // set default appointments list end to project end
-      this.projectStartDate = new Date(selectedTimeline.start);
-      this.projectEndDate = new Date(selectedTimeline.end);
-      this.openEventsInPeriod = this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
+        // set default appointments list end to project end
+        this.projectStartDate = new Date(selectedTimeline.start);
+        this.projectEndDate = new Date(selectedTimeline.end);
+        this.openEventsInPeriod = this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
 
-      this.futureStartInDays = Math.round(
-        (Utils.createDateAtMidnight(this.projectStartDate).getTime() - this.today.getTime()) / (1000 * 3600 * 24)
-      );
+        this.futureStartInDays = Math.round(
+          (Utils.createDateAtMidnight(this.projectStartDate).getTime() - this.today.getTime()) / (1000 * 3600 * 24)
+        );
 
-      this.projectDaysLeft = Math.round(
-        (Utils.createDateAtMidnight(this.projectEndDate).getTime() -
-          Math.max(this.today.getTime(), Utils.createDateAtMidnight(this.projectStartDate).getTime())) /
-          (1000 * 3600 * 24)
-      );
+        this.projectDaysLeft = Math.round(
+          (Utils.createDateAtMidnight(this.projectEndDate).getTime() -
+            Math.max(this.today.getTime(), Utils.createDateAtMidnight(this.projectStartDate).getTime())) /
+            (1000 * 3600 * 24)
+        );
 
-      const projectDurationInDays =
-        (Utils.createDateAtMidnight(this.projectEndDate).getTime() -
-          Utils.createDateAtMidnight(this.projectStartDate).getTime()) /
-        (1000 * 3600 * 24);
+        const projectDurationInDays =
+          (Utils.createDateAtMidnight(this.projectEndDate).getTime() -
+            Utils.createDateAtMidnight(this.projectStartDate).getTime()) /
+          (1000 * 3600 * 24);
 
-      this.projectProgress = Math.round((1 - this.projectDaysLeft / projectDurationInDays) * 100);
+        this.projectProgress = Math.round((1 - this.projectDaysLeft / projectDurationInDays) * 100);
 
-      this.milestoneDataSource.data = this.generateMilestoneList(milestoneData);
-      this.organisationDataSource.data = this.generateProjectRolesList(projectRoles);
+        this.milestoneDataSource.data = this.generateMilestoneList(milestoneData);
+        this.organisationDataSource.data = this.generateProjectRolesList(projectRoles);
 
-      this.appointmentsList = this.generateEventList(eventData, projectTaskData).sort(
-        (b, a) => new Date(b.dateTime).getTime() - new Date(a.dateTime).getTime()
-      );
-      this.overdueEvents = this.filterAllOverdueAppointments(this.appointmentsList);
-      this.openEventsInPeriod = this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
+        this.appointmentsList = this.generateEventList(eventData, projectTaskData).sort(
+          (b, a) => new Date(b.dateTime).getTime() - new Date(a.dateTime).getTime()
+        );
+        this.overdueEvents = this.filterAllOverdueAppointments(this.appointmentsList);
+        this.openEventsInPeriod = this.filterAllOpenAppointmentsInPeriod(this.appointmentsList);
 
-      this.eventDataSource.data = this.openEventsInPeriod;
-      this.filterSelectObj = this.filterSelectObj.filter((o: ColumnFilter) => {
-        o.options = this.getFilterObject(this.eventDataSource.data, o.columnProp);
-        o.modelValue = this.getFilterObject(this.eventDataSource.data, o.columnProp);
-      });
+        this.eventDataSource.data = this.openEventsInPeriod;
+        this.filterSelectObj = this.filterSelectObj.filter((o: ColumnFilter) => {
+          o.options = this.getFilterObject(this.eventDataSource.data, o.columnProp);
+          o.modelValue = this.getFilterObject(this.eventDataSource.data, o.columnProp);
+        });
 
-      this.overdueEventDataSource.data = this.overdueEvents;
-      this.filterSelectOverdueObj = this.filterSelectOverdueObj.filter((o: ColumnFilter) => {
-        o.options = this.getFilterObject(this.overdueEventDataSource.data, o.columnProp);
-        o.modelValue = this.getFilterObject(this.overdueEventDataSource.data, o.columnProp);
-      });
-    });
+        this.overdueEventDataSource.data = this.overdueEvents;
+        this.filterSelectOverdueObj = this.filterSelectOverdueObj.filter((o: ColumnFilter) => {
+          o.options = this.getFilterObject(this.overdueEventDataSource.data, o.columnProp);
+          o.modelValue = this.getFilterObject(this.overdueEventDataSource.data, o.columnProp);
+        });
+
+        return {
+          eventData,
+          selectedTimeline,
+        };
+      })
+    );
   }
 
   public displayProjectSize(size: string): string {

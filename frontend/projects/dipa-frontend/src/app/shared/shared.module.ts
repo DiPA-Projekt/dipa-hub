@@ -9,7 +9,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { AngularResizedEventModule } from 'angular-resize-event';
+import { AngularResizeEventModule } from 'angular-resize-event';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -28,6 +28,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { FilterItemDirective } from './data-table/filter-item.directive';
 import { FlexModule } from '@angular/flex-layout';
 import { MaterialQuillEditorComponent } from './material-quill-editor/material-quill-editor.component';
+import { DownloadLinkComponent } from './download-link/download-link.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { MaterialQuillEditorComponent } from './material-quill-editor/material-q
     FilterItemDirective,
     DataTableComponent,
     MaterialQuillEditorComponent,
+    DownloadLinkComponent,
   ],
   imports: [
     MatCardModule,
@@ -48,7 +50,7 @@ import { MaterialQuillEditorComponent } from './material-quill-editor/material-q
     MatButtonToggleModule,
     MatInputModule,
     MatSelectModule,
-    AngularResizedEventModule,
+    AngularResizeEventModule,
     MatButtonModule,
     MatRadioModule,
     MatToolbarModule,
@@ -69,6 +71,7 @@ import { MaterialQuillEditorComponent } from './material-quill-editor/material-q
     FilterItemDirective,
     DataTableComponent,
     MaterialQuillEditorComponent,
+    DownloadLinkComponent,
   ],
 })
 export class SharedModule {}

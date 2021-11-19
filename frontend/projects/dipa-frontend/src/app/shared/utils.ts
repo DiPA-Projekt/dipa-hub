@@ -1,6 +1,6 @@
 export default class Utils {
   public static getGermanFormattedDateString(input: string | Date): string {
-    const dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
+    const dateOptions: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
     return new Date(input).toLocaleDateString('de-DE', dateOptions);
   }
 

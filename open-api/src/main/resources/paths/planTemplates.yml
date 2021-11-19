@@ -1,0 +1,51 @@
+get:
+  tags:
+    - configuration
+  summary: plan templates list
+  description: Retrieves the list of plan templates
+  operationId: getPlanTemplates
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../models/planTemplate.yml#/PlanTemplate"
+patch:
+  tags:
+    - configuration
+  summary: Update Plan Template
+  description: Update Plan Template
+  operationId: updatePlanTemplate
+  requestBody:
+    description: Plan Template as requestBody
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../models/planTemplate.yml#/PlanTemplate"
+    responses:
+      204:
+        description: The operation was applied successfully.
+post:
+  tags:
+    - configuration
+  summary: Create a new Plan Template
+  description: Create a new Plan Template
+  operationId: createPlanTemplate
+  requestBody:
+    description: Plan Template's data as requestBody
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../models/planTemplate.yml#/PlanTemplate"
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "../models/planTemplate.yml#/PlanTemplate"

@@ -1,0 +1,30 @@
+<div class="content-container">
+  <div fxLayout="row wrap" fxLayoutGap="15px grid">
+    <div
+      fxFlex="50%"
+      fxFlex.xs="100%"
+      fxFlex.sm="100%"
+      fxFlex.md="50%"
+      fxFlex.lg="50%"
+      *ngFor="let discipline of disciplines"
+    >
+      <mat-card class="card-container">
+        <mat-card-content>{{ discipline.title }}</mat-card-content>
+        <mat-card-actions>
+          <ng-container *ngIf="discipline.links?.length > 0; else noItems">
+            <app-download-link
+              *ngFor="let link of discipline.links"
+              [fileId]="link.id"
+              [title]="link.name"
+            ></app-download-link>
+          </ng-container>
+          <ng-template #noItems>
+            <div fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%" fxFlex.md="50%" fxFlex.lg="50%">
+              <div style="margin: 8px; font-weight: 500">Kein Eintrag vorhanden.</div>
+            </div>
+          </ng-template>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</div>

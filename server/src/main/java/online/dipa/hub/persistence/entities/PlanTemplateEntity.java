@@ -43,14 +43,6 @@ public class PlanTemplateEntity extends BaseEntity {
     @OneToOne(fetch = FetchType.EAGER)
     private ProjectEntity project;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "operation_type_plan_template_connection",
-            joinColumns = { @JoinColumn(name = "plan_template_id") },
-            inverseJoinColumns = { @JoinColumn(name = "operation_type_id") }
-    )
-    private Set<OperationTypeEntity> operationTypes;
-
     public PlanTemplateEntity() {
         super();
     }
@@ -59,7 +51,6 @@ public class PlanTemplateEntity extends BaseEntity {
         this.milestones = planTemplate.getMilestones();
         this.tasks = planTemplate.getTasks();
         this.projectApproaches = planTemplate.getProjectApproaches();
-        this.operationTypes = planTemplate.getOperationTypes();
         this.standard = planTemplate.getStandard();
         this.defaultTemplate = planTemplate.getDefaultTemplate();
     }
@@ -90,14 +81,6 @@ public class PlanTemplateEntity extends BaseEntity {
 
     public void setTask(final Set<TaskTemplateEntity> tasks) {
         this.tasks = tasks;
-    }
-
-    public Set<OperationTypeEntity> getOperationTypes() {
-        return operationTypes;
-    }
-
-    public void setOperationTypes(final Set<OperationTypeEntity> operationTypes) {
-        this.operationTypes = operationTypes;
     }
 
     public Set<ProjectApproachEntity> getProjectApproaches() {

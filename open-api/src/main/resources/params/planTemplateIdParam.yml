@@ -1,0 +1,8 @@
+planTemplateIdParam:
+  in: path
+  name: planTemplateId
+  schema:
+    type: integer
+    format: int64
+  required: true
+  description: Numeric ID of the plan template.

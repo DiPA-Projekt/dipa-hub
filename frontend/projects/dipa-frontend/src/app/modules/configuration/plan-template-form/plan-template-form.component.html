@@ -1,0 +1,58 @@
+<ng-form>
+  <form [formGroup]="formGroup">
+    <div fxLayout="row wrap" fxLayoutGap="16px grid">
+      <mat-form-field fxFlex="100%">
+        <mat-label>Titel</mat-label>
+        <input
+          matInput
+          type="text"
+          formControlName="name"
+          (change)="formValueChanged.emit(formGroup)"
+          cdkFocusInitial
+          required
+        />
+        <mat-error *ngIf="formGroup.get('name').hasError('required')">Bitte Feld ausfüllen.</mat-error>
+      </mat-form-field>
+
+      <ng-container formArrayName="projectApproaches">
+        <ng-container *ngFor="let projectApproachItem of getProjectApproachesArray(formGroup).controls; let i = index">
+          <ng-container [formGroupName]="i">
+            <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%">
+              <mat-label>Vorhabensart</mat-label>
+              <mat-select
+                [value]="projectApproachItem.get('operationTypeId')?.value"
+                (selectionChange)="changeOperationType($event)"
+                formControlName="operationTypeId"
+                required
+              >
+                <mat-option *ngFor="let operationType of operationTypesList" [value]="operationType.id">
+                  {{ operationType.name }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="projectApproachItem.get('operationTypeId').hasError('required')">
+                Bitte Feld ausfüllen.
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="50%" fxFlex.xs="100%" fxFlex.sm="100%">
+              <mat-label>Vorgehensweise</mat-label>
+              <mat-select [value]="projectApproachItem.get('id')?.value" formControlName="id" required>
+                <mat-option
+                  *ngFor="
+                    let projectApproach of filterProjectApproaches(projectApproachItem.get('operationTypeId')?.value)
+                  "
+                  [value]="projectApproach.id"
+                >
+                  {{ projectApproach.name }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="formGroup.get(['projectApproaches', 0, 'id']).hasError('required')">
+                Bitte Feld ausfüllen.
+              </mat-error>
+            </mat-form-field>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </div>
+  </form>
+</ng-form>
