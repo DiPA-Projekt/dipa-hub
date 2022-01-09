@@ -45,7 +45,7 @@
         <jackson-databind-nullable.version>0.2.1</jackson-databind-nullable.version>
         <slf4j.version>1.7.31</slf4j.version>
         <logback.version>1.2.5</logback.version>
-        <liquibase.version>4.3.5</liquibase.version>
+        <liquibase.version>4.6.2</liquibase.version>
         <spring-data-jpa.version>2.5.1</spring-data-jpa.version>
 
         <!-- maven plugins -->
